@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
+<!-- Revisione standardizzata v6: validità numerica centrale + malus Scoperta autoconclusiva coerente + invalidazione 1d4 Domesticazione non necessaria -->
+<!-- Revisione standardizzata v3: preservazione storico usi/Fatica + tentativo minimo automatico sugli esiti validi -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <style>
 @font-face {
@@ -429,6 +431,48 @@ button:focus-visible,select:focus-visible,input:focus-visible{
   font-style:italic;
 }
 
+
+/* ===== BONUS STRUTTURATI — OGGETTI / CONOSCENZE ===== */
+.mz-bonus-manager{
+  margin-top:14px;padding:12px 14px;border:1px solid #6e4028;border-radius:8px;
+  background:rgba(18,11,7,.46);
+}
+.mz-bonus-manager h3{margin:0 0 5px;color:#f0a060;font-family:'magic',Georgia,"Times New Roman",serif;font-weight:normal;}
+.mz-bonus-help{font-size:.82em;color:#c99a7a;margin:0 0 10px;line-height:1.45;}
+.mz-bonus-list{display:grid;gap:9px;}
+.mz-bonus-row{
+  display:grid;gap:8px;align-items:end;padding:10px;border:1px solid #6e4028;border-radius:7px;background:#1b100b;
+}
+.mz-bonus-row.mz-general{grid-template-columns:minmax(145px,1.35fr) minmax(130px,1.15fr) minmax(150px,1.25fr) 86px 72px 38px;}
+.mz-bonus-row.mz-phase{grid-template-columns:minmax(135px,1.25fr) minmax(125px,1.1fr) minmax(130px,1.05fr) 82px 92px 82px 82px 72px 38px;}
+.mz-bonus-field{display:flex;flex-direction:column;min-width:0;}
+.mz-bonus-field label{font-size:.69em;text-transform:uppercase;letter-spacing:.045em;color:#d97932;margin-bottom:3px;}
+.mz-bonus-field input[type=text],.mz-bonus-field input[type=number],.mz-bonus-field select{
+  width:100%;box-sizing:border-box;background:#120b07;color:#f0ddcc;border:1px solid #6e4028;border-radius:4px;padding:6px 7px;font-family:inherit;
+}
+.mz-bonus-check{display:flex;align-items:center;justify-content:center;gap:5px;min-height:32px;color:#e7a466;font-size:.78em;}
+.mz-bonus-remove{width:36px;height:32px;padding:0;margin:0;background:transparent;border:1px solid #a94d2d;border-radius:5px;color:#e0a17d;cursor:pointer;font-size:18px;line-height:1;}
+.mz-bonus-remove:hover{background:#351a11;color:#f4c3a3;}
+.mz-bonus-add{margin-top:9px;background:#4a291b;color:#f0ddcc;border:1px solid #9a431f;border-radius:6px;padding:8px 12px;cursor:pointer;font-family:inherit;}
+.mz-bonus-add:hover{background:#6e4028;}
+.mz-bonus-remaining{font-size:.72em;color:#c99a7a;line-height:1.25;margin-top:3px;}
+.mz-effective-line{margin-top:5px;font-size:.8em;color:#e7a466;}
+.mz-effects-summary{display:grid;gap:7px;margin-top:8px;}
+.mz-effect-chip{padding:8px 10px;border:1px solid #9a431f;border-left:4px solid #d97932;border-radius:6px;background:rgba(154,67,31,.11);font-size:.86em;line-height:1.45;}
+.mz-effect-chip b{color:#f0a060;}
+.mz-summary-empty{color:#c99a7a;font-size:.86em;font-style:italic;}
+.mz-fatigue-total{margin-top:10px;padding:9px 11px;border:1px solid #6e4028;border-radius:6px;background:#120b07;color:#f0ddcc;}
+.mz-fatigue-total strong{color:#f0a060;}
+@media(max-width:900px){
+  .mz-bonus-row.mz-general{grid-template-columns:1fr 1fr 1fr;}
+  .mz-bonus-row.mz-phase{grid-template-columns:1fr 1fr 1fr;}
+}
+@media(max-width:560px){
+  .mz-bonus-row.mz-general,.mz-bonus-row.mz-phase{grid-template-columns:1fr;}
+  .mz-bonus-check{justify-content:flex-start;}
+  .mz-bonus-remove{width:100%;}
+}
+
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
@@ -441,7 +485,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 <div class="sigillo-magizoologia" aria-hidden="true"><i class="fa-solid fa-dragon"></i></div>
 <h1>Magizoologia</h1>
 <div class="sottotitolo">Strumenti interattivi per Riconoscimento, Fiducia, Cura, Domesticazione e Allevamento delle Creature Magiche</div>
-<div class="nota-regole" style="text-align:center; margin-bottom:14px;">I tiri vanno eseguiti con il dado del forum: copia il codice, incollalo in un post, poi riporta qui il risultato ottenuto. La Guida alla Magizoologia mantiene il proprio salvataggio nel browser; le sessioni di Ricerca Creature Magiche vengono invece salvate automaticamente su Firebase.</div>
+<div class="nota-regole" style="text-align:center; margin-bottom:14px;">I tiri vanno eseguiti con il dado del forum: copia il codice, incollalo in un post, poi riporta qui il risultato ottenuto. La Guida alla Magizoologia riparte vuota a ogni ricaricamento della pagina; durante la sessione corrente i dati restano attivi normalmente. Le sessioni di Ricerca Creature Magiche vengono invece salvate automaticamente su Firebase.</div>
 
 <div class="barra-modo">
   <button class="modo-bottone attivo" id="modoMagizoologiaBtn">Guida alla Magizoologia</button>
@@ -475,7 +519,8 @@ button:focus-visible,select:focus-visible,input:focus-visible{
   </div>
   <div class="campo">
     <label>Empatia</label>
-    <input type="number" id="empatia" data-key="empatia" value="10">
+    <input type="number" id="empatia" data-key="empatia" value="10" min="0">
+    <div class="mz-effective-line" id="mzEmpatiaEffettiva"></div>
   </div>
 </div>
 <div class="riga">
@@ -525,6 +570,13 @@ button:focus-visible,select:focus-visible,input:focus-visible{
       <option value="5">Livello V</option>
     </select>
   </div>
+</div>
+
+<div class="mz-bonus-manager">
+  <h3>Bonus generali del Personaggio</h3>
+  <p class="mz-bonus-help">Inserisci qui una sola volta i bonus permanenti. I bonus a Empatia vengono applicati prima delle conversioni previste dalle singole fasi; gli altri modificano la Base indicata.</p>
+  <div class="mz-bonus-list" id="mzBonusGenerali"></div>
+  <button type="button" class="mz-bonus-add" id="mzAddBonusGenerale">+ Aggiungi bonus</button>
 </div>
 </div>
 
@@ -586,12 +638,13 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 
 <div class="pannello" id="pannelloFiducia">
 <h2>Fiducia (1d30)</h2>
-<div class="nota-regole">Costo: -1 Fatica.</div>
-<div class="riga">
-  <div class="campo">
-    <label>Bonus extra (Oggetti/Conoscenze)</label>
-    <input type="number" id="extraFiducia" data-key="extraFiducia" value="0">
-  </div>
+<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito.</div>
+<div class="riga"><div class="campo"><label>Tentativi di Fiducia eseguiti</label><input type="number" id="tentativiFiducia" data-key="tentativiFiducia" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
+<div class="mz-bonus-manager">
+  <h3>Oggetti / Conoscenze — Fiducia</h3>
+  <p class="mz-bonus-help">Il bonus al parametro entra nella formula della fase; il bonus alle possibilità viene aggiunto dopo il calcolo della base. Fatica e usi vengono contabilizzati quando spunti «Applica».</p>
+  <div class="mz-bonus-list" id="mzBonusFiducia"></div>
+  <button type="button" class="mz-bonus-add" data-mz-add-phase="fiducia">+ Aggiungi bonus</button>
 </div>
 <div class="check-riga">
   <input type="checkbox" id="ritentativoOstile" data-key="ritentativoOstile">
@@ -627,12 +680,12 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 <h2>Cura della Creatura</h2>
 
 <h2 style="font-size:1.1em">Dado 1: Scoperta del problema (1d35)</h2>
-<div class="nota-regole">Costo: -1 Fatica.</div>
-<div class="riga">
-  <div class="campo">
-    <label>Bonus extra (Oggetti/Conoscenze)</label>
-    <input type="number" id="extraScoperta" data-key="extraScoperta" value="0">
-  </div>
+<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito.</div>
+<div class="riga"><div class="campo"><label>Tentativi di Scoperta eseguiti</label><input type="number" id="tentativiScoperta" data-key="tentativiScoperta" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
+<div class="mz-bonus-manager">
+  <h3>Oggetti / Conoscenze — Scoperta</h3>
+  <div class="mz-bonus-list" id="mzBonusScoperta"></div>
+  <button type="button" class="mz-bonus-add" data-mz-add-phase="scoperta">+ Aggiungi bonus</button>
 </div>
 <div class="formula-tag" id="formulaScoperta"></div>
 <div class="result-line">
@@ -654,16 +707,18 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 <div class="info-bonus" id="bonusCuraMostrato"></div>
 
 <h2 style="font-size:1.1em; margin-top:20px">Dado 2: Cura del problema (1d35)</h2>
-<div class="nota-regole">Costo: -1 Fatica. Il dado viene lanciato dal Narratore.</div>
+<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito. Il dado viene lanciato dal Narratore.</div>
+<div class="riga"><div class="campo"><label>Tentativi di Cura eseguiti</label><input type="number" id="tentativiCura" data-key="tentativiCura" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
 <div class="riga">
   <div class="campo">
     <label>Bonus del Narratore (0-5)</label>
     <input type="number" id="bonusNarratore" data-key="bonusNarratore" value="0" min="0" max="5">
   </div>
-  <div class="campo">
-    <label>Bonus extra (Oggetti/Conoscenze)</label>
-    <input type="number" id="extraCura" data-key="extraCura" value="0">
-  </div>
+</div>
+<div class="mz-bonus-manager" style="margin-top:10px">
+  <h3>Oggetti / Conoscenze — Cura</h3>
+  <div class="mz-bonus-list" id="mzBonusCura"></div>
+  <button type="button" class="mz-bonus-add" data-mz-add-phase="cura">+ Aggiungi bonus</button>
 </div>
 <div class="formula-tag" id="formulaCura"></div>
 <div class="result-line">
@@ -715,7 +770,8 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 
 <div class="pannello" id="pannelloDomesticazione">
 <h2>Domesticazione (1d35)</h2>
-<div class="nota-regole">Costo: -2 Fatica. Non serve per Creature nate nella propria Riserva o trovate in fase Uovo/Cucciolo.</div>
+<div class="nota-regole">Costo: -2 Fatica per ogni tentativo effettivamente eseguito. Non serve per Creature nate nella propria Riserva o trovate in fase Uovo/Cucciolo.</div>
+<div class="riga"><div class="campo"><label>Tentativi di Domesticazione eseguiti</label><input type="number" id="tentativiDomesticazione" data-key="tentativiDomesticazione" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
 <div class="nota-regole" id="baseAddestratoreInfo"></div>
 <div class="result-line" id="rigaAddestratoreD4" style="display:none">
   <div class="dice-code" id="codiceAddestratoreD4">&lt;b&gt;Qual è il Bonus Domesticazione dell’Adulto senza Addestratore?&lt;/b&gt;
@@ -725,15 +781,11 @@ button:focus-visible,select:focus-visible,input:focus-visible{
   <button class="copy-btn" id="copiaAddestratoreD4">Copia</button>
   <input type="number" id="risultatoAddestratoreD4" data-key="risultatoAddestratoreD4" min="1" max="4" placeholder="1-4">
 </div>
-<div class="riga">
-  <div class="campo">
-    <label>Bonus extra (Oggetti/Conoscenze)</label>
-    <input type="number" id="extraDomesticazione" data-key="extraDomesticazione" value="0">
-  </div>
-  <div class="campo">
-    <label>Bonus da Cura del problema riuscita</label>
-    <input type="number" id="bonusCuraPerDomesticazione" data-key="bonusCuraPerDomesticazione" value="0" min="0">
-  </div>
+<div class="info-bonus" id="bonusCuraPerDomesticazioneInfo">Bonus da Cura: nessuno finché la Cura non riesce.</div>
+<div class="mz-bonus-manager">
+  <h3>Oggetti / Conoscenze — Domesticazione</h3>
+  <div class="mz-bonus-list" id="mzBonusDomesticazione"></div>
+  <button type="button" class="mz-bonus-add" data-mz-add-phase="domesticazione">+ Aggiungi bonus</button>
 </div>
 <div class="formula-tag" id="formulaDomesticazione"></div>
 <div class="result-line">
@@ -765,11 +817,11 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 <h2>Allevamento: Produzione e Riproduzione (1d10)</h2>
 <div class="formula-tag" id="formulaAllevamento"></div>
 <div id="tabellaFasceAllevamento"></div>
-<div class="riga">
-  <div class="campo">
-    <label>Bonus extra al risultato del dado (Oggetti/Conoscenze)</label>
-    <input type="number" id="extraAllevamento" data-key="extraAllevamento" value="0">
-  </div>
+<div class="mz-bonus-manager">
+  <h3>Oggetti / Conoscenze — Allevamento</h3>
+  <p class="mz-bonus-help">Qui la distinzione è decisiva: «Parametro» modifica la Forza complessiva <b>prima</b> della scelta della fascia; «Possibilità al tiro» modifica invece il risultato del 1d10 <b>dopo</b> che la fascia è stata determinata.</p>
+  <div class="mz-bonus-list" id="mzBonusAllevamento"></div>
+  <button type="button" class="mz-bonus-add" data-mz-add-phase="allevamento">+ Aggiungi bonus</button>
 </div>
 <div class="result-line">
   <div class="dice-code" id="codiceAllevamento"></div>
@@ -784,8 +836,14 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 <div class="nota-regole" id="malusCuraAllevamento"></div>
 </div>
 
+<div class="scheda" id="mzRiepilogoBonus">
+  <h2>Riepilogo Oggetti, Conoscenze e Fatica</h2>
+  <div class="nota-regole">Sono mostrati soltanto bonus realmente configurati o usi già consumati: i valori standard non occupano spazio.</div>
+  <div class="mz-effects-summary" id="mzEffectsSummary"></div>
+  <div class="mz-fatigue-total" id="mzFaticaSummary"><strong>Fatica extra consumata:</strong> 0</div>
+</div>
 <div class="piede-nota">
-  <button class="bottone-azione bottone-pericolo" id="bottoneReset">Azzera tutti i dati salvati</button>
+  <button class="bottone-azione bottone-pericolo" id="bottoneReset">Azzera i dati della Guida</button>
 </div>
 
 </div>
@@ -991,6 +1049,8 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 
 var evtClick = 'cli' + 'ck';
 var CHIAVE_MAGIZOOLOGIA = 'magizoologia_tool_v1';
+var MZ_LAST_CURA_BONUS_DOM = 0;
+var MZ_BONUS_UID = 0;
 
 /* ---------- HELPERS DI VALIDAZIONE ---------- */
 
@@ -1011,10 +1071,153 @@ function bonusValore(id){
   if(!el){ return 0; }
   var v = el.value;
   if(v === ""){ return 0; }
+  /* Un input può contenere una stringa numerica ma essere comunque invalido
+     per min/max/step (es. Bonus Narratore 6 con max=5). In quel caso non
+     deve mai entrare nei calcoli. */
+  if(el.validity && (el.validity.badInput || el.validity.rangeUnderflow || el.validity.rangeOverflow || el.validity.stepMismatch)){ return 0; }
   var n = Number(v);
   if(!isFinite(n)){ return 0; }
   if(n < 0){ return 0; }
   return Math.floor(n);
+}
+
+function mzEnsureAttemptCounter(id){
+  var el=document.getElementById(id);
+  if(!el)return;
+  var n=Math.max(0,Math.floor(mzNum(el.value,0)));
+  if(n<1){el.value='1';}
+}
+
+
+/* ---------- BONUS STRUTTURATI ---------- */
+function mzNum(v, fallback){
+  var n=Number(v);
+  return isFinite(n)?n:(fallback===undefined?0:fallback);
+}
+function mzGeneralBonus(target){
+  var tot=0;
+  document.querySelectorAll('#mzBonusGenerali .mz-bonus-row').forEach(function(row){
+    var active=row.querySelector('[data-role="active"]');
+    var sel=row.querySelector('[data-role="target"]');
+    var val=row.querySelector('[data-role="value"]');
+    if(active&&active.checked&&sel&&sel.value===target&&val){tot+=Math.max(0,Math.floor(mzNum(val.value,0)));}
+  });
+  return tot;
+}
+function mzPhaseTotals(phase){
+  var out={parametro:0,possibilita:0,fatica:0,effects:[]};
+  var box=document.getElementById('mzBonus'+phase.charAt(0).toUpperCase()+phase.slice(1));
+  if(!box)return out;
+  box.querySelectorAll('.mz-bonus-row').forEach(function(row){
+    var value=Math.max(0,Math.floor(mzNum((row.querySelector('[data-role="value"]')||{}).value,0)));
+    var faticaEl=row.querySelector('[data-role="fatica"]');
+    var fatica=0;
+    if(faticaEl && faticaEl.value!=='' && !(faticaEl.validity && (faticaEl.validity.rangeUnderflow||faticaEl.validity.rangeOverflow||faticaEl.validity.stepMismatch||faticaEl.validity.badInput))){
+      fatica=Math.max(0,mzNum(faticaEl.value,0));
+    }
+    var total=Math.max(1,Math.floor(mzNum((row.querySelector('[data-role="total"]')||{}).value,1)));
+    var used=Math.max(0,Math.min(total,Math.floor(mzNum((row.querySelector('[data-role="used"]')||{}).value,0))));
+    var apply=row.querySelector('[data-role="apply"]');
+    var type=(row.querySelector('[data-role="type"]')||{}).value||'possibilita';
+    if(apply&&apply.checked){
+      if(type==='parametro')out.parametro+=value;else out.possibilita+=value;
+    }
+    out.fatica+=fatica*used;
+    if((apply&&apply.checked)||used>0){
+      out.effects.push({
+        source:((row.querySelector('[data-role="source"]')||{}).value||'Bonus').trim()||'Bonus',
+        condition:((row.querySelector('[data-role="condition"]')||{}).value||'').trim(),
+        type:type,value:value,fatica:fatica,total:total,used:used,applied:!!(apply&&apply.checked),phase:phase
+      });
+    }
+  });
+  return out;
+}
+function mzPhaseLabel(phase){
+  return {fiducia:'Fiducia',scoperta:'Scoperta',cura:'Cura',domesticazione:'Domesticazione',allevamento:'Allevamento'}[phase]||phase;
+}
+function mzSyncBonusRow(row, changedRole){
+  var totalEl=row.querySelector('[data-role="total"]'),usedEl=row.querySelector('[data-role="used"]'),apply=row.querySelector('[data-role="apply"]'),remaining=row.querySelector('.mz-bonus-remaining');
+  if(!totalEl||!usedEl||!apply)return;
+  var total=Math.max(1,Math.floor(mzNum(totalEl.value,1)));
+  var used=Math.max(0,Math.floor(mzNum(usedEl.value,0)));
+  /* Lo storico degli usi consumati non va mai cancellato abbassando gli usi totali.
+     Se si modifica il totale sotto gli usi già consumati, il totale viene ricondotto
+     almeno allo storico. Se invece si modifica direttamente "Usi consumati" oltre
+     il totale disponibile, viene limitato al totale. */
+  if(changedRole==='used'){
+    used=Math.min(total,used);
+  }else{
+    total=Math.max(total,used);
+  }
+  if(apply.checked&&used<1)used=1;
+  if(totalEl.value!=='')totalEl.value=String(total);
+  if(usedEl.value!=='')usedEl.value=String(used);
+  var rem=Math.max(0,total-used);
+  if(remaining)remaining.textContent=used+'/'+total+' usi → '+rem+' rimasti';
+  apply.disabled=!apply.checked&&rem<=0;
+}
+function mzCreateGeneralBonusRow(data){
+  data=data||{};MZ_BONUS_UID++;
+  var row=document.createElement('div');row.className='mz-bonus-row mz-general';row.dataset.uid='g'+MZ_BONUS_UID;
+  row.innerHTML='<div class="mz-bonus-field"><label>Fonte / Oggetto / Conoscenza</label><input type="text" data-role="source" maxlength="100"></div>'+
+    '<div class="mz-bonus-field"><label>Condizione / Efficacia</label><input type="text" data-role="condition" maxlength="100"></div>'+
+    '<div class="mz-bonus-field"><label>Parametro</label><select data-role="target"><option value="empatia">Empatia</option><option value="fiduciaBase">Base Fiducia</option><option value="curaBase">Base Cura</option><option value="domesticazioneBase">Base Domesticazione</option><option value="allevamentoBase">Base Allevamento</option></select></div>'+
+    '<div class="mz-bonus-field"><label>Bonus</label><input type="number" data-role="value" value="0" min="0" step="1"></div>'+
+    '<label class="mz-bonus-check"><input type="checkbox" data-role="active" checked> Attivo</label>'+
+    '<button type="button" class="mz-bonus-remove" title="Elimina bonus" aria-label="Elimina bonus">×</button>';
+  row.querySelector('[data-role="source"]').value=data.source||'';row.querySelector('[data-role="condition"]').value=data.condition||'';
+  if(data.target)row.querySelector('[data-role="target"]').value=data.target;if(data.value!==undefined)row.querySelector('[data-role="value"]').value=data.value;
+  row.querySelector('.mz-bonus-remove').addEventListener(evtClick,function(){row.remove();ricalcolaMagizoologia();});
+  document.getElementById('mzBonusGenerali').appendChild(row);setupNumericInputs();ricalcolaMagizoologia();
+}
+function mzCreatePhaseBonusRow(phase,data){
+  data=data||{};MZ_BONUS_UID++;
+  var box=document.getElementById('mzBonus'+phase.charAt(0).toUpperCase()+phase.slice(1));if(!box)return;
+  var row=document.createElement('div');row.className='mz-bonus-row mz-phase';row.dataset.phase=phase;row.dataset.uid='p'+MZ_BONUS_UID;
+  var typeLabel=phase==='allevamento'?'Possibilità al tiro':'Possibilità / soglia';
+  row.innerHTML='<div class="mz-bonus-field"><label>Fonte</label><input type="text" data-role="source" maxlength="100"></div>'+
+    '<div class="mz-bonus-field"><label>Condizione / Efficacia</label><input type="text" data-role="condition" maxlength="100"></div>'+
+    '<div class="mz-bonus-field"><label>Tipo</label><select data-role="type"><option value="parametro">Bonus al parametro</option><option value="possibilita">'+typeLabel+'</option></select></div>'+
+    '<div class="mz-bonus-field"><label>Bonus</label><input type="number" data-role="value" value="0" min="0" step="1"></div>'+
+    '<div class="mz-bonus-field"><label>Fatica / uso</label><input type="number" data-role="fatica" value="0" min="0" step="0.5" data-decimal="1"></div>'+
+    '<div class="mz-bonus-field"><label>Usi totali</label><input type="number" data-role="total" value="1" min="1" step="1"></div>'+
+    '<div class="mz-bonus-field"><label>Usi consumati</label><input type="number" data-role="used" value="0" min="0" step="1"><div class="mz-bonus-remaining">0/1 usi → 1 rimasti</div></div>'+
+    '<label class="mz-bonus-check"><input type="checkbox" data-role="apply"> Applica</label>'+
+    '<button type="button" class="mz-bonus-remove" title="Elimina bonus" aria-label="Elimina bonus">×</button>';
+  ['source','condition','type','value','fatica','total','used'].forEach(function(k){var el=row.querySelector('[data-role="'+k+'"]');if(data[k]!==undefined&&el){if(el.type==='checkbox')el.checked=!!data[k];else el.value=data[k];}});
+  var apply=row.querySelector('[data-role="apply"]');
+  apply.addEventListener('change',function(){
+    var totalEl=row.querySelector('[data-role="total"]'),usedEl=row.querySelector('[data-role="used"]');
+    var total=Math.max(1,Math.floor(mzNum(totalEl.value,1))),used=Math.max(0,Math.min(total,Math.floor(mzNum(usedEl.value,0))));
+    if(apply.checked){if(used>=total){apply.checked=false;}else{usedEl.value=String(used+1);}}
+    mzSyncBonusRow(row,'apply');ricalcolaMagizoologia();
+  });
+  row.querySelector('[data-role="total"]').addEventListener('input',function(){mzSyncBonusRow(row,'total');});
+  row.querySelector('[data-role="used"]').addEventListener('input',function(){mzSyncBonusRow(row,'used');});
+  row.querySelector('.mz-bonus-remove').addEventListener(evtClick,function(){
+    var used=Math.floor(mzNum((row.querySelector('[data-role="used"]')||{}).value,0));
+    if(used>0&&!window.confirm('Questo bonus ha già usi consumati. Eliminarlo rimuoverà anche la Fatica storica registrata per questi usi. Continuare?'))return;
+    row.remove();ricalcolaMagizoologia();
+  });
+  box.appendChild(row);mzSyncBonusRow(row);setupNumericInputs();ricalcolaMagizoologia();
+}
+function mzUpdateBonusSummary(){
+  var host=document.getElementById('mzEffectsSummary');if(!host)return;
+  host.innerHTML='';var effects=[];var fatigue=0;
+  document.querySelectorAll('#mzBonusGenerali .mz-bonus-row').forEach(function(row){
+    var active=row.querySelector('[data-role="active"]');var val=Math.max(0,Math.floor(mzNum((row.querySelector('[data-role="value"]')||{}).value,0)));
+    if(active&&active.checked&&val>0){effects.push({general:true,source:((row.querySelector('[data-role="source"]')||{}).value||'Bonus generale').trim()||'Bonus generale',condition:((row.querySelector('[data-role="condition"]')||{}).value||'').trim(),target:(row.querySelector('[data-role="target"]')||{}).selectedOptions?row.querySelector('[data-role="target"]').selectedOptions[0].textContent:'Parametro',value:val});}
+  });
+  ['fiducia','scoperta','cura','domesticazione','allevamento'].forEach(function(phase){var t=mzPhaseTotals(phase);fatigue+=t.fatica;effects=effects.concat(t.effects);});
+  var fatigueBase=bonusValore('tentativiFiducia')+bonusValore('tentativiScoperta')+bonusValore('tentativiCura')+(bonusValore('tentativiDomesticazione')*2);
+  if(!effects.length){var e=document.createElement('div');e.className='mz-summary-empty';e.textContent='Nessun Oggetto/Conoscenza applicato o consumato in questa sessione.';host.appendChild(e);}
+  effects.forEach(function(e){var d=document.createElement('div');d.className='mz-effect-chip';if(e.general){d.textContent=e.source+(e.condition?' · '+e.condition:'')+' → +'+e.value+' '+e.target+' · BONUS GENERALE';}else{var typ=e.type==='parametro'?'PARAMETRO':'POSSIBILITÀ';var rem=Math.max(0,e.total-e.used);var faticaUsata=e.fatica*e.used;d.textContent=e.source+(e.condition?' · '+e.condition:'')+' → +'+e.value+' '+typ+' · '+mzPhaseLabel(e.phase)+(faticaUsata>0?' · -'+faticaUsata+' FATICA':'')+' · '+e.used+'/'+e.total+' USI → '+rem+' RIMASTI'+(e.applied?' · APPLICATO ORA':'');}host.appendChild(d);});
+  var fat=document.getElementById('mzFaticaSummary');if(fat){var fatigueTot=fatigueBase+fatigue;fat.style.display=fatigueTot>0?'block':'none';fat.innerHTML=fatigueTot>0?('<strong>Fatica totale registrata:</strong> -'+fatigueTot+(fatigueBase>0?' · procedure -'+fatigueBase:'')+(fatigue>0?' · Oggetti/Conoscenze -'+fatigue:'')):'';}
+}
+function mzSetupBonusManagers(){
+  var addG=document.getElementById('mzAddBonusGenerale');if(addG)addG.addEventListener(evtClick,function(){mzCreateGeneralBonusRow();});
+  document.querySelectorAll('[data-mz-add-phase]').forEach(function(btn){btn.addEventListener(evtClick,function(){mzCreatePhaseBonusRow(btn.getAttribute('data-mz-add-phase'));});});
 }
 
 var formulaSignatures = {};
@@ -1044,7 +1247,10 @@ function leggiPG(){
   var pg = {};
   pg.tipo = document.getElementById('pgTipo').value;
   pg.voto = document.getElementById('pgVoto').value;
-  pg.empatia = bonusValore('empatia');
+  pg.empatiaBase = bonusValore('empatia');
+  pg.empatia = pg.empatiaBase + mzGeneralBonus('empatia');
+  var effEmp=document.getElementById('mzEmpatiaEffettiva');
+  if(effEmp){effEmp.textContent=pg.empatia!==pg.empatiaBase?'Empatia effettiva: '+pg.empatia+' ('+pg.empatiaBase+' + '+(pg.empatia-pg.empatiaBase)+' bonus)':'';}
   pg.livAmico = parseInt(document.getElementById('livAmico').value, 10);
   pg.livCustode = parseInt(document.getElementById('livCustode').value, 10);
   pg.livAddestratore = parseInt(document.getElementById('livAddestratore').value, 10);
@@ -1171,46 +1377,32 @@ function attachCopy(btnId, sourceId){
   });
 }
 
-/* ---------- SALVATAGGIO AUTOMATICO ---------- */
-
-function salvaStatoMagizoologia(){
+/* ---------- RESET AL REFRESH / PULIZIA LEGACY ---------- */
+function mzClearLegacyStorage(){
   try{
-    var campi = document.querySelectorAll('#modoMagizoologia [data-key]');
-    var stato = {};
-    for(var i=0; i<campi.length; i++){
-      var el = campi[i];
-      var chiave = el.getAttribute('data-key');
-      if(el.type === 'checkbox'){
-        stato[chiave] = el.checked;
-      } else {
-        stato[chiave] = el.value;
-      }
+    var remove=[];
+    for(var i=0;i<window.localStorage.length;i++){
+      var k=window.localStorage.key(i)||'';
+      if(k===CHIAVE_MAGIZOOLOGIA || /^magizoologia_(?:tool|guida|guide)/i.test(k)){remove.push(k);}
     }
-    window.localStorage.setItem(CHIAVE_MAGIZOOLOGIA, JSON.stringify(stato));
-  }catch(e){
-    /* localStorage non disponibile: nessun salvataggio, il tool resta comunque utilizzabile */
-  }
+    remove.forEach(function(k){window.localStorage.removeItem(k);});
+  }catch(e){}
 }
-
-function ripristinaStatoMagizoologia(){
-  try{
-    var raw = window.localStorage.getItem(CHIAVE_MAGIZOOLOGIA);
-    if(!raw){ return; }
-    var stato = JSON.parse(raw);
-    var campi = document.querySelectorAll('#modoMagizoologia [data-key]');
-    for(var i=0; i<campi.length; i++){
-      var el = campi[i];
-      var chiave = el.getAttribute('data-key');
-      if(stato[chiave] === undefined){ continue; }
-      if(el.type === 'checkbox'){
-        el.checked = !!stato[chiave];
-      } else {
-        el.value = stato[chiave];
-      }
-    }
-  }catch(e){
-    /* dati salvati non leggibili: si riparte con i valori di default */
-  }
+function salvaStatoMagizoologia(){ /* volutamente vuoto: la Guida non persiste tra refresh */ }
+function ripristinaStatoMagizoologia(){ mzClearLegacyStorage(); }
+function resetGuidaMagizoologia(){
+  document.querySelectorAll('#modoMagizoologia input, #modoMagizoologia select').forEach(function(el){
+    if(el.closest('.mz-bonus-row'))return;
+    if(el.type==='checkbox'||el.type==='radio'){el.checked=el.defaultChecked;}
+    else if(el.tagName==='SELECT'){
+      var idx=0;for(var i=0;i<el.options.length;i++){if(el.options[i].defaultSelected){idx=i;break;}}el.selectedIndex=idx;
+    }else{el.value=el.defaultValue||'';}
+    if(typeof el.setCustomValidity==='function')el.setCustomValidity('');
+    el.disabled=false;
+  });
+  document.querySelectorAll('#mzBonusGenerali,#mzBonusFiducia,#mzBonusScoperta,#mzBonusCura,#mzBonusDomesticazione,#mzBonusAllevamento').forEach(function(x){x.innerHTML='';});
+  formulaSignatures={};curaEbbeUnFallimento=false;MZ_LAST_CURA_BONUS_DOM=0;MZ_BONUS_UID=0;
+  ricalcolaMagizoologia();
 }
 
 /* ---------- RICONOSCIMENTO ---------- */
@@ -1231,13 +1423,9 @@ var tabAmicoFiducia = {1:12, 2:13, 3:14, 4:15, 5:16};
 var classFiducia = {X:3, XX:2, XXX:0, XXXX:-2, XXXXX:-3};
 
 function baseFiducia(pg){
-  if(pg.livAmico >= 1){
-    return tabAmicoFiducia[pg.livAmico];
-  }
-  if(pg.tipo === 'adulto'){
-    return 11;
-  }
-  return tabellaVoto[pg.voto];
+  var base;if(pg.livAmico >= 1){base=tabAmicoFiducia[pg.livAmico];}
+  else if(pg.tipo === 'adulto'){base=11;}else{base=tabellaVoto[pg.voto];}
+  return base + mzGeneralBonus('fiduciaBase');
 }
 
 var testiConseguenzaFiducia = {
@@ -1260,6 +1448,7 @@ function recomputeFiducia(){
   blocco.style.display = 'none';
 
   if(pg.ostilita === 'sempre'){
+    guardFormula('fiducia', 'stato:sempre-ostile', 'risultatoFiducia');
     formulaEl.textContent = 'Creatura sempre ostile.';
     codiceEl.textContent = 'Nessun tiro possibile: il tentativo fallisce sempre automaticamente.';
     copiaBtn.disabled = true;
@@ -1280,6 +1469,7 @@ function recomputeFiducia(){
   }
 
   if(autoconclusiva){
+    guardFormula('fiducia', 'stato:autoconclusivo|' + pg.ostilita + '|' + pg.faseVitale, 'risultatoFiducia');
     formulaEl.textContent = 'Creatura mai ostile oppure in Fase Uovo/Cucciolo.';
     codiceEl.textContent = 'Autoconclusivo: nessun tiro necessario.';
     copiaBtn.disabled = true;
@@ -1302,11 +1492,11 @@ function recomputeFiducia(){
   if(document.getElementById('ritentativoOstile').checked){
     malusRitentativo = -3;
   }
-  var extra = bonusValore('extraFiducia');
-  var totale = base + bonusClasse + bonusEmpatia + malusRiconoscimento + malusRitentativo + extra;
+  var bonusFase = mzPhaseTotals('fiducia');
+  var totale = base + bonusClasse + bonusEmpatia + malusRiconoscimento + malusRitentativo + bonusFase.parametro + bonusFase.possibilita;
   guardFormula('fiducia', totale, 'risultatoFiducia');
 
-  var testoFormula = 'Base ' + base + ' + Classificazione ' + bonusClasse + ' + Empatia/2 ' + bonusEmpatia + ' + Extra ' + extra;
+  var testoFormula = 'Base ' + base + ' + Classificazione ' + bonusClasse + ' + Empatia effettiva/2 ' + bonusEmpatia + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita;
   if(malusRiconoscimento !== 0){
     testoFormula = testoFormula + ' + Malus Riconoscimento ' + malusRiconoscimento;
   }
@@ -1347,6 +1537,7 @@ function recomputeFiducia(){
     clearDependentResult('risultatoConseguenzaFiducia','tagConseguenzaFiducia');
     return;
   }
+  mzEnsureAttemptCounter('tentativiFiducia');
   var successo = Number(v) <= totale;
   if(successo){
     tagEl.textContent = 'Successo';
@@ -1389,13 +1580,9 @@ var tabCustodeLiv = {1:7, 2:8, 3:9, 4:10, 5:11};
 var curaEbbeUnFallimento = false;
 
 function baseCustode(pg){
-  if(pg.livCustode >= 1){
-    return tabCustodeLiv[pg.livCustode];
-  }
-  if(pg.tipo === 'adulto'){
-    return 6;
-  }
-  return tabCustodeVoto[pg.voto];
+  var base;if(pg.livCustode >= 1){base=tabCustodeLiv[pg.livCustode];}
+  else if(pg.tipo === 'adulto'){base=6;}else{base=tabCustodeVoto[pg.voto];}
+  return base + mzGeneralBonus('curaBase');
 }
 
 function recomputeScoperta(){
@@ -1409,10 +1596,10 @@ function recomputeScoperta(){
 
   var pg = leggiPG();
   var base = pg.empatia + baseCustode(pg) + classCura[pg.classificazione];
-  var extra = bonusValore('extraScoperta');
-  var totale = base + extra;
+  var bonusFase = mzPhaseTotals('scoperta');
+  var totale = base + bonusFase.parametro + bonusFase.possibilita;
   guardFormula('scoperta', totale, 'risultatoScoperta');
-  formulaEl.textContent = 'Empatia ' + pg.empatia + ' + Base/Custode ' + baseCustode(pg) + ' + Classificazione ' + classCura[pg.classificazione] + ' + Extra ' + extra + ' = ' + totale + ' su 35';
+  formulaEl.textContent = 'Empatia effettiva ' + pg.empatia + ' + Base/Custode ' + baseCustode(pg) + ' + Classificazione ' + classCura[pg.classificazione] + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita + ' = ' + totale + ' su 35';
 
   var malusExtra = bonusValore('malusExtraScoperta');
 
@@ -1423,8 +1610,12 @@ function recomputeScoperta(){
     tagEl.textContent = 'Automaticamente riuscita';
     tagEl.className = 'out-tag out-ok';
     noteEl.textContent = 'La Scoperta del problema riesce automaticamente.';
-    bonusMostrato.textContent = 'Bonus/malus da riportare sulla Cura del problema: +3';
-    return 3;
+    /* I malus storici per ulteriori Scoperte fallite restano validi anche se
+       il nuovo tentativo è diventato autoconclusivo: non possono sparire solo
+       perché non serve più lanciare il dado. */
+    var bonusAuto = 3 - malusExtra;
+    bonusMostrato.textContent = 'Bonus/malus da riportare sulla Cura del problema: ' + (bonusAuto >= 0 ? '+' + bonusAuto : bonusAuto);
+    return bonusAuto;
   }
 
   codiceEl.textContent = mzForumDiceBlock('Il PG scopre correttamente il problema della Creatura?', mzThresholdAnswers(totale, 35, 'Problema scoperto', 'Scoperta fallita'), '[dice=1d35]Cura — Scoperta del problema — Classificazione ' + pg.classificazione + '[/dice]');
@@ -1447,6 +1638,7 @@ function recomputeScoperta(){
     bonusMostrato.textContent = 'Bonus/malus da riportare sulla Cura del problema: risultato non valido';
     return null;
   }
+  mzEnsureAttemptCounter('tentativiScoperta');
   var successo = Number(v) <= totale;
   var bonus;
   if(successo){
@@ -1486,6 +1678,7 @@ function recomputeCura(bonusScoperta){
   }
 
   if(bonusScoperta === null){
+    guardFormula('cura', 'stato:attesa-scoperta', 'risultatoCura');
     formulaEl.textContent = 'In attesa del risultato della Scoperta del problema qui sopra.';
     codiceEl.textContent = '';
     copiaBtn.disabled = true;
@@ -1493,7 +1686,7 @@ function recomputeCura(bonusScoperta){
     tagEl.textContent = 'in attesa';
     tagEl.className = 'out-tag out-neutral';
     noteEl.textContent = 'Completa prima il Dado 1: Scoperta del problema.';
-    bonusDomMostrato.textContent = '';
+    bonusDomMostrato.textContent = '';MZ_LAST_CURA_BONUS_DOM=0;
     return;
   }
 
@@ -1507,10 +1700,10 @@ function recomputeCura(bonusScoperta){
   var pg = leggiPG();
   var base = pg.empatia + baseCustode(pg) + classCura[pg.classificazione];
   var bonusNarratore = bonusValore('bonusNarratore');
-  var extra = bonusValore('extraCura');
-  var totale = base + bonusScoperta + bonusNarratore + extra;
+  var bonusFase = mzPhaseTotals('cura');
+  var totale = base + bonusScoperta + bonusNarratore + bonusFase.parametro + bonusFase.possibilita;
   guardFormula('cura', totale, 'risultatoCura');
-  formulaEl.textContent = 'Empatia ' + pg.empatia + ' + Base/Custode ' + baseCustode(pg) + ' + Classificazione ' + classCura[pg.classificazione] + ' + Scoperta ' + bonusScoperta + ' + Narratore ' + bonusNarratore + ' + Extra ' + extra + ' = ' + totale + ' su 35';
+  formulaEl.textContent = 'Empatia effettiva ' + pg.empatia + ' + Base/Custode ' + baseCustode(pg) + ' + Classificazione ' + classCura[pg.classificazione] + ' + Scoperta ' + bonusScoperta + ' + Narratore ' + bonusNarratore + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita + ' = ' + totale + ' su 35';
 
   if(totale <= 0){
     codiceEl.textContent = 'Il totale e zero o negativo: nessun tiro possibile.';
@@ -1519,7 +1712,7 @@ function recomputeCura(bonusScoperta){
     tagEl.textContent = 'Creatura perduta';
     tagEl.className = 'out-tag out-fail';
     noteEl.textContent = 'La Creatura NON puo essere curata e muore.';
-    bonusDomMostrato.textContent = '';
+    bonusDomMostrato.textContent = '';MZ_LAST_CURA_BONUS_DOM=0;
     return;
   }
 
@@ -1530,7 +1723,7 @@ function recomputeCura(bonusScoperta){
     tagEl.textContent = 'Automaticamente riuscita';
     tagEl.className = 'out-tag out-ok';
     noteEl.textContent = 'La Cura del problema riesce automaticamente: +3 possibilita in Domesticazione.';
-    bonusDomMostrato.textContent = 'Bonus da riportare sulla Domesticazione: +3';
+    bonusDomMostrato.textContent = 'Bonus automatico per la Domesticazione: +3';MZ_LAST_CURA_BONUS_DOM=3;
     return;
   }
 
@@ -1544,27 +1737,28 @@ function recomputeCura(bonusScoperta){
     tagEl.textContent = 'in attesa';
     tagEl.className = 'out-tag out-neutral';
     noteEl.textContent = '';
-    bonusDomMostrato.textContent = '';
+    bonusDomMostrato.textContent = '';MZ_LAST_CURA_BONUS_DOM=0;
     return;
   }
   if(!intInRange(v, 1, 35)){
     tagEl.textContent = 'Risultato impossibile';
     tagEl.className = 'out-tag out-fail';
     noteEl.textContent = 'Inserisci un intero compreso fra 1 e 35.';
-    bonusDomMostrato.textContent = '';
+    bonusDomMostrato.textContent = '';MZ_LAST_CURA_BONUS_DOM=0;
     return;
   }
+  mzEnsureAttemptCounter('tentativiCura');
   var successo = Number(v) <= totale;
   if(successo){
     tagEl.textContent = 'Successo';
     tagEl.className = 'out-tag out-ok';
     noteEl.textContent = 'La Creatura viene curata correttamente: +3 possibilita in Domesticazione (se non gia addomesticata).';
-    bonusDomMostrato.textContent = 'Bonus da riportare sulla Domesticazione: +3';
+    bonusDomMostrato.textContent = 'Bonus automatico per la Domesticazione: +3';MZ_LAST_CURA_BONUS_DOM=3;
   } else {
     tagEl.textContent = 'Fallimento';
     tagEl.className = 'out-tag out-fail';
     noteEl.textContent = 'La cura fallisce: -1d2 cuccioli e +5 post in Allevamento (i malus non si sommano a quelli della Scoperta).';
-    bonusDomMostrato.textContent = 'Nessun bonus per la Domesticazione.';
+    bonusDomMostrato.textContent = 'Nessun bonus per la Domesticazione.';MZ_LAST_CURA_BONUS_DOM=0;
     curaEbbeUnFallimento = true;
     if(storicoCuraEl){storicoCuraEl.checked = true;}
   }
@@ -1602,6 +1796,9 @@ function recomputeCuraCompleta(){
     }
   } else {
     rigaG.style.display = 'none';
+    /* Il tiro di Gravidanza dipende dalla presenza della condizione: se la condizione
+       viene rimossa, un vecchio esito non deve poter ricomparire riattivandola. */
+    clearDependentResult('risultatoGravidanza','tagGravidanza');
   }
 
   var blocco3 = document.getElementById('conseguenzaCura');
@@ -1643,6 +1840,10 @@ function recomputeDomesticazione(){
   var domesticazioneNonNecessaria = pg.faseVitale === 'uovo' || document.getElementById('nataInRiserva').checked;
   if(domesticazioneNonNecessaria){
     rigaD4.style.display = 'none';
+    /* Anche in questo ramo il 1d4 dell'Adulto senza Addestratore smette di
+       essere necessario: non deve restare nascosto e riapparire in seguito. */
+    var d4NonNecessario = document.getElementById('risultatoAddestratoreD4');
+    if(d4NonNecessario){ d4NonNecessario.value = ''; }
     formulaEl.textContent = pg.faseVitale === 'uovo'
       ? 'Domesticazione non necessaria: Creatura trovata in fase Uovo/Cucciolo.'
       : 'Domesticazione non necessaria: Creatura nata nella propria Riserva.';
@@ -1654,6 +1855,7 @@ function recomputeDomesticazione(){
     tagEl.className = 'out-tag out-ok';
     noteEl.textContent = 'La Creatura può essere gestita senza effettuare il tiro di Domesticazione.';
     infoAddestratore.textContent = '';
+    var infoCuraDom0=document.getElementById('bonusCuraPerDomesticazioneInfo');if(infoCuraDom0){infoCuraDom0.textContent=MZ_LAST_CURA_BONUS_DOM?('Bonus automatico dalla Cura riuscita: +'+MZ_LAST_CURA_BONUS_DOM):'Bonus da Cura: nessuno finché la Cura non riesce.';}
     clearDependentResult('risultatoConseguenzaDomesticazione','tagConseguenzaDomesticazione');
     return;
   }
@@ -1684,9 +1886,14 @@ function recomputeDomesticazione(){
     rigaD4.style.display = 'flex';
   } else {
     rigaD4.style.display = 'none';
+    /* Il 1d4 appartiene soltanto all'Adulto senza Addestratore. Se questa condizione
+       cessa di essere vera, il vecchio tiro viene invalidato invece di restare nascosto. */
+    var d4NonPiuNecessario = document.getElementById('risultatoAddestratoreD4');
+    if(d4NonPiuNecessario){ d4NonPiuNecessario.value = ''; }
   }
 
   if(bonusAddestratore === null){
+    guardFormula('domesticazione', 'stato:attesa-d4', 'risultatoDomesticazione');
     formulaEl.textContent = 'In attesa del tiro 1d4 qui sopra.';
     codiceEl.textContent = '';
     copiaBtn.disabled = true;
@@ -1698,12 +1905,14 @@ function recomputeDomesticazione(){
     return;
   }
 
+  bonusAddestratore += mzGeneralBonus('domesticazioneBase');
   var bonusClasse = classDomesticazione[pg.classificazione];
-  var bonusCura = bonusValore('bonusCuraPerDomesticazione');
-  var extra = bonusValore('extraDomesticazione');
-  var totale = pg.empatia + bonusAddestratore + bonusClasse + bonusCura + extra;
+  var bonusCura = MZ_LAST_CURA_BONUS_DOM;
+  var infoCuraDom=document.getElementById('bonusCuraPerDomesticazioneInfo');if(infoCuraDom){infoCuraDom.textContent=bonusCura?('Bonus automatico dalla Cura riuscita: +'+bonusCura):'Bonus da Cura: nessuno finché la Cura non riesce.';}
+  var bonusFase = mzPhaseTotals('domesticazione');
+  var totale = pg.empatia + bonusAddestratore + bonusClasse + bonusCura + bonusFase.parametro + bonusFase.possibilita;
   guardFormula('domesticazione', totale, 'risultatoDomesticazione');
-  formulaEl.textContent = 'Empatia ' + pg.empatia + ' + Voto/Addestratore ' + bonusAddestratore + ' + Classificazione ' + bonusClasse + ' + Bonus Cura ' + bonusCura + ' + Extra ' + extra + ' = ' + totale + ' su 35';
+  formulaEl.textContent = 'Empatia effettiva ' + pg.empatia + ' + Voto/Addestratore/Base ' + bonusAddestratore + ' + Classificazione ' + bonusClasse + ' + Bonus Cura ' + bonusCura + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita + ' = ' + totale + ' su 35';
 
   if(totale >= 35){
     codiceEl.textContent = 'Autoconclusivo: possibilita ' + totale + ' su 35, nessun tiro necessario.';
@@ -1736,6 +1945,7 @@ function recomputeDomesticazione(){
     clearDependentResult('risultatoConseguenzaDomesticazione','tagConseguenzaDomesticazione');
     return;
   }
+  mzEnsureAttemptCounter('tentativiDomesticazione');
   var successo = Number(v) <= totale;
   if(successo){
     tagEl.textContent = 'Successo';
@@ -1829,13 +2039,9 @@ function percentualeDaFasciaAllevamento(fascia, valore){
 }
 
 function baseAllevatore(pg){
-  if(pg.livAllevatore >= 1){
-    return tabAllevatoreLiv[pg.livAllevatore];
-  }
-  if(pg.tipo === 'adulto'){
-    return 7;
-  }
-  return tabAllevatoreVoto[pg.voto];
+  var base;if(pg.livAllevatore >= 1){base=tabAllevatoreLiv[pg.livAllevatore];}
+  else if(pg.tipo === 'adulto'){base=7;}else{base=tabAllevatoreVoto[pg.voto];}
+  return base + mzGeneralBonus('allevamentoBase');
 }
 
 function recomputeAllevamento(){
@@ -1851,14 +2057,17 @@ function recomputeAllevamento(){
 
   var base = baseAllevatore(pg);
   var deduzione = classAllevamento[pg.classificazione];
-  var totale = base + pg.empatia - deduzione;
-  guardFormula('allevamento', totale, 'risultatoAllevamento');
+  var bonusFase = mzPhaseTotals('allevamento');
+  var totale = base + pg.empatia - deduzione + bonusFase.parametro;
+  /* In Allevamento la fascia e il bonus al tiro agiscono in due momenti diversi:
+     entrambi fanno parte della firma che rende valido il risultato già tirato. */
+  guardFormula('allevamento', totale + '|poss:' + bonusFase.possibilita, 'risultatoAllevamento');
   var fascia = trovaFasciaAllevamento(totale);
 
-  formulaEl.textContent = 'Base/Voto ' + base + ' + Empatia ' + pg.empatia + ' - Classificazione ' + deduzione + ' = ' + totale + ' (fascia ' + fascia.etichetta + ')';
+  formulaEl.textContent = 'Base/Voto ' + base + ' + Empatia effettiva ' + pg.empatia + ' - Classificazione ' + deduzione + ' + Bonus parametro ' + bonusFase.parametro + ' = ' + totale + ' (fascia ' + fascia.etichetta + ')';
   tabellaWrap.innerHTML = '<table class="fasce"><tr><th>0%</th><th>33%</th><th>66%</th><th>100%</th></tr><tr><td>' + fascia.z + '</td><td>' + fascia.tt + '</td><td>' + fascia.ss + '</td><td>' + fascia.cc + '</td></tr></table>';
 
-  var extraAllevamentoQuote = bonusValore('extraAllevamento');
+  var extraAllevamentoQuote = bonusFase.possibilita;
   codiceEl.textContent = mzForumDiceBlock('Qual è la percentuale di riuscita dell’Allevamento?', mzAllevamentoAnswers(fascia, extraAllevamentoQuote), '[dice=1d10]Allevamento — Produzione/Riproduzione — fascia ' + fascia.etichetta + '[/dice]');
   codiceEl.title = formulaEl.textContent;
   copiaBtn.disabled = false;
@@ -1883,7 +2092,7 @@ function recomputeAllevamento(){
     noteEl.textContent = 'Inserisci un intero compreso fra 1 e 10.';
     return;
   }
-  var extra = bonusValore('extraAllevamento');
+  var extra = bonusFase.possibilita;
   var valoreEffettivo = Number(v) + extra;
   var percentuale = percentualeDaFasciaAllevamento(fascia, valoreEffettivo);
   if(percentuale === null){
@@ -1895,7 +2104,7 @@ function recomputeAllevamento(){
   tagEl.textContent = 'Riuscita ' + percentuale + '%';
   if(percentuale === 0){
     tagEl.className = 'out-tag out-fail';
-    noteEl.textContent = 'Ciclo sprecato: nessun Ingrediente o Cucciolo ottenuto per questo ciclo.';
+    noteEl.textContent = 'Ciclo sprecato: nessun Cucciolo ottenuto per questo ciclo.';
   } else if(percentuale === 100){
     tagEl.className = 'out-tag out-ok';
     noteEl.textContent = 'Riuscita piena: numero minimo di post per completare il ciclo.';
@@ -1913,7 +2122,7 @@ function ricalcolaMagizoologia(){
   recomputeCuraCompleta();
   recomputeDomesticazione();
   recomputeAllevamento();
-  salvaStatoMagizoologia();
+  mzUpdateBonusSummary();
 }
 
 /* ---------- TAB ---------- */
@@ -2637,12 +2846,7 @@ attachCopy('copiaConseguenzaDomesticazione', 'codiceConseguenzaDomesticazione');
 attachCopy('copiaAllevamento', 'codiceAllevamento');
 
 document.getElementById('bottoneReset').addEventListener(evtClick, function(){
-  if(window.confirm('Vuoi davvero azzerare tutti i dati salvati in questo browser?')){
-    try{
-      window.localStorage.removeItem(CHIAVE_MAGIZOOLOGIA);
-    }catch(e){}
-    window.location.reload();
-  }
+  if(window.confirm('Vuoi davvero azzerare tutti i dati della Guida alla Magizoologia? Le sessioni Firebase della Ricerca non verranno toccate.')){resetGuidaMagizoologia();}
 });
 
 
@@ -2682,6 +2886,7 @@ document.addEventListener('change', function(e){
 }, true);
 
 ripristinaStatoMagizoologia();
+mzSetupBonusManagers();
 ricalcolaMagizoologia();
 ricalcolaRicerca();
 
