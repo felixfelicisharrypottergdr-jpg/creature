@@ -1,92 +1,3 @@
-Pasted text(20260824-114323).txt
-Documento
-vorrei che cambiassi il colore del titolo "la magizoologia" con quello che usi per studente, troll, nessuno, 10, ecc 
-
-Fatto. Ho cambiato solo il colore del titolo “• La Magizoologia •” da #f3a15f a #f0ddcc, cioè lo stesso colore usato per Studente, T (Troll), Nessuno, 10, ecc.
-
-Scarica l’HTML modificato
-
-magizoologia_titolo_chiaro.html
-HTML
-ok, non mi piace però che le tabelle con i campi siano marroni come lo sfondo. magari le tabelle si possono fare di un arancio leggibile, e le scritte/i campi di varie tonalità di marrone o arancio scuro?
-
-Sì, così ha molto più contrasto. Ho modificato l’HTML in questo modo:
-
-le schede principali ora hanno un fondo arancio caldo, invece di confondersi con il marrone dello sfondo;
-titoli, etichette e testi dentro le schede usano marroni e aranci molto scuri;
-i campi di input e i menu a tendina sono marrone scuro con testo chiaro;
-i riquadri tecnici interni restano scuri, così non diventa tutto uniformemente arancione;
-anche le tabelle vere e proprie hanno celle aranciate e intestazioni più scure.
-
-Il titolo “La Magizoologia” resta nel colore chiaro che avevamo appena scelto.
-
-Scarica l’HTML con le schede arancioni
-
-magizoologia_tabelle_arancio.html
-HTML
-attenzione a queste scritte scure su sfondo scuro o a scritte chiare su sfondo chiaro
-
-Sì, hai ragione: lì il contrasto era sbagliato.
-
-Ho corretto l’HTML in modo che:
-
-i riquadri “Bonus generali del Personaggio” e simili abbiano un fondo più scuro, così le scritte chiare si leggono bene;
-il testo descrittivo dentro quei riquadri sia più chiaro;
-la scritta tipo “Nessun Oggetto/Conoscenza…” nel riepilogo sia più scura, così non si perde sul fondo arancio;
-anche il riquadro della Fatica abbia un contrasto più pulito.
-
-Puoi scaricarlo qui:
-
-Scarica l’HTML corretto
-
-Se vuoi, al prossimo passaggio posso anche fare un’ulteriore rifinitura generale del contrasto su tutte le schede arancioni, così uniformiamo bene ogni sezione.
-
-magizoologia_contrasto_corretta.html
-HTML
-forse la tabella "il tuo personaggio si può mettere a parte, anziche stare sempre sopra ricerche e guida? nel senso che cosi la compili una volta sola e vale per entrambe le funzioni
-
-Sì, secondo me così è molto più ordinato. Ho separato “Il tuo Personaggio” come terza sezione autonoma:
-
-Il tuo Personaggio | Ricerca Creature Magiche | Guida alla Magizoologia
-
-In questo modo il profilo non occupa più spazio sopra la Guida. Lo compili nella sua sezione e poi passi liberamente alle altre due funzioni.
-
-Ho anche eliminato il doppio inserimento dell’Empatia: nella Ricerca viene presa automaticamente dal profilo del Personaggio. Nella configurazione della Ricerca compare solo un piccolo riepilogo del valore utilizzato, non un secondo campo da compilare.
-
-Le sessioni Firebase della Ricerca continuano inoltre a conservare l’Empatia associata alla sessione, quindi non ho sacrificato il funzionamento dei salvataggi.
-
-Scarica l’HTML con “Il tuo Personaggio” separato
-
-magizoologia_personaggio_condiviso.html
-HTML
-si possono mettere ordinate le caselle? tipo quella dove c'è T è bassa
-
-Sì, certo: il problema è che l’etichetta “Voto nella Conoscenza della Creatura (solo Studenti)” va su due righe e quindi abbassa la casella sotto.
-
-Ho sistemato l’HTML facendo in modo che, nella sezione Il tuo Personaggio, le etichette abbiano un’altezza uniforme, così i campi risultano allineati sulla stessa linea. Su mobile, invece, l’altezza torna automatica per non creare spazi strani.
-
-Scarica l’HTML con le caselle allineate
-
-Se vuoi, al prossimo passaggio posso anche:
-
-allargare un po’ la colonna del voto, oppure
-accorciare leggermente la label
-così risulta ancora più pulito visivamente.
-magizoologia_personaggio_ordinato.html
-HTML
-se metto adulto, dovrebbero sparire però tutte le cose riguardanti gli studenti, e viceversa
-
-Sì, corretto. Ho reso “Tipo di PG” realmente dinamico:
-
-scegliendo Studente, compare il Voto nella Conoscenza della Creatura e spariscono i livelli Amico, Custode, Addestratore e Allevatore;
-scegliendo Adulto, sparisce completamente il voto scolastico e compaiono i quattro livelli da Adulto;
-Empatia e i bonus generali restano visibili perché valgono per entrambi;
-soprattutto, i valori nascosti vengono anche ignorati nei calcoli, quindi passando da Adulto a Studente non può rimanere attivo per errore un vecchio livello da Adulto, e viceversa.
-
-Ho anche tolto la dicitura “(solo Studenti)” dal voto, perché ormai è superflua: il campo appare solo quando serve.
-
-Scarica l’HTML con Studente/Adulto dinamici
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -750,6 +661,7 @@ table.fasce td{
 <div class="sigillo-magizoologia" aria-hidden="true"><i class="fa-solid fa-dragon"></i></div>
 <h1>• La Magizoologia •</h1>
 <div class="sottotitolo">Strumenti interattivi per il Ritrovamento, la Fiducia, Cura, Domesticazione e Allevamento delle Creature Magiche</div>
+<div class="nota-regole" style="text-align:center; margin-bottom:14px;">I tiri vanno eseguiti con il dado del forum: copia il codice, incollalo in un post, poi riporta qui il risultato ottenuto. Il profilo del Personaggio e la Guida alla Magizoologia ripartono dai valori iniziali a ogni ricaricamento della pagina; durante la sessione corrente i dati restano attivi normalmente. Le sessioni di Ricerca Creature Magiche vengono invece salvate automaticamente su Firebase.</div>
 
 <div class="barra-modo">
   <button class="modo-bottone attivo" id="modoPersonaggioBtn">Il tuo Personaggio</button>
@@ -3211,5 +3123,3 @@ if(document.readyState === 'loading'){
 </script>
 </body>
 </html>
-magizoologia_tipo_pg_dinamico.html
-HTML
