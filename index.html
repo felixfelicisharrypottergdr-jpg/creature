@@ -715,6 +715,76 @@ table.fasce td{
   font-weight:500;
 }
 
+
+/* ===== RICERCA CREATURE — bonus e identificazione specie ===== */
+.rm-search-bonus-row{
+  display:grid;
+  grid-template-columns:minmax(250px,1.8fr) 105px minmax(165px,1.1fr) 42px;
+  gap:8px;
+  align-items:end;
+  padding:9px 0;
+  border-top:1px dashed #8b4929;
+}
+.rm-search-bonus-row:first-child{border-top:0;}
+.rm-search-bonus-row .mz-bonus-field label{min-height:auto;}
+.rm-search-bonus-manual{grid-column:1 / -1;}
+.rm-search-bonus-note{
+  grid-column:1 / -1;
+  font-size:.76em;
+  line-height:1.35;
+  color:#f1d5c0;
+  margin-top:-1px;
+}
+.rm-search-bonus-value[readonly]{
+  opacity:.95;
+  cursor:default;
+}
+.rm-search-bonus-row .rm-search-bonus-remove{
+  width:38px;height:32px;padding:0;margin:0;
+  background:transparent;border:1px solid #8f3f26;border-radius:5px;
+  color:#f1c7aa;cursor:pointer;font-size:18px;line-height:1;
+}
+.rm-search-bonus-row .rm-search-bonus-remove:hover{background:#351a11;color:#fff1e7;}
+.rm-specie-helper{
+  margin:10px 0 14px;
+  padding:12px 14px;
+  border:1px solid #8b4929;
+  border-radius:7px;
+  background:rgba(255,238,221,.16);
+}
+.rm-specie-helper .nota-regole{margin-top:0;}
+.rm-bolcino-incontro{margin:0 0 16px;}
+@media(max-width:700px){
+  .rm-search-bonus-row{grid-template-columns:1fr 1fr;}
+  .rm-search-bonus-row .rm-search-bonus-remove{width:100%;}
+}
+@media(max-width:500px){
+  .rm-search-bonus-row{grid-template-columns:1fr;}
+}
+
+
+/* ===== CATALOGO BONUS PRECOMPILATI ===== */
+.mz-bonus-preset-wrap{grid-column:1 / -1;}
+.mz-bonus-preset-note{grid-column:1 / -1;font-size:.74em;line-height:1.38;color:#f1d5c0;margin-top:-2px;}
+.mz-bonus-row.mz-phase .mz-bonus-field select:disabled,
+.mz-bonus-row.mz-phase .mz-bonus-field input[readonly]{opacity:.96;cursor:default;}
+.mz-special-effect-note{margin-top:7px;font-size:.82em;line-height:1.4;color:#54210c;font-weight:600;}
+.rm-search-bonus-row{grid-template-columns:minmax(245px,1.65fr) 130px 100px minmax(165px,1.05fr) 42px;}
+@media(max-width:900px){.rm-search-bonus-row{grid-template-columns:1fr 1fr 1fr;}.rm-search-bonus-manual,.rm-search-bonus-note{grid-column:1 / -1;}}
+@media(max-width:560px){.rm-search-bonus-row{grid-template-columns:1fr;}.rm-search-bonus-manual,.rm-search-bonus-note{grid-column:1;}}
+
+
+/* ===== ALLINEAMENTO ERBOLOGIA/MAGIZOOLOGIA v8 ===== */
+.rm-special{margin:12px 0;padding:12px 14px;background:#2b180f;border:1px solid #8b4929;border-radius:7px;color:#f0ddcc;}
+.rm-special h3{margin:0 0 7px;color:#ffd0ab;}
+.rm-special .nota-regole{color:#f1d5c0;margin-top:7px;}
+.rm-special .check-riga label,.rm-special .result-line>span:not(.out-tag){color:#f0ddcc;}
+.rm-specie-helper{background:#2b180f;color:#f0ddcc;border-left:4px solid #c56f37;}
+.rm-specie-helper h3{color:#ffd0ab;}
+.rm-specie-helper .nota-regole{color:#f1d5c0;}
+.rm-specie-helper .campo label,.rm-specie-helper .result-line>span:not(.out-tag){color:#f0ddcc;}
+.rm-auto-name[readonly]{background:#3a2116!important;color:#ffd0ab!important;font-weight:700;}
+
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
@@ -738,7 +808,7 @@ table.fasce td{
 <div id="modoPersonaggio" class="modo-sezione visibile">
 <div class="scheda">
 <h2>Il tuo Personaggio</h2>
-<div class="profilo-condiviso-note">Compila questo profilo una sola volta: ogni funzione usa automaticamente i dati del Personaggio che le servono. L’Empatia inserita qui viene condivisa anche con la Ricerca Creature Magiche.</div>
+<div class="profilo-condiviso-note">Compila questo profilo una sola volta: ogni funzione usa automaticamente i dati del Personaggio che le servono. <b>Empatia</b> e <b>Sapienza Magizoologica</b> vengono condivise anche con la Ricerca Creature Magiche. Per i PG Studenti la Sapienza utile viene considerata al massimo al livello I.</div>
 <div class="riga">
   <div class="campo">
     <label>Tipo di PG</label>
@@ -762,6 +832,12 @@ table.fasce td{
     <label>Empatia</label>
     <input type="number" id="empatia" data-key="empatia" value="10" min="0">
     <div class="mz-effective-line" id="mzEmpatiaEffettiva"></div>
+  </div>
+  <div class="campo">
+    <label>Sapienza Magizoologica (0-25)</label>
+    <input type="number" id="sapienzaProfilo" value="0" min="0" max="25" step="1">
+    <div class="numeric-note">PG Studenti: viene considerato al massimo il livello I.</div>
+    <div class="mz-effective-line" id="mzSapienzaSpeciale"></div>
   </div>
 </div>
 <div id="campiAdultoPG">
@@ -813,6 +889,10 @@ table.fasce td{
     </select>
   </div>
 </div>
+<div class="check-riga" id="rigaMagizoologoMestiere">
+  <input type="checkbox" id="pgMagizoologoMestiere" data-key="pgMagizoologoMestiere">
+  <label for="pgMagizoologoMestiere"><b>Magizoologo di mestiere</b> — per i controlli di scoperta durante Cura e Allevamento di Creature illegali nella propria Riserva</label>
+</div>
 </div>
 
 <div class="mz-bonus-manager">
@@ -862,6 +942,24 @@ table.fasce td{
   <input type="checkbox" id="nataInRiserva" data-key="nataInRiserva">
   <label for="nataInRiserva">La Creatura è nata nella propria Riserva</label>
 </div>
+<div class="check-riga">
+  <input type="checkbox" id="creaturaIllegaleRiserva" data-key="creaturaIllegaleRiserva">
+  <label for="creaturaIllegaleRiserva"><b>La Creatura è illegale e la sto curando/allevando nella mia Riserva</b></label>
+</div>
+<div class="blocco-conseguenza" id="configIllegaleRiserva" style="display:none">
+  <h3>Protezione della Riserva dalle autorità</h3>
+  <div class="nota-regole">Per una Creatura illegale nella propria Riserva il controllo PNG si esegue nelle fasi di <b>Cura</b> e <b>Allevamento</b> e può essere lanciato autonomamente dal player. Il dado base è <b>1d30</b>; un <b>Magizoologo di mestiere</b> usa <b>1d50</b>. In entrambi i casi si viene scoperti soltanto con risultato <b>1</b>. Gli Incantesimi sotto aumentano le facce del dado: devono essere stati evocati ONGame in post precedenti e il primo post va segnalato nello specchietto della Riserva. Se la stessa Riserva ospita più Creature illegali, una protezione attiva vale per tutte.</div>
+  <div class="check-riga"><input type="checkbox" id="protCaveInimicum" data-key="protCaveInimicum"><label for="protCaveInimicum">Cave Inimicum: +7 facce</label></div>
+  <div class="check-riga"><input type="checkbox" id="protFiantoDuri" data-key="protFiantoDuri"><label for="protFiantoDuri">Fianto Duri: +4 facce</label></div>
+  <div class="check-riga"><input type="checkbox" id="protIterumPostMe" data-key="protIterumPostMe"><label for="protIterumPostMe">Iterum Post Me: +5 facce</label></div>
+  <div class="check-riga"><input type="checkbox" id="protProtegoMaxima" data-key="protProtegoMaxima"><label for="protProtegoMaxima">Protego Maxima: +10 facce</label></div>
+  <div class="check-riga"><input type="checkbox" id="protRepelloBabbanum" data-key="protRepelloBabbanum"><label for="protRepelloBabbanum">Repello Babbanum: +1 faccia</label></div>
+  <div class="check-riga"><input type="checkbox" id="protRepelloInimicum" data-key="protRepelloInimicum"><label for="protRepelloInimicum">Repello Inimicum: +3 facce</label></div>
+  <div class="check-riga"><input type="checkbox" id="protSalvioHexia" data-key="protSalvioHexia"><label for="protSalvioHexia">Salvio Hexia: +3 facce</label></div>
+  <div class="formula-tag" id="formulaProtezioneIllegale"></div>
+  <div class="nota-regole">Questo è il controllo specifico per la <b>Produzione/Allevamento illegale</b>: non viene aggiunto anche il normale 1d100 delle Azioni Illegali Generiche. L'eventuale tentativo di scoperta da parte di un altro PG tramite <b>Orecchie Indiscrete</b> resta esterno al tool, perché dipende dai Parametri e dalle Conoscenze di quel PG.</div>
+  <div class="nota-regole"><b>Nota sul regolamento:</b> l'elenco assegna a Repello Babbanum <b>+1 faccia</b>, mentre l'esempio successivo lo conteggia come +2. Il tool segue il valore esplicito dell'elenco (+1).</div>
+</div>
 </div>
 
 <div class="barra-tab">
@@ -884,13 +982,27 @@ table.fasce td{
 
 <div class="pannello" id="pannelloFiducia">
 <h2>Fiducia (1d30)</h2>
-<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito.</div>
+<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito. <b>Con Sapienza Magizoologica 25 il costo è 0 Fatica.</b></div>
 <div class="riga"><div class="campo"><label>Tentativi di Fiducia eseguiti</label><input type="number" id="tentativiFiducia" data-key="tentativiFiducia" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
 <div class="mz-bonus-manager">
   <h3>Oggetti / Conoscenze — Fiducia</h3>
-  <p class="mz-bonus-help">Il bonus al parametro entra nella formula della fase; il bonus alle possibilità viene aggiunto dopo il calcolo della base. Fatica e usi vengono contabilizzati quando spunti «Applica».</p>
+  <p class="mz-bonus-help">Puoi scegliere direttamente dal catalogo gli effetti compatibili con questa fase, compresi bonus indiretti come <b>Empatia</b> e bonus generici alle <b>possibilità</b>. «Applica» registra un uso e inserisce il modificatore nel punto corretto della formula.</p>
   <div class="mz-bonus-list" id="mzBonusFiducia"></div>
   <button type="button" class="mz-bonus-add" data-mz-add-phase="fiducia">+ Aggiungi bonus</button>
+</div>
+<div class="blocco-conseguenza" id="bloccoImposium" style="display:none">
+  <h3>Imposium — tiro separato 1d15</h3>
+  <div class="nota-regole" id="noteImposiumRegola"></div>
+  <div class="result-line">
+    <div class="dice-code" id="codiceImposium"></div>
+    <button class="copy-btn" id="copiaImposium">Copia</button>
+  </div>
+  <div class="result-line">
+    <span>Risultato Imposium sul forum (1-15):</span>
+    <input type="number" id="risultatoImposium" min="1" max="15">
+    <span class="out-tag out-neutral" id="tagImposium">in attesa</span>
+  </div>
+  <div class="nota-regole" id="noteImposiumEsito"></div>
 </div>
 <div class="check-riga">
   <input type="checkbox" id="ritentativoOstile" data-key="ritentativoOstile">
@@ -926,10 +1038,11 @@ table.fasce td{
 <h2>Cura della Creatura</h2>
 
 <h2 style="font-size:1.1em">Dado 1: Scoperta del problema (1d35)</h2>
-<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito.</div>
+<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito. <b>Con Sapienza Magizoologica 25 il costo è 0 Fatica.</b></div>
 <div class="riga"><div class="campo"><label>Tentativi di Scoperta eseguiti</label><input type="number" id="tentativiScoperta" data-key="tentativiScoperta" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
 <div class="mz-bonus-manager">
   <h3>Oggetti / Conoscenze — Scoperta</h3>
+  <p class="mz-bonus-help">Il catalogo include anche le Tecniche e gli Incantesimi Magizoologici pertinenti, modificatori generici alle possibilità ed effetti che aumentano temporaneamente l’Empatia.</p>
   <div class="mz-bonus-list" id="mzBonusScoperta"></div>
   <button type="button" class="mz-bonus-add" data-mz-add-phase="scoperta">+ Aggiungi bonus</button>
 </div>
@@ -953,7 +1066,7 @@ table.fasce td{
 <div class="info-bonus" id="bonusCuraMostrato"></div>
 
 <h2 style="font-size:1.1em; margin-top:20px">Dado 2: Cura del problema (1d35)</h2>
-<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito. Il dado viene lanciato dal Narratore.</div>
+<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito. Il dado viene lanciato dal Narratore. <b>Con Sapienza Magizoologica 25 il costo è 0 Fatica.</b></div>
 <div class="riga"><div class="campo"><label>Tentativi di Cura eseguiti</label><input type="number" id="tentativiCura" data-key="tentativiCura" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
 <div class="riga">
   <div class="campo">
@@ -963,6 +1076,7 @@ table.fasce td{
 </div>
 <div class="mz-bonus-manager" style="margin-top:10px">
   <h3>Oggetti / Conoscenze — Cura</h3>
+  <p class="mz-bonus-help">Oltre agli effetti specifici della Cura, puoi usare bonus generici alle possibilità o bonus temporanei di Empatia.</p>
   <div class="mz-bonus-list" id="mzBonusCura"></div>
   <button type="button" class="mz-bonus-add" data-mz-add-phase="cura">+ Aggiungi bonus</button>
 </div>
@@ -997,10 +1111,14 @@ table.fasce td{
   </div>
 </div>
 <div class="check-riga">
-  <input type="checkbox" id="curaFallimentoPrecedente" data-key="curaFallimentoPrecedente">
-  <label for="curaFallimentoPrecedente">La sequenza di Cura ha avuto almeno un fallimento precedente (mantiene il malus in Allevamento)</label>
+  <input type="checkbox" id="scopertaFallimentoPrecedente" data-key="scopertaFallimentoPrecedente">
+  <label for="scopertaFallimentoPrecedente">La Scoperta del problema ha avuto almeno un fallimento (malus Allevamento: -1d2 cuccioli e +5 post)</label>
 </div>
-<div class="nota-regole">Il tool seleziona automaticamente questa voce quando registra un fallimento. Puoi deselezionarla soltanto se un esito era stato inserito per errore e, in realtà, non c'è mai stato alcun fallimento nella sequenza.</div>
+<div class="check-riga">
+  <input type="checkbox" id="curaFallimentoPrecedente" data-key="curaFallimentoPrecedente">
+  <label for="curaFallimentoPrecedente">La Cura del problema ha avuto almeno un fallimento (ulteriore -1d2 cuccioli e +5 post)</label>
+</div>
+<div class="nota-regole">Il tool conserva separatamente i fallimenti delle due fasi: più fallimenti nella stessa fase non aumentano il suo malus, ma un fallimento in <b>Scoperta</b> e uno in <b>Cura</b> si sommano fino a <b>-2d2 cuccioli e +10 post</b>.</div>
 <div class="blocco-conseguenza" id="conseguenzaCura" style="display:none">
   <h3>Tre fallimenti di fila: tiro 1d5</h3>
   <div class="result-line">
@@ -1012,11 +1130,25 @@ table.fasce td{
     <button class="copy-btn" id="copiaConseguenzaCura">Copia</button>
   </div>
 </div>
+
+<div class="blocco-conseguenza" id="rischioIllegaleCura" style="display:none">
+  <h3>Creatura illegale — controllo PNG durante la Cura</h3>
+  <div class="nota-regole" id="notaIllegaleCura"></div>
+  <div class="result-line">
+    <div class="dice-code" id="codiceIllegaleCura"></div>
+    <button class="copy-btn" id="copiaIllegaleCura">Copia</button>
+  </div>
+  <div class="result-line">
+    <span>Risultato ottenuto sul forum:</span>
+    <input type="number" id="risultatoIllegaleCura" data-key="risultatoIllegaleCura" min="1">
+    <span class="out-tag out-neutral" id="tagIllegaleCura">in attesa</span>
+  </div>
+</div>
 </div>
 
 <div class="pannello" id="pannelloDomesticazione">
 <h2>Domesticazione (1d35)</h2>
-<div class="nota-regole">Costo: -2 Fatica per ogni tentativo effettivamente eseguito. Non serve per Creature nate nella propria Riserva o trovate in fase Uovo/Cucciolo.</div>
+<div class="nota-regole">Costo: -2 Fatica per ogni tentativo effettivamente eseguito. <b>Con Sapienza Magizoologica 25 il costo è 0 Fatica.</b> Non serve per Creature nate nella propria Riserva o trovate in fase Uovo/Cucciolo.</div>
 <div class="riga"><div class="campo"><label>Tentativi di Domesticazione eseguiti</label><input type="number" id="tentativiDomesticazione" data-key="tentativiDomesticazione" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
 <div class="nota-regole" id="baseAddestratoreInfo"></div>
 <div class="result-line" id="rigaAddestratoreD4" style="display:none">
@@ -1030,6 +1162,7 @@ table.fasce td{
 <div class="info-bonus" id="bonusCuraPerDomesticazioneInfo">Bonus da Cura: nessuno finché la Cura non riesce.</div>
 <div class="mz-bonus-manager">
   <h3>Oggetti / Conoscenze — Domesticazione</h3>
+  <p class="mz-bonus-help">Il catalogo comprende Tecniche e Incantesimi Magizoologici, bonus specifici, bonus generici alle possibilità e modificatori temporanei di Empatia. Gli effetti vengono applicati solo quando spunti «Applica».</p>
   <div class="mz-bonus-list" id="mzBonusDomesticazione"></div>
   <button type="button" class="mz-bonus-add" data-mz-add-phase="domesticazione">+ Aggiungi bonus</button>
 </div>
@@ -1065,7 +1198,7 @@ table.fasce td{
 <div id="tabellaFasceAllevamento"></div>
 <div class="mz-bonus-manager">
   <h3>Oggetti / Conoscenze — Allevamento</h3>
-  <p class="mz-bonus-help">Qui la distinzione è decisiva: «Parametro» modifica la Forza complessiva <b>prima</b> della scelta della fascia; «Possibilità al tiro» modifica invece il risultato del 1d10 <b>dopo</b> che la fascia è stata determinata.</p>
+  <p class="mz-bonus-help">Qui la distinzione è decisiva: <b>Empatia/Parametro</b> modificano la Forza complessiva prima della scelta della fascia; «Possibilità al tiro» modifica il risultato del 1d10 dopo la fascia. Gli effetti che riducono i post di Accoppiamento vengono mostrati a parte e non alterano il dado.</p>
   <div class="mz-bonus-list" id="mzBonusAllevamento"></div>
   <button type="button" class="mz-bonus-add" data-mz-add-phase="allevamento">+ Aggiungi bonus</button>
 </div>
@@ -1080,6 +1213,23 @@ table.fasce td{
 </div>
 <div class="nota-regole" id="noteAllevamento"></div>
 <div class="nota-regole" id="malusCuraAllevamento"></div>
+<div class="nota-regole" id="bonusPostAllevamento"></div>
+<div class="nota-regole" id="bonusSapienza25Allevamento"></div>
+<div class="nota-regole" id="malusImposiumAllevamento"></div>
+
+<div class="blocco-conseguenza" id="rischioIllegaleAllevamento" style="display:none">
+  <h3>Creatura illegale — controllo PNG durante l'Allevamento</h3>
+  <div class="nota-regole" id="notaIllegaleAllevamento"></div>
+  <div class="result-line">
+    <div class="dice-code" id="codiceIllegaleAllevamento"></div>
+    <button class="copy-btn" id="copiaIllegaleAllevamento">Copia</button>
+  </div>
+  <div class="result-line">
+    <span>Risultato ottenuto sul forum:</span>
+    <input type="number" id="risultatoIllegaleAllevamento" data-key="risultatoIllegaleAllevamento" min="1">
+    <span class="out-tag out-neutral" id="tagIllegaleAllevamento">in attesa</span>
+  </div>
+</div>
 </div>
 
 <div class="scheda" id="mzRiepilogoBonus">
@@ -1147,21 +1297,47 @@ table.fasce td{
       <h2>Configurazione</h2>
       <input type="hidden" id="empatiaRicerca" data-key="empatiaRicerca" value="10">
       <div class="riga">
-        <div class="campo"><label>Nome del PG principale</label><input type="text" id="nomePgRicerca" data-key="nomePgRicerca" maxlength="80"></div>
-        <div class="campo"><label>Sapienza Magizoologica (0-25)</label><input type="number" id="sapienza" data-key="sapienza" value="0" min="0" max="25"></div>
+        <div class="campo" style="flex:1 1 100%"><label>Zona di Ricerca</label><select id="zonaRicerca" data-key="zonaRicerca">
+          <option value="">— Seleziona la Zona della role —</option>
+          <option value="Lago Nero">Lago Nero</option>
+          <option value="Foresta Proibita">Foresta Proibita</option>
+          <option value="Valli di Hogwarts">Valli di Hogwarts</option>
+          <option value="Diagon Alley">Diagon Alley</option>
+          <option value="Vicoli di Notturn Alley">Vicoli di Notturn Alley</option>
+          <option value="Valli di Hogsmeade">Valli di Hogsmeade</option>
+          <option value="Vie di Hogsmeade">Vie di Hogsmeade</option>
+          <option value="Foreste Magiche Inglesi">Foreste Magiche Inglesi</option>
+          <option value="Foreste Oscure">Foreste Oscure</option>
+          <option value="Coste Magiche Inglesi">Coste Magiche Inglesi</option>
+          <option value="Fuori dal Regno Unito — Coste/Foreste del Mondo Magico">Fuori dal Regno Unito — Coste/Foreste del Mondo Magico</option>
+          <option value="storica" disabled>Zona non registrata (vecchia sessione)</option>
+        </select></div>
       </div>
-      <div class="profilo-riferimento"><strong>Empatia usata dalla Ricerca:</strong> <span class="profilo-valore" id="rmEmpatiaCondivisa">10</span> <span>· si modifica nella sezione «Il tuo Personaggio».</span></div>
+      <div class="nota-regole"><b>Prima scegli dove si svolge la role.</b> Per le Zone presenti nel materiale fornito, dopo l’estrazione della Classificazione il tool costruisce automaticamente il dado corretto e ricava la Creatura specifica dal risultato. Per Diagon Alley e per le ricerche fuori dal Regno Unito, dove non è stata fornita una lista esplicitamente etichettata, resta disponibile il metodo manuale.</div>
+      <div class="rm-special" id="rmLagoNeroBox" style="display:none">
+        <h3>Lago Nero — controllo Scrofungulus</h3>
+        <label class="check-riga"><input type="checkbox" id="rmNuotoLago" data-key="rmNuotoLago"> Il PG sta nuotando nel Lago Nero</label>
+        <div id="rmNuotoLagoDettagli" style="display:none"><div class="result-line"><div class="dice-code" id="codiceScrofungulus"></div><button type="button" class="copy-btn" id="copiaScrofungulus">Copia</button></div><div class="result-line"><span>Risultato 1d20:</span><input type="number" id="risultatoScrofungulus" data-key="risultatoScrofungulus" min="1" max="20"><span class="out-tag out-neutral" id="tagScrofungulus">in attesa</span></div></div>
+      </div>
+      <div class="riga">
+        <div class="campo"><label>PG che lancia i dadi</label><input type="text" id="nomePgRicerca" data-key="nomePgRicerca" maxlength="80"></div>
+      </div>
+      <input type="hidden" id="sapienza" data-key="sapienza" value="0">
+      <div class="profilo-riferimento"><strong>Dati del Personaggio usati dalla Ricerca:</strong> <span>Empatia <b class="profilo-valore" id="rmEmpatiaCondivisa">10</b></span> <span>· Sapienza Magizoologica <b class="profilo-valore" id="rmSapienzaCondivisa">0</b></span> <span>· si modificano nella sezione «Il tuo Personaggio».</span></div>
       <div class="riga">
         <div class="campo"><label>Tipo di Ricerca</label><select id="tipoRicerca" data-key="tipoRicerca"><option value="attiva">Attiva (fino a 3 incontri)</option><option value="passiva">Passiva (1 incontro)</option></select></div>
         <div class="campo"><label>Possiedo la Valigia Magica</label><select id="valigiaMagica" data-key="valigiaMagica"><option value="no">No</option><option value="si">Sì</option></select></div>
       </div>
-      <div class="nota-regole">Nella Ricerca Passiva non si applica il bonus di Ricerca Attiva e non si può proseguire oltre il Primo Incontro. Nella Ricerca Attiva il bonus di +2 possibilità vale solo per il Primo Incontro. Se catturi una Creatura e non possiedi la Valigia Magica, non puoi proseguire all’Incontro successivo. Esseri, Non-Esseri e Spiriti non possono essere addomesticati.</div>
-    </div>
+      <div class="nota-regole"><b>Ricerca in compagnia:</b> se partecipano due o più PG, <b>tutti i lanci della Ricerca devono essere effettuati solo e soltanto da UNO dei PG partecipanti</b>, indicato qui sopra come PG lanciatore. Non è possibile alternare i lanci fra i partecipanti o usare di volta in volta i Parametri di PG diversi. Ciò che il PG lanciatore trova è disponibile a tutti i PG presenti nella role, ma il ritrovamento condiviso <b>non condivide automaticamente la Fiducia</b>: chi vuole ottenere personalmente una Creatura deve poi seguire la propria procedura prevista dalla Guida. Nella stessa role di gruppo non è inoltre possibile dividere la ricerca fra obiettivi diversi (per esempio un PG cerca Creature e un altro Piante). Per questo, PG con bassa Empatia o senza Sapienza Magizoologica possono scegliere di cercare insieme a un PG Animus/Magizoologo e affidare a lui tutti i lanci della Ricerca.<br><br><b>Zona:</b> la role di Ricerca deve svolgersi in una Zona di Ricerca prevista dal regolamento. Le <b>Creature Esotiche</b> non possono essere incontrate nel Regno Unito: per trovarle bisogna ruolare fuori dal Regno Unito, nelle Coste/Foreste del Mondo Magico. La specie esatta viene poi determinata dalla lista della Zona scelta quando disponibile nel tool.<br><br><b>Interazione dopo il ritrovamento:</b> se scegli di interagire, applica la Guida alla Magizoologia e i relativi costi in Fatica. Se la specie esatta è sempre ostile, oppure diventa ostile, è richiesto l’intervento del Narratore. Esseri, Non-Esseri e Spiriti non possono essere addomesticati.<br><br>Nella Ricerca Passiva non si applica il bonus di Ricerca Attiva e non si può proseguire oltre il Primo Incontro. Nella Ricerca Attiva il bonus di +2 possibilità vale solo per il Primo Incontro. Se catturi una Creatura e non possiedi la Valigia Magica, non puoi proseguire all’Incontro successivo.</div>
 
-    <div class="scheda">
-      <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
-      <div class="result-line"><div class="dice-code" id="codiceBolcino"></div><button class="copy-btn" type="button" data-copy-source="codiceBolcino" data-copy-control="1">Copia</button></div>
-      <div class="result-line"><span>Risultato ottenuto:</span><input type="number" id="risultatoBolcino" data-key="risultatoBolcino" min="1" max="100"><span class="out-tag out-neutral" id="tagBolcino">in attesa</span></div>
+      <div class="mz-bonus-manager" id="rmBonusRicercaBox">
+        <h3>Oggetti / Incantesimi / Conoscenze — Bonus alla Ricerca</h3>
+        <p class="mz-bonus-help">Seleziona direttamente l’effetto che stai usando. Il catalogo comprende anche <b>Tecniche e Incantesimi Magizoologici</b>, oltre agli Oggetti, agli effetti <b>generici alle possibilità</b> e a quelli che aumentano <b>Empatia</b>, perché entrambi possono modificare il dado della Ricerca. Il tool distingue automaticamente il tipo di bonus e lo inserisce nel punto corretto della formula. Per gli effetti a usi limitati, seleziona soltanto gli Incontri/post in cui li stai realmente usando; gli usi del Bagaglio non vengono consumati automaticamente.</p>
+        <input type="hidden" id="rmBonusRicercaJson" data-key="bonusRicercaJson" value="[]">
+        <div class="mz-bonus-list" id="rmBonusRicercaRows"></div>
+        <button type="button" class="mz-bonus-add" id="rmAddBonusRicerca">+ Aggiungi Oggetto / Incantesimo / Conoscenza</button>
+        <div class="mz-effective-line" id="rmBonusRicercaSummary"></div>
+      </div>
     </div>
 
     <div class="flow-actions"><span></span><button type="button" class="flow-action-btn" data-rm-goto="summary" data-session-control="1">Vai al Riepilogo →</button></div>
@@ -1170,8 +1346,9 @@ table.fasce td{
   <section class="research-flow-page" data-rm-page-panel="summary">
     <div class="scheda">
       <h2>Riepilogo prima della Ricerca</h2>
+      <div class="nota-regole"><b>Consigliato:</b> copia questo riepilogo nel primo post della Ricerca. Serve soprattutto a lasciare visibili i dati usati dal tool — PG, Tipo di Ricerca, Empatia, Sapienza, Valigia ed eventuali modificatori da Oggetti/Incantesimi/Conoscenze. Le percentuali di ritrovamento sono riportate come informazione di supporto.</div>
       <div id="rm-summary-content"></div>
-      <div class="result-line"><div class="research-bbcode" id="rm-summary-bbcode"></div><button class="copy-btn" type="button" data-copy-source="rm-summary-bbcode" data-copy-control="1">Copia</button></div>
+      <div class="result-line"><div class="research-bbcode" id="rm-summary-bbcode"></div><button class="copy-btn" type="button" data-copy-source="rm-summary-bbcode" data-copy-control="1">Copia per il forum</button></div>
     </div>
     <div class="flow-actions"><button type="button" class="flow-action-btn" data-rm-goto="config" data-session-control="1">← Configurazione</button><button type="button" class="flow-action-btn" data-rm-goto="enc1" data-session-control="1">Inizia il Primo Incontro →</button></div>
   </section>
@@ -1179,6 +1356,12 @@ table.fasce td{
   <section class="research-flow-page" data-rm-page-panel="enc1">
     <div class="blocco-incontro" id="blocco1">
       <h2>Primo Incontro <span class="badge-incontro badge-sbloccato">sempre disponibile</span></h2>
+      <div class="rm-special rm-bolcino-incontro">
+        <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
+        <div class="nota-regole">Se stai facendo il tiro del Bolcino nello stesso post dell’Incontro, puoi copiare entrambi i dadi direttamente da questa pagina.</div>
+        <div class="result-line"><div class="dice-code" id="codiceBolcino1"></div><button class="copy-btn" type="button" data-copy-source="codiceBolcino1" data-copy-control="1">Copia</button></div>
+        <div class="result-line"><span>Risultato ottenuto (1-100):</span><input type="number" id="risultatoBolcino1" data-key="risultatoBolcino1" min="1" max="100"><span class="out-tag out-neutral" id="tagBolcino1">in attesa</span></div>
+      </div>
       <h3>Trovo qualcosa? (1d30)</h3>
       <div class="formula-tag" id="formulaTrova1"></div>
       <div class="result-line"><div class="dice-code" id="codiceTrova1"></div><button class="copy-btn" type="button" data-copy-source="codiceTrova1" data-copy-control="1">Copia</button></div>
@@ -1189,7 +1372,14 @@ table.fasce td{
         <h3>Classificazione della Creatura (1d16)</h3>
         <div class="result-line"><div class="dice-code" id="codiceClasse1"></div><button class="copy-btn" type="button" data-copy-source="codiceClasse1" data-copy-control="1">Copia</button></div>
         <div class="result-line"><span>Risultato (1-16):</span><input type="number" id="risultatoClasse1" data-key="risultatoClasse1" min="1" max="16"><span class="out-tag out-neutral" id="tagClasse1">in attesa</span></div>
-        <div class="nota-regole">Consulta poi la lista delle Creature della Zona di Ricerca scelta per stabilire quale Creatura specifica hai trovato. Con 16 hai trovato un Essere, uno Spirito o un Non-Essere.</div>
+        <div class="rm-specie-helper" id="rmSpecieBox1">
+          <h3 style="margin-top:0">Creatura specifica della Zona</h3>
+          <div class="nota-regole" id="rmSpecieNota1">Dopo la Classificazione viene generato il dado corrispondente alla lista della Zona.</div>
+          <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie1" data-key="dadoSpecie1" min="1" max="999"></div></div>
+          <div class="result-line"><div class="dice-code" id="codiceSpecie1"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie1" data-copy-control="1">Copia</button></div>
+          <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie1" data-key="risultatoSpecie1" min="1"><span class="out-tag out-neutral" id="tagSpecie1">in attesa</span></div>
+          <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura1">Creatura specifica trovata</label><input type="text" id="specieCreatura1" data-key="specieCreatura1" maxlength="100" placeholder="Es. Ippogrifo"></div></div>
+        </div>
 
         <h3>Sesso e Fase Vitale (1d40)</h3>
         <div class="result-line"><div class="dice-code" id="codiceFase1"></div><button class="copy-btn" type="button" data-copy-source="codiceFase1" data-copy-control="1">Copia</button></div>
@@ -1216,6 +1406,12 @@ table.fasce td{
       <h2>Secondo Incontro <span class="badge-incontro" id="badge2"></span></h2>
       <div class="blocco-avviso" id="avviso2" style="display:none"></div>
       <div id="corpo2">
+        <div class="rm-special rm-bolcino-incontro">
+          <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
+          <div class="nota-regole">Se stai facendo il tiro del Bolcino nello stesso post dell’Incontro, puoi copiare entrambi i dadi direttamente da questa pagina.</div>
+          <div class="result-line"><div class="dice-code" id="codiceBolcino2"></div><button class="copy-btn" type="button" data-copy-source="codiceBolcino2" data-copy-control="1">Copia</button></div>
+          <div class="result-line"><span>Risultato ottenuto (1-100):</span><input type="number" id="risultatoBolcino2" data-key="risultatoBolcino2" min="1" max="100"><span class="out-tag out-neutral" id="tagBolcino2">in attesa</span></div>
+        </div>
         <h3>Trovo qualcosa? (1d30)</h3>
         <div class="formula-tag" id="formulaTrova2"></div>
         <div class="result-line"><div class="dice-code" id="codiceTrova2"></div><button class="copy-btn" type="button" data-copy-source="codiceTrova2" data-copy-control="1">Copia</button></div>
@@ -1226,11 +1422,19 @@ table.fasce td{
           <h3>Classificazione della Creatura (1d18)</h3>
           <div class="result-line"><div class="dice-code" id="codiceClasse2"></div><button class="copy-btn" type="button" data-copy-source="codiceClasse2" data-copy-control="1">Copia</button></div>
           <div class="result-line"><span>Risultato (1-18):</span><input type="number" id="risultatoClasse2" data-key="risultatoClasse2" min="1" max="18"><span class="out-tag out-neutral" id="tagClasse2">in attesa</span></div>
+          <div class="rm-specie-helper" id="rmSpecieBox2">
+            <h3 style="margin-top:0">Creatura specifica della Zona</h3>
+            <div class="nota-regole" id="rmSpecieNota2">Dopo la Classificazione viene generato il dado corrispondente alla lista della Zona.</div>
+            <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie2" data-key="dadoSpecie2" min="1" max="999"></div></div>
+            <div class="result-line"><div class="dice-code" id="codiceSpecie2"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie2" data-copy-control="1">Copia</button></div>
+            <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie2" data-key="risultatoSpecie2" min="1"><span class="out-tag out-neutral" id="tagSpecie2">in attesa</span></div>
+            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura2">Creatura specifica trovata</label><input type="text" id="specieCreatura2" data-key="specieCreatura2" maxlength="100" placeholder="Nome della Creatura"></div></div>
+          </div>
 
           <h3>Numero di esemplari (1d5)</h3>
           <div class="result-line"><div class="dice-code" id="codiceEsemplari2"></div><button class="copy-btn" type="button" data-copy-source="codiceEsemplari2" data-copy-control="1">Copia</button></div>
           <div class="result-line"><span>Risultato (1-5):</span><input type="number" id="risultatoEsemplari2" data-key="risultatoEsemplari2" min="1" max="5"><span class="out-tag out-neutral" id="tagEsemplari2">in attesa</span></div>
-          <div class="nota-regole">Consulta poi la lista delle Creature della Zona di Ricerca scelta. Con 16-18 hai trovato un Essere/Spirito/Non-Essere.</div>
+
           <div id="esemplariLista2"></div>
           <div class="check-riga"><input type="checkbox" id="catturato2" data-key="catturato2"><label for="catturato2">Ho catturato una o più Creature di questo incontro</label></div>
         </div>
@@ -1244,6 +1448,12 @@ table.fasce td{
       <h2>Terzo Incontro <span class="badge-incontro" id="badge3"></span></h2>
       <div class="blocco-avviso" id="avviso3" style="display:none"></div>
       <div id="corpo3">
+        <div class="rm-special rm-bolcino-incontro">
+          <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
+          <div class="nota-regole">Se stai facendo il tiro del Bolcino nello stesso post dell’Incontro, puoi copiare entrambi i dadi direttamente da questa pagina.</div>
+          <div class="result-line"><div class="dice-code" id="codiceBolcino3"></div><button class="copy-btn" type="button" data-copy-source="codiceBolcino3" data-copy-control="1">Copia</button></div>
+          <div class="result-line"><span>Risultato ottenuto (1-100):</span><input type="number" id="risultatoBolcino3" data-key="risultatoBolcino3" min="1" max="100"><span class="out-tag out-neutral" id="tagBolcino3">in attesa</span></div>
+        </div>
         <h3>Trovo qualcosa? (1d30)</h3>
         <div class="formula-tag" id="formulaTrova3"></div>
         <div class="result-line"><div class="dice-code" id="codiceTrova3"></div><button class="copy-btn" type="button" data-copy-source="codiceTrova3" data-copy-control="1">Copia</button></div>
@@ -1254,11 +1464,20 @@ table.fasce td{
           <h3>Classificazione della Creatura (1d18)</h3>
           <div class="result-line"><div class="dice-code" id="codiceClasse3"></div><button class="copy-btn" type="button" data-copy-source="codiceClasse3" data-copy-control="1">Copia</button></div>
           <div class="result-line"><span>Risultato (1-18):</span><input type="number" id="risultatoClasse3" data-key="risultatoClasse3" min="1" max="18"><span class="out-tag out-neutral" id="tagClasse3">in attesa</span></div>
+          <div class="rm-specie-helper" id="rmSpecieBox3">
+            <h3 style="margin-top:0">Creatura specifica della Zona</h3>
+            <div class="nota-regole" id="rmSpecieNota3">Dopo la Classificazione viene generato il dado corrispondente alla lista della Zona.</div>
+            <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie3" data-key="dadoSpecie3" min="1" max="999"></div></div>
+            <div class="result-line"><div class="dice-code" id="codiceSpecie3"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie3" data-copy-control="1">Copia</button></div>
+            <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie3" data-key="risultatoSpecie3" min="1"><span class="out-tag out-neutral" id="tagSpecie3">in attesa</span></div>
+            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura3">Creatura specifica trovata</label><input type="text" id="specieCreatura3" data-key="specieCreatura3" maxlength="100" placeholder="Nome della Creatura"></div></div>
+          </div>
 
           <h3>Numero di esemplari (1d10)</h3>
           <div class="result-line"><div class="dice-code" id="codiceEsemplari3"></div><button class="copy-btn" type="button" data-copy-source="codiceEsemplari3" data-copy-control="1">Copia</button></div>
           <div class="result-line"><span>Risultato (1-10):</span><input type="number" id="risultatoEsemplari3" data-key="risultatoEsemplari3" min="1" max="10"><span class="out-tag out-neutral" id="tagEsemplari3">in attesa</span></div>
-          <div class="nota-regole">Consulta poi la lista delle Creature della Zona di Ricerca scelta. Con 16-18 hai trovato un Essere/Spirito/Non-Essere. Numeri alti di esemplari possono corrispondere a un’Orda: fai attenzione.</div>
+
+          <div class="nota-regole">Numeri alti di esemplari possono corrispondere a un’Orda: fai attenzione.</div>
           <div id="esemplariLista3"></div>
           <div class="check-riga"><input type="checkbox" id="catturato3" data-key="catturato3"><label for="catturato3">Ho catturato una o più Creature di questo incontro</label></div>
         </div>
@@ -1297,6 +1516,7 @@ table.fasce td{
 var evtClick = 'cli' + 'ck';
 var CHIAVE_MAGIZOOLOGIA = 'magizoologia_tool_v1';
 var MZ_LAST_CURA_BONUS_DOM = 0;
+var MZ_IMPOSIUM_SUCCESS=false, MZ_IMPOSIUM_DOM_MALUS=0, MZ_IMPOSIUM_POST_MALUS=0;
 var MZ_BONUS_UID = 0;
 
 /* ---------- HELPERS DI VALIDAZIONE ---------- */
@@ -1351,33 +1571,193 @@ function mzGeneralBonus(target){
   });
   return tot;
 }
+var MZ_PHASE_BONUS_PRESETS={
+  /* Bonus generici: l'Amuleto della Fortuna può intervenire su un'azione che richiede un dado. */
+  amuleto_1:{label:'Amuleto della Fortuna (+1)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',condition:'3 usi · massimo 1 Amuleto della Fortuna per role',type:'possibilita',value:1,total:3,stackGroup:'fortuna',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus generico di +1 possibilità. Gli Amuleti della Fortuna non sono cumulabili: se ne inserisci più di uno, il tool applica soltanto il valore più alto.'},
+  amuleto_2:{label:'Amuleto della Fortuna (+2)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',condition:'3 usi · massimo 1 Amuleto della Fortuna per role',type:'possibilita',value:2,total:3,stackGroup:'fortuna',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus generico di +2 possibilità. Gli Amuleti della Fortuna non sono cumulabili: se ne inserisci più di uno, il tool applica soltanto il valore più alto.'},
+  amuleto_3:{label:'Amuleto della Fortuna (+3)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',condition:'3 usi · massimo 1 Amuleto della Fortuna per role',type:'possibilita',value:3,total:3,stackGroup:'fortuna',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus generico di +3 possibilità. Gli Amuleti della Fortuna non sono cumulabili: se ne inserisci più di uno, il tool applica soltanto il valore più alto.'},
+  amuleto_4:{label:'Amuleto della Fortuna (+4)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',condition:'3 usi · massimo 1 Amuleto della Fortuna per role',type:'possibilita',value:4,total:3,stackGroup:'fortuna',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus generico di +4 possibilità. Gli Amuleti della Fortuna non sono cumulabili: se ne inserisci più di uno, il tool applica soltanto il valore più alto.'},
+  amuleto_5:{label:'Amuleto della Fortuna (+5)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',condition:'3 usi · massimo 1 Amuleto della Fortuna per role',type:'possibilita',value:5,total:3,stackGroup:'fortuna',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus generico di +5 possibilità. Gli Amuleti della Fortuna non sono cumulabili: se ne inserisci più di uno, il tool applica soltanto il valore più alto.'},
+  amuleto_6:{label:'Amuleto della Fortuna (+6)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',condition:'3 usi · massimo 1 Amuleto della Fortuna per role',type:'possibilita',value:6,total:3,stackGroup:'fortuna',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus generico di +6 possibilità. Gli Amuleti della Fortuna non sono cumulabili: se ne inserisci più di uno, il tool applica soltanto il valore più alto.'},
+  amuleto_7:{label:'Amuleto della Fortuna (+7)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',condition:'3 usi · massimo 1 Amuleto della Fortuna per role',type:'possibilita',value:7,total:3,stackGroup:'fortuna',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus generico di +7 possibilità. Per valori superiori usa «Altro bonus manuale». Gli Amuleti della Fortuna non sono cumulabili.'},
+
+  /* Altre Conoscenze: Magi Biografia (biografia di Newt Scamander).
+     Il bonus viene preparato in una role precedente e resta in Scheda per 3 usi;
+     qui si applica soltanto il bonus già ottenuto, senza riaddebitare la Fatica spesa per crearlo. */
+  magibiografia_studente_33:{label:'Magi Biografia — Newt Scamander · Studente 33% (+1)',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Studente · riuscita 33% · 3 usi',type:'possibilita',value:1,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus di Magizoologia ottenuto con Magi Biografia. Si applica a una Conoscenza Magizoologica affine. La Fatica è stata spesa nella role in cui il bonus è stato preparato, non quando lo consumi.'},
+  magibiografia_studente_66_1:{label:'Magi Biografia — Newt Scamander · Studente 66% (1d2 = 1 → +1)',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Studente · riuscita 66% · 1d2 = 1 · 3 usi',type:'possibilita',value:1,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus di Magizoologia ottenuto con Magi Biografia. Se il 1d2 del bonus ha dato 1, usa questa voce.'},
+  magibiografia_studente_66_2:{label:'Magi Biografia — Newt Scamander · Studente 66% (1d2 = 2 → +2)',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Studente · riuscita 66% · 1d2 = 2 · 3 usi',type:'possibilita',value:2,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus di Magizoologia ottenuto con Magi Biografia. Se il 1d2 del bonus ha dato 2, usa questa voce.'},
+  magibiografia_studente_100:{label:'Magi Biografia — Newt Scamander · Studente 100% (+2)',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Studente · riuscita 100% · 3 usi',type:'possibilita',value:2,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus di Magizoologia ottenuto con Magi Biografia.'},
+  magibiografia_adulto_noarcaica:{label:'Magi Biografia — Newt Scamander · Adulto senza Sapienza Arcaica (+2)',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Adulto senza Sapienza Arcaica · riuscita 100% · 3 usi',type:'possibilita',value:2,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus di Magizoologia ottenuto con Magi Biografia.'},
+  magibiografia_adulto_arcaica:{label:'Magi Biografia — Newt Scamander · Adulto con Sapienza Arcaica 1+ (+3)',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Adulto con Sapienza Arcaica 1+ · riuscita 100% · 3 usi',type:'possibilita',value:3,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus di Magizoologia ottenuto con Magi Biografia.'},
+
+  /* Bonus indiretti a Empatia. */
+  animus_standard:{label:'Manuali dell’Animus — standard (+2 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus',condition:'Versione standard · 10 usi',type:'empatia',value:2,total:10,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'+2 Empatia. Il tool applica il bonus prima delle conversioni della fase (per esempio Empatia/2 in Fiducia).'},
+  animus_elfi:{label:'Manuali dell’Animus — Mercato degli Elfi (+1 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus — Mercato degli Elfi',condition:'5 usi',type:'empatia',value:1,total:5,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'+1 Empatia. Il tool applica il bonus prima delle conversioni della fase.'},
+  animus_obscurus:{label:'Manuali dell’Animus — Obscurus Books (+2 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus — Obscurus Books',condition:'10 usi',type:'empatia',value:2,total:10,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'+2 Empatia. Il tool applica il bonus prima delle conversioni della fase.'},
+  talismano_empatia_1:{label:'Talismano Astronomico — Empatia +1',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',condition:'Studente: 33%, oppure 66% con 1d2 = 1 · 3 usi',type:'empatia',value:1,total:3,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Talismano di Magia Astrale Avanzata impostato su Empatia.'},
+  talismano_empatia_2:{label:'Talismano Astronomico — Empatia +2',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',condition:'Studente: 100%, oppure 66% con 1d2 = 2 · 3 usi',type:'empatia',value:2,total:3,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Talismano di Magia Astrale Avanzata impostato su Empatia.'},
+  talismano_empatia_3:{label:'Talismano Astronomico — Empatia +3',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',condition:'Adulto senza Sapienza Elementale · 3 usi',type:'empatia',value:3,total:3,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Talismano di Magia Astrale Avanzata impostato su Empatia.'},
+  talismano_empatia_4:{label:'Talismano Astronomico — Empatia +4',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',condition:'Adulto con Sapienza Elementale 1+ · 3 usi',type:'empatia',value:4,total:3,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Talismano di Magia Astrale Avanzata impostato su Empatia.'},
+
+  /* Effetti specifici della Guida. */
+  cibo_ricerca:{label:'Cibo trovato durante la Ricerca (+1)',groupLabel:'Bonus specifici Magizoologia',source:'Cibo trovato durante la Ricerca',condition:'Ottenuto con 1-2 su 1d5 dopo l’incontro',type:'possibilita',value:1,total:1,phases:['fiducia','cura','domesticazione'],note:'+1 possibilità nella fase scelta, come previsto dal ritrovamento di cibo adatto durante la Ricerca.'},
+  creatura_donata_fiducia:{label:'Creatura donata da un PG di cui si fidava (+5 Fiducia)',groupLabel:'Bonus specifici Magizoologia',source:'Creatura donata dopo Fiducia ottenuta dal donatore',condition:'Prima Fiducia con il nuovo PG',type:'possibilita',value:5,total:1,phases:['fiducia'],note:'+5 possibilità in Fiducia perché la Creatura si era già fidata del PG donatore.'},
+  cibi_standard:{label:'Cibi speciali — standard (+4)',groupLabel:'Bonus specifici Magizoologia',source:'Cibi speciali',condition:'Versione standard · 3 usi',type:'possibilita',value:4,total:3,phases:['fiducia','cura','domesticazione'],note:'+4 possibilità in Fiducia, Cura o Domesticazione.'},
+  cibi_elfi:{label:'Cibi speciali — Mercato degli Elfi (+2)',groupLabel:'Bonus specifici Magizoologia',source:'Cibi speciali — Mercato degli Elfi',condition:'3 usi',type:'possibilita',value:2,total:3,phases:['fiducia','cura','domesticazione'],note:'+2 possibilità in Fiducia, Cura o Domesticazione.'},
+  cibi_illegali:{label:'Cibi speciali — Negozio di Ragni Giganti (+8)',groupLabel:'Bonus specifici Magizoologia',source:'Cibi speciali — Negozio di Ragni Giganti',condition:'3 usi · versione illegale',type:'possibilita',value:8,total:3,phases:['fiducia','cura','domesticazione'],note:'+8 possibilità. Attenzione: il regolamento prevede anche un rischio di malattia/morte della Creatura per questa variante.'},
+  sonaglio_standard:{label:'Sonaglio calmante — standard',groupLabel:'Bonus specifici Magizoologia',source:'Sonaglio calmante',condition:'Versione standard · 3 usi',type:'effetto',value:0,total:3,phases:['fiducia'],note:'Non modifica il dado: dopo un’interazione positiva estende la Fiducia al massimo ad altre 2 Creature di un’Orda e a 1 altro PG presente nella role, per uso.'},
+  sonaglio_elfi:{label:'Sonaglio calmante — Mercato degli Elfi',groupLabel:'Bonus specifici Magizoologia',source:'Sonaglio calmante — Mercato degli Elfi',condition:'3 usi',type:'effetto',value:0,total:3,phases:['fiducia'],note:'Non modifica il dado: estende la Fiducia al massimo a 1 altra Creatura dell’Orda e a 1 altro PG presente nella role, per uso.'},
+  sonaglio_illegale:{label:'Sonaglio calmante — Negozio dei Ragni Giganti',groupLabel:'Bonus specifici Magizoologia',source:'Sonaglio calmante — Negozio dei Ragni Giganti',condition:'3 usi · versione illegale',type:'effetto',value:0,total:3,phases:['fiducia'],note:'Non modifica il dado: estende la Fiducia al massimo ad altre 4 Creature dell’Orda e a 2 altri PG. Per ogni Creatura coinvolta il regolamento prevede anche 1d4: con 1 diventa ostile, con 2 muore.'},
+  fieno_standard:{label:'Fieno d’Amortentia — standard (-10% post Accoppiamento)',groupLabel:'Allevamento / Accoppiamento',source:'Fieno d’Amortentia',condition:'Versione standard · 3 usi',type:'postPercent',value:10,total:3,stackGroup:'fieno',phases:['allevamento'],note:'Riduce del 10% i post della fase di Accoppiamento. Non modifica il dado di Allevamento.'},
+  fieno_elfi:{label:'Fieno d’Amortentia — Mercato degli Elfi (-5% post)',groupLabel:'Allevamento / Accoppiamento',source:'Fieno d’Amortentia — Mercato degli Elfi',condition:'3 usi',type:'postPercent',value:5,total:3,stackGroup:'fieno',phases:['allevamento'],note:'Riduce del 5% i post della fase di Accoppiamento. Non modifica il dado di Allevamento.'},
+  fieno_illegale:{label:'Fieno d’Amortentia — Negozio di Ragni Giganti (-20% post)',groupLabel:'Allevamento / Accoppiamento',source:'Fieno d’Amortentia — Negozio di Ragni Giganti',condition:'3 usi · versione illegale',type:'postPercent',value:20,total:3,stackGroup:'fieno',phases:['allevamento'],note:'Riduce del 20% i post della fase di Accoppiamento. La variante prevede anche il rischio indicato dal Prezzario.'},
+  feromagici_standard:{label:'Feromagici — standard (-40% post Accoppiamento)',groupLabel:'Allevamento / Accoppiamento',source:'Feromagici',condition:'Versione standard · 3 usi',type:'postPercent',value:40,total:3,stackGroup:'feromagici',phases:['allevamento'],note:'Riduce del 40% i post della fase di Accoppiamento. Non modifica il dado di Allevamento.'},
+  feromagici_elfi:{label:'Feromagici — Mercato degli Elfi (-20% post)',groupLabel:'Allevamento / Accoppiamento',source:'Feromagici — Mercato degli Elfi',condition:'3 usi',type:'postPercent',value:20,total:3,stackGroup:'feromagici',phases:['allevamento'],note:'Riduce del 20% i post della fase di Accoppiamento. La variante prevede anche il rischio indicato dal Prezzario.'},
+  feromagici_illegali:{label:'Feromagici — Negozio di Ragni Giganti (-80% post)',groupLabel:'Allevamento / Accoppiamento',source:'Feromagici — Negozio di Ragni Giganti',condition:'3 usi · versione illegale',type:'postPercent',value:80,total:3,stackGroup:'feromagici',phases:['allevamento'],note:'Riduce dell’80% i post della fase di Accoppiamento. La variante prevede anche il rischio indicato dal Prezzario.'},
+
+  malus_abbandono_creatura:{label:'Malus Empatia — separarsi da Creatura già addomesticata (-5)',groupLabel:'Malus a Empatia',source:'Separazione da Creatura già addomesticata',condition:'-5 Empatia per i successivi 10 utilizzi utili',type:'malusEmpatia',value:5,total:10,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Si applica se il PG vende, abbandona, dona o si libera di una Creatura Infante/Adolescente/Adulta/Anziana già addomesticata, salvo le eccezioni previste dal regolamento.'},
+  malus_uccisione_creatura:{label:'Malus Empatia — uccisione ingiustificata di Creatura addomesticata (-15)',groupLabel:'Malus a Empatia',source:'Uccisione ingiustificata di Creatura addomesticata',condition:'-15 Empatia per i successivi 20 utilizzi utili',type:'malusEmpatia',value:15,total:20,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Malus al Parametro Empatia per i successivi 20 utilizzi utili.'},
+  malus_imposium_non_addomesticata:{label:'Malus Empatia — Imposium senza successiva Domesticazione (-2)',groupLabel:'Malus a Empatia',source:'Imposium — Creatura placata ma non addomesticata',condition:'-2 Empatia al successivo utilizzo',type:'malusEmpatia',value:2,total:1,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Usalo soltanto sul primo utilizzo di Empatia successivo a un Imposium riuscito quando la Creatura placata non viene poi addomesticata.'}
+
+};
+
+/* ---------- TECNICHE E INCANTESIMI PROPRI DELLA MAGIZOOLOGIA ----------
+   Le Conoscenze Avanzate Amico/Custode/Addestratore/Allevatore sono già
+   incorporate nelle basi delle rispettive fasi. Qui vengono invece
+   precompilate le Conoscenze Extra e gli Incantesimi che aggiungono
+   possibilità, modificano Empatia o producono effetti collaterali. */
+function mzAddTechniquePreset(key,label,phase,value,fatica,condition,note){
+  MZ_PHASE_BONUS_PRESETS[key]={
+    label:label,groupLabel:'Tecniche Magizoologiche',source:label.split(' · ')[0],
+    condition:condition,type:'possibilita',value:value,fatica:fatica,total:1,
+    unlimited:true,stackGroup:key.split('_')[0],phases:[phase],note:note
+  };
+}
+function mzAddCommonTechniqueFamily(prefix,label,phase,fatica){
+  var note='Bonus previsto dalla tecnica '+label+' per la fase '+mzPhaseLabel(phase)+'. La tecnica non è consumabile: il contatore registra soltanto quante volte l’hai usata e la Fatica spesa.';
+  mzAddTechniquePreset(prefix+'_s33',label+' · Studente 33% (+1)',phase,1,fatica,'Studente · Efficacia 33%',note);
+  mzAddTechniquePreset(prefix+'_s66_1',label+' · Studente 66% · 1d2=1 (+1)',phase,1,fatica,'Studente · Efficacia 66% · 1d2 = 1',note);
+  mzAddTechniquePreset(prefix+'_s66_2',label+' · Studente 66% · 1d2=2 (+2)',phase,2,fatica,'Studente · Efficacia 66% · 1d2 = 2',note);
+  mzAddTechniquePreset(prefix+'_s100',label+' · Studente 100% (+2)',phase,2,fatica,'Studente · Efficacia 100%',note);
+  mzAddTechniquePreset(prefix+'_a33_1',label+' · Adulto senza Sapienza · 33% · 1d2=1 (+1)',phase,1,fatica,'Adulto senza Sapienza Magizoologica · Efficacia 33% · 1d2 = 1',note);
+  mzAddTechniquePreset(prefix+'_a33_2',label+' · Adulto senza Sapienza · 33% · 1d2=2 (+2)',phase,2,fatica,'Adulto senza Sapienza Magizoologica · Efficacia 33% · 1d2 = 2',note);
+  mzAddTechniquePreset(prefix+'_a66_1',label+' · Adulto senza Sapienza · 66% · 1d3=1 (+1)',phase,1,fatica,'Adulto senza Sapienza Magizoologica · Efficacia 66% · 1d3 = 1',note);
+  mzAddTechniquePreset(prefix+'_a66_2',label+' · Adulto senza Sapienza · 66% · 1d3=2 (+2)',phase,2,fatica,'Adulto senza Sapienza Magizoologica · Efficacia 66% · 1d3 = 2',note);
+  mzAddTechniquePreset(prefix+'_a66_3',label+' · Adulto senza Sapienza · 66% · 1d3=3 (+3)',phase,3,fatica,'Adulto senza Sapienza Magizoologica · Efficacia 66% · 1d3 = 3',note);
+  mzAddTechniquePreset(prefix+'_a100_2',label+' · Adulto senza Sapienza · 100% · 1+1d2=2 (+2)',phase,2,fatica,'Adulto senza Sapienza Magizoologica · Efficacia 100% · 1d2 = 1',note);
+  mzAddTechniquePreset(prefix+'_a100_3',label+' · Adulto senza Sapienza · 100% · 1+1d2=3 (+3)',phase,3,fatica,'Adulto senza Sapienza Magizoologica · Efficacia 100% · 1d2 = 2',note);
+  mzAddTechniquePreset(prefix+'_sap100',label+' · Adulto con Sapienza Magizoologica 1+ (+3)',phase,3,fatica,'Adulto con Sapienza Magizoologica 1+ · Efficacia 100%',note);
+}
+mzAddCommonTechniqueFamily('mimica','Mimica-Limbica','fiducia',1.5);
+mzAddCommonTechniqueFamily('diagnosi','Diagnosi Faunica','scoperta',1.5);
+mzAddCommonTechniqueFamily('somministrazione','Somministrazione Faunica','cura',1);
+mzAddCommonTechniqueFamily('imitazione','Imitazione','domesticazione',1.5);
+
+/* Intermediario Faunico: riduce i post della Riproduzione, non il tiro di Allevamento. */
+function mzAddIntermediario(key,label,value,condition){
+  MZ_PHASE_BONUS_PRESETS[key]={label:label,groupLabel:'Tecniche Magizoologiche',source:'Intermediario Faunico',condition:condition,type:'postPercent',value:value,fatica:2,total:1,unlimited:true,stackGroup:'intermediario-faunico',phases:['allevamento'],note:'Riduzione dei post della sola fase di Riproduzione. Non modifica il 1d10 di Allevamento.'};
+}
+mzAddIntermediario('intermediario_s33','Intermediario Faunico · Studente 33% (-10% post)',10,'Studente · Efficacia 33%');
+mzAddIntermediario('intermediario_s66_10','Intermediario Faunico · Studente 66% · 1d2=1 (-10% post)',10,'Studente · Efficacia 66% · 1d2 = 1');
+mzAddIntermediario('intermediario_s66_20','Intermediario Faunico · Studente 66% · 1d2=2 (-20% post)',20,'Studente · Efficacia 66% · 1d2 = 2');
+mzAddIntermediario('intermediario_s100','Intermediario Faunico · Studente 100% (-20% post)',20,'Studente · Efficacia 100%');
+mzAddIntermediario('intermediario_a33','Intermediario Faunico · Adulto senza Sapienza · 33% (-20% post)',20,'Adulto senza Sapienza Magizoologica · Efficacia 33%');
+mzAddIntermediario('intermediario_a66_20','Intermediario Faunico · Adulto senza Sapienza · 66% · 1d2=1 (-20% post)',20,'Adulto senza Sapienza Magizoologica · Efficacia 66% · 1d2 = 1');
+mzAddIntermediario('intermediario_a66_30','Intermediario Faunico · Adulto senza Sapienza · 66% · 1d2=2 (-30% post)',30,'Adulto senza Sapienza Magizoologica · Efficacia 66% · 1d2 = 2');
+mzAddIntermediario('intermediario_a100','Intermediario Faunico · Adulto senza Sapienza · 100% (-30% post)',30,'Adulto senza Sapienza Magizoologica · Efficacia 100%');
+mzAddIntermediario('intermediario_sap100','Intermediario Faunico · Adulto con Sapienza Magizoologica 1+ (-40% post)',40,'Adulto con Sapienza Magizoologica 1+ · Efficacia 100%');
+
+/* Somnum genera un bonus di Empatia da spendere in UN successivo utilizzo.
+   La Fatica appartiene al lancio di Somnum e non viene addebitata di nuovo
+   quando il bonus viene consumato nel tool. */
+function mzAddSomnum(key,label,value,condition){
+  MZ_PHASE_BONUS_PRESETS[key]={label:label,groupLabel:'Incantesimi Magizoologici',source:'Somnum — bonus Empatia già ottenuto',condition:condition,type:'empatia',value:value,fatica:0,total:1,stackGroup:'somnum',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus di Empatia ottenuto precedentemente con Somnum: vale per un solo successivo utilizzo di Empatia. Il costo di -1,5 Fatica è già stato pagato al lancio dell’incantesimo.'};
+}
+mzAddSomnum('somnum_s33','Somnum · Studente 33% (+1 Empatia)',1,'Studente · Efficacia 33%');
+mzAddSomnum('somnum_s66_1','Somnum · Studente 66% · 1d2=1 (+1 Empatia)',1,'Studente · Efficacia 66% · 1d2 = 1');
+mzAddSomnum('somnum_s66_2','Somnum · Studente 66% · 1d2=2 (+2 Empatia)',2,'Studente · Efficacia 66% · 1d2 = 2');
+mzAddSomnum('somnum_s100_1','Somnum · Studente 100% · 1d3=1 (+1 Empatia)',1,'Studente · Efficacia 100% · 1d3 = 1');
+mzAddSomnum('somnum_s100_2','Somnum · Studente 100% · 1d3=2 (+2 Empatia)',2,'Studente · Efficacia 100% · 1d3 = 2');
+mzAddSomnum('somnum_s100_3','Somnum · Studente 100% · 1d3=3 (+3 Empatia)',3,'Studente · Efficacia 100% · 1d3 = 3');
+mzAddSomnum('somnum_a33','Somnum · Adulto senza Sapienza · 33% (+2 Empatia)',2,'Adulto senza Sapienza Magizoologica · Efficacia 33%');
+mzAddSomnum('somnum_a66','Somnum · Adulto senza Sapienza · 66% (+3 Empatia)',3,'Adulto senza Sapienza Magizoologica · Efficacia 66%');
+mzAddSomnum('somnum_a100_3','Somnum · Adulto senza Sapienza · 100% · 2+1d3=3 (+3 Empatia)',3,'Adulto senza Sapienza Magizoologica · Efficacia 100% · 1d3 = 1');
+mzAddSomnum('somnum_a100_4','Somnum · Adulto senza Sapienza · 100% · 2+1d3=4 (+4 Empatia)',4,'Adulto senza Sapienza Magizoologica · Efficacia 100% · 1d3 = 2');
+mzAddSomnum('somnum_a100_5','Somnum · Adulto senza Sapienza · 100% · 2+1d3=5 (+5 Empatia)',5,'Adulto senza Sapienza Magizoologica · Efficacia 100% · 1d3 = 3');
+mzAddSomnum('somnum_sap100_4','Somnum · Adulto con Sapienza · 100% · 3+1d3=4 (+4 Empatia)',4,'Adulto con Sapienza Magizoologica 1+ · Efficacia 100% · 1d3 = 1');
+mzAddSomnum('somnum_sap100_5','Somnum · Adulto con Sapienza · 100% · 3+1d3=5 (+5 Empatia)',5,'Adulto con Sapienza Magizoologica 1+ · Efficacia 100% · 1d3 = 2');
+mzAddSomnum('somnum_sap100_6','Somnum · Adulto con Sapienza · 100% · 3+1d3=6 (+6 Empatia)',6,'Adulto con Sapienza Magizoologica 1+ · Efficacia 100% · 1d3 = 3');
+
+/* Remuvo non dà un bonus: se usato prima di addomesticare la Creatura
+   impone -5 possibilità alla Domesticazione. */
+MZ_PHASE_BONUS_PRESETS.remuvo_malus_dom={
+  label:'Remuvo — Creatura non ancora addomesticata (-5 Domesticazione)',
+  groupLabel:'Incantesimi Magizoologici',source:'Remuvo',condition:'Remuvo usato prima della Domesticazione',
+  type:'malusPossibilita',value:5,fatica:0,total:1,phases:['domesticazione'],
+  note:'Remuvo consente l’estrazione immediata di Ingredienti, ma se la Creatura non era già addomesticata applica -5 possibilità alla successiva Domesticazione. La Fatica di Remuvo è già stata spesa al momento del lancio.'
+};
+
+/* Imposium usa un tiro separato 1d15: NON va sommato al normale 1d30 di
+   Fiducia. I preset servono a ricordare soglia, Fatica e conseguenze. */
+function mzAddImposium(key,label,threshold,domMalus,postMalus,condition){
+  MZ_PHASE_BONUS_PRESETS[key]={
+    label:label,groupLabel:'Incantesimi Magizoologici',source:'Imposium',condition:condition,
+    type:'effetto',value:0,fatica:2,total:1,unlimited:true,phases:['fiducia'],stackGroup:'imposium',threshold:threshold,domMalus:domMalus,postMalus:postMalus,
+    note:'Tiro separato: 1d15, la Creatura è placata con 1-'+threshold+'. Se riesce, la Fiducia è considerata riuscita. Se poi tenti la Domesticazione: -'+domMalus+' possibilità. Alla prima Produzione di Ingredienti: +'+postMalus+' post. Se la Creatura viene placata ma non viene poi addomesticata: -2 Empatia al successivo utilizzo del Parametro.'
+  };
+}
+mzAddImposium('imposium_s33','Imposium · Studente 33% (placa 1-3/15)',3,1,3,'Studente · Potenza 33%');
+mzAddImposium('imposium_s66','Imposium · Studente 66% (placa 1-4/15)',4,2,4,'Studente · Potenza 66%');
+mzAddImposium('imposium_s100','Imposium · Studente 100% (placa 1-5/15)',5,3,5,'Studente · Potenza 100%');
+mzAddImposium('imposium_a33','Imposium · Adulto senza Sapienza 33% (placa 1-6/15)',6,4,7,'Adulto senza Sapienza Magizoologica · Potenza 33%');
+mzAddImposium('imposium_a66','Imposium · Adulto senza Sapienza 66% (placa 1-7/15)',7,5,8,'Adulto senza Sapienza Magizoologica · Potenza 66%');
+mzAddImposium('imposium_a100','Imposium · Adulto senza Sapienza 100% (placa 1-8/15)',8,6,9,'Adulto senza Sapienza Magizoologica · Potenza 100%');
+mzAddImposium('imposium_sap33','Imposium · Adulto con Sapienza 33% (placa 1-10/15)',10,7,10,'Adulto con Sapienza Magizoologica 1+ · Potenza 33%');
+mzAddImposium('imposium_sap66','Imposium · Adulto con Sapienza 66% (placa 1-11/15)',11,8,11,'Adulto con Sapienza Magizoologica 1+ · Potenza 66%');
+mzAddImposium('imposium_sap100','Imposium · Adulto con Sapienza 100% (placa 1-12/15)',12,9,12,'Adulto con Sapienza Magizoologica 1+ · Potenza 100%');
+
+function mzHtml(s){return String(s==null?'':s).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c];});}
+function mzPhasePresetOptions(phase){
+  var groups={},order=[];
+  Object.keys(MZ_PHASE_BONUS_PRESETS).forEach(function(k){var p=MZ_PHASE_BONUS_PRESETS[k];if(p.phases.indexOf(phase)<0)return;var g=p.groupLabel||'Altro';if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push({key:k,p:p});});
+  var html='<option value="">— Seleziona dal catalogo —</option>';
+  order.forEach(function(g){html+='<optgroup label="'+mzHtml(g)+'">';groups[g].forEach(function(x){html+='<option value="'+mzHtml(x.key)+'">'+mzHtml(x.p.label)+'</option>';});html+='</optgroup>';});
+  html+='<option value="manual">Altro bonus / effetto manuale</option>';
+  return html;
+}
 function mzPhaseTotals(phase){
-  var out={parametro:0,possibilita:0,fatica:0,effects:[]};
+  var out={empatia:0,parametro:0,possibilita:0,fatica:0,postReductionPct:0,effects:[]},possibilityGroups={},empatiaGroups={},postDirect=0,postGroups={};
   var box=document.getElementById('mzBonus'+phase.charAt(0).toUpperCase()+phase.slice(1));
   if(!box)return out;
   box.querySelectorAll('.mz-bonus-row').forEach(function(row){
     var value=Math.max(0,Math.floor(mzNum((row.querySelector('[data-role="value"]')||{}).value,0)));
     var faticaEl=row.querySelector('[data-role="fatica"]');
     var fatica=0;
-    if(faticaEl && faticaEl.value!=='' && !(faticaEl.validity && (faticaEl.validity.rangeUnderflow||faticaEl.validity.rangeOverflow||faticaEl.validity.stepMismatch||faticaEl.validity.badInput))){
-      fatica=Math.max(0,mzNum(faticaEl.value,0));
-    }
+    if(faticaEl && faticaEl.value!=='' && !(faticaEl.validity && (faticaEl.validity.rangeUnderflow||faticaEl.validity.rangeOverflow||faticaEl.validity.stepMismatch||faticaEl.validity.badInput))){fatica=Math.max(0,mzNum(faticaEl.value,0));}
+    if(row.dataset.presetKey&&row.dataset.presetKey.indexOf('imposium_')===0&&mzProfiloSapienza()>=25){fatica=0;}
     var total=Math.max(1,Math.floor(mzNum((row.querySelector('[data-role="total"]')||{}).value,1)));
     var used=Math.max(0,Math.min(total,Math.floor(mzNum((row.querySelector('[data-role="used"]')||{}).value,0))));
     var apply=row.querySelector('[data-role="apply"]');
     var type=(row.querySelector('[data-role="type"]')||{}).value||'possibilita';
+    var group=row.dataset.stackGroup||'';
+    var unlimited=row.dataset.unlimited==='1';
     if(apply&&apply.checked){
-      if(type==='parametro')out.parametro+=value;else out.possibilita+=value;
+      if(type==='empatia'){if(group)empatiaGroups[group]=Math.max(empatiaGroups[group]||0,value);else out.empatia+=value;}
+      else if(type==='malusEmpatia'){out.empatia-=value;}
+      else if(type==='parametro')out.parametro+=value;
+      else if(type==='postPercent'){if(group)postGroups[group]=Math.max(postGroups[group]||0,value);else postDirect+=value;}
+      else if(type==='malusPossibilita')out.possibilita-=value;
+      else if(type==='possibilita'){if(group)possibilityGroups[group]=Math.max(possibilityGroups[group]||0,value);else out.possibilita+=value;}
     }
     out.fatica+=fatica*used;
     if((apply&&apply.checked)||used>0){
-      out.effects.push({
-        source:((row.querySelector('[data-role="source"]')||{}).value||'Bonus').trim()||'Bonus',
-        condition:((row.querySelector('[data-role="condition"]')||{}).value||'').trim(),
-        type:type,value:value,fatica:fatica,total:total,used:used,applied:!!(apply&&apply.checked),phase:phase
-      });
+      out.effects.push({source:((row.querySelector('[data-role="source"]')||{}).value||'Bonus').trim()||'Bonus',condition:((row.querySelector('[data-role="condition"]')||{}).value||'').trim(),type:type,value:value,fatica:fatica,total:total,used:used,applied:!!(apply&&apply.checked),phase:phase,stackGroup:group,unlimited:unlimited});
     }
   });
+  Object.keys(possibilityGroups).forEach(function(k){out.possibilita+=possibilityGroups[k];});
+  Object.keys(empatiaGroups).forEach(function(k){out.empatia+=empatiaGroups[k];});
+  Object.keys(postGroups).forEach(function(k){postDirect+=postGroups[k];});out.postReductionPct=Math.min(100,postDirect);
   return out;
 }
 function mzPhaseLabel(phase){
@@ -1386,12 +1766,21 @@ function mzPhaseLabel(phase){
 function mzSyncBonusRow(row, changedRole){
   var totalEl=row.querySelector('[data-role="total"]'),usedEl=row.querySelector('[data-role="used"]'),apply=row.querySelector('[data-role="apply"]'),remaining=row.querySelector('.mz-bonus-remaining');
   if(!totalEl||!usedEl||!apply)return;
-  var total=Math.max(1,Math.floor(mzNum(totalEl.value,1)));
+  var unlimited=row.dataset.unlimited==='1';
+  var total=unlimited?999999:Math.max(1,Math.floor(mzNum(totalEl.value,1)));
   var used=Math.max(0,Math.floor(mzNum(usedEl.value,0)));
   /* Lo storico degli usi consumati non va mai cancellato abbassando gli usi totali.
      Se si modifica il totale sotto gli usi già consumati, il totale viene ricondotto
      almeno allo storico. Se invece si modifica direttamente "Usi consumati" oltre
      il totale disponibile, viene limitato al totale. */
+  if(unlimited){
+    if(apply.checked&&used<1)used=1;
+    totalEl.value='999999';
+    if(usedEl.value!=='')usedEl.value=String(used);
+    if(remaining)remaining.textContent=used+' usi registrati · non consumabile';
+    apply.disabled=false;
+    return;
+  }
   if(changedRole==='used'){
     used=Math.min(total,used);
   }else{
@@ -1418,26 +1807,57 @@ function mzCreateGeneralBonusRow(data){
   row.querySelector('.mz-bonus-remove').addEventListener(evtClick,function(){row.remove();ricalcolaMagizoologia();});
   document.getElementById('mzBonusGenerali').appendChild(row);setupNumericInputs();ricalcolaMagizoologia();
 }
+function mzApplyPhasePreset(row,phase){
+  var sel=row.querySelector('[data-role="preset"]'),key=sel?sel.value:'',p=MZ_PHASE_BONUS_PRESETS[key];
+  var source=row.querySelector('[data-role="source"]'),condition=row.querySelector('[data-role="condition"]'),type=row.querySelector('[data-role="type"]'),value=row.querySelector('[data-role="value"]'),fatica=row.querySelector('[data-role="fatica"]'),total=row.querySelector('[data-role="total"]'),note=row.querySelector('.mz-bonus-preset-note');
+  var fields=[source,condition,value,fatica,total];
+  var totalWrap=total?total.closest('.mz-bonus-field'):null;
+  if(p){
+    source.value=p.source||'';condition.value=p.condition||'';type.value=p.type||'possibilita';value.value=String(p.value||0);fatica.value=String(p.fatica||0);total.value=String(p.unlimited?999999:(p.total||1));row.dataset.stackGroup=p.stackGroup||'';row.dataset.unlimited=p.unlimited?'1':'';row.dataset.presetKey=key;
+    fields.forEach(function(x){if(x)x.readOnly=true;});if(type)type.disabled=true;if(totalWrap)totalWrap.style.display=p.unlimited?'none':'';if(note)note.textContent=p.note||'';
+  }else if(key==='manual'){
+    row.dataset.stackGroup='';row.dataset.unlimited='';row.dataset.presetKey=key||'';if(totalWrap)totalWrap.style.display='';fields.forEach(function(x){if(x)x.readOnly=false;});if(type)type.disabled=false;if(note)note.textContent='Inserisci il valore previsto dal regolamento. Se l’effetto modifica direttamente Empatia, scegli «Bonus Empatia» così il tool lo applica prima delle conversioni della fase.';
+  }else{
+    row.dataset.stackGroup='';row.dataset.unlimited='';row.dataset.presetKey='';if(totalWrap)totalWrap.style.display='';source.value='';condition.value='';type.value='possibilita';value.value='0';fatica.value='0';total.value='1';fields.forEach(function(x){if(x)x.readOnly=true;});if(type)type.disabled=true;if(note)note.textContent='Seleziona un effetto dal catalogo oppure scegli «Altro bonus / effetto manuale».';
+  }
+  mzSyncBonusRow(row,'preset');
+}
 function mzCreatePhaseBonusRow(phase,data){
   data=data||{};MZ_BONUS_UID++;
   var box=document.getElementById('mzBonus'+phase.charAt(0).toUpperCase()+phase.slice(1));if(!box)return;
   var row=document.createElement('div');row.className='mz-bonus-row mz-phase';row.dataset.phase=phase;row.dataset.uid='p'+MZ_BONUS_UID;
   var typeLabel=phase==='allevamento'?'Possibilità al tiro':'Possibilità / soglia';
-  row.innerHTML='<div class="mz-bonus-field"><label>Fonte</label><input type="text" data-role="source" maxlength="100"></div>'+
-    '<div class="mz-bonus-field"><label>Condizione / Efficacia</label><input type="text" data-role="condition" maxlength="100"></div>'+
-    '<div class="mz-bonus-field"><label>Tipo</label><select data-role="type"><option value="parametro">Bonus al parametro</option><option value="possibilita">'+typeLabel+'</option></select></div>'+
-    '<div class="mz-bonus-field"><label>Bonus</label><input type="number" data-role="value" value="0" min="0" step="1"></div>'+
-    '<div class="mz-bonus-field"><label>Fatica / uso</label><input type="number" data-role="fatica" value="0" min="0" step="0.5" data-decimal="1"></div>'+
-    '<div class="mz-bonus-field"><label>Usi totali</label><input type="number" data-role="total" value="1" min="1" step="1"></div>'+
-    '<div class="mz-bonus-field"><label>Usi consumati</label><input type="number" data-role="used" value="0" min="0" step="1"><div class="mz-bonus-remaining">0/1 usi → 1 rimasti</div></div>'+
-    '<label class="mz-bonus-check"><input type="checkbox" data-role="apply"> Applica</label>'+
-    '<button type="button" class="mz-bonus-remove" title="Elimina bonus" aria-label="Elimina bonus">×</button>';
-  ['source','condition','type','value','fatica','total','used'].forEach(function(k){var el=row.querySelector('[data-role="'+k+'"]');if(data[k]!==undefined&&el){if(el.type==='checkbox')el.checked=!!data[k];else el.value=data[k];}});
+  var typeOptions='<option value="empatia">Bonus Empatia</option><option value="malusEmpatia">Malus Empatia</option><option value="parametro">Bonus al parametro</option><option value="possibilita">'+typeLabel+'</option><option value="malusPossibilita">Malus alle possibilità</option><option value="effetto">Effetto speciale / informativo</option>'+(phase==='allevamento'?'<option value="postPercent">Riduzione % post Accoppiamento</option>':'');
+  row.innerHTML='<div class="mz-bonus-field mz-bonus-preset-wrap"><label>Catalogo Oggetto / Conoscenza / effetto</label><select data-role="preset">'+mzPhasePresetOptions(phase)+'</select></div>'+ 
+    '<div class="mz-bonus-field"><label>Fonte</label><input type="text" data-role="source" maxlength="100"></div>'+ 
+    '<div class="mz-bonus-field"><label>Condizione / Efficacia</label><input type="text" data-role="condition" maxlength="140"></div>'+ 
+    '<div class="mz-bonus-field"><label>Tipo</label><select data-role="type">'+typeOptions+'</select></div>'+ 
+    '<div class="mz-bonus-field"><label>Bonus</label><input type="number" data-role="value" value="0" min="0" step="1"></div>'+ 
+    '<div class="mz-bonus-field"><label>Fatica / uso</label><input type="number" data-role="fatica" value="0" min="0" step="0.5" data-decimal="1"></div>'+ 
+    '<div class="mz-bonus-field"><label>Usi totali</label><input type="number" data-role="total" value="1" min="1" step="1"></div>'+ 
+    '<div class="mz-bonus-field"><label>Usi consumati</label><input type="number" data-role="used" value="0" min="0" step="1"><div class="mz-bonus-remaining">0/1 usi → 1 rimasti</div></div>'+ 
+    '<label class="mz-bonus-check"><input type="checkbox" data-role="apply"> Applica</label>'+ 
+    '<button type="button" class="mz-bonus-remove" title="Elimina bonus" aria-label="Elimina bonus">×</button>'+ 
+    '<div class="mz-bonus-preset-note"></div>';
+  var preset=row.querySelector('[data-role="preset"]');
+  var presetKey=data.preset||'';
+  if(!presetKey && (data.source||data.value!==undefined))presetKey='manual';
+  preset.value=presetKey;
+  mzApplyPhasePreset(row,phase);
+  if(presetKey==='manual'){
+    ['source','condition','type','value','fatica','total','used'].forEach(function(k){var el=row.querySelector('[data-role="'+k+'"]');if(data[k]!==undefined&&el)el.value=data[k];});
+  }
+  preset.addEventListener('change',function(){mzApplyPhasePreset(row,phase);ricalcolaMagizoologia();});
   var apply=row.querySelector('[data-role="apply"]');
   apply.addEventListener('change',function(){
     var totalEl=row.querySelector('[data-role="total"]'),usedEl=row.querySelector('[data-role="used"]');
-    var total=Math.max(1,Math.floor(mzNum(totalEl.value,1))),used=Math.max(0,Math.min(total,Math.floor(mzNum(usedEl.value,0))));
-    if(apply.checked){if(used>=total){apply.checked=false;}else{usedEl.value=String(used+1);}}
+    var unlimited=row.dataset.unlimited==='1';
+    var total=unlimited?999999:Math.max(1,Math.floor(mzNum(totalEl.value,1))),used=Math.max(0,Math.min(total,Math.floor(mzNum(usedEl.value,0))));
+    if(apply.checked){if(!unlimited&&used>=total){apply.checked=false;}else{
+      var group=row.dataset.stackGroup||'';
+      if(group){box.querySelectorAll('.mz-bonus-row').forEach(function(other){if(other!==row&&other.dataset.stackGroup===group){var oa=other.querySelector('[data-role="apply"]');if(oa)oa.checked=false;}});}
+      usedEl.value=String(used+1);
+    }}
     mzSyncBonusRow(row,'apply');ricalcolaMagizoologia();
   });
   row.querySelector('[data-role="total"]').addEventListener('input',function(){mzSyncBonusRow(row,'total');});
@@ -1457,9 +1877,9 @@ function mzUpdateBonusSummary(){
     if(active&&active.checked&&val>0){effects.push({general:true,source:((row.querySelector('[data-role="source"]')||{}).value||'Bonus generale').trim()||'Bonus generale',condition:((row.querySelector('[data-role="condition"]')||{}).value||'').trim(),target:(row.querySelector('[data-role="target"]')||{}).selectedOptions?row.querySelector('[data-role="target"]').selectedOptions[0].textContent:'Parametro',value:val});}
   });
   ['fiducia','scoperta','cura','domesticazione','allevamento'].forEach(function(phase){var t=mzPhaseTotals(phase);fatigue+=t.fatica;effects=effects.concat(t.effects);});
-  var fatigueBase=bonusValore('tentativiFiducia')+bonusValore('tentativiScoperta')+bonusValore('tentativiCura')+(bonusValore('tentativiDomesticazione')*2);
+  var fatigueBase=mzProfiloSapienza()>=25?0:(bonusValore('tentativiFiducia')+bonusValore('tentativiScoperta')+bonusValore('tentativiCura')+(bonusValore('tentativiDomesticazione')*2));
   if(!effects.length){var e=document.createElement('div');e.className='mz-summary-empty';e.textContent='Nessun Oggetto/Conoscenza applicato o consumato in questa sessione.';host.appendChild(e);}
-  effects.forEach(function(e){var d=document.createElement('div');d.className='mz-effect-chip';if(e.general){d.textContent=e.source+(e.condition?' · '+e.condition:'')+' → +'+e.value+' '+e.target+' · BONUS GENERALE';}else{var typ=e.type==='parametro'?'PARAMETRO':'POSSIBILITÀ';var rem=Math.max(0,e.total-e.used);var faticaUsata=e.fatica*e.used;d.textContent=e.source+(e.condition?' · '+e.condition:'')+' → +'+e.value+' '+typ+' · '+mzPhaseLabel(e.phase)+(faticaUsata>0?' · -'+faticaUsata+' FATICA':'')+' · '+e.used+'/'+e.total+' USI → '+rem+' RIMASTI'+(e.applied?' · APPLICATO ORA':'');}host.appendChild(d);});
+  effects.forEach(function(e){var d=document.createElement('div');d.className='mz-effect-chip';if(e.general){d.textContent=e.source+(e.condition?' · '+e.condition:'')+' → +'+e.value+' '+e.target+' · BONUS GENERALE';}else{var typ=e.type==='empatia'?'EMPATIA':(e.type==='malusEmpatia'?'MALUS EMPATIA':(e.type==='parametro'?'PARAMETRO':(e.type==='postPercent'?'RIDUZIONE POST':(e.type==='malusPossibilita'?'MALUS POSSIBILITÀ':(e.type==='effetto'?'EFFETTO':'POSSIBILITÀ')))));var rem=Math.max(0,e.total-e.used);var faticaUsata=e.fatica*e.used;var valoreTxt=e.type==='effetto'?'':(e.type==='postPercent'?('-'+e.value+'% '):((e.type==='malusPossibilita'||e.type==='malusEmpatia')?('-'+e.value+' '):('+'+e.value+' ')));d.textContent=e.source+(e.condition?' · '+e.condition:'')+' → '+valoreTxt+typ+' · '+mzPhaseLabel(e.phase)+(faticaUsata>0?' · -'+faticaUsata+' FATICA':'')+' · '+(e.unlimited?(e.used+' USI REGISTRATI · NON CONSUMABILE'):(e.used+'/'+e.total+' USI → '+rem+' RIMASTI'))+(e.applied?' · APPLICATO ORA':'');}host.appendChild(d);});
   var fat=document.getElementById('mzFaticaSummary');if(fat){var fatigueTot=fatigueBase+fatigue;fat.style.display=fatigueTot>0?'block':'none';fat.innerHTML=fatigueTot>0?('<strong>Fatica totale registrata:</strong> -'+fatigueTot+(fatigueBase>0?' · procedure -'+fatigueBase:'')+(fatigue>0?' · Oggetti/Conoscenze -'+fatigue:'')):'';}
 }
 function mzSetupBonusManagers(){
@@ -1490,6 +1910,12 @@ function clearDependentResult(inputId, tagId){
   if(tag){tag.textContent = 'in attesa';tag.className = 'out-tag out-neutral';}
 }
 
+function mzProfiloSapienza(){
+  var tipo=document.getElementById('pgTipo');
+  if(tipo&&tipo.value!=='adulto')return 0;
+  return Math.max(0,Math.min(25,bonusValore('sapienzaProfilo')));
+}
+
 function aggiornaCampiTipoPG(){
   var tipoEl = document.getElementById('pgTipo');
   if(!tipoEl){ return; }
@@ -1506,6 +1932,8 @@ function leggiPG(){
   pg.voto = pg.tipo === 'studente' ? document.getElementById('pgVoto').value : null;
   pg.empatiaBase = bonusValore('empatia');
   pg.empatia = pg.empatiaBase + mzGeneralBonus('empatia');
+  pg.sapienzaMagizoologica = pg.tipo === 'adulto' ? mzProfiloSapienza() : 0;
+  var specSap=document.getElementById('mzSapienzaSpeciale');if(specSap){var rawSap=bonusValore('sapienzaProfilo');specSap.textContent=pg.sapienzaMagizoologica>=25?'Sapienza 25: attivi i bonus speciali (0 Fatica nelle fasi previste e +20% Produzione).':(pg.tipo==='studente'&&rawSap>1?'Per il PG Studente la Ricerca considera Sapienza I.':'');}
   var effEmp=document.getElementById('mzEmpatiaEffettiva');
   if(effEmp){effEmp.textContent=pg.empatia!==pg.empatiaBase?'Empatia effettiva: '+pg.empatia+' ('+pg.empatiaBase+' + '+(pg.empatia-pg.empatiaBase)+' bonus)':'';}
   pg.livAmico = pg.tipo === 'adulto' ? parseInt(document.getElementById('livAmico').value, 10) : 0;
@@ -1658,7 +2086,7 @@ function resetGuidaMagizoologia(){
     el.disabled=false;
   });
   document.querySelectorAll('#mzBonusFiducia,#mzBonusScoperta,#mzBonusCura,#mzBonusDomesticazione,#mzBonusAllevamento').forEach(function(x){x.innerHTML='';});
-  formulaSignatures={};curaEbbeUnFallimento=false;MZ_LAST_CURA_BONUS_DOM=0;MZ_BONUS_UID=0;
+  formulaSignatures={};curaEbbeUnFallimento=false;MZ_SCOPERTA_FALLITA=false;MZ_CURA_FALLITA=false;MZ_CURA_MALUS_ALLEVAMENTO=0;MZ_LAST_CURA_BONUS_DOM=0;MZ_IMPOSIUM_SUCCESS=false;MZ_IMPOSIUM_DOM_MALUS=0;MZ_IMPOSIUM_POST_MALUS=0;MZ_BONUS_UID=0;MZ_ILLEGAL_SIGNATURES={cura:null,allevamento:null};
   ricalcolaMagizoologia();
 }
 
@@ -1672,6 +2100,38 @@ function recomputeRiconoscimento(){
   } else {
     esito.innerHTML = 'La Creatura NON viene riconosciuta: -5 possibilita in fase di Fiducia.';
   }
+}
+
+function mzActiveImposiumPreset(){
+  var box=document.getElementById('mzBonusFiducia');if(!box)return null;
+  var found=null;
+  box.querySelectorAll('.mz-bonus-row').forEach(function(row){
+    var apply=row.querySelector('[data-role="apply"]');var key=row.dataset.presetKey||'';
+    if(apply&&apply.checked&&key.indexOf('imposium_')===0&&MZ_PHASE_BONUS_PRESETS[key])found=MZ_PHASE_BONUS_PRESETS[key];
+  });
+  return found;
+}
+function recomputeImposium(pg){
+  var block=document.getElementById('bloccoImposium'),code=document.getElementById('codiceImposium'),tag=document.getElementById('tagImposium'),noteRule=document.getElementById('noteImposiumRegola'),noteOut=document.getElementById('noteImposiumEsito'),inp=document.getElementById('risultatoImposium'),p=mzActiveImposiumPreset();
+  MZ_IMPOSIUM_SUCCESS=false;MZ_IMPOSIUM_DOM_MALUS=0;MZ_IMPOSIUM_POST_MALUS=0;
+  if(!block||!code||!tag||!inp)return null;
+  if(!p){block.style.display='none';inp.value='';tag.textContent='in attesa';tag.className='out-tag out-neutral';if(noteOut)noteOut.textContent='';return null;}
+  block.style.display='block';
+  var fatica=mzProfiloSapienza()>=25?0:2;
+  if(noteRule)noteRule.textContent='Imposium funziona solo se la Forza dell’incantesimo supera la Forza dell’attacco più forte della Creatura. Costo: -'+fatica+' Fatica. Questo 1d15 è separato dal normale dado Fiducia.';
+  code.textContent=mzForumDiceBlock('Imposium riesce a placare la Creatura?',mzThresholdAnswers(p.threshold,15,'Creatura placata','Imposium non riesce a placarla'),'[dice=1d15]Imposium — tentativo di placare la Creatura[/dice]');
+  var v=inp.value;
+  if(v===''){tag.textContent='in attesa';tag.className='out-tag out-neutral';if(noteOut)noteOut.textContent='';return null;}
+  if(!intInRange(v,1,15)){tag.textContent='Risultato impossibile';tag.className='out-tag out-fail';if(noteOut)noteOut.textContent='Inserisci un intero compreso fra 1 e 15.';return false;}
+  var ok=Number(v)<=p.threshold;
+  if(ok){
+    tag.textContent='Creatura placata';tag.className='out-tag out-ok';
+    if(!(pg&&pg.ostilita==='sempre')){MZ_IMPOSIUM_SUCCESS=true;MZ_IMPOSIUM_DOM_MALUS=p.domMalus||0;MZ_IMPOSIUM_POST_MALUS=p.postMalus||0;}
+    if(noteOut)noteOut.textContent=pg&&pg.ostilita==='sempre'?'La Creatura sempre ostile viene placata temporaneamente, ma resta non addomesticabile.':'La fase di Fiducia è considerata riuscita tramite Imposium. Se prosegui: -'+MZ_IMPOSIUM_DOM_MALUS+' possibilità in Domesticazione e +'+MZ_IMPOSIUM_POST_MALUS+' post alla prima Produzione di Ingredienti. Se non la addomestichi: -2 Empatia al prossimo utilizzo.';
+  }else{
+    tag.textContent='Imposium fallito';tag.className='out-tag out-fail';if(noteOut)noteOut.textContent='Puoi ancora usare il normale dado di Fiducia, se la Creatura non è sempre ostile.';
+  }
+  return ok;
 }
 
 /* ---------- FIDUCIA ---------- */
@@ -1703,6 +2163,7 @@ function recomputeFiducia(){
 
   var pg = leggiPG();
   blocco.style.display = 'none';
+  var imposiumOk = recomputeImposium(pg);
 
   if(pg.ostilita === 'sempre'){
     guardFormula('fiducia', 'stato:sempre-ostile', 'risultatoFiducia');
@@ -1713,6 +2174,17 @@ function recomputeFiducia(){
     tagEl.textContent = 'Fallimento automatico';
     tagEl.className = 'out-tag out-fail';
     noteEl.textContent = '';
+    clearDependentResult('risultatoConseguenzaFiducia','tagConseguenzaFiducia');
+    return;
+  }
+
+  if(imposiumOk===true){
+    guardFormula('fiducia','imposium:'+MZ_IMPOSIUM_DOM_MALUS+'|'+MZ_IMPOSIUM_POST_MALUS,'risultatoFiducia');
+    formulaEl.textContent='Fiducia superata tramite Imposium (tiro separato 1d15).';
+    codiceEl.textContent='Il normale 1d30 di Fiducia non è necessario: Imposium ha placato la Creatura.';
+    copiaBtn.disabled=true;risultatoInp.disabled=true;risultatoInp.value='';
+    tagEl.textContent='Successo tramite Imposium';tagEl.className='out-tag out-ok';
+    noteEl.textContent='Il tool porterà automaticamente il malus di Imposium alla Domesticazione e segnalerà il malus di post alla prima Produzione.';
     clearDependentResult('risultatoConseguenzaFiducia','tagConseguenzaFiducia');
     return;
   }
@@ -1740,7 +2212,9 @@ function recomputeFiducia(){
 
   var base = baseFiducia(pg);
   var bonusClasse = classFiducia[pg.classificazione];
-  var bonusEmpatia = Math.floor(pg.empatia / 2);
+  var bonusFase = mzPhaseTotals('fiducia');
+  var empatiaFase = pg.empatia + bonusFase.empatia;
+  var bonusEmpatia = Math.floor(empatiaFase / 2);
   var malusRiconoscimento = 0;
   if(!document.getElementById('creaturaRiconosciuta').checked){
     malusRiconoscimento = -5;
@@ -1749,11 +2223,10 @@ function recomputeFiducia(){
   if(document.getElementById('ritentativoOstile').checked){
     malusRitentativo = -3;
   }
-  var bonusFase = mzPhaseTotals('fiducia');
   var totale = base + bonusClasse + bonusEmpatia + malusRiconoscimento + malusRitentativo + bonusFase.parametro + bonusFase.possibilita;
   guardFormula('fiducia', totale, 'risultatoFiducia');
 
-  var testoFormula = 'Base ' + base + ' + Classificazione ' + bonusClasse + ' + Empatia effettiva/2 ' + bonusEmpatia + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita;
+  var testoFormula = 'Base ' + base + ' + Classificazione ' + bonusClasse + ' + Empatia fase ' + empatiaFase + '/2 = ' + bonusEmpatia + (bonusFase.empatia?' (+'+bonusFase.empatia+' Empatia temporanea)':'') + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita;
   if(malusRiconoscimento !== 0){
     testoFormula = testoFormula + ' + Malus Riconoscimento ' + malusRiconoscimento;
   }
@@ -1835,6 +2308,7 @@ var classCura = {X:3, XX:2, XXX:0, XXXX:-2, XXXXX:-3};
 var tabCustodeVoto = {T:0, D:1, S:2, A:3, O:4, E:5};
 var tabCustodeLiv = {1:7, 2:8, 3:9, 4:10, 5:11};
 var curaEbbeUnFallimento = false;
+var MZ_SCOPERTA_FALLITA=false, MZ_CURA_FALLITA=false, MZ_CURA_MALUS_ALLEVAMENTO=0;
 
 function baseCustode(pg){
   var base;if(pg.livCustode >= 1){base=tabCustodeLiv[pg.livCustode];}
@@ -1852,13 +2326,16 @@ function recomputeScoperta(){
   var bonusMostrato = document.getElementById('bonusCuraMostrato');
 
   var pg = leggiPG();
-  var base = pg.empatia + baseCustode(pg) + classCura[pg.classificazione];
   var bonusFase = mzPhaseTotals('scoperta');
+  var empatiaFase = pg.empatia + bonusFase.empatia;
+  var base = empatiaFase + baseCustode(pg) + classCura[pg.classificazione];
   var totale = base + bonusFase.parametro + bonusFase.possibilita;
   guardFormula('scoperta', totale, 'risultatoScoperta');
-  formulaEl.textContent = 'Empatia effettiva ' + pg.empatia + ' + Base/Custode ' + baseCustode(pg) + ' + Classificazione ' + classCura[pg.classificazione] + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita + ' = ' + totale + ' su 35';
+  formulaEl.textContent = 'Empatia fase ' + empatiaFase + (bonusFase.empatia?' (+'+bonusFase.empatia+' temporanea)':'') + ' + Base/Custode ' + baseCustode(pg) + ' + Classificazione ' + classCura[pg.classificazione] + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita + ' = ' + totale + ' su 35';
 
   var malusExtra = bonusValore('malusExtraScoperta');
+  var storicoScopertaEl=document.getElementById('scopertaFallimentoPrecedente');
+  if(malusExtra>0&&storicoScopertaEl)storicoScopertaEl.checked=true;
 
   if(totale >= 35){
     codiceEl.textContent = 'Autoconclusivo: possibilita ' + totale + ' su 35, nessun tiro necessario.';
@@ -1906,7 +2383,8 @@ function recomputeScoperta(){
   } else {
     tagEl.textContent = 'Fallimento';
     tagEl.className = 'out-tag out-fail';
-    noteEl.textContent = 'La Creatura si aggrava: -3 possibilita per la Cura del problema. Anche -1d2 cuccioli e +5 post in Allevamento (i malus non si sommano).';
+    noteEl.textContent = 'La Creatura si aggrava: -3 possibilità per la Cura del problema. In Allevamento: -1d2 cuccioli e +5 post. Ulteriori fallimenti di Scoperta non aumentano questo specifico malus.';
+    if(storicoScopertaEl)storicoScopertaEl.checked=true;
     bonus = -3;
   }
   bonus = bonus - malusExtra;
@@ -1923,16 +2401,16 @@ function recomputeCura(bonusScoperta){
   var noteEl = document.getElementById('noteCura');
   var bonusDomMostrato = document.getElementById('bonusDomesticazioneMostrato');
 
-  /* Il malus di Allevamento dipende dall'aver avuto almeno un fallimento
-     nell'intera sequenza, non soltanto dall'esito dell'ultimo tiro visibile.
-     La checkbox storica permette di conservare correttamente il malus anche
-     dopo un successivo successo e di correggerlo manualmente solo se il
-     fallimento era stato inserito per errore. */
-  var storicoCuraEl = document.getElementById('curaFallimentoPrecedente');
-  curaEbbeUnFallimento = !!(storicoCuraEl && storicoCuraEl.checked);
-  if(bonusValore('malusExtraScoperta') > 0 || bonusValore('fallimentiCuraConsecutivi') > 0){
-    curaEbbeUnFallimento = true;
-  }
+  /* Scoperta e Cura producono due malus di Allevamento distinti: ciascuno
+     si applica al massimo una volta, ma i due malus si sommano fra loro. */
+  var storicoScopertaEl=document.getElementById('scopertaFallimentoPrecedente');
+  var storicoCuraEl=document.getElementById('curaFallimentoPrecedente');
+  MZ_SCOPERTA_FALLITA=!!(storicoScopertaEl&&storicoScopertaEl.checked)||bonusValore('malusExtraScoperta')>0||(bonusScoperta!==null&&bonusScoperta<0);
+  MZ_CURA_FALLITA=!!(storicoCuraEl&&storicoCuraEl.checked)||bonusValore('fallimentiCuraConsecutivi')>0;
+  if(MZ_SCOPERTA_FALLITA&&storicoScopertaEl)storicoScopertaEl.checked=true;
+  if(MZ_CURA_FALLITA&&storicoCuraEl)storicoCuraEl.checked=true;
+  MZ_CURA_MALUS_ALLEVAMENTO=(MZ_SCOPERTA_FALLITA?1:0)+(MZ_CURA_FALLITA?1:0);
+  curaEbbeUnFallimento=MZ_CURA_MALUS_ALLEVAMENTO>0;
 
   if(bonusScoperta === null){
     guardFormula('cura', 'stato:attesa-scoperta', 'risultatoCura');
@@ -1947,20 +2425,15 @@ function recomputeCura(bonusScoperta){
     return;
   }
 
-  if(bonusScoperta < 0){
-    curaEbbeUnFallimento = true;
-  }
-  if(curaEbbeUnFallimento && storicoCuraEl){
-    storicoCuraEl.checked = true;
-  }
 
   var pg = leggiPG();
-  var base = pg.empatia + baseCustode(pg) + classCura[pg.classificazione];
-  var bonusNarratore = bonusValore('bonusNarratore');
   var bonusFase = mzPhaseTotals('cura');
+  var empatiaFase = pg.empatia + bonusFase.empatia;
+  var base = empatiaFase + baseCustode(pg) + classCura[pg.classificazione];
+  var bonusNarratore = bonusValore('bonusNarratore');
   var totale = base + bonusScoperta + bonusNarratore + bonusFase.parametro + bonusFase.possibilita;
   guardFormula('cura', totale, 'risultatoCura');
-  formulaEl.textContent = 'Empatia effettiva ' + pg.empatia + ' + Base/Custode ' + baseCustode(pg) + ' + Classificazione ' + classCura[pg.classificazione] + ' + Scoperta ' + bonusScoperta + ' + Narratore ' + bonusNarratore + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita + ' = ' + totale + ' su 35';
+  formulaEl.textContent = 'Empatia fase ' + empatiaFase + (bonusFase.empatia?' (+'+bonusFase.empatia+' temporanea)':'') + ' + Base/Custode ' + baseCustode(pg) + ' + Classificazione ' + classCura[pg.classificazione] + ' + Scoperta ' + bonusScoperta + ' + Narratore ' + bonusNarratore + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita + ' = ' + totale + ' su 35';
 
   if(totale <= 0){
     codiceEl.textContent = 'Il totale e zero o negativo: nessun tiro possibile.';
@@ -2014,9 +2487,9 @@ function recomputeCura(bonusScoperta){
   } else {
     tagEl.textContent = 'Fallimento';
     tagEl.className = 'out-tag out-fail';
-    noteEl.textContent = 'La cura fallisce: -1d2 cuccioli e +5 post in Allevamento (i malus non si sommano a quelli della Scoperta).';
+    noteEl.textContent = 'La Cura fallisce: -1d2 cuccioli e +5 post in Allevamento. Se anche la Scoperta del problema ha avuto un fallimento, i due malus si sommano fino a -2d2 cuccioli e +10 post.';
     bonusDomMostrato.textContent = 'Nessun bonus per la Domesticazione.';MZ_LAST_CURA_BONUS_DOM=0;
-    curaEbbeUnFallimento = true;
+    MZ_CURA_FALLITA=true;curaEbbeUnFallimento=true;MZ_CURA_MALUS_ALLEVAMENTO=(MZ_SCOPERTA_FALLITA?1:0)+1;
     if(storicoCuraEl){storicoCuraEl.checked = true;}
   }
 }
@@ -2167,9 +2640,11 @@ function recomputeDomesticazione(){
   var bonusCura = MZ_LAST_CURA_BONUS_DOM;
   var infoCuraDom=document.getElementById('bonusCuraPerDomesticazioneInfo');if(infoCuraDom){infoCuraDom.textContent=bonusCura?('Bonus automatico dalla Cura riuscita: +'+bonusCura):'Bonus da Cura: nessuno finché la Cura non riesce.';}
   var bonusFase = mzPhaseTotals('domesticazione');
-  var totale = pg.empatia + bonusAddestratore + bonusClasse + bonusCura + bonusFase.parametro + bonusFase.possibilita;
+  var empatiaFase = pg.empatia + bonusFase.empatia;
+  var malusImposium=MZ_IMPOSIUM_SUCCESS?MZ_IMPOSIUM_DOM_MALUS:0;
+  var totale = empatiaFase + bonusAddestratore + bonusClasse + bonusCura + bonusFase.parametro + bonusFase.possibilita - malusImposium;
   guardFormula('domesticazione', totale, 'risultatoDomesticazione');
-  formulaEl.textContent = 'Empatia effettiva ' + pg.empatia + ' + Voto/Addestratore/Base ' + bonusAddestratore + ' + Classificazione ' + bonusClasse + ' + Bonus Cura ' + bonusCura + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita + ' = ' + totale + ' su 35';
+  formulaEl.textContent = 'Empatia fase ' + empatiaFase + (bonusFase.empatia?' (+'+bonusFase.empatia+' temporanea)':'') + ' + Voto/Addestratore/Base ' + bonusAddestratore + ' + Classificazione ' + bonusClasse + ' + Bonus Cura ' + bonusCura + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita + (malusImposium?' - Malus Imposium '+malusImposium:'') + ' = ' + totale + ' su 35';
 
   if(totale >= 35){
     codiceEl.textContent = 'Autoconclusivo: possibilita ' + totale + ' su 35, nessun tiro necessario.';
@@ -2315,14 +2790,19 @@ function recomputeAllevamento(){
   var base = baseAllevatore(pg);
   var deduzione = classAllevamento[pg.classificazione];
   var bonusFase = mzPhaseTotals('allevamento');
-  var totale = base + pg.empatia - deduzione + bonusFase.parametro;
+  var empatiaFase = pg.empatia + bonusFase.empatia;
+  var totale = base + empatiaFase - deduzione + bonusFase.parametro;
   /* In Allevamento la fascia e il bonus al tiro agiscono in due momenti diversi:
      entrambi fanno parte della firma che rende valido il risultato già tirato. */
   guardFormula('allevamento', totale + '|poss:' + bonusFase.possibilita, 'risultatoAllevamento');
   var fascia = trovaFasciaAllevamento(totale);
 
-  formulaEl.textContent = 'Base/Voto ' + base + ' + Empatia effettiva ' + pg.empatia + ' - Classificazione ' + deduzione + ' + Bonus parametro ' + bonusFase.parametro + ' = ' + totale + ' (fascia ' + fascia.etichetta + ')';
+  formulaEl.textContent = 'Base/Voto ' + base + ' + Empatia fase ' + empatiaFase + (bonusFase.empatia?' (+'+bonusFase.empatia+' temporanea)':'') + ' - Classificazione ' + deduzione + ' + Bonus parametro ' + bonusFase.parametro + ' = ' + totale + ' (fascia ' + fascia.etichetta + ')';
   tabellaWrap.innerHTML = '<table class="fasce"><tr><th>0%</th><th>33%</th><th>66%</th><th>100%</th></tr><tr><td>' + fascia.z + '</td><td>' + fascia.tt + '</td><td>' + fascia.ss + '</td><td>' + fascia.cc + '</td></tr></table>';
+
+  var bonusPostEl=document.getElementById('bonusPostAllevamento');if(bonusPostEl){bonusPostEl.textContent=bonusFase.postReductionPct>0?('Feromagici / riduzione Accoppiamento applicata: -'+bonusFase.postReductionPct+'% dei post previsti. Questo effetto non modifica il 1d10.') : '';}
+  var sap25El=document.getElementById('bonusSapienza25Allevamento');if(sap25El){sap25El.textContent=pg.sapienzaMagizoologica>=25?'Sapienza Magizoologica 25: +20% di Cuccioli/Ingredienti ottenuti in ogni fase di Produzione della Creatura.':'';}
+  var impPostEl=document.getElementById('malusImposiumAllevamento');if(impPostEl){impPostEl.textContent=MZ_IMPOSIUM_SUCCESS&&MZ_IMPOSIUM_POST_MALUS?('Imposium usato prima della Domesticazione: +'+MZ_IMPOSIUM_POST_MALUS+' post soltanto alla prima Produzione di Ingredienti.') : '';}
 
   var extraAllevamentoQuote = bonusFase.possibilita;
   codiceEl.textContent = mzForumDiceBlock('Qual è la percentuale di riuscita dell’Allevamento?', mzAllevamentoAnswers(fascia, extraAllevamentoQuote), '[dice=1d10]Allevamento — Produzione/Riproduzione — fascia ' + fascia.etichetta + '[/dice]');
@@ -2330,10 +2810,12 @@ function recomputeAllevamento(){
   copiaBtn.disabled = false;
   risultatoInp.disabled = false;
 
-  if(curaEbbeUnFallimento){
-    malusEl.textContent = 'La Cura di questa Creatura ha avuto almeno un fallimento: -1d2 cuccioli e +5 post per completare il ciclo (i malus non si sommano).';
-  } else {
-    malusEl.textContent = '';
+  if(MZ_CURA_MALUS_ALLEVAMENTO>=2){
+    malusEl.textContent='Scoperta del problema e Cura hanno avuto almeno un fallimento ciascuna: -2d2 cuccioli e +10 post per completare ogni ciclo.';
+  }else if(MZ_CURA_MALUS_ALLEVAMENTO===1){
+    malusEl.textContent='Una delle due fasi (Scoperta o Cura) ha avuto almeno un fallimento: -1d2 cuccioli e +5 post per completare ogni ciclo.';
+  }else{
+    malusEl.textContent='';
   }
 
   var v = risultatoInp.value;
@@ -2371,6 +2853,118 @@ function recomputeAllevamento(){
   }
 }
 
+/* ---------- CREATURE ILLEGALI / RISCHIO DI SCOPERTA ---------- */
+
+var MZ_ILLEGAL_PROTECTIONS={
+  protCaveInimicum:7,
+  protFiantoDuri:4,
+  protIterumPostMe:5,
+  protProtegoMaxima:10,
+  protRepelloBabbanum:1,
+  protRepelloInimicum:3,
+  protSalvioHexia:3
+};
+var MZ_ILLEGAL_SIGNATURES={cura:null,allevamento:null};
+
+function mzIllegalActive(){
+  var el=document.getElementById('creaturaIllegaleRiserva');
+  return !!(el&&el.checked);
+}
+function mzMagizoologoMestiere(){
+  var tipo=document.getElementById('pgTipo');
+  var el=document.getElementById('pgMagizoologoMestiere');
+  return !!(tipo&&tipo.value==='adulto'&&el&&el.checked);
+}
+function mzIllegalExtraFaces(){
+  var total=0;
+  Object.keys(MZ_ILLEGAL_PROTECTIONS).forEach(function(id){
+    var el=document.getElementById(id);
+    if(el&&el.checked)total+=MZ_ILLEGAL_PROTECTIONS[id];
+  });
+  return total;
+}
+function mzResetIllegalResult(phase){
+  var suf=phase==='cura'?'Cura':'Allevamento';
+  var inp=document.getElementById('risultatoIllegale'+suf);
+  var tag=document.getElementById('tagIllegale'+suf);
+  if(inp)inp.value='';
+  if(tag){tag.textContent='in attesa';tag.className='out-tag out-neutral';}
+}
+function mzRecomputeIllegalPhase(phase){
+  var suf=phase==='cura'?'Cura':'Allevamento';
+  var block=document.getElementById('rischioIllegale'+suf);
+  var code=document.getElementById('codiceIllegale'+suf);
+  var note=document.getElementById('notaIllegale'+suf);
+  var inp=document.getElementById('risultatoIllegale'+suf);
+  var tag=document.getElementById('tagIllegale'+suf);
+  var copy=document.getElementById('copiaIllegale'+suf);
+  if(!block||!code||!note||!inp||!tag)return;
+
+  if(!mzIllegalActive()){
+    block.style.display='none';
+    MZ_ILLEGAL_SIGNATURES[phase]=null;
+    mzResetIllegalResult(phase);
+    return;
+  }
+
+  block.style.display='block';
+  var base=mzMagizoologoMestiere()?50:30;
+  var extra=mzIllegalExtraFaces();
+  var faces=base+extra;
+  var sig=base+'|'+extra;
+  if(MZ_ILLEGAL_SIGNATURES[phase]!==null&&MZ_ILLEGAL_SIGNATURES[phase]!==sig){
+    mzResetIllegalResult(phase);
+  }
+  MZ_ILLEGAL_SIGNATURES[phase]=sig;
+  inp.max=String(faces);
+
+  var nome=phase==='cura'?'Cura':'Allevamento';
+  note.innerHTML=(mzMagizoologoMestiere()?'<b>Magizoologo di mestiere:</b> dado base 1d50.':'<b>PG non Magizoologo di mestiere:</b> dado base 1d30.')+
+    (extra?(' Protezioni attive: <b>+'+extra+' facce</b>.'):' Nessuna protezione aggiuntiva selezionata.')+
+    ' Dado finale: <b>1d'+faces+'</b>. Con <b>1</b> il PG viene scoperto da un PNG e deve avvisare il Narratore.';
+  code.textContent=mzForumDiceBlock(
+    'Il PG viene scoperto da un PNG durante '+nome+' della Creatura illegale?',
+    '1. Il PG viene scoperto da un PNG\n2-'+faces+'. Il PG non viene scoperto',
+    '[dice=1d'+faces+']Controllo Azione Illegale — '+nome+' Creatura Magica[/dice]'
+  );
+  if(copy)copy.disabled=false;
+
+  var raw=inp.value;
+  if(raw===''){
+    tag.textContent='in attesa';
+    tag.className='out-tag out-neutral';
+    return;
+  }
+  if(!intInRange(raw,1,faces)){
+    tag.textContent='Risultato impossibile';
+    tag.className='out-tag out-fail';
+    return;
+  }
+  if(Number(raw)===1){
+    tag.textContent='SCOPERTO';
+    tag.className='out-tag out-fail';
+  }else{
+    tag.textContent='Non scoperto';
+    tag.className='out-tag out-ok';
+  }
+}
+function recomputeIllegalita(){
+  var active=mzIllegalActive();
+  var cfg=document.getElementById('configIllegaleRiserva');
+  if(cfg)cfg.style.display=active?'block':'none';
+  var formula=document.getElementById('formulaProtezioneIllegale');
+  if(formula){
+    if(active){
+      var base=mzMagizoologoMestiere()?50:30,extra=mzIllegalExtraFaces();
+      formula.textContent='Dado di scoperta: 1d'+(base+extra)+' = base '+base+(extra?' + '+extra+' facce di protezione':'')+'. Esito 1 = scoperto.';
+    }else{
+      formula.textContent='';
+    }
+  }
+  mzRecomputeIllegalPhase('cura');
+  mzRecomputeIllegalPhase('allevamento');
+}
+
 /* ---------- TUTTO INSIEME ---------- */
 
 function ricalcolaMagizoologia(){
@@ -2380,6 +2974,7 @@ function ricalcolaMagizoologia(){
   recomputeCuraCompleta();
   recomputeDomesticazione();
   recomputeAllevamento();
+  recomputeIllegalita();
   mzUpdateBonusSummary();
 }
 
@@ -2413,6 +3008,7 @@ document.getElementById('tabAllevamento').addEventListener(evtClick, function(){
 
 var RM_RESTORING=false;
 var RM_FLOW={page:'config',summaryVisited:false,outcomeVisited:false};
+var RM_SPECIE_CLASS_CTX={1:null,2:null,3:null};
 
 function rmEl(id){return document.getElementById(id);}
 function rmWorkspace(){return rmEl('creature-workspace');}
@@ -2476,6 +3072,7 @@ var rmCiboAnswers='1-2. Cibo trovato: +1 possibilità futura in Fiducia, Cura o 
 
 function rmEmpatia(){var v=rmNumber('empatiaRicerca',0,999);return v===null?0:v;}
 function rmProfiloEmpatia(){var v=rmNumber('empatia',0,999);return v;}
+function rmProfiloSapienza(){var tipo=rmEl('pgTipo'),v=rmNumber('sapienzaProfilo',0,25);v=v===null?0:v;return tipo&&tipo.value==='studente'?Math.min(1,v):v;}
 function rmAggiornaEmpatiaCondivisa(){
   var box=rmEl('rmEmpatiaCondivisa'),v=rmNumber('empatiaRicerca',0,999);
   if(box)box.textContent=v===null?'—':String(v);
@@ -2496,23 +3093,159 @@ function rmCaricaEmpatiaSessioneNelProfilo(){
   if(typeof dst.setCustomValidity==='function')dst.setCustomValidity('');
   ricalcolaMagizoologia();
 }
+function rmAggiornaSapienzaCondivisa(){var box=rmEl('rmSapienzaCondivisa'),v=rmNumber('sapienza',0,25);if(box)box.textContent=v===null?'—':String(v);}
+function rmSincronizzaSapienzaDaProfilo(){
+  var hidden=rmEl('sapienza'),v=rmProfiloSapienza();if(!hidden)return;hidden.value=String(v);rmAggiornaSapienzaCondivisa();ricalcolaRicerca();
+  if(RM_CURRENT_ID&&!RM_READONLY&&rmSessionCanEdit(RM_CURRENT_DATA)){rmUpdateToolbar();rmScheduleSave();}
+}
+function rmCaricaSapienzaSessioneNelProfilo(){
+  if(RM_READONLY)return;var src=rmEl('sapienza'),dst=rmEl('sapienzaProfilo');if(!src||!dst)return;
+  dst.value=src.value;if(typeof dst.setCustomValidity==='function')dst.setCustomValidity('');ricalcolaMagizoologia();
+}
 function rmSapienza(){var v=rmNumber('sapienza',0,25);return v===null?0:v;}
 function rmBonusSapienza(){return rmLookup(rmSapienzaTiers,rmSapienza());}
 function rmTipo(){return rmEl('tipoRicerca')?rmEl('tipoRicerca').value:'attiva';}
 function rmValigia(){return rmEl('valigiaMagica')?rmEl('valigiaMagica').value:'no';}
-function rmTrovaThreshold(n){return rmEmpatia()+rmBonusSapienza()+((n===1&&rmTipo()==='attiva')?2:0);}
+function rmZona(){var e=rmEl('zonaRicerca');return e?e.value:'';}
+function rmZonaLabel(){var z=rmZona();return z==='storica'?'Non registrata (vecchia sessione)':z;}
+
+var RM_SEARCH_BONUS_PRESETS={
+  flauto_standard:{label:'Flauto magico per Creature — standard (+2)',groupLabel:'Ricerca diretta',source:'Flauto magico per Creature',kind:'possibilita',value:2,uses:3,note:'Versione standard · +2 possibilità alla Ricerca Casuale · 3 usi.'},
+  flauto_elfi:{label:'Flauto magico per Creature — Mercato degli Elfi (+1)',groupLabel:'Ricerca diretta',source:'Flauto magico per Creature — Mercato degli Elfi',kind:'possibilita',value:1,uses:3,note:'Mercato degli Elfi · +1 possibilità alla Ricerca Casuale · 3 usi.'},
+  flauto_illegale:{label:'Flauto magico per Creature — Negozio di Ragni Giganti (+4)',groupLabel:'Ricerca diretta',source:'Flauto magico per Creature — Negozio di Ragni Giganti',kind:'possibilita',value:4,uses:3,note:'Versione illegale · +4 possibilità alla Ricerca Casuale · 3 usi.'},
+  animus_standard:{label:'Manuali dell’Animus — standard (+2 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus',kind:'empatia',value:2,uses:10,note:'Versione standard · +2 Empatia · 10 usi.'},
+  animus_elfi:{label:'Manuali dell’Animus — Mercato degli Elfi (+1 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus — Mercato degli Elfi',kind:'empatia',value:1,uses:5,note:'Mercato degli Elfi · +1 Empatia · 5 usi.'},
+  animus_obscurus:{label:'Manuali dell’Animus — Obscurus Books (+2 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus — Obscurus Books',kind:'empatia',value:2,uses:10,note:'Obscurus Books · +2 Empatia · 10 usi.'},
+  talismano_empatia_1:{label:'Talismano Astronomico — Empatia +1',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',kind:'empatia',value:1,uses:3,note:'Studente: 33%, oppure 66% con 1d2 = 1 · 3 usi.'},
+  talismano_empatia_2:{label:'Talismano Astronomico — Empatia +2',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',kind:'empatia',value:2,uses:3,note:'Studente: 100%, oppure 66% con 1d2 = 2 · 3 usi.'},
+  talismano_empatia_3:{label:'Talismano Astronomico — Empatia +3',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',kind:'empatia',value:3,uses:3,note:'Adulto senza Sapienza Elementale · 3 usi.'},
+  talismano_empatia_4:{label:'Talismano Astronomico — Empatia +4',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',kind:'empatia',value:4,uses:3,note:'Adulto con Sapienza Elementale 1+ · 3 usi.'},
+  amuleto_1:{label:'Amuleto della Fortuna (+1)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',kind:'possibilita',value:1,uses:3,stackGroup:'fortuna',note:'+1 possibilità su un’azione che richiede dado · 3 usi · massimo 1 Amuleto della Fortuna per role.'},
+  amuleto_2:{label:'Amuleto della Fortuna (+2)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',kind:'possibilita',value:2,uses:3,stackGroup:'fortuna',note:'+2 possibilità · 3 usi · massimo 1 Amuleto della Fortuna per role.'},
+  amuleto_3:{label:'Amuleto della Fortuna (+3)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',kind:'possibilita',value:3,uses:3,stackGroup:'fortuna',note:'+3 possibilità · 3 usi · massimo 1 Amuleto della Fortuna per role.'},
+  amuleto_4:{label:'Amuleto della Fortuna (+4)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',kind:'possibilita',value:4,uses:3,stackGroup:'fortuna',note:'+4 possibilità · 3 usi · massimo 1 Amuleto della Fortuna per role.'},
+  amuleto_5:{label:'Amuleto della Fortuna (+5)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',kind:'possibilita',value:5,uses:3,stackGroup:'fortuna',note:'+5 possibilità · 3 usi · massimo 1 Amuleto della Fortuna per role.'},
+  amuleto_6:{label:'Amuleto della Fortuna (+6)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',kind:'possibilita',value:6,uses:3,stackGroup:'fortuna',note:'+6 possibilità · 3 usi · massimo 1 Amuleto della Fortuna per role.'},
+  amuleto_7:{label:'Amuleto della Fortuna (+7)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',kind:'possibilita',value:7,uses:3,stackGroup:'fortuna',note:'+7 possibilità · 3 usi · massimo 1 Amuleto della Fortuna per role. Per valori superiori usa il bonus manuale.'}
+
+};
+
+RM_SEARCH_BONUS_PRESETS.malus_abbandono_creatura={label:'Malus Empatia — separarsi da Creatura già addomesticata (-5)',groupLabel:'Malus a Empatia',source:'Separazione da Creatura già addomesticata',kind:'malusEmpatia',value:5,uses:10,note:'-5 Empatia per i successivi 10 utilizzi utili del Parametro.'};
+RM_SEARCH_BONUS_PRESETS.malus_uccisione_creatura={label:'Malus Empatia — uccisione ingiustificata (-15)',groupLabel:'Malus a Empatia',source:'Uccisione ingiustificata di Creatura addomesticata',kind:'malusEmpatia',value:15,uses:20,note:'-15 Empatia per i successivi 20 utilizzi utili del Parametro.'};
+RM_SEARCH_BONUS_PRESETS.malus_imposium_non_addomesticata={label:'Malus Empatia — Imposium senza Domesticazione (-2)',groupLabel:'Malus a Empatia',source:'Imposium — Creatura placata ma non addomesticata',kind:'malusEmpatia',value:2,uses:1,singleScope:true,note:'-2 Empatia al successivo utilizzo del Parametro dopo Imposium, se la Creatura placata non viene addomesticata.'};
+
+/* Fiuto Faunico è una Tecnica Magizoologica propria della Ricerca:
+   vale sul primo step («Trovo qualcosa?») e soltanto al primo tentativo.
+   Il player sceglie in quale Incontro la sta usando; per usarla in più
+   Incontri inserisce una riga distinta per ciascuno. */
+function rmAddFiuto(key,label,value,condition){
+  RM_SEARCH_BONUS_PRESETS[key]={label:label,groupLabel:'Tecniche Magizoologiche',source:'Fiuto Faunico',kind:'possibilita',value:value,uses:null,defaultScope:'1',singleScope:true,stackGroup:'fiuto-faunico',note:condition+' · bonus al primo step «Trovo qualcosa?» e soltanto al primo tentativo dell’Incontro scelto · costo -1,5 Fatica.'};
+}
+rmAddFiuto('fiuto_s33','Fiuto Faunico · Studente 33% (+1)',1,'Studente · Efficacia 33%');
+rmAddFiuto('fiuto_s66_1','Fiuto Faunico · Studente 66% · 1d2=1 (+1)',1,'Studente · Efficacia 66% · 1d2 = 1');
+rmAddFiuto('fiuto_s66_2','Fiuto Faunico · Studente 66% · 1d2=2 (+2)',2,'Studente · Efficacia 66% · 1d2 = 2');
+rmAddFiuto('fiuto_s100','Fiuto Faunico · Studente 100% (+2)',2,'Studente · Efficacia 100%');
+rmAddFiuto('fiuto_a33_1','Fiuto Faunico · Adulto senza Sapienza · 33% · 1d2=1 (+1)',1,'Adulto senza Sapienza Magizoologica · Efficacia 33% · 1d2 = 1');
+rmAddFiuto('fiuto_a33_2','Fiuto Faunico · Adulto senza Sapienza · 33% · 1d2=2 (+2)',2,'Adulto senza Sapienza Magizoologica · Efficacia 33% · 1d2 = 2');
+rmAddFiuto('fiuto_a66_1','Fiuto Faunico · Adulto senza Sapienza · 66% · 1d3=1 (+1)',1,'Adulto senza Sapienza Magizoologica · Efficacia 66% · 1d3 = 1');
+rmAddFiuto('fiuto_a66_2','Fiuto Faunico · Adulto senza Sapienza · 66% · 1d3=2 (+2)',2,'Adulto senza Sapienza Magizoologica · Efficacia 66% · 1d3 = 2');
+rmAddFiuto('fiuto_a66_3','Fiuto Faunico · Adulto senza Sapienza · 66% · 1d3=3 (+3)',3,'Adulto senza Sapienza Magizoologica · Efficacia 66% · 1d3 = 3');
+rmAddFiuto('fiuto_a100_2','Fiuto Faunico · Adulto senza Sapienza · 100% · 1+1d2=2 (+2)',2,'Adulto senza Sapienza Magizoologica · Efficacia 100% · 1d2 = 1');
+rmAddFiuto('fiuto_a100_3','Fiuto Faunico · Adulto senza Sapienza · 100% · 1+1d2=3 (+3)',3,'Adulto senza Sapienza Magizoologica · Efficacia 100% · 1d2 = 2');
+rmAddFiuto('fiuto_sap100','Fiuto Faunico · Adulto con Sapienza Magizoologica 1+ (+3)',3,'Adulto con Sapienza Magizoologica 1+ · Efficacia 100%');
+
+/* Somnum può essere speso anche nella Ricerca perché il bonus ottenuto
+   modifica direttamente Empatia al suo successivo utilizzo. */
+function rmAddSomnum(key,label,value,condition){
+  RM_SEARCH_BONUS_PRESETS[key]={label:label,groupLabel:'Incantesimi Magizoologici',source:'Somnum — bonus Empatia già ottenuto',kind:'empatia',value:value,uses:1,singleScope:true,note:condition+' · vale per un solo successivo utilizzo di Empatia. Il costo di -1,5 Fatica è stato sostenuto quando Somnum è stato lanciato.'};
+}
+rmAddSomnum('somnum_s33','Somnum · Studente 33% (+1 Empatia)',1,'Studente · Efficacia 33%');
+rmAddSomnum('somnum_s66_1','Somnum · Studente 66% · 1d2=1 (+1 Empatia)',1,'Studente · Efficacia 66% · 1d2 = 1');
+rmAddSomnum('somnum_s66_2','Somnum · Studente 66% · 1d2=2 (+2 Empatia)',2,'Studente · Efficacia 66% · 1d2 = 2');
+rmAddSomnum('somnum_s100_1','Somnum · Studente 100% · 1d3=1 (+1 Empatia)',1,'Studente · Efficacia 100% · 1d3 = 1');
+rmAddSomnum('somnum_s100_2','Somnum · Studente 100% · 1d3=2 (+2 Empatia)',2,'Studente · Efficacia 100% · 1d3 = 2');
+rmAddSomnum('somnum_s100_3','Somnum · Studente 100% · 1d3=3 (+3 Empatia)',3,'Studente · Efficacia 100% · 1d3 = 3');
+rmAddSomnum('somnum_a33','Somnum · Adulto senza Sapienza · 33% (+2 Empatia)',2,'Adulto senza Sapienza Magizoologica · Efficacia 33%');
+rmAddSomnum('somnum_a66','Somnum · Adulto senza Sapienza · 66% (+3 Empatia)',3,'Adulto senza Sapienza Magizoologica · Efficacia 66%');
+rmAddSomnum('somnum_a100_3','Somnum · Adulto senza Sapienza · 100% · 2+1d3=3 (+3 Empatia)',3,'Adulto senza Sapienza Magizoologica · Efficacia 100% · 1d3 = 1');
+rmAddSomnum('somnum_a100_4','Somnum · Adulto senza Sapienza · 100% · 2+1d3=4 (+4 Empatia)',4,'Adulto senza Sapienza Magizoologica · Efficacia 100% · 1d3 = 2');
+rmAddSomnum('somnum_a100_5','Somnum · Adulto senza Sapienza · 100% · 2+1d3=5 (+5 Empatia)',5,'Adulto senza Sapienza Magizoologica · Efficacia 100% · 1d3 = 3');
+rmAddSomnum('somnum_sap100_4','Somnum · Adulto con Sapienza · 100% · 3+1d3=4 (+4 Empatia)',4,'Adulto con Sapienza Magizoologica 1+ · Efficacia 100% · 1d3 = 1');
+rmAddSomnum('somnum_sap100_5','Somnum · Adulto con Sapienza · 100% · 3+1d3=5 (+5 Empatia)',5,'Adulto con Sapienza Magizoologica 1+ · Efficacia 100% · 1d3 = 2');
+rmAddSomnum('somnum_sap100_6','Somnum · Adulto con Sapienza · 100% · 3+1d3=6 (+6 Empatia)',6,'Adulto con Sapienza Magizoologica 1+ · Efficacia 100% · 1d3 = 3');
+
+function rmSearchPresetOptions(){
+  var groups={},order=[];Object.keys(RM_SEARCH_BONUS_PRESETS).forEach(function(k){var p=RM_SEARCH_BONUS_PRESETS[k],g=p.groupLabel||'Altro';if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push({key:k,p:p});});
+  var h='<option value="">— Seleziona —</option>';order.forEach(function(g){h+='<optgroup label="'+rmEsc(g)+'">';groups[g].forEach(function(x){h+='<option value="'+rmEsc(x.key)+'">'+rmEsc(x.p.label)+'</option>';});h+='</optgroup>';});return h+'<option value="manual">Altro bonus manuale</option>';
+}
+function rmSearchBonusRows(){var h=rmEl('rmBonusRicercaRows');return h?Array.prototype.slice.call(h.querySelectorAll('.rm-search-bonus-row')):[];}
+function rmInferSearchBonusPreset(data){
+  data=data||{};var p=String(data.preset||'');if(p&&RM_SEARCH_BONUS_PRESETS[p])return p;if(p==='manual')return 'manual';
+  var src=String(data.source||'').trim(),v=Math.max(0,parseInt(data.value,10)||0),kind=String(data.kind||'possibilita'),keys=Object.keys(RM_SEARCH_BONUS_PRESETS);
+  for(var i=0;i<keys.length;i++){var x=RM_SEARCH_BONUS_PRESETS[keys[i]];if(src===x.source&&v===x.value&&(!data.kind||kind===x.kind))return keys[i];}
+  return (src||v)?'manual':'';
+}
+function rmSearchBonusData(){return rmSearchBonusRows().map(function(r){return {preset:(r.querySelector('.rm-search-bonus-preset')||{}).value||'',source:(r.querySelector('.rm-search-bonus-source')||{}).value||'',kind:(r.querySelector('.rm-search-bonus-kind')||{}).value||'possibilita',value:Math.max(0,parseInt((r.querySelector('.rm-search-bonus-value')||{}).value||'0',10)||0),scope:(r.querySelector('.rm-search-bonus-scope')||{}).value||'all'};});}
+function rmSyncSearchBonusHidden(){var h=rmEl('rmBonusRicercaJson'),host=rmEl('rmBonusRicercaRows');if(!h||!host)return;h.value=JSON.stringify(rmSearchBonusData());host.setAttribute('data-serialized',h.value);}
+function rmApplySearchBonusPreset(row){
+  if(!row)return;var sel=row.querySelector('.rm-search-bonus-preset'),src=row.querySelector('.rm-search-bonus-source'),kind=row.querySelector('.rm-search-bonus-kind'),val=row.querySelector('.rm-search-bonus-value'),manual=row.querySelector('.rm-search-bonus-manual'),note=row.querySelector('.rm-search-bonus-note'),scope=row.querySelector('.rm-search-bonus-scope'),p=sel?sel.value:'';
+  if(scope){var allOpt=scope.querySelector('option[value="all"]');if(allOpt)allOpt.disabled=false;scope.disabled=false;}
+  if(p&&RM_SEARCH_BONUS_PRESETS[p]){
+    var x=RM_SEARCH_BONUS_PRESETS[p];if(src)src.value=x.source;if(kind){kind.value=x.kind;kind.disabled=true;}if(val){val.value=String(x.value);val.readOnly=true;}if(manual)manual.style.display='none';
+    if(scope&&x.defaultScope)scope.value=x.defaultScope;
+    if(scope&&x.singleScope){var ao=scope.querySelector('option[value="all"]');if(ao)ao.disabled=true;if(scope.value==='all')scope.value='1';}
+    if(scope&&x.lockScope)scope.disabled=true;
+    if(note)note.textContent=x.note+((x.uses&&x.uses>0)?(' · '+x.uses+' uso/i disponibili per il bonus.'):'');
+  }
+  else if(p==='manual'){if(kind)kind.disabled=false;if(val)val.readOnly=false;if(manual)manual.style.display='flex';if(note)note.textContent='Inserisci manualmente soltanto un modificatore previsto dal regolamento e specifica se aumenta/diminuisce Empatia oppure modifica le possibilità del tiro.';}
+  else{if(src)src.value='';if(kind){kind.value='possibilita';kind.disabled=true;}if(val){val.value='0';val.readOnly=true;}if(manual)manual.style.display='none';if(note)note.textContent='Seleziona un effetto dall’elenco.';}
+}
+function rmBuildSearchBonusRow(data){
+  var row=document.createElement('div');row.className='rm-search-bonus-row';
+  row.innerHTML='<div class="mz-bonus-field"><label>Oggetto / Incantesimo / Conoscenza</label><select class="rm-search-bonus-preset">'+rmSearchPresetOptions()+'</select></div>'+ 
+    '<div class="mz-bonus-field"><label>Effetto</label><select class="rm-search-bonus-kind"><option value="possibilita">+ Possibilità</option><option value="empatia">+ Empatia</option><option value="malusEmpatia">− Empatia</option></select></div>'+ 
+    '<div class="mz-bonus-field"><label>Bonus</label><input type="number" class="rm-search-bonus-value" min="0" value="0" readonly></div>'+ 
+    '<div class="mz-bonus-field"><label>Si applica a</label><select class="rm-search-bonus-scope"><option value="all">Tutti gli Incontri</option><option value="1">Solo Incontro I</option><option value="2">Solo Incontro II</option><option value="3">Solo Incontro III</option></select></div>'+ 
+    '<button type="button" class="rm-search-bonus-remove" title="Elimina bonus" aria-label="Elimina bonus">×</button>'+ 
+    '<div class="mz-bonus-field rm-search-bonus-manual" style="display:none"><label>Fonte del bonus manuale</label><input type="text" class="rm-search-bonus-source" maxlength="100" placeholder="Nome dell’Oggetto, Incantesimo o Conoscenza"></div>'+ 
+    '<div class="rm-search-bonus-note"></div>';
+  data=data||{};var preset=row.querySelector('.rm-search-bonus-preset'),src=row.querySelector('.rm-search-bonus-source'),kind=row.querySelector('.rm-search-bonus-kind'),v=row.querySelector('.rm-search-bonus-value'),sc=row.querySelector('.rm-search-bonus-scope');
+  var inferred=rmInferSearchBonusPreset(data);if(preset)preset.value=inferred;if(src)src.value=data.source||'';if(kind)kind.value=data.kind||'possibilita';if(v)v.value=String(Math.max(0,parseInt(data.value,10)||0));if(sc)sc.value=['all','1','2','3'].indexOf(String(data.scope))>=0?String(data.scope):'all';
+  rmApplySearchBonusPreset(row);
+  if(inferred==='manual'){if(src)src.value=data.source||'';if(kind)kind.value=data.kind||'possibilita';if(v)v.value=String(Math.max(0,parseInt(data.value,10)||0));}
+  return row;
+}
+function rmRenderSearchBonusesFromHidden(force){var h=rmEl('rmBonusRicercaJson'),host=rmEl('rmBonusRicercaRows');if(!h||!host)return;var raw=h.value||'[]';if(!force&&host.getAttribute('data-serialized')===raw)return;var arr=[];try{arr=JSON.parse(raw)||[];}catch(e){arr=[];}host.innerHTML='';arr.forEach(function(x){host.appendChild(rmBuildSearchBonusRow(x));});host.setAttribute('data-serialized',raw);setupNumericInputs();}
+function rmSearchBonusTotals(n){
+  var out={empatia:0,possibilita:0},groupsPoss={},groupsEmp={};
+  rmSearchBonusRows().forEach(function(r){var sc=(r.querySelector('.rm-search-bonus-scope')||{}).value||'all';if(sc!=='all'&&sc!==String(n))return;var v=parseInt((r.querySelector('.rm-search-bonus-value')||{}).value||'0',10),kind=(r.querySelector('.rm-search-bonus-kind')||{}).value||'possibilita',pk=(r.querySelector('.rm-search-bonus-preset')||{}).value||'',p=RM_SEARCH_BONUS_PRESETS[pk],group=p&&p.stackGroup?p.stackGroup:'';if(!Number.isFinite(v)||v<=0)return;if(kind==='empatia'){if(group)groupsEmp[group]=Math.max(groupsEmp[group]||0,v);else out.empatia+=v;}else if(kind==='malusEmpatia'){out.empatia-=v;}else{if(group)groupsPoss[group]=Math.max(groupsPoss[group]||0,v);else out.possibilita+=v;}});
+  Object.keys(groupsPoss).forEach(function(k){out.possibilita+=groupsPoss[k];});Object.keys(groupsEmp).forEach(function(k){out.empatia+=groupsEmp[k];});return out;
+}
+function rmBonusRicerca(n){var t=rmSearchBonusTotals(n);return t.empatia+t.possibilita;}
+function rmSearchBonusSummaryText(){var parts=[];rmSearchBonusRows().forEach(function(r){var src=((r.querySelector('.rm-search-bonus-source')||{}).value||'').trim(),v=parseInt((r.querySelector('.rm-search-bonus-value')||{}).value||'0',10)||0,kind=(r.querySelector('.rm-search-bonus-kind')||{}).value||'possibilita',sc=(r.querySelector('.rm-search-bonus-scope')||{}).value||'all';if(v<=0)return;var lab=sc==='all'?'tutti gli Incontri':('Incontro '+({1:'I',2:'II',3:'III'}[sc]||sc));parts.push((src||'Bonus senza nome')+' → '+(kind==='malusEmpatia'?'-':'+')+v+' '+((kind==='empatia'||kind==='malusEmpatia')?'Empatia':'possibilità')+' · '+lab);});return parts;}
+function rmUpdateSearchBonusSummary(){var el=rmEl('rmBonusRicercaSummary');if(!el)return;var p=rmSearchBonusSummaryText();el.textContent=p.length?('Attivi: '+p.join(' · ')):'Nessun bonus alla Ricerca selezionato.';}
+function rmTrovaThreshold(n){var b=rmSearchBonusTotals(n);return rmEmpatia()+b.empatia+rmBonusSapienza()+b.possibilita+((n===1&&rmTipo()==='attiva')?2:0);}
 function rmTrovaEsito(n){var th=rmTrovaThreshold(n);if(th>=30)return true;var v=rmNumber('risultatoTrova'+n,1,30);if(v===null)return null;return v<=th;}
 
-function rmRecomputeBolcino(){
-  rmSetCode('codiceBolcino','Il PG trova un Bolcino d’Oro in questo post?','1-99. Nessun Bolcino d’Oro\n100. Bolcino d’Oro: +1 Popolarità e 1000 Galeoni','[dice=1d100]Ricerca del Bolcino d’Oro[/dice]');
-  var v=rmNumber('risultatoBolcino',1,100),tag=rmEl('tagBolcino');if(!tag)return;
-  if(v===null){tag.textContent=rmEl('risultatoBolcino').value===''?'in attesa':'Risultato impossibile';tag.className='out-tag '+(rmEl('risultatoBolcino').value===''?'out-neutral':'out-fail');return;}
+function rmRecomputeBolcino(n){
+  rmSetCode('codiceBolcino'+n,'Il PG trova un Bolcino d’Oro in questo post?','1-99. Nessun Bolcino d’Oro\n100. Bolcino d’Oro: +1 Popolarità e 1000 Galeoni','[dice=1d100]Ricerca del Bolcino d’Oro[/dice]');
+  var inp=rmEl('risultatoBolcino'+n),v=rmNumber('risultatoBolcino'+n,1,100),tag=rmEl('tagBolcino'+n);if(!tag||!inp)return;
+  if(v===null){tag.textContent=inp.value===''?'in attesa':'Risultato impossibile';tag.className='out-tag '+(inp.value===''?'out-neutral':'out-fail');return;}
   tag.textContent=v===100?'Bolcino trovato!':'Niente Bolcino';tag.className='out-tag '+(v===100?'out-ok':'out-neutral');
+}
+
+function rmClasseCorrente(n){var max=n===1?16:18,v=rmNumber('risultatoClasse'+n,1,max),tab=n===1?rmClasseTab1:(n===2?rmClasseTab2:rmClasseTab3);return v===null?'':rmLookup(tab,v);}
+function rmRecomputeSpecie(n){
+  var facesEl=rmEl('dadoSpecie'+n),resEl=rmEl('risultatoSpecie'+n),tag=rmEl('tagSpecie'+n),code=rmEl('codiceSpecie'+n),nameEl=rmEl('specieCreatura'+n);if(!facesEl||!resEl||!tag||!code||!nameEl)return;
+  var cls=rmClasseCorrente(n);if(!RM_RESTORING&&RM_SPECIE_CLASS_CTX[n]!==null&&RM_SPECIE_CLASS_CTX[n]!==cls){facesEl.value='';resEl.value='';nameEl.value='';}RM_SPECIE_CLASS_CTX[n]=cls;
+  var faces=rmNumber('dadoSpecie'+n,1,999);if(faces===null){resEl.removeAttribute('max');var zona=rmZonaLabel()||'Zona selezionata';code.textContent='Classificazione ottenuta: '+(cls||'—')+'. Apri sul forum la lista «Creature Magiche» di '+zona+', guarda quanti risultati contiene la sezione della Classificazione '+(cls||'ottenuta')+' e inserisci qui il numero di facce del dado corrispondente. Il tool genererà poi il codice del dado per la Creatura specifica.';tag.textContent=resEl.value===''?'in attesa':'Inserisci prima il dado';tag.className='out-tag '+(resEl.value===''?'out-neutral':'out-fail');return;}
+  resEl.max=String(faces);rmSetCode('codiceSpecie'+n,'Quale Creatura specifica è stata trovata nel '+(['','Primo','Secondo','Terzo'][n])+' Incontro?','Consulta la lista della Zona e associa il risultato alla Creatura corrispondente.','[dice=1d'+faces+']Creatura specifica — '+(['','Primo','Secondo','Terzo'][n])+' Incontro[/dice]');
+  var v=rmNumber('risultatoSpecie'+n,1,faces);if(v===null){tag.textContent=resEl.value===''?'in attesa':'Risultato impossibile';tag.className='out-tag '+(resEl.value===''?'out-neutral':'out-fail');return;}tag.textContent='Risultato valido · indica il nome trovato';tag.className='out-tag '+(nameEl.value.trim()?'out-ok':'out-neutral');
 }
 
 function rmRecomputeTrova(n){
   var th=rmTrovaThreshold(n),formula=rmEl('formulaTrova'+n),code=rmEl('codiceTrova'+n),inp=rmEl('risultatoTrova'+n),tag=rmEl('tagTrova'+n);
-  var parts='Empatia '+rmEmpatia()+' + Sapienza Magizoologica '+rmBonusSapienza();if(n===1&&rmTipo()==='attiva')parts+=' + Ricerca Attiva 2';parts+=' = '+th+' su 30';if(formula)formula.textContent=parts;
+  var rb=rmSearchBonusTotals(n),parts='Empatia '+rmEmpatia();if(rb.empatia)parts+=' + Bonus Empatia '+rb.empatia;parts+=' + Sapienza Magizoologica '+rmBonusSapienza();if(rb.possibilita)parts+=' + Possibilità extra '+rb.possibilita;if(n===1&&rmTipo()==='attiva')parts+=' + Ricerca Attiva 2';parts+=' = '+th+' su 30';if(formula)formula.textContent=parts;
   var nomi=['','Primo','Secondo','Terzo'],q='Il PG trova una Creatura Magica durante il '+nomi[n]+' Incontro?';
   if(th>=30){if(code)code.textContent='Autoconclusivo: '+th+' possibilità su 30, la Creatura viene trovata senza tiro.';if(inp){inp.disabled=true;}if(tag){tag.textContent='Trovata automaticamente';tag.className='out-tag out-ok';}return true;}
   if(inp)inp.disabled=false;
@@ -2647,6 +3380,8 @@ function rmEncounterComplete(n){
   var vc=rmNumber('risultatoClasse'+n,1,n===1?16:18);
   if(vc===null)return false;
   var tab=n===1?rmClasseTab1:(n===2?rmClasseTab2:rmClasseTab3),classe=rmLookup(tab,vc);
+  var nomeSpecie=rmEl('specieCreatura'+n);if(!nomeSpecie||!nomeSpecie.value.trim())return false;
+  var facceSpecie=rmNumber('dadoSpecie'+n,1,999);if(facceSpecie===null)return false;if(rmNumber('risultatoSpecie'+n,1,facceSpecie)===null)return false;
   if(n===1){
     var vf1=rmNumber('risultatoFase1',1,40);
     if(vf1===null||rmNumber('risultatoSalute1',1,15)===null)return false;
@@ -2661,7 +3396,7 @@ function rmEncounterComplete(n){
   return true;
 }
 function rmBlockedAfter(n){return !!(rmEl('catturato'+n)&&rmEl('catturato'+n).checked&&rmValigia()!=='si');}
-function rmConfigReady(){var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'';return !!name&&rmNumber('empatiaRicerca',0,999)!==null&&rmNumber('sapienza',0,25)!==null;}
+function rmConfigReady(){var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'';return !!name&&!!rmZona()&&rmNumber('empatiaRicerca',0,999)!==null&&rmNumber('sapienza',0,25)!==null;}
 function rmPageUnlocked(page){
   if(page==='config')return true;
   if(page==='summary')return rmConfigReady();
@@ -2683,17 +3418,21 @@ function rmGating(){
 function rmPercent(th){var v=Math.max(0,Math.min(30,th));return Math.round(v/30*100);}
 function rmRenderSummary(){
   var host=rmEl('rm-summary-content'),bb=rmEl('rm-summary-bbcode');if(!host||!bb)return;
-  var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'',first=rmTrovaThreshold(1),later=rmEmpatia()+rmBonusSapienza();
+  var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'',zona=rmZonaLabel(),first=rmTrovaThreshold(1),second=rmTrovaThreshold(2),third=rmTrovaThreshold(3),bonusLines=rmSearchBonusSummaryText();
   host.innerHTML='<div class="summary-grid">'+
-    '<div class="summary-box"><b>PG</b><br>'+rmEsc(name||'—')+'</div>'+
-    '<div class="summary-box"><b>Tipo</b><br>'+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'</div>'+
-    '<div class="summary-box"><b>Empatia</b><br>'+rmEmpatia()+'</div>'+
-    '<div class="summary-box"><b>Sapienza Magizoologica</b><br>'+rmSapienza()+' → bonus +'+rmBonusSapienza()+'</div>'+
-    '<div class="summary-box"><b>Primo Incontro</b><br>'+first+'/30 · '+rmPercent(first)+'%</div>'+
-    '<div class="summary-box"><b>Incontri successivi</b><br>'+(rmTipo()==='attiva'?(later+'/30 · '+rmPercent(later)+'%'):'non disponibili')+'</div>'+
-    '<div class="summary-box"><b>Valigia Magica</b><br>'+(rmValigia()==='si'?'Sì':'No')+'</div></div>'+
+    '<div class="summary-box"><b>Zona di Ricerca</b><br>'+rmEsc(zona||'—')+'</div>'+
+    '<div class="summary-box"><b>PG</b><br>'+rmEsc(name||'—')+'</div>'+ 
+    '<div class="summary-box"><b>Tipo</b><br>'+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'</div>'+ 
+    '<div class="summary-box"><b>Empatia</b><br>'+rmEmpatia()+'</div>'+ 
+    '<div class="summary-box"><b>Sapienza Magizoologica</b><br>'+rmSapienza()+' → bonus +'+rmBonusSapienza()+'</div>'+ 
+    '<div class="summary-box"><b>Primo Incontro</b><br>'+first+'/30 · '+rmPercent(first)+'%</div>'+ 
+    '<div class="summary-box"><b>Secondo Incontro</b><br>'+(rmTipo()==='attiva'?(second+'/30 · '+rmPercent(second)+'%'):'non disponibile')+'</div>'+ 
+    '<div class="summary-box"><b>Terzo Incontro</b><br>'+(rmTipo()==='attiva'?(third+'/30 · '+rmPercent(third)+'%'):'non disponibile')+'</div>'+ 
+    '<div class="summary-box"><b>Valigia Magica</b><br>'+(rmValigia()==='si'?'Sì':'No')+'</div></div>'+ 
+    (bonusLines.length?'<div class="nota-regole"><b>Bonus / modificatori applicati:</b> '+bonusLines.map(rmEsc).join(' · ')+'</div>':'')+
     '<div class="nota-regole">La percentuale indica la probabilità di trovare una Creatura con il tiro 1d30. Un totale di 30 o più rende il ritrovamento autoconclusivo.</div>';
-  bb.textContent='<b>Riepilogo Ricerca Creature Magiche — '+(name||'PG')+'</b>\n[quote]Tipo: '+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'\nEmpatia: '+rmEmpatia()+'\nSapienza Magizoologica: '+rmSapienza()+' (bonus +'+rmBonusSapienza()+')\nPrimo Incontro: '+first+'/30 ('+rmPercent(first)+'%)\n'+(rmTipo()==='attiva'?'Incontri successivi: '+later+'/30 ('+rmPercent(later)+'%)\n':'')+'Valigia Magica: '+(rmValigia()==='si'?'Sì':'No')+'[/quote]';
+  var bonusBB=bonusLines.length?'\nBonus / modificatori applicati: '+bonusLines.join(' | '):'';
+  bb.textContent='<b>Riepilogo Ricerca Creature Magiche — '+(name||'PG')+'</b>\n[quote]Zona di Ricerca: '+(zona||'—')+'\nPG: '+(name||'PG')+'\nTipo: '+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'\nEmpatia: '+rmEmpatia()+'\nSapienza Magizoologica: '+rmSapienza()+' (bonus +'+rmBonusSapienza()+')'+bonusBB+'\nPrimo Incontro: '+first+'/30 ('+rmPercent(first)+'%)\n'+(rmTipo()==='attiva'?'Secondo Incontro: '+second+'/30 ('+rmPercent(second)+'%)\nTerzo Incontro: '+third+'/30 ('+rmPercent(third)+'%)\n':'')+'Valigia Magica: '+(rmValigia()==='si'?'Sì':'No')+'[/quote]';
 }
 
 function rmEncounterSummary(n){
@@ -2705,8 +3444,8 @@ function rmEncounterSummary(n){
     var salute=rmLookup(rmHealthTableForPhase(fase),rmNumber('risultatoSalute1',1,15));
     var cibo=rmNumber('risultatoCibo1',1,5),ciboTxt=cibo===null?'':(cibo<=2?' · Cibo trovato':' · Nessun Cibo utile');
     return {
-      html:'Classificazione '+rmEsc(cls)+' · '+rmEsc(fase)+' · '+rmEsc(salute)+ciboTxt,
-      bb:'Classificazione '+cls+'; Sesso/Fase '+fase+'; Salute '+salute+(cibo===null?'':(cibo<=2?'; Cibo trovato (+1 possibilità futura)':' ; nessun Cibo utile'))+(rmEl('catturato1').checked?'; catturata':'')
+      html:'<b>'+rmEsc((rmEl('specieCreatura1')||{}).value||'Creatura')+'</b> · Classificazione '+rmEsc(cls)+' · '+rmEsc(fase)+' · '+rmEsc(salute)+ciboTxt,
+      bb:'Creatura '+(((rmEl('specieCreatura1')||{}).value||'Creatura'))+'; Classificazione '+cls+'; Sesso/Fase '+fase+'; Salute '+salute+(cibo===null?'':(cibo<=2?'; Cibo trovato (+1 possibilità futura)':' ; nessun Cibo utile'))+(rmEl('catturato1').checked?'; catturata':'')
     };
   }
   var max=n===2?5:10,count=rmNumber('risultatoEsemplari'+n,1,max),parts=[];
@@ -2716,14 +3455,14 @@ function rmEncounterSummary(n){
     parts.push('Esemplare '+i+': '+faseI+' · '+saluteI);
   }
   return {
-    html:'Classificazione '+rmEsc(cls)+' · '+count+' esemplari<br>'+parts.map(rmEsc).join('<br>'),
-    bb:'Classificazione '+cls+'; '+count+' esemplari; '+parts.join('; ')+(rmEl('catturato'+n).checked?'; almeno una Creatura catturata':'')
+    html:'<b>'+rmEsc((rmEl('specieCreatura'+n)||{}).value||'Creatura')+'</b> · Classificazione '+rmEsc(cls)+' · '+count+' esemplari<br>'+parts.map(rmEsc).join('<br>'),
+    bb:'Creatura '+(((rmEl('specieCreatura'+n)||{}).value||'Creatura'))+'; Classificazione '+cls+'; '+count+' esemplari; '+parts.join('; ')+(rmEl('catturato'+n).checked?'; almeno una Creatura catturata':'')
   };
 }
 
 function rmRenderOutcome(){
   var host=rmEl('rm-outcome-content'),bb=rmEl('rm-outcome-bbcode');if(!host||!bb)return;
-  var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'PG',items=[],bbs=[];
+  var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'PG',zona=rmZonaLabel(),items=[],bbs=[];
   for(var n=1;n<=3;n++){
     /* Dati rimasti da una configurazione precedente non devono comparire
        nell'Esito se l'Incontro non è più raggiungibile con la configurazione
@@ -2742,8 +3481,8 @@ function rmRenderOutcome(){
   else if(rmBlockedAfter(1))stop='Ricerca interrotta dopo il Primo Incontro: Valigia Magica necessaria per proseguire dopo la cattura.';
   else if(items.length>=2 && rmBlockedAfter(2))stop='Ricerca interrotta dopo il Secondo Incontro: Valigia Magica necessaria per proseguire dopo la cattura.';
   else stop='Ricerca conclusa dopo '+items.length+' Incontro'+(items.length===1?'':'i')+'.';
-  host.innerHTML='<ul class="outcome-list">'+items.join('')+'</ul><div class="nota-regole" style="margin-top:12px">'+rmEsc(stop)+'</div>';
-  bb.textContent='<b>Esito Ricerca Creature Magiche — '+name+'</b>\n[quote]'+bbs.join('\n')+'\n'+stop+'[/quote]';
+  host.innerHTML='<div class="nota-regole"><b>Zona di Ricerca:</b> '+rmEsc(zona||'—')+'</div><ul class="outcome-list">'+items.join('')+'</ul><div class="nota-regole" style="margin-top:12px">'+rmEsc(stop)+'</div>';
+  bb.textContent='<b>Esito Ricerca Creature Magiche — '+name+'</b>\n[quote]Zona di Ricerca: '+(zona||'—')+'\n'+bbs.join('\n')+'\n'+stop+'[/quote]';
 }
 
 function rmApplyFlow(){
@@ -2778,10 +3517,11 @@ function rmResumeFlow(){
 function ricalcolaRicerca(){
   if(!rmEl('creature-workspace'))return;
   rmAggiornaEmpatiaCondivisa();
-  rmRecomputeBolcino();rmSetStaticSemanticCodes();
-  var t1=rmRecomputeTrova(1);rmRecomputeCascata1(t1);
-  var t2=rmRecomputeTrova(2);rmRecomputeCascataMultipla(2,t2);
-  var t3=rmRecomputeTrova(3);rmRecomputeCascataMultipla(3,t3);
+  rmRenderSearchBonusesFromHidden(false);rmUpdateSearchBonusSummary();
+  rmRecomputeBolcino(1);rmRecomputeBolcino(2);rmRecomputeBolcino(3);rmSetStaticSemanticCodes();
+  var t1=rmRecomputeTrova(1);rmRecomputeCascata1(t1);rmRecomputeSpecie(1);
+  var t2=rmRecomputeTrova(2);rmRecomputeCascataMultipla(2,t2);rmRecomputeSpecie(2);
+  var t3=rmRecomputeTrova(3);rmRecomputeCascataMultipla(3,t3);rmRecomputeSpecie(3);
   rmGating();rmRenderSummary();rmRenderOutcome();rmApplyFlow();
 }
 
@@ -2792,11 +3532,17 @@ function rmCollectState(){
   return state;
 }
 function rmApplyState(state){
-  state=state||{};RM_RESTORING=true;
+  state=state||{};
+  /* Retrocompatibilità: il vecchio Bolcino unico viene mantenuto come Bolcino del Primo Incontro. */
+  if(state.risultatoBolcino1===undefined&&state.risultatoBolcino!==undefined)state.risultatoBolcino1=state.risultatoBolcino;
+  if(state.bonusRicercaJson===undefined)state.bonusRicercaJson='[]';
+  if(state.zonaRicerca===undefined){var legacyStarted=!!state.summaryVisited||!!state.outcomeVisited||['risultatoTrova1','risultatoClasse1','risultatoTrova2','risultatoClasse2','risultatoTrova3','risultatoClasse3'].some(function(k){return state[k]!==undefined&&String(state[k])!=='';});state.zonaRicerca=legacyStarted?'storica':'';}
+  RM_RESTORING=true;
   try{
     RM_FLOW.summaryVisited=!!state.summaryVisited;RM_FLOW.outcomeVisited=!!state.outcomeVisited;RM_FLOW.page=state.flowPage||'config';
     var fields=document.querySelectorAll('#creature-workspace [data-key]');
     for(var i=0;i<fields.length;i++){var f=fields[i],k=f.getAttribute('data-key');if(state[k]===undefined)continue;if(f.type==='checkbox')f.checked=!!state[k];else f.value=state[k];}
+    rmRenderSearchBonusesFromHidden(true);
     ricalcolaRicerca();
     fields=document.querySelectorAll('#creature-workspace [data-key]');
     for(var j=0;j<fields.length;j++){var g=fields[j],kg=g.getAttribute('data-key');if(state[kg]===undefined)continue;if(g.type==='checkbox')g.checked=!!state[kg];else g.value=state[kg];}
@@ -2832,6 +3578,7 @@ function rmSetReadonly(ro){
   RM_READONLY=!!ro;var w=rmWorkspace();if(!w)return;
   var fields=w.querySelectorAll('input,select,textarea');
   for(var i=0;i<fields.length;i++)fields[i].disabled=RM_READONLY;
+  if(!RM_READONLY){rmSearchBonusRows().forEach(function(row){rmApplySearchBonusPreset(row);});}
   var buttons=w.querySelectorAll('button');
   for(var j=0;j<buttons.length;j++){var b=buttons[j];if(!RM_READONLY)continue;if(b.getAttribute('data-session-control')==='1'||b.classList.contains('copy-btn')||b.classList.contains('flow-page-btn')||b.classList.contains('flow-action-btn'))b.disabled=false;else b.disabled=true;}
   rmApplyFlow();rmUpdateToolbar();
@@ -2885,7 +3632,7 @@ function rmOpenSession(id,data){
   RM_CURRENT_ID=id;RM_CURRENT_DATA=data;RM_READONLY=!rmSessionCanEdit(data);
   rmEl('creature-session-home').style.display='none';rmWorkspace().style.display='block';
   var state=data.state||{};if(state.nomePgRicerca===undefined)state.nomePgRicerca=data.pgName||data.initialPgName||'';
-  rmApplyState(state);rmSetReadonly(RM_READONLY);rmCaricaEmpatiaSessioneNelProfilo();rmAggiornaEmpatiaCondivisa();rmUpdateToolbar();
+  rmApplyState(state);rmSetReadonly(RM_READONLY);rmCaricaEmpatiaSessioneNelProfilo();rmCaricaSapienzaSessioneNelProfilo();rmAggiornaEmpatiaCondivisa();rmAggiornaSapienzaCondivisa();rmUpdateToolbar();
   rmStatus('rm-save-status',RM_READONLY?'Modalità sola lettura.':'Ricerca caricata · autosalvataggio attivo',RM_READONLY?'':'ok');
   rmResumeFlow();
 }
@@ -2925,7 +3672,7 @@ function rmCreateSession(){
   RM_CREATING=true;
   if(btn)btn.disabled=true;
   var ep=rmProfiloEmpatia();if(ep===null){rmStatus('rm-session-home-msg','Inserisci un valore valido di Empatia nella sezione «Il tuo Personaggio».','bad');RM_CREATING=false;if(btn)btn.disabled=false;return;}
-  var state={nomePgRicerca:name,empatiaRicerca:String(ep),sapienza:'0',tipoRicerca:'attiva',valigiaMagica:'no',summaryVisited:false,outcomeVisited:false,flowPage:'config'};
+  var state={nomePgRicerca:name,empatiaRicerca:String(ep),sapienza:String(rmProfiloSapienza()),tipoRicerca:'attiva',valigiaMagica:'no',zonaRicerca:'',bonusRicercaJson:'[]',summaryVisited:false,outcomeVisited:false,flowPage:'config'};
   var data={ownerUid:RM_FB.user.uid,initialPgName:name,pgName:name,tipoRicerca:'attiva',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'standard-ricerca-v1',state:state};
   rmStatus('rm-session-home-msg','Creazione della Ricerca…','');
   RM_FB.db.collection(RM_COLLECTION).add(data).then(function(ref){
@@ -3005,6 +3752,15 @@ function rmBack(){
     rmStatus('rm-save-status','Non posso tornare all’elenco: il salvataggio non è riuscito. Riprova quando Firebase è disponibile.','bad');
   });
 }
+function rmSetupSearchBonusUI(){
+  var add=rmEl('rmAddBonusRicerca'),host=rmEl('rmBonusRicercaRows');if(!add||!host)return;
+  add.addEventListener(evtClick,function(){if(RM_READONLY)return;host.appendChild(rmBuildSearchBonusRow({preset:'',value:0,scope:'all'}));setupNumericInputs();rmSyncSearchBonusHidden();ricalcolaRicerca();rmScheduleSave();});
+  host.addEventListener(evtClick,function(e){var b=e.target&&e.target.closest?e.target.closest('.rm-search-bonus-remove'):null;if(!b||RM_READONLY)return;var r=b.closest('.rm-search-bonus-row');if(r)r.remove();rmSyncSearchBonusHidden();ricalcolaRicerca();rmScheduleSave();},true);
+  function changed(e){if(RM_READONLY||!e.target.closest('.rm-search-bonus-row'))return;var row=e.target.closest('.rm-search-bonus-row');if(e.target.classList.contains('rm-search-bonus-preset'))rmApplySearchBonusPreset(row);rmSyncSearchBonusHidden();ricalcolaRicerca();rmScheduleSave();}
+  host.addEventListener('input',changed,true);host.addEventListener('change',changed,true);
+  rmRenderSearchBonusesFromHidden(true);rmUpdateSearchBonusSummary();
+}
+
 function rmSetupControls(){
   rmEl('rm-btn-new-session').addEventListener(evtClick,rmCreateSession);
   rmEl('rm-new-session-pg').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();rmCreateSession();}});
@@ -3111,6 +3867,7 @@ function setupNumericInputs(){
   });
 }
 setupNumericInputs();
+rmSetupSearchBonusUI();
 
 /* ==================== FINE RICERCA CREATURE MAGICHE ==================== */
 
@@ -3125,6 +3882,9 @@ attachCopy('copiaAddestratoreD4', 'codiceAddestratoreD4');
 attachCopy('copiaDomesticazione', 'codiceDomesticazione');
 attachCopy('copiaConseguenzaDomesticazione', 'codiceConseguenzaDomesticazione');
 attachCopy('copiaAllevamento', 'codiceAllevamento');
+attachCopy('copiaIllegaleCura', 'codiceIllegaleCura');
+attachCopy('copiaIllegaleAllevamento', 'codiceIllegaleAllevamento');
+attachCopy('copiaImposium', 'codiceImposium');
 
 document.getElementById('bottoneReset').addEventListener(evtClick, function(){
   if(window.confirm('Vuoi davvero azzerare tutti i dati della Guida alla Magizoologia? Le sessioni Firebase della Ricerca non verranno toccate.')){resetGuidaMagizoologia();}
@@ -3165,18 +3925,21 @@ document.addEventListener('input', function(e){
   var guida=document.getElementById('modoMagizoologia');
   if((profilo&&profilo.contains(e.target))||(guida&&guida.contains(e.target))){ ricalcolaMagizoologia(); }
   if(e.target&&e.target.id==='empatia'){ rmSincronizzaEmpatiaDaProfilo(); }
+  if(e.target&&e.target.id==='sapienzaProfilo'){ rmSincronizzaSapienzaDaProfilo(); }
 }, true);
 document.addEventListener('change', function(e){
   var profilo=document.getElementById('modoPersonaggio');
   var guida=document.getElementById('modoMagizoologia');
   if((profilo&&profilo.contains(e.target))||(guida&&guida.contains(e.target))){ ricalcolaMagizoologia(); }
   if(e.target&&e.target.id==='empatia'){ rmSincronizzaEmpatiaDaProfilo(); }
+  if(e.target&&(e.target.id==='sapienzaProfilo'||e.target.id==='pgTipo')){ rmSincronizzaSapienzaDaProfilo(); }
 }, true);
 
 ripristinaStatoMagizoologia();
 aggiornaCampiTipoPG();
 mzSetupBonusManagers();
 rmSincronizzaEmpatiaDaProfilo();
+rmSincronizzaSapienzaDaProfilo();
 ricalcolaMagizoologia();
 ricalcolaRicerca();
 
@@ -3187,5 +3950,92 @@ if(document.readyState === 'loading'){
 }
 
 </script>
+
+<script>
+/* ============================================================
+   ALLINEAMENTO MAGIZOOLOGIA ↔ ERBOLOGIA v8
+   - zone normalizzate
+   - specie automatica per le 9 zone con elenco inequivocabile
+   - controllo Scrofungulus al Lago Nero
+   - professione riservata ai PG Adulti
+   - riepilogo di gruppo/esotiche parallelo a Erbologia
+   ============================================================ */
+(function(){
+'use strict';
+var RM_ZONE_CREATURES={"Lago Nero":{"X":["Glowbug","Marmite","Rospo"],"XX":["Avvincino","Bundimun","Chizpurfle","Clabbert","Horklump","Imp","Ippocampo","Jobberknoll"],"XXX":["Lobalug","Malacaw Maculato","Moke","Pogrebin","Plimpi","Purvincolo","Sblorb","Streeler"],"XXXX":["Kappa","Kelpie","Maride","Thestral","Unicorno"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Gytrash","Marciotto","Molliccio"]},"Foresta Proibita":{"X":["Rospo","Vermicolo","Gufo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Fata","Gnomo","Horklump","Imp","Jobberknoll","Lumaca Carnivora","Mooncalf"],"XXX":["Berretto Rosso","Billywig","Doxy","Dugbog","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Centauro","Kappa","Schiopodo Sparacoda","Thestral","Troll","Unicorno"],"XXXXX":["Acromantula"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Gytrash","Marciotto","Molliccio"]},"Valli di Hogwarts":{"X":["Rospo","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Diricawl","Fata","Gnomo","Horklump","Imp","Jobberknoll","Mooncalf","Porlock"],"XXX":["Billywig","Doxy","Dugbog","Fiammagranchio","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Bicorno","Centauro","Grifone","Schiopodo Sparacoda","Thestral"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Lepricani","Megera","Nano","Ninfa dei Boschi","Orco","Vampiro","Veela","Ammuntadore","Gytrash","Marciotto"]},"Vicoli di Notturn Alley":{"X":["Gatto","Gufo","Rospo","Vermicolo"],"XX":["Augurey","Bundimun","Chizpurfle","Clabbert","Ghoul","Horklump","Imp","Lumaca Carnivora"],"XXX":["Ashwinder","Crup","Fwooper","Kneazle","Moke","Nogtail","Streeler"],"XXXX":["Matagot"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Goblin","Megera","Vampiro","Veela","Ammuntadore","Banshee","Borges","Fantasma","Gytrash","Marciotto","Molliccio","Polterigeist"]},"Valli di Hogsmeade":{"X":["Rospo","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Diricawl","Fata","Gnomo","Horklump","Imp","Jobberknoll","Mooncalf","Porlock"],"XXX":["Billywig","Doxy","Dugbog","Fiammagranchio","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Bicorno","Centauro","Grifone","Schiopodo Sparacoda","Thestral"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Lepricani","Megera","Nano","Ninfa dei Boschi","Orco","Vampiro","Veela","Ammuntadore","Gytrash","Marciotto"]},"Vie di Hogsmeade":{"X":["Glowbug","Gufo","Rospo","Vermicolo"],"XX":["Asticello","Augurey","Bundimun","Diricawl","Ghoul","Horklump","Jobberknoll","Lumaca Carnivora","Porlock"],"XXX":["Ashwinder","Billywig","Crup","Doxy","Glumbumble","Jarvey","Knarl","Kneazle","Moke","Nogtail","Purvincolo","Snaso","Streeler"],"XXXX":[],"XXXXX":[],"Essere/Spirito/Non-Essere":["Elfo Domestico","Goblin","Megera","Vampiro","Veela","Ammuntadore","Borges","Fantasma","Molliccio","Polterigeist"]},"Foreste Magiche Inglesi":{"X":["Glowbug","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Chizpurfle","Clabbert","Diricawl","Fata","Gnomo","Horklump","Jobberknoll","Mooncalf","Porlock"],"XXX":["Ashwinder","Billywig","Doxy","Dugbog","Fiammagranchio","Fwooper","Glumbumble","Ippogrifo","Jarvey","Knarl","Kneazle","Moke","Pixie","Puffskein","Purvincolo","Salamandra","Sblorb","Snaso","Streeler"],"XXXX":["Bicorno","Centauro","Erkling","Grifone","Kelpie","Thestral","Unicorno","Velenottero"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Orco","Ammuntadore","Borges","Fantasma","Gytrash","Marciotto","Molliccio"]},"Foreste Oscure":{"X":["Rospo","Vermicolo"],"XX":["Augurey","Ghoul","Horklump","Imp","Lumaca Carnivora"],"XXX":["Ashwinder","Berretto Rosso","Fiammagranchio","Fwooper","Nogtail","Pogrebin","Salamandra"],"XXXX":["Erkling","Kappa","Kelpie","Lupo Mannaro","Schiopodo Sparacoda","Thestral","Troll","Velenottero"],"XXXXX":["Acromantula","Manticora","Quintaped"],"Essere/Spirito/Non-Essere":["Gigante","Megera","Vampiro","Veela","Ammuntadore","Banshee","Borges","Dissennatore","Gytrash","Inferius","Marciotto","Molliccio","Polterigeist"]},"Coste Magiche Inglesi":{"X":["Glowbug","Marmite","Rospo"],"XX":["Avvincino","Ippocampo"],"XXX":["Lobalug","Malacaw Maculato","Plimpi"],"XXXX":["Maride"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Veela","Ammuntadore","Fantasma","Gytrash","Inferius","Marciotto","Molliccio","Polterigeist"]}};
+var RM_ZONE_ALIASES={'Valle di Hogwarts':'Valli di Hogwarts','Notturn Alley':'Vicoli di Notturn Alley','Foreste Magiche Oscure':'Foreste Oscure'};
+function rmV8Zone(){var z=rmZona();return RM_ZONE_ALIASES[z]||z;}
+rmZonaLabel=function(){var z=rmV8Zone();return z==='storica'?'Non registrata (vecchia sessione)':z;};
+
+var RM_V8_SPEC_CTX={1:null,2:null,3:null};
+rmRecomputeSpecie=function(n){
+  var face=rmEl('dadoSpecie'+n),res=rmEl('risultatoSpecie'+n),name=rmEl('specieCreatura'+n),tag=rmEl('tagSpecie'+n),note=rmEl('rmSpecieNota'+n),code=rmEl('codiceSpecie'+n);
+  if(!face||!res||!name||!tag||!note||!code)return;
+  var z=rmV8Zone(),cls=rmClasseCorrente(n),list=RM_ZONE_CREATURES[z]&&RM_ZONE_CREATURES[z][cls],auto=Array.isArray(list),ctx=z+'|'+cls;
+  if(!RM_RESTORING&&RM_V8_SPEC_CTX[n]!==null&&RM_V8_SPEC_CTX[n]!==ctx){face.value='';res.value='';name.value='';}
+  RM_V8_SPEC_CTX[n]=ctx;
+  if(!cls){face.value='';res.value='';name.value='';face.readOnly=false;name.readOnly=false;name.classList.remove('rm-auto-name');res.removeAttribute('max');code.textContent='Prima completa il tiro di Classificazione.';note.textContent='In attesa della Classificazione.';tag.textContent='in attesa';tag.className='out-tag out-neutral';return;}
+  if(auto){
+    face.value=String(list.length);face.readOnly=true;name.readOnly=true;name.classList.add('rm-auto-name');
+    if(list.length===0){res.value='';name.value='';res.removeAttribute('max');code.textContent='La lista fornita per '+z+' non contiene Creature di Classificazione '+cls+'. Il tool non inventa un risultato: verifica sul regolamento se il tiro di Classificazione vada ripetuto.';note.textContent='Nessuna Creatura disponibile nella lista della Zona per questa Classificazione.';tag.textContent='Nessun risultato in lista';tag.className='out-tag out-fail';return;}
+    res.max=String(list.length);
+    rmSetCode('codiceSpecie'+n,'Quale Creatura specifica di Classificazione '+cls+' viene trovata in '+z+'?',list.map(function(x,i){return (i+1)+'. '+x;}).join('\n'),'[dice=1d'+list.length+']Creatura specifica — '+z+' — Classificazione '+cls+'[/dice]');
+    note.textContent='Lista incorporata: '+list.length+' '+(list.length===1?'risultato':'risultati')+' per '+z+' · '+cls+'. Il risultato del dado compila automaticamente il nome.';
+    var v=res.value!==''?Number(res.value):null;if(v===null){name.value='';tag.textContent='in attesa';tag.className='out-tag out-neutral';return;}
+    if(!Number.isInteger(v)||v<1||v>list.length){name.value='';tag.textContent='Risultato impossibile';tag.className='out-tag out-fail';return;}
+    name.value=list[v-1];tag.textContent=list[v-1];tag.className='out-tag out-ok';return;
+  }
+  face.readOnly=false;name.readOnly=false;name.classList.remove('rm-auto-name');
+  var f=face.value!==''?Number(face.value):null;
+  if(f===null||!Number.isInteger(f)||f<1||f>999){res.removeAttribute('max');code.textContent='Per '+(z||'questa Zona')+' non è presente nel materiale fornito una lista automatizzabile. Consulta la lista del forum per la Classificazione '+cls+', inserisci qui il numero di risultati e il tool genererà il dado.';note.textContent='Modalità manuale: inserisci le facce del dado e, dopo il tiro, il nome della Creatura corrispondente.';tag.textContent=res.value===''?'in attesa':'Inserisci prima le facce';tag.className='out-tag '+(res.value===''?'out-neutral':'out-fail');return;}
+  res.max=String(f);rmSetCode('codiceSpecie'+n,'Quale Creatura specifica di Classificazione '+cls+' viene trovata in '+(z||'Zona scelta')+'?','Consulta la lista della Zona e associa il risultato alla Creatura corrispondente.','[dice=1d'+f+']Creatura specifica — '+(z||'Zona')+' — Classificazione '+cls+'[/dice]');
+  var rv=res.value!==''?Number(res.value):null;if(rv===null){tag.textContent='in attesa';tag.className='out-tag out-neutral';return;}
+  if(!Number.isInteger(rv)||rv<1||rv>f){tag.textContent='Risultato impossibile';tag.className='out-tag out-fail';return;}
+  tag.textContent=name.value.trim()?'Specie registrata':'Indica il nome trovato';tag.className='out-tag '+(name.value.trim()?'out-ok':'out-neutral');
+};
+
+function rmV8RecomputeLago(){
+  var box=rmEl('rmLagoNeroBox'),nuoto=rmEl('rmNuotoLago'),det=rmEl('rmNuotoLagoDettagli'),inp=rmEl('risultatoScrofungulus'),tag=rmEl('tagScrofungulus');if(!box)return;
+  var lake=rmV8Zone()==='Lago Nero';box.style.display=lake?'block':'none';
+  if(!lake){if(nuoto)nuoto.checked=false;if(inp)inp.value='';if(det)det.style.display='none';return;}
+  if(det)det.style.display=nuoto&&nuoto.checked?'block':'none';if(!nuoto||!nuoto.checked)return;
+  rmSetCode('codiceScrofungulus','Il PG che nuota nel Lago Nero contrae lo Scrofungulus?','1. Contrae lo Scrofungulus\n2-20. Non lo contrae','[dice=1d20]Controllo Scrofungulus — nuoto nel Lago Nero[/dice]');
+  var v=inp&&inp.value!==''?Number(inp.value):null;if(v===null){tag.textContent='in attesa';tag.className='out-tag out-neutral';return;}
+  if(!Number.isInteger(v)||v<1||v>20){tag.textContent='Risultato impossibile';tag.className='out-tag out-fail';return;}
+  tag.textContent=v===1?'Scrofungulus':'Nessun contagio';tag.className='out-tag '+(v===1?'out-fail':'out-ok');
+}
+
+var rmV8BaseTipo=aggiornaCampiTipoPG;
+aggiornaCampiTipoPG=function(){rmV8BaseTipo();var stud=rmEl('pgTipo')&&rmEl('pgTipo').value==='studente',row=rmEl('rigaMagizoologoMestiere'),check=rmEl('pgMagizoologoMestiere');if(row)row.style.display=stud?'none':'flex';if(stud&&check)check.checked=false;};
+
+var rmV8BaseApply=rmApplyState;
+rmApplyState=function(state){
+  state=Object.assign({},state||{});if(RM_ZONE_ALIASES[state.zonaRicerca])state.zonaRicerca=RM_ZONE_ALIASES[state.zonaRicerca];
+  for(var n=1;n<=3;n++){var z=RM_ZONE_ALIASES[state.zonaRicerca]||state.zonaRicerca,vc=Number(state['risultatoClasse'+n]),tab=n===1?rmClasseTab1:(n===2?rmClasseTab2:rmClasseTab3),cls=Number.isInteger(vc)?rmLookup(tab,vc):'',list=RM_ZONE_CREATURES[z]&&RM_ZONE_CREATURES[z][cls];if(Array.isArray(list)&&list.length&&state['specieCreatura'+n]&&state['risultatoSpecie'+n]===undefined){var ix=list.indexOf(state['specieCreatura'+n]);if(ix>=0){state['dadoSpecie'+n]=String(list.length);state['risultatoSpecie'+n]=String(ix+1);}}}
+  rmV8BaseApply(state);
+};
+
+rmRenderSummary=function(){
+  var host=rmEl('rm-summary-content'),bb=rmEl('rm-summary-bbcode');if(!host||!bb)return;
+  var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'',zone=rmZonaLabel(),t1=rmTrovaThreshold(1),t2=rmTrovaThreshold(2),t3=rmTrovaThreshold(3),bonus=rmSearchBonusSummaryText();
+  host.innerHTML='<div class="summary-grid"><div class="summary-box"><b>Zona di Ricerca</b><br>'+rmEsc(zone||'—')+'</div><div class="summary-box"><b>PG lanciatore</b><br>'+rmEsc(name||'—')+'</div><div class="summary-box"><b>Tipo</b><br>'+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'</div><div class="summary-box"><b>Empatia base</b><br>'+rmEmpatia()+'</div><div class="summary-box"><b>Sapienza Magizoologica</b><br>'+rmSapienza()+' → bonus +'+rmBonusSapienza()+'</div><div class="summary-box"><b>Incontro I</b><br>'+t1+'/30 · '+rmPercent(t1)+'%</div><div class="summary-box"><b>Incontro II</b><br>'+(rmTipo()==='attiva'?(t2+'/30 · '+rmPercent(t2)+'%'):'non disponibile')+'</div><div class="summary-box"><b>Incontro III</b><br>'+(rmTipo()==='attiva'?(t3+'/30 · '+rmPercent(t3)+'%'):'non disponibile')+'</div><div class="summary-box"><b>Valigia Magica</b><br>'+(rmValigia()==='si'?'Sì':'No')+'</div></div>'+(bonus.length?'<div class="nota-regole"><b>Bonus selezionati:</b> '+bonus.map(rmEsc).join(' · ')+'</div>':'')+'<div class="nota-regole"><b>Consigliato:</b> copia il riepilogo nel primo post della Ricerca. Le percentuali servono come informazione di supporto; i dati e i bonus riportati rendono verificabile il calcolo.<br><br><b>Role di gruppo:</b> tutti i dadi devono essere lanciati dallo stesso PG. Il ritrovamento è condiviso, la Fiducia no.<br><br><b>Creature Esotiche:</b> possono essere incontrate soltanto fuori dal Regno Unito.</div>';
+  bb.textContent='<b>Riepilogo Ricerca Creature Magiche — '+(name||'PG')+'</b>\n[quote]Zona di Ricerca: '+(zone||'—')+'\nPG lanciatore: '+(name||'PG')+'\nTipo: '+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'\nEmpatia base: '+rmEmpatia()+'\nSapienza Magizoologica: '+rmSapienza()+' (bonus +'+rmBonusSapienza()+')\nIncontro I: '+t1+'/30 ('+rmPercent(t1)+'%)\n'+(rmTipo()==='attiva'?('Incontro II: '+t2+'/30 ('+rmPercent(t2)+'%)\nIncontro III: '+t3+'/30 ('+rmPercent(t3)+'%)\n'):'')+'Valigia Magica: '+(rmValigia()==='si'?'Sì':'No')+(bonus.length?'\nBonus: '+bonus.join('; '):'')+'\nNota: è consigliato copiare questo riepilogo nel primo post; le percentuali sono informazioni di supporto.[/quote]';
+};
+
+var RM_V8_ZONE=null,RM_V8_NAME=null,rmV8BaseRicalcola=ricalcolaRicerca;
+ricalcolaRicerca=function(){
+  var z=rmZona(),nm=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'';
+  if(!RM_RESTORING&&RM_V8_ZONE!==null&&RM_V8_ZONE!==z){for(var i=1;i<=3;i++){var b=rmEl('risultatoBolcino'+i);if(b)b.value='';}}
+  if(!RM_RESTORING&&RM_V8_NAME!==null&&RM_V8_NAME!==nm){for(var j=1;j<=3;j++){var bb=rmEl('risultatoBolcino'+j);if(bb)bb.value='';}}
+  RM_V8_ZONE=z;RM_V8_NAME=nm;rmV8BaseRicalcola();rmV8RecomputeLago();
+};
+
+attachCopy('copiaScrofungulus','codiceScrofungulus');
+document.addEventListener('change',function(e){if(e.target&&e.target.id==='rmNuotoLago')rmV8RecomputeLago();},true);
+document.addEventListener('input',function(e){if(e.target&&e.target.id==='risultatoScrofungulus')ricalcolaRicerca();},true);
+aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
+})();
+</script>
+
 </body>
 </html>
