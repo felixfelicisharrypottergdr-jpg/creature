@@ -1,3 +1,92 @@
+Pasted text(20260824-114323).txt
+Documento
+vorrei che cambiassi il colore del titolo "la magizoologia" con quello che usi per studente, troll, nessuno, 10, ecc 
+
+Fatto. Ho cambiato solo il colore del titolo “• La Magizoologia •” da #f3a15f a #f0ddcc, cioè lo stesso colore usato per Studente, T (Troll), Nessuno, 10, ecc.
+
+Scarica l’HTML modificato
+
+magizoologia_titolo_chiaro.html
+HTML
+ok, non mi piace però che le tabelle con i campi siano marroni come lo sfondo. magari le tabelle si possono fare di un arancio leggibile, e le scritte/i campi di varie tonalità di marrone o arancio scuro?
+
+Sì, così ha molto più contrasto. Ho modificato l’HTML in questo modo:
+
+le schede principali ora hanno un fondo arancio caldo, invece di confondersi con il marrone dello sfondo;
+titoli, etichette e testi dentro le schede usano marroni e aranci molto scuri;
+i campi di input e i menu a tendina sono marrone scuro con testo chiaro;
+i riquadri tecnici interni restano scuri, così non diventa tutto uniformemente arancione;
+anche le tabelle vere e proprie hanno celle aranciate e intestazioni più scure.
+
+Il titolo “La Magizoologia” resta nel colore chiaro che avevamo appena scelto.
+
+Scarica l’HTML con le schede arancioni
+
+magizoologia_tabelle_arancio.html
+HTML
+attenzione a queste scritte scure su sfondo scuro o a scritte chiare su sfondo chiaro
+
+Sì, hai ragione: lì il contrasto era sbagliato.
+
+Ho corretto l’HTML in modo che:
+
+i riquadri “Bonus generali del Personaggio” e simili abbiano un fondo più scuro, così le scritte chiare si leggono bene;
+il testo descrittivo dentro quei riquadri sia più chiaro;
+la scritta tipo “Nessun Oggetto/Conoscenza…” nel riepilogo sia più scura, così non si perde sul fondo arancio;
+anche il riquadro della Fatica abbia un contrasto più pulito.
+
+Puoi scaricarlo qui:
+
+Scarica l’HTML corretto
+
+Se vuoi, al prossimo passaggio posso anche fare un’ulteriore rifinitura generale del contrasto su tutte le schede arancioni, così uniformiamo bene ogni sezione.
+
+magizoologia_contrasto_corretta.html
+HTML
+forse la tabella "il tuo personaggio si può mettere a parte, anziche stare sempre sopra ricerche e guida? nel senso che cosi la compili una volta sola e vale per entrambe le funzioni
+
+Sì, secondo me così è molto più ordinato. Ho separato “Il tuo Personaggio” come terza sezione autonoma:
+
+Il tuo Personaggio | Ricerca Creature Magiche | Guida alla Magizoologia
+
+In questo modo il profilo non occupa più spazio sopra la Guida. Lo compili nella sua sezione e poi passi liberamente alle altre due funzioni.
+
+Ho anche eliminato il doppio inserimento dell’Empatia: nella Ricerca viene presa automaticamente dal profilo del Personaggio. Nella configurazione della Ricerca compare solo un piccolo riepilogo del valore utilizzato, non un secondo campo da compilare.
+
+Le sessioni Firebase della Ricerca continuano inoltre a conservare l’Empatia associata alla sessione, quindi non ho sacrificato il funzionamento dei salvataggi.
+
+Scarica l’HTML con “Il tuo Personaggio” separato
+
+magizoologia_personaggio_condiviso.html
+HTML
+si possono mettere ordinate le caselle? tipo quella dove c'è T è bassa
+
+Sì, certo: il problema è che l’etichetta “Voto nella Conoscenza della Creatura (solo Studenti)” va su due righe e quindi abbassa la casella sotto.
+
+Ho sistemato l’HTML facendo in modo che, nella sezione Il tuo Personaggio, le etichette abbiano un’altezza uniforme, così i campi risultano allineati sulla stessa linea. Su mobile, invece, l’altezza torna automatica per non creare spazi strani.
+
+Scarica l’HTML con le caselle allineate
+
+Se vuoi, al prossimo passaggio posso anche:
+
+allargare un po’ la colonna del voto, oppure
+accorciare leggermente la label
+così risulta ancora più pulito visivamente.
+magizoologia_personaggio_ordinato.html
+HTML
+se metto adulto, dovrebbero sparire però tutte le cose riguardanti gli studenti, e viceversa
+
+Sì, corretto. Ho reso “Tipo di PG” realmente dinamico:
+
+scegliendo Studente, compare il Voto nella Conoscenza della Creatura e spariscono i livelli Amico, Custode, Addestratore e Allevatore;
+scegliendo Adulto, sparisce completamente il voto scolastico e compaiono i quattro livelli da Adulto;
+Empatia e i bonus generali restano visibili perché valgono per entrambi;
+soprattutto, i valori nascosti vengono anche ignorati nei calcoli, quindi passando da Adulto a Studente non può rimanere attivo per errore un vecchio livello da Adulto, e viceversa.
+
+Ho anche tolto la dicitura “(solo Studenti)” dal voto, perché ormai è superflua: il campo appare solo quando serve.
+
+Scarica l’HTML con Studente/Adulto dinamici
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -473,6 +562,182 @@ button:focus-visible,select:focus-visible,input:focus-visible{
   .mz-bonus-remove{width:100%;}
 }
 
+
+
+/* ===== PALETTE SCHEDE — arancio caldo + campi marrone scuro ===== */
+.scheda,
+.blocco-incontro{
+  background:linear-gradient(180deg,#c77a42 0%,#b96635 100%);
+  border-color:#7e3a1d;
+  color:#2d170e;
+  box-shadow:inset 0 1px 0 rgba(255,231,205,.16),0 8px 20px rgba(0,0,0,.14);
+}
+
+.scheda h2,
+.blocco-incontro h2{
+  color:#4a210f;
+  border-bottom-color:#7e3a1d;
+  text-shadow:none;
+}
+
+.scheda h3,
+.blocco-incontro h3{
+  color:#552612;
+}
+
+.scheda .campo label,
+.blocco-incontro .campo label{
+  color:#5c2812;
+  font-weight:700;
+}
+
+.scheda select,
+.scheda input[type=number],
+.scheda input[type=text],
+.blocco-incontro select,
+.blocco-incontro input[type=number],
+.blocco-incontro input[type=text]{
+  background:#4b281b;
+  color:#f8e4d0;
+  border-color:#6e3a24;
+}
+
+.scheda select:focus-visible,
+.scheda input:focus-visible,
+.blocco-incontro select:focus-visible,
+.blocco-incontro input:focus-visible{
+  outline-color:#6f3016;
+}
+
+.scheda .nota-regole,
+.scheda .numeric-note,
+.scheda .piede-nota,
+.blocco-incontro .nota-regole,
+.blocco-incontro .numeric-note{
+  color:#56301f;
+}
+
+.scheda .check-riga label,
+.blocco-incontro .check-riga label,
+.scheda .result-line > span:not(.out-tag),
+.blocco-incontro .result-line > span:not(.out-tag){
+  color:#351b10;
+}
+
+/* I riquadri tecnici interni restano scuri per creare contrasto. */
+.scheda .esito,
+.blocco-incontro .esito,
+.scheda .mz-bonus-manager,
+.blocco-incontro .mz-bonus-manager{
+  color:#f0ddcc;
+}
+
+/* Tabelle vere: fondo arancio leggibile, intestazioni più scure. */
+table.fasce th{
+  background:#6b321d;
+  color:#f4c39f;
+  border-color:#7e3a1d;
+}
+
+table.fasce td{
+  background:#d18a55;
+  color:#32190f;
+  border-color:#8b4929;
+}
+
+
+/* ===== CORREZIONI CONTRASTO — testi leggibili nei blocchi arancio ===== */
+.scheda .mz-bonus-manager,
+.blocco-incontro .mz-bonus-manager{
+  background:rgba(56,28,17,.82);
+  border-color:#8b4929;
+  box-shadow:inset 0 1px 0 rgba(255,223,193,.06);
+}
+
+.scheda .mz-bonus-manager h3,
+.blocco-incontro .mz-bonus-manager h3{
+  color:#ffd0ab;
+}
+
+.scheda .mz-bonus-manager .mz-bonus-help,
+.blocco-incontro .mz-bonus-manager .mz-bonus-help,
+.scheda .mz-bonus-manager .mz-bonus-remaining,
+.blocco-incontro .mz-bonus-manager .mz-bonus-remaining{
+  color:#f1d5c0;
+}
+
+.scheda .mz-bonus-manager .mz-effective-line,
+.blocco-incontro .mz-bonus-manager .mz-effective-line{
+  color:#ffc998;
+}
+
+.scheda .mz-summary-empty,
+.blocco-incontro .mz-summary-empty{
+  color:#7a391f;
+}
+
+.scheda .mz-fatigue-total,
+.blocco-incontro .mz-fatigue-total{
+  background:rgba(255,238,221,.18);
+  border-color:#8b4929;
+  color:#3a1d11;
+}
+
+.scheda .mz-fatigue-total strong,
+.blocco-incontro .mz-fatigue-total strong{
+  color:#5c2812;
+}
+
+
+/* ===== PROFILO PERSONAGGIO CONDIVISO ===== */
+.profilo-condiviso-note{
+  margin:-3px 0 14px;
+  color:#56301f;
+  font-size:.88em;
+  line-height:1.45;
+}
+.profilo-riferimento{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:8px 0 12px;
+  padding:9px 11px;
+  border:1px solid #8b4929;
+  border-radius:6px;
+  background:rgba(255,238,221,.18);
+  color:#3a1d11;
+  font-size:.88em;
+}
+.profilo-riferimento strong{color:#5c2812;}
+.profilo-riferimento .profilo-valore{
+  display:inline-block;
+  min-width:22px;
+  padding:2px 7px;
+  border-radius:12px;
+  background:#4b281b;
+  color:#f8e4d0;
+  text-align:center;
+  font-weight:700;
+}
+
+
+#modoPersonaggio .riga{
+  align-items:flex-start;
+}
+#modoPersonaggio .campo label{
+  min-height:2.45em;
+  line-height:1.2;
+  display:flex;
+  align-items:flex-end;
+}
+@media(max-width:640px){
+  #modoPersonaggio .campo label{
+    min-height:auto;
+    display:block;
+  }
+}
+
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
@@ -485,19 +750,18 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 <div class="sigillo-magizoologia" aria-hidden="true"><i class="fa-solid fa-dragon"></i></div>
 <h1>• La Magizoologia •</h1>
 <div class="sottotitolo">Strumenti interattivi per il Ritrovamento, la Fiducia, Cura, Domesticazione e Allevamento delle Creature Magiche</div>
-<div class="nota-regole" style="text-align:center; margin-bottom:14px;">I tiri vanno eseguiti con il dado del forum: copia il codice, incollalo in un post, poi riporta qui il risultato ottenuto. La Guida alla Magizoologia riparte vuota a ogni ricaricamento della pagina; durante la sessione corrente i dati restano attivi normalmente. Le sessioni di Ricerca Creature Magiche vengono invece salvate automaticamente su Firebase.</div>
+<div class="nota-regole" style="text-align:center; margin-bottom:14px;">I tiri vanno eseguiti con il dado del forum: copia il codice, incollalo in un post, poi riporta qui il risultato ottenuto. Il profilo del Personaggio e la Guida alla Magizoologia ripartono dai valori iniziali a ogni ricaricamento della pagina; durante la sessione corrente i dati restano attivi normalmente. Le sessioni di Ricerca Creature Magiche vengono invece salvate automaticamente su Firebase.</div>
 
 <div class="barra-modo">
-  <button class="modo-bottone attivo" id="modoRicercaBtn">Ricerca Creature Magiche</button>
+  <button class="modo-bottone attivo" id="modoPersonaggioBtn">Il tuo Personaggio</button>
+  <button class="modo-bottone" id="modoRicercaBtn">Ricerca Creature Magiche</button>
   <button class="modo-bottone" id="modoMagizoologiaBtn">Guida alla Magizoologia</button>
 </div>
 
-<div id="modoMagizoologia" class="modo-sezione visibile">
-
-
-
+<div id="modoPersonaggio" class="modo-sezione visibile">
 <div class="scheda">
 <h2>Il tuo Personaggio</h2>
+<div class="profilo-condiviso-note">Compila questo profilo una sola volta: ogni funzione usa automaticamente i dati del Personaggio che le servono. L’Empatia inserita qui viene condivisa anche con la Ricerca Creature Magiche.</div>
 <div class="riga">
   <div class="campo">
     <label>Tipo di PG</label>
@@ -506,8 +770,8 @@ button:focus-visible,select:focus-visible,input:focus-visible{
       <option value="adulto">Adulto</option>
     </select>
   </div>
-  <div class="campo">
-    <label>Voto nella Conoscenza della Creatura (solo Studenti)</label>
+  <div class="campo" id="campoVotoStudente">
+    <label>Voto nella Conoscenza della Creatura</label>
     <select id="pgVoto" data-key="pgVoto">
       <option value="T">T (Troll)</option>
       <option value="D">D (Deludente)</option>
@@ -523,6 +787,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{
     <div class="mz-effective-line" id="mzEmpatiaEffettiva"></div>
   </div>
 </div>
+<div id="campiAdultoPG">
 <div class="riga">
   <div class="campo">
     <label>Livello Amico delle Creature Magiche</label>
@@ -571,6 +836,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{
     </select>
   </div>
 </div>
+</div>
 
 <div class="mz-bonus-manager">
   <h3>Bonus generali del Personaggio</h3>
@@ -579,6 +845,9 @@ button:focus-visible,select:focus-visible,input:focus-visible{
   <button type="button" class="mz-bonus-add" id="mzAddBonusGenerale">+ Aggiungi bonus</button>
 </div>
 </div>
+</div>
+
+<div id="modoMagizoologia" class="modo-sezione">
 
 <div class="scheda">
 <h2>La Creatura Magica</h2>
@@ -899,11 +1168,12 @@ button:focus-visible,select:focus-visible,input:focus-visible{
   <section class="research-flow-page" data-rm-page-panel="config">
     <div class="scheda">
       <h2>Configurazione</h2>
+      <input type="hidden" id="empatiaRicerca" data-key="empatiaRicerca" value="10">
       <div class="riga">
         <div class="campo"><label>Nome del PG principale</label><input type="text" id="nomePgRicerca" data-key="nomePgRicerca" maxlength="80"></div>
-        <div class="campo"><label>Empatia</label><input type="number" id="empatiaRicerca" data-key="empatiaRicerca" value="10" min="0"></div>
         <div class="campo"><label>Sapienza Magizoologica (0-25)</label><input type="number" id="sapienza" data-key="sapienza" value="0" min="0" max="25"></div>
       </div>
+      <div class="profilo-riferimento"><strong>Empatia usata dalla Ricerca:</strong> <span class="profilo-valore" id="rmEmpatiaCondivisa">10</span> <span>· si modifica nella sezione «Il tuo Personaggio».</span></div>
       <div class="riga">
         <div class="campo"><label>Tipo di Ricerca</label><select id="tipoRicerca" data-key="tipoRicerca"><option value="attiva">Attiva (fino a 3 incontri)</option><option value="passiva">Passiva (1 incontro)</option></select></div>
         <div class="campo"><label>Possiedo la Valigia Magica</label><select id="valigiaMagica" data-key="valigiaMagica"><option value="no">No</option><option value="si">Sì</option></select></div>
@@ -1243,18 +1513,28 @@ function clearDependentResult(inputId, tagId){
   if(tag){tag.textContent = 'in attesa';tag.className = 'out-tag out-neutral';}
 }
 
+function aggiornaCampiTipoPG(){
+  var tipoEl = document.getElementById('pgTipo');
+  if(!tipoEl){ return; }
+  var studente = tipoEl.value === 'studente';
+  var campoVoto = document.getElementById('campoVotoStudente');
+  var campiAdulto = document.getElementById('campiAdultoPG');
+  if(campoVoto){ campoVoto.style.display = studente ? '' : 'none'; }
+  if(campiAdulto){ campiAdulto.style.display = studente ? 'none' : ''; }
+}
+
 function leggiPG(){
   var pg = {};
   pg.tipo = document.getElementById('pgTipo').value;
-  pg.voto = document.getElementById('pgVoto').value;
+  pg.voto = pg.tipo === 'studente' ? document.getElementById('pgVoto').value : null;
   pg.empatiaBase = bonusValore('empatia');
   pg.empatia = pg.empatiaBase + mzGeneralBonus('empatia');
   var effEmp=document.getElementById('mzEmpatiaEffettiva');
   if(effEmp){effEmp.textContent=pg.empatia!==pg.empatiaBase?'Empatia effettiva: '+pg.empatia+' ('+pg.empatiaBase+' + '+(pg.empatia-pg.empatiaBase)+' bonus)':'';}
-  pg.livAmico = parseInt(document.getElementById('livAmico').value, 10);
-  pg.livCustode = parseInt(document.getElementById('livCustode').value, 10);
-  pg.livAddestratore = parseInt(document.getElementById('livAddestratore').value, 10);
-  pg.livAllevatore = parseInt(document.getElementById('livAllevatore').value, 10);
+  pg.livAmico = pg.tipo === 'adulto' ? parseInt(document.getElementById('livAmico').value, 10) : 0;
+  pg.livCustode = pg.tipo === 'adulto' ? parseInt(document.getElementById('livCustode').value, 10) : 0;
+  pg.livAddestratore = pg.tipo === 'adulto' ? parseInt(document.getElementById('livAddestratore').value, 10) : 0;
+  pg.livAllevatore = pg.tipo === 'adulto' ? parseInt(document.getElementById('livAllevatore').value, 10) : 0;
   pg.classificazione = document.getElementById('classificazione').value;
   pg.faseVitale = document.getElementById('faseVitale').value;
   pg.ostilita = document.getElementById('ostilita').value;
@@ -1400,7 +1680,7 @@ function resetGuidaMagizoologia(){
     if(typeof el.setCustomValidity==='function')el.setCustomValidity('');
     el.disabled=false;
   });
-  document.querySelectorAll('#mzBonusGenerali,#mzBonusFiducia,#mzBonusScoperta,#mzBonusCura,#mzBonusDomesticazione,#mzBonusAllevamento').forEach(function(x){x.innerHTML='';});
+  document.querySelectorAll('#mzBonusFiducia,#mzBonusScoperta,#mzBonusCura,#mzBonusDomesticazione,#mzBonusAllevamento').forEach(function(x){x.innerHTML='';});
   formulaSignatures={};curaEbbeUnFallimento=false;MZ_LAST_CURA_BONUS_DOM=0;MZ_BONUS_UID=0;
   ricalcolaMagizoologia();
 }
@@ -2117,6 +2397,7 @@ function recomputeAllevamento(){
 /* ---------- TUTTO INSIEME ---------- */
 
 function ricalcolaMagizoologia(){
+  aggiornaCampiTipoPG();
   recomputeRiconoscimento();
   recomputeFiducia();
   recomputeCuraCompleta();
@@ -2217,6 +2498,27 @@ var rmSaluteGestazioneAnswers='1-10. In salute\n11-12. Partoriente\n13-14. Ammal
 var rmCiboAnswers='1-2. Cibo trovato: +1 possibilità futura in Fiducia, Cura o Domesticazione\n3-5. Niente di utile';
 
 function rmEmpatia(){var v=rmNumber('empatiaRicerca',0,999);return v===null?0:v;}
+function rmProfiloEmpatia(){var v=rmNumber('empatia',0,999);return v;}
+function rmAggiornaEmpatiaCondivisa(){
+  var box=rmEl('rmEmpatiaCondivisa'),v=rmNumber('empatiaRicerca',0,999);
+  if(box)box.textContent=v===null?'—':String(v);
+}
+function rmSincronizzaEmpatiaDaProfilo(){
+  var hidden=rmEl('empatiaRicerca'),v=rmProfiloEmpatia();
+  if(!hidden)return;
+  hidden.value=v===null?'':String(v);
+  rmAggiornaEmpatiaCondivisa();
+  ricalcolaRicerca();
+  if(RM_CURRENT_ID&&!RM_READONLY&&rmSessionCanEdit(RM_CURRENT_DATA)){rmUpdateToolbar();rmScheduleSave();}
+}
+function rmCaricaEmpatiaSessioneNelProfilo(){
+  if(RM_READONLY)return;
+  var src=rmEl('empatiaRicerca'),dst=rmEl('empatia');
+  if(!src||!dst)return;
+  dst.value=src.value;
+  if(typeof dst.setCustomValidity==='function')dst.setCustomValidity('');
+  ricalcolaMagizoologia();
+}
 function rmSapienza(){var v=rmNumber('sapienza',0,25);return v===null?0:v;}
 function rmBonusSapienza(){return rmLookup(rmSapienzaTiers,rmSapienza());}
 function rmTipo(){return rmEl('tipoRicerca')?rmEl('tipoRicerca').value:'attiva';}
@@ -2498,6 +2800,7 @@ function rmResumeFlow(){
 
 function ricalcolaRicerca(){
   if(!rmEl('creature-workspace'))return;
+  rmAggiornaEmpatiaCondivisa();
   rmRecomputeBolcino();rmSetStaticSemanticCodes();
   var t1=rmRecomputeTrova(1);rmRecomputeCascata1(t1);
   var t2=rmRecomputeTrova(2);rmRecomputeCascataMultipla(2,t2);
@@ -2605,7 +2908,7 @@ function rmOpenSession(id,data){
   RM_CURRENT_ID=id;RM_CURRENT_DATA=data;RM_READONLY=!rmSessionCanEdit(data);
   rmEl('creature-session-home').style.display='none';rmWorkspace().style.display='block';
   var state=data.state||{};if(state.nomePgRicerca===undefined)state.nomePgRicerca=data.pgName||data.initialPgName||'';
-  rmApplyState(state);rmSetReadonly(RM_READONLY);rmUpdateToolbar();
+  rmApplyState(state);rmSetReadonly(RM_READONLY);rmCaricaEmpatiaSessioneNelProfilo();rmAggiornaEmpatiaCondivisa();rmUpdateToolbar();
   rmStatus('rm-save-status',RM_READONLY?'Modalità sola lettura.':'Ricerca caricata · autosalvataggio attivo',RM_READONLY?'':'ok');
   rmResumeFlow();
 }
@@ -2644,7 +2947,8 @@ function rmCreateSession(){
   if(!RM_FB.user){rmStatus('rm-session-home-msg','Firebase non è ancora pronto. Riprova tra un momento.','bad');return;}
   RM_CREATING=true;
   if(btn)btn.disabled=true;
-  var state={nomePgRicerca:name,empatiaRicerca:'10',sapienza:'0',tipoRicerca:'attiva',valigiaMagica:'no',summaryVisited:false,outcomeVisited:false,flowPage:'config'};
+  var ep=rmProfiloEmpatia();if(ep===null){rmStatus('rm-session-home-msg','Inserisci un valore valido di Empatia nella sezione «Il tuo Personaggio».','bad');RM_CREATING=false;if(btn)btn.disabled=false;return;}
+  var state={nomePgRicerca:name,empatiaRicerca:String(ep),sapienza:'0',tipoRicerca:'attiva',valigiaMagica:'no',summaryVisited:false,outcomeVisited:false,flowPage:'config'};
   var data={ownerUid:RM_FB.user.uid,initialPgName:name,pgName:name,tipoRicerca:'attiva',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'standard-ricerca-v1',state:state};
   rmStatus('rm-session-home-msg','Creazione della Ricerca…','');
   RM_FB.db.collection(RM_COLLECTION).add(data).then(function(ref){
@@ -2850,10 +3154,10 @@ document.getElementById('bottoneReset').addEventListener(evtClick, function(){
 });
 
 
-/* ---------- MODO (Guida alla Magizoologia / Ricerca Creature Magiche) ---------- */
+/* ---------- MODO (Personaggio / Ricerca Creature Magiche / Guida alla Magizoologia) ---------- */
 
 function mostraModo(nome){
-  var nomi = ['Magizoologia', 'Ricerca'];
+  var nomi = ['Personaggio', 'Ricerca', 'Magizoologia'];
   var i = 0;
   while(i < nomi.length){
     var sezione = document.getElementById('modo' + nomi[i]);
@@ -2869,6 +3173,7 @@ function mostraModo(nome){
   }
 }
 
+document.getElementById('modoPersonaggioBtn').addEventListener(evtClick, function(){ mostraModo('Personaggio'); });
 document.getElementById('modoMagizoologiaBtn').addEventListener(evtClick, function(){ mostraModo('Magizoologia'); });
 document.getElementById('modoRicercaBtn').addEventListener(evtClick, function(){
   if(!RM_CURRENT_ID && String(window.location.hash || '') !== '#ricerca'){
@@ -2879,14 +3184,22 @@ document.getElementById('modoRicercaBtn').addEventListener(evtClick, function(){
 
 /* ---------- AVVIO ---------- */
 document.addEventListener('input', function(e){
-  if(document.getElementById('modoMagizoologia').contains(e.target)){ ricalcolaMagizoologia(); }
+  var profilo=document.getElementById('modoPersonaggio');
+  var guida=document.getElementById('modoMagizoologia');
+  if((profilo&&profilo.contains(e.target))||(guida&&guida.contains(e.target))){ ricalcolaMagizoologia(); }
+  if(e.target&&e.target.id==='empatia'){ rmSincronizzaEmpatiaDaProfilo(); }
 }, true);
 document.addEventListener('change', function(e){
-  if(document.getElementById('modoMagizoologia').contains(e.target)){ ricalcolaMagizoologia(); }
+  var profilo=document.getElementById('modoPersonaggio');
+  var guida=document.getElementById('modoMagizoologia');
+  if((profilo&&profilo.contains(e.target))||(guida&&guida.contains(e.target))){ ricalcolaMagizoologia(); }
+  if(e.target&&e.target.id==='empatia'){ rmSincronizzaEmpatiaDaProfilo(); }
 }, true);
 
 ripristinaStatoMagizoologia();
+aggiornaCampiTipoPG();
 mzSetupBonusManagers();
+rmSincronizzaEmpatiaDaProfilo();
 ricalcolaMagizoologia();
 ricalcolaRicerca();
 
@@ -2899,3 +3212,5 @@ if(document.readyState === 'loading'){
 </script>
 </body>
 </html>
+magizoologia_tipo_pg_dinamico.html
+HTML
