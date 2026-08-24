@@ -3,44 +3,75 @@
 <head>
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <style>
+@font-face {
+  font-family:'magic';
+  src:url('https://dl.dropboxusercontent.com/scl/fi/nbzmrri4qyvc3tzx96911/HarryBeastDisplay-Regular.woff2?rlkey=he290voe32k33gowug23c1osc&st=nj9fgly1') format('woff2');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
 body{
-  background:#1c2b1a;
-  color:#e9dfc4;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(217,121,50,.08), transparent 32%),
+    radial-gradient(circle at 88% 6%, rgba(154,67,31,.10), transparent 34%),
+    linear-gradient(180deg,#1b100b 0%,#21120c 72%,#160c08 100%);
+  color:#f0ddcc;
   font-family:Georgia, "Times New Roman", serif;
   margin:0;
   padding:20px;
 }
+.sigillo-magizoologia{
+  width:66px;
+  height:66px;
+  margin:2px auto 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #c96a34;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(243,161,95,.13),rgba(154,67,31,.18) 58%,rgba(48,24,14,.52) 100%);
+  color:#f3a15f;
+  font-size:29px;
+  line-height:1;
+  box-shadow:0 0 0 4px rgba(217,121,50,.035),0 8px 24px rgba(0,0,0,.28),inset 0 0 18px rgba(243,161,95,.06);
+}
+.sigillo-magizoologia i{color:inherit;}
 .contenitore{
   max-width:920px;
   margin:0 auto;
-  background:#2b3d24;
-  border:3px solid #892c0f;
+  background:linear-gradient(180deg,#2b1a12 0%,#26160f 100%);
+  border:2px solid #9a431f;
   border-radius:10px;
   padding:20px 26px;
   box-shadow:0 0 25px rgba(0,0,0,0.6);
 }
 h1{
   text-align:center;
-  color:#c9a227;
+  color:#f3a15f;
+  font-family:'magic', Georgia, "Times New Roman", serif;
+  font-weight:normal;
   letter-spacing:2px;
-  text-shadow:1px 1px 3px #000;
+  text-shadow:1px 1px 3px #130905;
 }
 h2{
-  color:#c9a227;
-  border-bottom:1px solid #892c0f;
+  color:#f0a060;
+  font-family:'magic', Georgia, "Times New Roman", serif;
+  font-weight:normal;
+  border-bottom:1px solid #9a431f;
   padding-bottom:4px;
 }
 .sottotitolo{
   text-align:center;
-  color:#b7c9a8;
+  color:#c99a7a;
   margin-top:-10px;
   margin-bottom:20px;
   font-style:italic;
 }
 .scheda{
-  background:#22301d;
-  border:1px solid #4d6b3f;
+  background:#24150f;
+  border:1px solid #6e4028;
   border-radius:8px;
   padding:14px 18px;
   margin-bottom:18px;
@@ -59,13 +90,13 @@ h2{
 }
 .campo label{
   font-size:0.85em;
-  color:#c9a227;
+  color:#d97932;
   margin-bottom:3px;
 }
 select, input[type=number]{
-  background:#0f1a0d;
-  color:#e9dfc4;
-  border:1px solid #4d6b3f;
+  background:#120b07;
+  color:#f0ddcc;
+  border:1px solid #6e4028;
   border-radius:4px;
   padding:5px 7px;
   font-family:inherit;
@@ -83,9 +114,9 @@ select:disabled, input:disabled{
   margin-bottom:16px;
 }
 .tab-bottone{
-  background:#3d5230;
-  color:#e9dfc4;
-  border:1px solid #4d6b3f;
+  background:#4a291b;
+  color:#f0ddcc;
+  border:1px solid #6e4028;
   padding:9px 14px;
   border-radius:6px 6px 0 0;
   cursor:pointer;
@@ -93,9 +124,9 @@ select:disabled, input:disabled{
   font-size:0.92em;
 }
 .tab-bottone.attivo{
-  background:#892c0f;
-  color:#fff;
-  border-color:#892c0f;
+  background:#9a431f;
+  color:#fff4ea;
+  border-color:#9a431f;
 }
 .pannello{
   display:none;
@@ -104,8 +135,8 @@ select:disabled, input:disabled{
   display:block;
 }
 .bottone-azione{
-  background:#892c0f;
-  color:#fff;
+  background:#9a431f;
+  color:#fff4ea;
   border:none;
   padding:10px 18px;
   border-radius:6px;
@@ -115,28 +146,28 @@ select:disabled, input:disabled{
   margin-top:8px;
 }
 .bottone-azione:hover{
-  background:#a83a15;
+  background:#bf5a28;
 }
 .bottone-pericolo{
   background:transparent;
-  border:1px solid #c9687c;
-  color:#e7a9b6;
+  border:1px solid #a94d2d;
+  color:#e0a17d;
 }
 .bottone-pericolo:hover{
-  background:#3a2027;
-  color:#ffd0da;
+  background:#351a11;
+  color:#f4c3a3;
 }
 .esito{
   margin-top:12px;
   padding:12px;
-  background:#0f1a0d;
-  border-left:4px solid #c9a227;
+  background:#120b07;
+  border-left:4px solid #d97932;
   border-radius:4px;
   min-height:18px;
 }
 .nota-regole{
   font-size:0.85em;
-  color:#b7c9a8;
+  color:#c99a7a;
   margin-top:6px;
 }
 .check-riga{
@@ -147,17 +178,17 @@ select:disabled, input:disabled{
 }
 .info-bonus{
   font-size:0.9em;
-  color:#c9a227;
+  color:#d97932;
   margin-top:6px;
 }
 .formula-tag{
   display:inline-block;
   margin:6px 0 8px;
   padding:6px 10px;
-  background:rgba(201,162,39,.08);
-  border:1px solid rgba(201,162,39,.35);
+  background:rgba(217,121,50,.10);
+  border:1px solid rgba(217,121,50,.38);
   border-radius:6px;
-  color:#e9dfc4;
+  color:#f0ddcc;
   font-family:Consolas,"Courier New",monospace;
   font-size:12.5px;
 }
@@ -172,10 +203,10 @@ select:disabled, input:disabled{
   flex:1 1 320px;
   min-height:20px;
   padding:8px 10px;
-  background:#0f1a0d;
-  border:1px solid #4d6b3f;
+  background:#120b07;
+  border:1px solid #6e4028;
   border-radius:6px;
-  color:#d4e77d;
+  color:#e7a466;
   font-family:Consolas,"Courier New",monospace;
   font-size:12.5px;
   overflow-wrap:anywhere;
@@ -184,10 +215,10 @@ button.copy-btn{
   flex:0 0 auto;
   min-height:34px;
   padding:0 14px;
-  background:rgba(53,22,63,.55);
-  border:1px solid #892c0f;
+  background:rgba(82,42,24,.72);
+  border:1px solid #9a431f;
   border-radius:6px;
-  color:#e9dfc4;
+  color:#f0ddcc;
   font-family:inherit;
   font-size:12px;
   text-transform:uppercase;
@@ -195,7 +226,7 @@ button.copy-btn{
   cursor:pointer;
 }
 button.copy-btn:hover{
-  background:#892c0f;
+  background:#9a431f;
 }
 button.copy-btn:disabled{
   opacity:.4;
@@ -204,26 +235,26 @@ button.copy-btn:disabled{
 .out-tag{
   display:inline-block;
   padding:5px 11px;
-  border:1px solid #4d6b3f;
+  border:1px solid #6e4028;
   border-radius:18px;
   font-family:Consolas,"Courier New",monospace;
   font-size:11px;
   letter-spacing:.03em;
 }
 .out-ok{
-  background:rgba(159,190,40,.12);
-  border-color:#9fbe28;
-  color:#d4e77d;
+  background:rgba(184,93,39,.14);
+  border-color:#b85d27;
+  color:#e7a466;
 }
 .out-fail{
-  background:rgba(201,104,124,.12);
-  border-color:#c9687c;
-  color:#e7a9b6;
+  background:rgba(169,77,45,.16);
+  border-color:#a94d2d;
+  color:#e0a17d;
 }
 .out-neutral{
   background:transparent;
-  border-color:#4d6b3f;
-  color:#b7c9a8;
+  border-color:#6e4028;
+  color:#c99a7a;
 }
 table.fasce{
   width:100%;
@@ -233,40 +264,40 @@ table.fasce{
 }
 table.fasce th, table.fasce td{
   padding:6px 8px;
-  border:1px solid #4d6b3f;
+  border:1px solid #6e4028;
   text-align:center;
 }
 table.fasce th{
-  background:rgba(53,22,63,.5);
-  color:#c9a227;
+  background:rgba(82,42,24,.72);
+  color:#d97932;
   font-family:Consolas,"Courier New",monospace;
   font-size:10.5px;
   text-transform:uppercase;
 }
 table.fasce td{
-  background:rgba(15,26,13,.6);
+  background:rgba(18,11,7,.72);
 }
 .blocco-conseguenza{
   margin-top:14px;
   padding:12px;
-  border:1px dashed #892c0f;
+  border:1px dashed #9a431f;
   border-radius:6px;
-  background:rgba(137,44,15,.08);
+  background:rgba(154,67,31,.10);
 }
 .blocco-conseguenza h3{
   margin:0 0 8px;
   font-size:.95em;
-  color:#c9a227;
+  color:#d97932;
 }
 .piede-nota{
   text-align:center;
-  color:#b7c9a8;
+  color:#c99a7a;
   font-size:.82em;
   margin-top:14px;
 }
 
 .blocco-incontro{
-  border:1px solid #4d6b3f;
+  border:1px solid #6e4028;
   border-radius:8px;
   padding:14px 18px;
   margin-bottom:18px;
@@ -281,27 +312,27 @@ table.fasce td{
   vertical-align:middle;
 }
 .badge-bloccato{
-  background:rgba(201,104,124,.15);
-  color:#e7a9b6;
-  border:1px solid #c9687c;
+  background:rgba(169,77,45,.18);
+  color:#e0a17d;
+  border:1px solid #a94d2d;
 }
 .badge-sbloccato{
-  background:rgba(159,190,40,.15);
-  color:#d4e77d;
-  border:1px solid #9fbe28;
+  background:rgba(184,93,39,.18);
+  color:#e7a466;
+  border:1px solid #b85d27;
 }
 .esemplare-riga{
-  border-top:1px dashed #4d6b3f;
+  border-top:1px dashed #6e4028;
   padding-top:10px;
   margin-top:10px;
 }
 .blocco-avviso{
   margin-top:10px;
   padding:12px;
-  border:1px dashed #c9687c;
+  border:1px dashed #a94d2d;
   border-radius:6px;
-  background:rgba(201,104,124,.08);
-  color:#e7a9b6;
+  background:rgba(169,77,45,.10);
+  color:#e0a17d;
   font-size:.9em;
 }
 .modo-sezione{
@@ -317,9 +348,9 @@ table.fasce td{
   margin-bottom:22px;
 }
 .modo-bottone{
-  background:#22301d;
-  color:#e9dfc4;
-  border:1px solid #892c0f;
+  background:#24150f;
+  color:#f0ddcc;
+  border:1px solid #9a431f;
   padding:11px 22px;
   border-radius:8px;
   cursor:pointer;
@@ -328,53 +359,74 @@ table.fasce td{
   letter-spacing:.02em;
 }
 .modo-bottone.attivo{
-  background:#892c0f;
-  color:#fff;
-  border-color:#c9a227;
+  background:#9a431f;
+  color:#fff4ea;
+  border-color:#d97932;
 }
 
 
 /* ===== STANDARD RICERCHE — Ricerca Creature Magiche ===== */
 .research-session-home,.research-workspace{max-width:920px;margin:0 auto;}
 .session-card,.session-toolbar-card{
-  background:#22301d;border:1px solid #4d6b3f;border-radius:9px;margin:0 0 18px;overflow:hidden;
+  background:#24150f;border:1px solid #6e4028;border-radius:9px;margin:0 0 18px;overflow:hidden;
 }
-.session-card-head{padding:13px 16px;border-bottom:1px solid #4d6b3f;background:rgba(15,26,13,.55);}
-.session-card-head h2{margin:0;border:0;padding:0;color:#c9a227;}
+.session-card-head{padding:13px 16px;border-bottom:1px solid #6e4028;background:rgba(18,11,7,.64);}
+.session-card-head h2{margin:0;border:0;padding:0;color:#d97932;}
 .session-card-body{padding:15px 16px;}
 .session-warning,.readonly-banner{
-  margin:10px 0;padding:10px 12px;border:1px solid #892c0f;border-radius:6px;background:rgba(137,44,15,.13);color:#e9dfc4;font-size:.9em;
+  margin:10px 0;padding:10px 12px;border:1px solid #9a431f;border-radius:6px;background:rgba(154,67,31,.16);color:#f0ddcc;font-size:.9em;
 }
-.readonly-banner{border-color:#c9687c;background:rgba(201,104,124,.09);color:#ffd0da;}
-.session-status{margin:7px 0;color:#b7c9a8;font-size:.84em;}
-.session-status.ok{color:#d4e77d}.session-status.bad{color:#e7a9b6}
+.readonly-banner{border-color:#a94d2d;background:rgba(169,77,45,.12);color:#f4c3a3;}
+.session-status{margin:7px 0;color:#c99a7a;font-size:.84em;}
+.session-status.ok{color:#e7a466}.session-status.bad{color:#e0a17d}
 .session-new-row,.session-topbar,.session-item-row,.session-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
-.session-new-row input{flex:1 1 290px;background:#0f1a0d;color:#e9dfc4;border:1px solid #4d6b3f;border-radius:5px;padding:9px 10px;font-family:inherit;}
+.session-new-row input{flex:1 1 290px;background:#120b07;color:#f0ddcc;border:1px solid #6e4028;border-radius:5px;padding:9px 10px;font-family:inherit;}
 .session-btn,.flow-page-btn,.flow-action-btn{
-  background:#3d5230;color:#e9dfc4;border:1px solid #4d6b3f;border-radius:6px;padding:8px 12px;cursor:pointer;font-family:inherit;
+  background:#4a291b;color:#f0ddcc;border:1px solid #6e4028;border-radius:6px;padding:8px 12px;cursor:pointer;font-family:inherit;
 }
-.session-btn:hover,.flow-page-btn:hover:not(:disabled),.flow-action-btn:hover:not(:disabled){background:#4d6b3f;}
+.session-btn:hover,.flow-page-btn:hover:not(:disabled),.flow-action-btn:hover:not(:disabled){background:#6e4028;}
 .session-btn.ghost{background:transparent}.session-btn:disabled,.flow-page-btn:disabled,.flow-action-btn:disabled{opacity:.42;cursor:not-allowed;}
-.session-danger-btn{background:#52251f;color:#f3d8ce;border:1px solid #c9687c;border-radius:6px;padding:8px 12px;cursor:pointer;font-family:inherit;}
-.session-item{border:1px solid #4d6b3f;border-radius:7px;background:#0f1a0d;margin:8px 0;padding:10px 12px;}
-.session-item-row{justify-content:space-between}.session-title{font-weight:700;color:#e9dfc4}.session-meta{font-size:.76em;color:#b7c9a8;margin-top:2px;}
-.session-owner{display:inline-block;margin-top:5px;font-size:.68em;padding:2px 6px;border:1px solid #4d6b3f;border-radius:12px;color:#b7c9a8;}
-.session-owner.mine{color:#d4e77d;border-color:#9fbe28;}
+.session-danger-btn{background:#5a2518;color:#efc5aa;border:1px solid #a94d2d;border-radius:6px;padding:8px 12px;cursor:pointer;font-family:inherit;}
+.session-item{border:1px solid #6e4028;border-radius:7px;background:#120b07;margin:8px 0;padding:10px 12px;}
+.session-item-row{justify-content:space-between}.session-title{font-weight:700;color:#f0ddcc}.session-meta{font-size:.76em;color:#c99a7a;margin-top:2px;}
+.session-owner{display:inline-block;margin-top:5px;font-size:.68em;padding:2px 6px;border:1px solid #6e4028;border-radius:12px;color:#c99a7a;}
+.session-owner.mine{color:#e7a466;border-color:#b85d27;}
 .session-topbar{justify-content:space-between}.session-actions{justify-content:flex-end}.session-toolbar-card{margin-bottom:14px;}
 .research-flow-nav{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 16px;}
-.flow-page-btn.active{background:#892c0f;border-color:#c9a227;color:#fff;}.flow-page-btn.locked{opacity:.36;}
+.flow-page-btn.active{background:#9a431f;border-color:#d97932;color:#fff4ea;}.flow-page-btn.locked{opacity:.36;}
 .research-flow-page{display:none;}.research-flow-page.active{display:block;}
-.flow-actions{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px dashed #4d6b3f;}
+.flow-actions{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px dashed #6e4028;}
 .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px;margin:10px 0;}
-.summary-box{background:#0f1a0d;border:1px solid #4d6b3f;border-radius:6px;padding:10px 12px;}.summary-box b{color:#c9a227;}
-.research-bbcode{white-space:pre-wrap;overflow-wrap:anywhere;background:#0f1a0d;border:1px solid #4d6b3f;border-radius:6px;padding:10px;color:#d4e77d;font-family:Consolas,"Courier New",monospace;font-size:12px;}
+.summary-box{background:#120b07;border:1px solid #6e4028;border-radius:6px;padding:10px 12px;}.summary-box b{color:#d97932;}
+.research-bbcode{white-space:pre-wrap;overflow-wrap:anywhere;background:#120b07;border:1px solid #6e4028;border-radius:6px;padding:10px;color:#e7a466;font-family:Consolas,"Courier New",monospace;font-size:12px;}
 .session-modal{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.58);}
 .session-modal.open{display:block}
-.session-modal-box{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(620px,calc(100vw - 28px));max-height:calc(100vh - 32px);overflow:auto;background:#22301d;border:1px solid #c9687c;border-radius:9px;padding:18px 20px;box-shadow:0 18px 60px rgba(0,0,0,.55);}
-.delete-confirm-line{display:flex;align-items:flex-start;gap:8px;margin:12px 0;padding:10px;border:1px solid #c9687c;border-radius:6px;background:rgba(201,104,124,.08);}
+.session-modal-box{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(620px,calc(100vw - 28px));max-height:calc(100vh - 32px);overflow:auto;background:#24150f;border:1px solid #a94d2d;border-radius:9px;padding:18px 20px;box-shadow:0 18px 60px rgba(0,0,0,.55);}
+.delete-confirm-line{display:flex;align-items:flex-start;gap:8px;margin:12px 0;padding:10px;border:1px solid #a94d2d;border-radius:6px;background:rgba(169,77,45,.10);}
 .outcome-list{margin:8px 0 0;padding-left:20px}.outcome-list li{margin:5px 0;}
 @media(max-width:640px){
   .session-new-row>*{width:100%}.session-item-row>*{width:100%}.session-actions{justify-content:flex-start}.flow-page-btn{flex:1 1 44%;}
+}
+
+
+input[type=checkbox],input[type=radio]{
+  accent-color:#bf5a28;
+}
+button:focus-visible,select:focus-visible,input:focus-visible{
+  outline:2px solid #d97932;
+  outline-offset:2px;
+}
+::selection{
+  background:#9a431f;
+  color:#fff4ea;
+}
+
+.numeric-note{
+  display:block;
+  margin-top:3px;
+  font-size:.68em;
+  color:#b98566;
+  font-style:italic;
 }
 
 </style>
@@ -386,6 +438,7 @@ table.fasce td{
 <body>
 <div class="contenitore">
 
+<div class="sigillo-magizoologia" aria-hidden="true"><i class="fa-solid fa-dragon"></i></div>
 <h1>Magizoologia</h1>
 <div class="sottotitolo">Strumenti interattivi per Riconoscimento, Fiducia, Cura, Domesticazione e Allevamento delle Creature Magiche</div>
 <div class="nota-regole" style="text-align:center; margin-bottom:14px;">I tiri vanno eseguiti con il dado del forum: copia il codice, incollalo in un post, poi riporta qui il risultato ottenuto. La Guida alla Magizoologia mantiene il proprio salvataggio nel browser; le sessioni di Ricerca Creature Magiche vengono invece salvate automaticamente su Firebase.</div>
@@ -506,6 +559,10 @@ table.fasce td{
       <option value="mai">Mai ostile</option>
     </select>
   </div>
+</div>
+<div class="check-riga">
+  <input type="checkbox" id="nataInRiserva" data-key="nataInRiserva">
+  <label for="nataInRiserva">La Creatura è nata nella propria Riserva</label>
 </div>
 </div>
 
@@ -638,6 +695,11 @@ table.fasce td{
     <input type="number" id="fallimentiCuraConsecutivi" data-key="fallimentiCuraConsecutivi" value="0" min="0" max="3">
   </div>
 </div>
+<div class="check-riga">
+  <input type="checkbox" id="curaFallimentoPrecedente" data-key="curaFallimentoPrecedente">
+  <label for="curaFallimentoPrecedente">La sequenza di Cura ha avuto almeno un fallimento precedente (mantiene il malus in Allevamento)</label>
+</div>
+<div class="nota-regole">Il tool seleziona automaticamente questa voce quando registra un fallimento. Puoi deselezionarla soltanto se un esito era stato inserito per errore e, in realtà, non c'è mai stato alcun fallimento nella sequenza.</div>
 <div class="blocco-conseguenza" id="conseguenzaCura" style="display:none">
   <h3>Tre fallimenti di fila: tiro 1d5</h3>
   <div class="result-line">
@@ -971,6 +1033,13 @@ function guardFormula(chiave, firma, idRisultato){
   formulaSignatures[chiave] = f;
 }
 
+function clearDependentResult(inputId, tagId){
+  var inp = document.getElementById(inputId);
+  if(inp){inp.value = '';}
+  var tag = document.getElementById(tagId);
+  if(tag){tag.textContent = 'in attesa';tag.className = 'out-tag out-neutral';}
+}
+
 function leggiPG(){
   var pg = {};
   pg.tipo = document.getElementById('pgTipo').value;
@@ -1198,6 +1267,7 @@ function recomputeFiducia(){
     tagEl.textContent = 'Fallimento automatico';
     tagEl.className = 'out-tag out-fail';
     noteEl.textContent = '';
+    clearDependentResult('risultatoConseguenzaFiducia','tagConseguenzaFiducia');
     return;
   }
 
@@ -1217,6 +1287,7 @@ function recomputeFiducia(){
     tagEl.textContent = 'Automaticamente riuscita';
     tagEl.className = 'out-tag out-ok';
     noteEl.textContent = 'La Fiducia viene infusa senza bisogno di tirare il dado.';
+    clearDependentResult('risultatoConseguenzaFiducia','tagConseguenzaFiducia');
     return;
   }
 
@@ -1252,6 +1323,7 @@ function recomputeFiducia(){
     tagEl.textContent = 'Automaticamente riuscita';
     tagEl.className = 'out-tag out-ok';
     noteEl.textContent = 'La Fiducia viene infusa senza bisogno di tirare il dado.';
+    clearDependentResult('risultatoConseguenzaFiducia','tagConseguenzaFiducia');
     return;
   }
 
@@ -1265,12 +1337,14 @@ function recomputeFiducia(){
     tagEl.textContent = 'in attesa';
     tagEl.className = 'out-tag out-neutral';
     noteEl.textContent = '';
+    clearDependentResult('risultatoConseguenzaFiducia','tagConseguenzaFiducia');
     return;
   }
   if(!intInRange(v, 1, 30)){
     tagEl.textContent = 'Risultato impossibile';
     tagEl.className = 'out-tag out-fail';
     noteEl.textContent = 'Inserisci un intero compreso fra 1 e 30.';
+    clearDependentResult('risultatoConseguenzaFiducia','tagConseguenzaFiducia');
     return;
   }
   var successo = Number(v) <= totale;
@@ -1278,6 +1352,7 @@ function recomputeFiducia(){
     tagEl.textContent = 'Successo';
     tagEl.className = 'out-tag out-ok';
     noteEl.textContent = 'La Creatura si fida del PG.';
+    clearDependentResult('risultatoConseguenzaFiducia','tagConseguenzaFiducia');
     return;
   }
   tagEl.textContent = 'Fallimento';
@@ -1286,16 +1361,22 @@ function recomputeFiducia(){
 
   var conseguenza = testiConseguenzaFiducia[pg.faseVitale];
   if(conseguenza){
+    guardFormula('conseguenzaFiducia', pg.faseVitale + '|' + totale + '|' + v, 'risultatoConseguenzaFiducia');
     blocco.style.display = 'block';
     document.getElementById('codiceConseguenzaFiducia').textContent = mzForumDiceBlock('Qual è la conseguenza del fallimento in Fiducia?', mzConseguenzaFiduciaAnswers(pg.faseVitale), '[dice=1d' + conseguenza.dado + ']Conseguenze del fallimento in Fiducia — ' + pg.faseVitale + '[/dice]');
-    var vc = document.getElementById('risultatoConseguenzaFiducia').value;
+    var inpC = document.getElementById('risultatoConseguenzaFiducia');
+    inpC.max = String(conseguenza.dado);
+    var vc = inpC.value;
     var tagC = document.getElementById('tagConseguenzaFiducia');
-    if(intInRange(vc, 1, conseguenza.dado)){
+    if(vc === ''){
+      tagC.textContent = 'in attesa';
+      tagC.className = 'out-tag out-neutral';
+    } else if(intInRange(vc, 1, conseguenza.dado)){
       tagC.textContent = 'Esito: ' + vc;
       tagC.className = 'out-tag out-neutral';
     } else {
-      tagC.textContent = 'in attesa';
-      tagC.className = 'out-tag out-neutral';
+      tagC.textContent = 'Risultato impossibile';
+      tagC.className = 'out-tag out-fail';
     }
   }
 }
@@ -1393,7 +1474,16 @@ function recomputeCura(bonusScoperta){
   var noteEl = document.getElementById('noteCura');
   var bonusDomMostrato = document.getElementById('bonusDomesticazioneMostrato');
 
-  curaEbbeUnFallimento = false;
+  /* Il malus di Allevamento dipende dall'aver avuto almeno un fallimento
+     nell'intera sequenza, non soltanto dall'esito dell'ultimo tiro visibile.
+     La checkbox storica permette di conservare correttamente il malus anche
+     dopo un successivo successo e di correggerlo manualmente solo se il
+     fallimento era stato inserito per errore. */
+  var storicoCuraEl = document.getElementById('curaFallimentoPrecedente');
+  curaEbbeUnFallimento = !!(storicoCuraEl && storicoCuraEl.checked);
+  if(bonusValore('malusExtraScoperta') > 0 || bonusValore('fallimentiCuraConsecutivi') > 0){
+    curaEbbeUnFallimento = true;
+  }
 
   if(bonusScoperta === null){
     formulaEl.textContent = 'In attesa del risultato della Scoperta del problema qui sopra.';
@@ -1409,6 +1499,9 @@ function recomputeCura(bonusScoperta){
 
   if(bonusScoperta < 0){
     curaEbbeUnFallimento = true;
+  }
+  if(curaEbbeUnFallimento && storicoCuraEl){
+    storicoCuraEl.checked = true;
   }
 
   var pg = leggiPG();
@@ -1473,6 +1566,7 @@ function recomputeCura(bonusScoperta){
     noteEl.textContent = 'La cura fallisce: -1d2 cuccioli e +5 post in Allevamento (i malus non si sommano a quelli della Scoperta).';
     bonusDomMostrato.textContent = 'Nessun bonus per la Domesticazione.';
     curaEbbeUnFallimento = true;
+    if(storicoCuraEl){storicoCuraEl.checked = true;}
   }
 }
 
@@ -1499,9 +1593,12 @@ function recomputeCuraCompleta(){
         tagG.textContent = 'Salvi entrambi';
         tagG.className = 'out-tag out-ok';
       }
-    } else {
+    } else if(vg === ''){
       tagG.textContent = 'in attesa';
       tagG.className = 'out-tag out-neutral';
+    } else {
+      tagG.textContent = 'Risultato impossibile';
+      tagG.className = 'out-tag out-fail';
     }
   } else {
     rigaG.style.display = 'none';
@@ -1543,6 +1640,24 @@ function recomputeDomesticazione(){
   var pg = leggiPG();
   blocco.style.display = 'none';
 
+  var domesticazioneNonNecessaria = pg.faseVitale === 'uovo' || document.getElementById('nataInRiserva').checked;
+  if(domesticazioneNonNecessaria){
+    rigaD4.style.display = 'none';
+    formulaEl.textContent = pg.faseVitale === 'uovo'
+      ? 'Domesticazione non necessaria: Creatura trovata in fase Uovo/Cucciolo.'
+      : 'Domesticazione non necessaria: Creatura nata nella propria Riserva.';
+    codiceEl.textContent = 'Autoconclusivo: nessun tiro di Domesticazione necessario.';
+    copiaBtn.disabled = true;
+    risultatoInp.disabled = true;
+    risultatoInp.value = '';
+    tagEl.textContent = 'Domesticazione non necessaria';
+    tagEl.className = 'out-tag out-ok';
+    noteEl.textContent = 'La Creatura può essere gestita senza effettuare il tiro di Domesticazione.';
+    infoAddestratore.textContent = '';
+    clearDependentResult('risultatoConseguenzaDomesticazione','tagConseguenzaDomesticazione');
+    return;
+  }
+
   var bonusAddestratore;
   var necessitaD4 = false;
   if(pg.livAddestratore >= 1){
@@ -1556,7 +1671,9 @@ function recomputeDomesticazione(){
       infoAddestratore.textContent = 'Adulto senza Addestratore di Creature Magiche: bonus da 1d4.';
     } else {
       bonusAddestratore = null;
-      infoAddestratore.textContent = 'Adulto senza Addestratore di Creature Magiche: tira il 1d4 qui sotto per proseguire.';
+      infoAddestratore.textContent = vd4 === ''
+        ? 'Adulto senza Addestratore di Creature Magiche: tira il 1d4 qui sotto per proseguire.'
+        : 'Risultato 1d4 impossibile: inserisci un intero compreso fra 1 e 4.';
     }
   } else {
     bonusAddestratore = tabAddestratoreVoto[pg.voto];
@@ -1577,6 +1694,7 @@ function recomputeDomesticazione(){
     tagEl.textContent = 'in attesa';
     tagEl.className = 'out-tag out-neutral';
     noteEl.textContent = '';
+    clearDependentResult('risultatoConseguenzaDomesticazione','tagConseguenzaDomesticazione');
     return;
   }
 
@@ -1594,6 +1712,7 @@ function recomputeDomesticazione(){
     tagEl.textContent = 'Automaticamente riuscita';
     tagEl.className = 'out-tag out-ok';
     noteEl.textContent = 'La Domesticazione riesce automaticamente.';
+    clearDependentResult('risultatoConseguenzaDomesticazione','tagConseguenzaDomesticazione');
     return;
   }
 
@@ -1607,12 +1726,14 @@ function recomputeDomesticazione(){
     tagEl.textContent = 'in attesa';
     tagEl.className = 'out-tag out-neutral';
     noteEl.textContent = '';
+    clearDependentResult('risultatoConseguenzaDomesticazione','tagConseguenzaDomesticazione');
     return;
   }
   if(!intInRange(v, 1, 35)){
     tagEl.textContent = 'Risultato impossibile';
     tagEl.className = 'out-tag out-fail';
     noteEl.textContent = 'Inserisci un intero compreso fra 1 e 35.';
+    clearDependentResult('risultatoConseguenzaDomesticazione','tagConseguenzaDomesticazione');
     return;
   }
   var successo = Number(v) <= totale;
@@ -1620,6 +1741,7 @@ function recomputeDomesticazione(){
     tagEl.textContent = 'Successo';
     tagEl.className = 'out-tag out-ok';
     noteEl.textContent = 'La Creatura viene addomesticata e puo entrare in Riserva o Valigia Magica.';
+    clearDependentResult('risultatoConseguenzaDomesticazione','tagConseguenzaDomesticazione');
     return;
   }
   tagEl.textContent = 'Fallimento';
@@ -1628,16 +1750,22 @@ function recomputeDomesticazione(){
 
   var conseguenza = testiConseguenzaDomesticazione[pg.faseVitale];
   if(conseguenza){
+    guardFormula('conseguenzaDomesticazione', pg.faseVitale + '|' + totale + '|' + v, 'risultatoConseguenzaDomesticazione');
     blocco.style.display = 'block';
     document.getElementById('codiceConseguenzaDomesticazione').textContent = mzForumDiceBlock('Qual è la conseguenza del fallimento in Domesticazione?', mzConseguenzaDomesticazioneAnswers(pg.faseVitale), '[dice=1d' + conseguenza.dado + ']Conseguenze del fallimento in Domesticazione — ' + pg.faseVitale + '[/dice]');
-    var vc = document.getElementById('risultatoConseguenzaDomesticazione').value;
+    var inpC = document.getElementById('risultatoConseguenzaDomesticazione');
+    inpC.max = String(conseguenza.dado);
+    var vc = inpC.value;
     var tagC = document.getElementById('tagConseguenzaDomesticazione');
-    if(intInRange(vc, 1, conseguenza.dado)){
+    if(vc === ''){
+      tagC.textContent = 'in attesa';
+      tagC.className = 'out-tag out-neutral';
+    } else if(intInRange(vc, 1, conseguenza.dado)){
       tagC.textContent = 'Esito: ' + vc;
       tagC.className = 'out-tag out-neutral';
     } else {
-      tagC.textContent = 'in attesa';
-      tagC.className = 'out-tag out-neutral';
+      tagC.textContent = 'Risultato impossibile';
+      tagC.className = 'out-tag out-fail';
     }
   }
 }
@@ -1921,6 +2049,14 @@ function rmHealthTableForPhase(fase){
 function rmHealthAnswersForPhase(fase){
   return fase==='Femmina Adulta in Gestazione'?rmSaluteGestazioneAnswers:rmSaluteAnswers;
 }
+function rmClasseSpeciale(classe){return classe==='Essere/Spirito/Non-Essere';}
+function rmFaseSpecialeCompatibile(classe,fase){
+  if(!rmClasseSpeciale(classe)||!fase)return true;
+  return fase.indexOf('Uovo')===-1 && fase.indexOf('Infante')===-1;
+}
+function rmFaseSpecialeSoloNonSpirito(classe,fase){
+  return rmClasseSpeciale(classe) && !!fase && fase.indexOf('Adolescente')!==-1;
+}
 function rmSetHealthCode(n,index,fase){
   var suffix=index?('_'+index):'',name=index?('dell’esemplare '+index):'della Creatura';
   var title=rmEl('titoloSalute'+n+suffix);
@@ -1929,19 +2065,43 @@ function rmSetHealthCode(n,index,fase){
   return rmHealthTableForPhase(fase);
 }
 
+function rmInputVuoto(id){var n=rmEl(id);return !n||n.value==='';}
+function rmImpostaTagValore(tag,id,valore,testoValido,classeValida){
+  if(!tag)return;
+  if(valore===null){
+    var vuoto=rmInputVuoto(id);
+    tag.textContent=vuoto?'in attesa':'Risultato impossibile';
+    tag.className='out-tag '+(vuoto?'out-neutral':'out-fail');
+    return;
+  }
+  tag.textContent=testoValido;
+  tag.className='out-tag '+(classeValida||'out-ok');
+}
 function rmRecomputeCascata1(trovato){
   var c=rmEl('cascata1');if(!c)return;if(!trovato){c.style.display='none';return;}c.style.display='block';
   var vc=rmNumber('risultatoClasse1',1,16),vf=rmNumber('risultatoFase1',1,40),vs=rmNumber('risultatoSalute1',1,15),vci=rmNumber('risultatoCibo1',1,5);
   var tc=rmEl('tagClasse1'),tf=rmEl('tagFase1'),ts=rmEl('tagSalute1'),ns=rmEl('noteSalute1'),tci=rmEl('tagCibo1');
+  var classe=vc===null?null:rmLookup(rmClasseTab1,vc);
   var fase=vf===null?null:rmLookup(rmSessoFaseTab,vf),healthTable=rmSetHealthCode(1,0,fase);
-  if(tc){tc.textContent=vc===null?'in attesa':'Classificazione '+rmLookup(rmClasseTab1,vc);tc.className='out-tag '+(vc===null?'out-neutral':'out-ok');}
-  if(tf){tf.textContent=vf===null?'in attesa':fase;tf.className='out-tag '+(vf===null?'out-neutral':'out-ok');}
-  if(ts){var stato=vs===null?'':rmLookup(healthTable,vs);ts.textContent=vs===null?'in attesa':stato;ts.className='out-tag '+(vs===null?'out-neutral':(stato==='In salute'?'out-ok':'out-fail'));if(ns)ns.textContent=(stato&&stato!=='In salute')?'Contatta il Narratore prima di procedere.':'';}
-  if(tci){if(vci===null){tci.textContent='in attesa';tci.className='out-tag out-neutral';}else if(vci<=2){tci.textContent='Cibo trovato: +1 possibilità futura';tci.className='out-tag out-ok';}else{tci.textContent='Niente di utile';tci.className='out-tag out-neutral';}}
+  rmImpostaTagValore(tc,'risultatoClasse1',vc,vc===null?'':'Classificazione '+classe,'out-ok');
+  if(vf===null){rmImpostaTagValore(tf,'risultatoFase1',vf,'','out-neutral');}
+  else if(!rmFaseSpecialeCompatibile(classe,fase)){rmImpostaTagValore(tf,'risultatoFase1',vf,'Fase incompatibile con Essere/Spirito/Non-Essere','out-fail');}
+  else if(rmFaseSpecialeSoloNonSpirito(classe,fase)){rmImpostaTagValore(tf,'risultatoFase1',vf,fase+' — compatibile solo con Essere/Non-Essere','out-neutral');}
+  else{rmImpostaTagValore(tf,'risultatoFase1',vf,fase||'','out-ok');}
+  if(vs===null){rmImpostaTagValore(ts,'risultatoSalute1',vs,'','out-neutral');if(ns)ns.textContent='';}
+  else{var stato=rmLookup(healthTable,vs);rmImpostaTagValore(ts,'risultatoSalute1',vs,stato,stato==='In salute'?'out-ok':'out-fail');if(ns)ns.textContent=stato!=='In salute'?'Contatta il Narratore prima di procedere.':'';}
+  if(vci===null){rmImpostaTagValore(tci,'risultatoCibo1',vci,'','out-neutral');}
+  else if(vci<=2){rmImpostaTagValore(tci,'risultatoCibo1',vci,'Cibo trovato: +1 possibilità futura','out-ok');}
+  else{rmImpostaTagValore(tci,'risultatoCibo1',vci,'Niente di utile','out-neutral');}
 }
 
 function rmBuildEsemplari(n,count){
-  var host=rmEl('esemplariLista'+n);if(!host)return;if(host.getAttribute('data-conteggio')===String(count))return;host.setAttribute('data-conteggio',String(count));host.innerHTML='';
+  var host=rmEl('esemplariLista'+n);if(!host)return;if(host.getAttribute('data-conteggio')===String(count))return;
+  /* Se cambia il numero di esemplari, conserva i risultati già inseriti
+     per gli indici che continuano a esistere. */
+  var precedenti={};
+  host.querySelectorAll('input[data-key]').forEach(function(inp){precedenti[inp.id]=inp.value;});
+  host.setAttribute('data-conteggio',String(count));host.innerHTML='';
   for(var i=1;i<=count;i++){
     var box=document.createElement('div');box.className='esemplare-riga';
 
@@ -1952,7 +2112,7 @@ function rmBuildEsemplari(n,count){
     rl1.appendChild(code1);
     var b1=document.createElement('button');b1.type='button';b1.className='copy-btn';b1.setAttribute('data-copy-source',code1.id);b1.setAttribute('data-copy-control','1');b1.textContent='Copia';rl1.appendChild(b1);box.appendChild(rl1);
     var rr1=document.createElement('div');rr1.className='result-line';rr1.appendChild(document.createTextNode('Risultato (1-40): '));
-    var in1=document.createElement('input');in1.type='number';in1.id='risultatoFase'+n+'_'+i;in1.setAttribute('data-key',in1.id);in1.min='1';in1.max='40';rr1.appendChild(in1);
+    var in1=document.createElement('input');in1.type='number';in1.id='risultatoFase'+n+'_'+i;in1.setAttribute('data-key',in1.id);in1.min='1';in1.max='40';if(precedenti[in1.id]!==undefined)in1.value=precedenti[in1.id];rr1.appendChild(in1);
     var t1=document.createElement('span');t1.id='tagFase'+n+'_'+i;t1.className='out-tag out-neutral';t1.textContent='in attesa';rr1.appendChild(t1);box.appendChild(rr1);
 
     var h2=document.createElement('h3');h2.id='titoloSalute'+n+'_'+i;h2.textContent='Esemplare '+i+' — Stato di Salute (1d15)';box.appendChild(h2);
@@ -1960,35 +2120,56 @@ function rmBuildEsemplari(n,count){
     var code2=document.createElement('div');code2.className='dice-code';code2.id='codiceSalute'+n+'_'+i;rl2.appendChild(code2);
     var b2=document.createElement('button');b2.type='button';b2.className='copy-btn';b2.setAttribute('data-copy-source',code2.id);b2.setAttribute('data-copy-control','1');b2.textContent='Copia';rl2.appendChild(b2);box.appendChild(rl2);
     var rr2=document.createElement('div');rr2.className='result-line';rr2.appendChild(document.createTextNode('Risultato (1-15): '));
-    var in2=document.createElement('input');in2.type='number';in2.id='risultatoSalute'+n+'_'+i;in2.setAttribute('data-key',in2.id);in2.min='1';in2.max='15';rr2.appendChild(in2);
+    var in2=document.createElement('input');in2.type='number';in2.id='risultatoSalute'+n+'_'+i;in2.setAttribute('data-key',in2.id);in2.min='1';in2.max='15';if(precedenti[in2.id]!==undefined)in2.value=precedenti[in2.id];rr2.appendChild(in2);
     var t2=document.createElement('span');t2.id='tagSalute'+n+'_'+i;t2.className='out-tag out-neutral';t2.textContent='in attesa';rr2.appendChild(t2);box.appendChild(rr2);
 
     host.appendChild(box);
   }
+  setupNumericInputs();
 }
 function rmUpdateEsemplari(n,count){
+  var tab=n===2?rmClasseTab2:rmClasseTab3;
+  var vc=rmNumber('risultatoClasse'+n,1,18),classe=vc===null?null:rmLookup(tab,vc);
   for(var i=1;i<=count;i++){
-    var vf=rmNumber('risultatoFase'+n+'_'+i,1,40),vs=rmNumber('risultatoSalute'+n+'_'+i,1,15),tf=rmEl('tagFase'+n+'_'+i),ts=rmEl('tagSalute'+n+'_'+i);
+    var idF='risultatoFase'+n+'_'+i,idS='risultatoSalute'+n+'_'+i;
+    var vf=rmNumber(idF,1,40),vs=rmNumber(idS,1,15),tf=rmEl('tagFase'+n+'_'+i),ts=rmEl('tagSalute'+n+'_'+i);
     var fase=vf===null?null:rmLookup(rmSessoFaseTab,vf),healthTable=rmSetHealthCode(n,i,fase);
-    if(tf){tf.textContent=vf===null?'in attesa':fase;tf.className='out-tag '+(vf===null?'out-neutral':'out-ok');}
-    if(ts){var st=vs===null?'':rmLookup(healthTable,vs);ts.textContent=vs===null?'in attesa':st;ts.className='out-tag '+(vs===null?'out-neutral':(st==='In salute'?'out-ok':'out-fail'));}
+    if(vf===null){rmImpostaTagValore(tf,idF,vf,'','out-neutral');}
+    else if(!rmFaseSpecialeCompatibile(classe,fase)){rmImpostaTagValore(tf,idF,vf,'Fase incompatibile con Essere/Spirito/Non-Essere','out-fail');}
+    else if(rmFaseSpecialeSoloNonSpirito(classe,fase)){rmImpostaTagValore(tf,idF,vf,fase+' — compatibile solo con Essere/Non-Essere','out-neutral');}
+    else{rmImpostaTagValore(tf,idF,vf,fase||'','out-ok');}
+    if(vs===null){rmImpostaTagValore(ts,idS,vs,'','out-neutral');}
+    else{var st=rmLookup(healthTable,vs);rmImpostaTagValore(ts,idS,vs,st,st==='In salute'?'out-ok':'out-fail');}
   }
 }
 
 function rmRecomputeCascataMultipla(n,trovato){
   var c=rmEl('cascata'+n);if(!c)return;if(!trovato){c.style.display='none';return;}c.style.display='block';
-  var tab=n===2?rmClasseTab2:rmClasseTab3,max=n===2?5:10,vc=rmNumber('risultatoClasse'+n,1,18),ve=rmNumber('risultatoEsemplari'+n,1,max),tc=rmEl('tagClasse'+n),te=rmEl('tagEsemplari'+n);
-  if(tc){tc.textContent=vc===null?'in attesa':'Classificazione '+rmLookup(tab,vc);tc.className='out-tag '+(vc===null?'out-neutral':'out-ok');}
-  if(te){te.textContent=ve===null?'in attesa':ve+(ve===1?' esemplare':' esemplari')+(ve>=4?' — possibile Orda':'');te.className='out-tag '+(ve===null?'out-neutral':'out-ok');}
-  rmBuildEsemplari(n,ve===null?0:ve);if(ve!==null)rmUpdateEsemplari(n,ve);
+  var tab=n===2?rmClasseTab2:rmClasseTab3,max=n===2?5:10,idC='risultatoClasse'+n,idE='risultatoEsemplari'+n;
+  var vc=rmNumber(idC,1,18),ve=rmNumber(idE,1,max),tc=rmEl('tagClasse'+n),te=rmEl('tagEsemplari'+n);
+  rmImpostaTagValore(tc,idC,vc,vc===null?'':'Classificazione '+rmLookup(tab,vc),'out-ok');
+  rmImpostaTagValore(te,idE,ve,ve===null?'':ve+(ve===1?' esemplare':' esemplari')+(ve>=4?' — possibile Orda':''),'out-ok');
+  /* Un valore fuori intervallo non deve cancellare gli esemplari già compilati. */
+  if(ve===null){if(rmInputVuoto(idE))rmBuildEsemplari(n,0);return;}
+  rmBuildEsemplari(n,ve);rmUpdateEsemplari(n,ve);
 }
 
 function rmEncounterComplete(n){
   if(rmTrovaEsito(n)!==true)return false;
-  if(rmNumber('risultatoClasse'+n,1,n===1?16:18)===null)return false;
-  if(n===1)return rmNumber('risultatoFase1',1,40)!==null&&rmNumber('risultatoSalute1',1,15)!==null;
+  var vc=rmNumber('risultatoClasse'+n,1,n===1?16:18);
+  if(vc===null)return false;
+  var tab=n===1?rmClasseTab1:(n===2?rmClasseTab2:rmClasseTab3),classe=rmLookup(tab,vc);
+  if(n===1){
+    var vf1=rmNumber('risultatoFase1',1,40);
+    if(vf1===null||rmNumber('risultatoSalute1',1,15)===null)return false;
+    return rmFaseSpecialeCompatibile(classe,rmLookup(rmSessoFaseTab,vf1));
+  }
   var max=n===2?5:10,count=rmNumber('risultatoEsemplari'+n,1,max);if(count===null)return false;
-  for(var i=1;i<=count;i++){if(rmNumber('risultatoFase'+n+'_'+i,1,40)===null||rmNumber('risultatoSalute'+n+'_'+i,1,15)===null)return false;}
+  for(var i=1;i<=count;i++){
+    var vf=rmNumber('risultatoFase'+n+'_'+i,1,40);
+    if(vf===null||rmNumber('risultatoSalute'+n+'_'+i,1,15)===null)return false;
+    if(!rmFaseSpecialeCompatibile(classe,rmLookup(rmSessoFaseTab,vf)))return false;
+  }
   return true;
 }
 function rmBlockedAfter(n){return !!(rmEl('catturato'+n)&&rmEl('catturato'+n).checked&&rmValigia()!=='si');}
@@ -2055,12 +2236,23 @@ function rmEncounterSummary(n){
 function rmRenderOutcome(){
   var host=rmEl('rm-outcome-content'),bb=rmEl('rm-outcome-bbcode');if(!host||!bb)return;
   var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'PG',items=[],bbs=[];
-  for(var n=1;n<=3;n++){var s=rmEncounterSummary(n);if(s){items.push('<li><b>Incontro '+(['','I','II','III'][n])+':</b> '+s.html+'</li>');bbs.push('Incontro '+(['','I','II','III'][n])+': '+s.bb);}}
+  for(var n=1;n<=3;n++){
+    /* Dati rimasti da una configurazione precedente non devono comparire
+       nell'Esito se l'Incontro non è più raggiungibile con la configurazione
+       attuale (per esempio passando da Ricerca Attiva a Passiva o togliendo
+       la Valigia dopo una cattura). */
+    if(n===2 && !rmPageUnlocked('enc2'))break;
+    if(n===3 && !rmPageUnlocked('enc3'))break;
+    var s=rmEncounterSummary(n);
+    if(!s)break;
+    items.push('<li><b>Incontro '+(['','I','II','III'][n])+':</b> '+s.html+'</li>');
+    bbs.push('Incontro '+(['','I','II','III'][n])+': '+s.bb);
+  }
   if(!items.length){host.innerHTML='<div class="nota-regole">Completa almeno il Primo Incontro per ottenere il riepilogo finale.</div>';bb.textContent='';return;}
   var stop='';
   if(rmTipo()==='passiva')stop='Ricerca Passiva conclusa dopo il Primo Incontro.';
-  else if(rmBlockedAfter(1)&&!rmEncounterComplete(2))stop='Ricerca interrotta dopo il Primo Incontro: Valigia Magica necessaria per proseguire dopo la cattura.';
-  else if(rmBlockedAfter(2)&&!rmEncounterComplete(3))stop='Ricerca interrotta dopo il Secondo Incontro: Valigia Magica necessaria per proseguire dopo la cattura.';
+  else if(rmBlockedAfter(1))stop='Ricerca interrotta dopo il Primo Incontro: Valigia Magica necessaria per proseguire dopo la cattura.';
+  else if(items.length>=2 && rmBlockedAfter(2))stop='Ricerca interrotta dopo il Secondo Incontro: Valigia Magica necessaria per proseguire dopo la cattura.';
   else stop='Ricerca conclusa dopo '+items.length+' Incontro'+(items.length===1?'':'i')+'.';
   host.innerHTML='<ul class="outcome-list">'+items.join('')+'</ul><div class="nota-regole" style="margin-top:12px">'+rmEsc(stop)+'</div>';
   bb.textContent='<b>Esito Ricerca Creature Magiche — '+name+'</b>\n[quote]'+bbs.join('\n')+'\n'+stop+'[/quote]';
@@ -2128,7 +2320,7 @@ var RM_FIREBASE_CONFIG={apiKey:"AIzaSyCvd56bSEL02s2OY2PSk7uyFX-CYRB4Vz0",authDom
 var RM_COLLECTION='ricerca_creature_magiche';
 var RM_NARRATOR_UID='TFgqfVrFLjW5SwqRFXmEi8tDhtM2';
 var RM_FB={auth:null,db:null,user:null};
-var RM_CURRENT_ID='',RM_CURRENT_DATA=null,RM_READONLY=false,RM_SAVE_TIMER=null,RM_SAVE_BUSY=false,RM_SAVE_PENDING=false;
+var RM_CURRENT_ID='',RM_CURRENT_DATA=null,RM_READONLY=false,RM_SAVE_TIMER=null,RM_SAVE_BUSY=false,RM_SAVE_CHAIN=Promise.resolve(),RM_DELETING=false,RM_CREATING=false;
 
 function rmStatus(id,msg,kind){var n=rmEl(id);if(!n)return;n.textContent=msg||'';n.className='session-status'+(kind?' '+kind:'');}
 function rmFormatTs(ts){if(!ts)return '';try{var d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleString('it-IT');}catch(e){return '';}}
@@ -2160,23 +2352,45 @@ function rmPayload(){
   return {ownerUid:RM_CURRENT_DATA.ownerUid,initialPgName:RM_CURRENT_DATA.initialPgName||rmCurrentName(),pgName:rmCurrentName(),tipoRicerca:rmTipo(),createdAt:RM_CURRENT_DATA.createdAt||null,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'standard-ricerca-v1',state:st};
 }
 function rmScheduleSave(){
-  if(RM_RESTORING||!RM_CURRENT_ID||RM_READONLY||!rmSessionCanEdit(RM_CURRENT_DATA))return;
+  if(RM_RESTORING||RM_DELETING||!RM_CURRENT_ID||RM_READONLY||!rmSessionCanEdit(RM_CURRENT_DATA))return;
   rmStatus('rm-save-status','Salvataggio automatico…','');
   if(RM_SAVE_TIMER)clearTimeout(RM_SAVE_TIMER);
-  RM_SAVE_TIMER=setTimeout(rmSaveNow,850);
+  RM_SAVE_TIMER=setTimeout(function(){
+    RM_SAVE_TIMER=null;
+    rmSaveNow().catch(function(){});
+  },850);
 }
 function rmSaveNow(){
-  if(!RM_CURRENT_ID||RM_READONLY||!rmSessionCanEdit(RM_CURRENT_DATA))return Promise.resolve();
-  if(RM_SAVE_BUSY){RM_SAVE_PENDING=true;return Promise.resolve();}
-  RM_SAVE_BUSY=true;RM_SAVE_PENDING=false;var p=rmPayload();
-  return RM_FB.db.collection(RM_COLLECTION).doc(RM_CURRENT_ID).set(p,{merge:true}).then(function(){
-    Object.keys(p).forEach(function(k){if(k!=='updatedAt')RM_CURRENT_DATA[k]=p[k];});
-    rmStatus('rm-save-status','Ricerca salvata automaticamente ✓','ok');rmUpdateToolbar();
-  }).catch(function(err){
-    console.error(err);rmStatus('rm-save-status','Errore di salvataggio: non chiudere la pagina.','bad');
-  }).finally(function(){
-    RM_SAVE_BUSY=false;if(RM_SAVE_PENDING){RM_SAVE_PENDING=false;rmScheduleSave();}
+  if(RM_DELETING||!RM_CURRENT_ID||RM_READONLY||!rmSessionCanEdit(RM_CURRENT_DATA))return Promise.resolve(true);
+  if(RM_SAVE_TIMER){clearTimeout(RM_SAVE_TIMER);RM_SAVE_TIMER=null;}
+  var p=rmPayload(),sessionId=RM_CURRENT_ID;
+  var task=RM_SAVE_CHAIN.catch(function(){
+    /* Un errore precedente non deve impedire un nuovo tentativo di salvataggio. */
+  }).then(function(){
+    /* Se nel frattempo è iniziata l'eliminazione o è cambiata sessione,
+       una scrittura accodata non deve più partire. */
+    if(RM_DELETING||RM_CURRENT_ID!==sessionId)return true;
+    RM_SAVE_BUSY=true;
+    return RM_FB.db.collection(RM_COLLECTION).doc(sessionId).set(p,{merge:true}).then(function(){
+      if(RM_CURRENT_ID===sessionId&&RM_CURRENT_DATA){
+        Object.keys(p).forEach(function(k){if(k!=='updatedAt')RM_CURRENT_DATA[k]=p[k];});
+        /* Il timestamp server resta autorevole; questo riferimento locale
+           aggiorna subito la barra soltanto dopo una scrittura riuscita. */
+        RM_CURRENT_DATA.updatedAt=new Date();
+      }
+      rmStatus('rm-save-status','Ricerca salvata automaticamente ✓','ok');
+      rmUpdateToolbar();
+      return true;
+    }).catch(function(err){
+      console.error(err);
+      rmStatus('rm-save-status','Errore di salvataggio: le ultime modifiche non sono state confermate. Riprova prima di uscire.','bad');
+      throw err;
+    }).finally(function(){
+      RM_SAVE_BUSY=false;
+    });
   });
+  RM_SAVE_CHAIN=task;
+  return task;
 }
 function rmOpenSession(id,data){
   RM_CURRENT_ID=id;RM_CURRENT_DATA=data;RM_READONLY=!rmSessionCanEdit(data);
@@ -2215,30 +2429,92 @@ function rmLoadSessions(){
   }).catch(function(err){console.error(err);host.innerHTML='<div class="session-status bad">Non riesco a leggere le Ricerche in corso: '+rmEsc(err.message||err)+'</div>';});
 }
 function rmCreateSession(){
-  var inp=rmEl('rm-new-session-pg'),name=inp?inp.value.trim():'';
+  if(RM_CREATING)return;
+  var inp=rmEl('rm-new-session-pg'),btn=rmEl('rm-btn-new-session'),name=inp?inp.value.trim():'';
   if(!name){rmStatus('rm-session-home-msg','Inserisci prima il nome del PG principale.','bad');return;}
   if(!RM_FB.user){rmStatus('rm-session-home-msg','Firebase non è ancora pronto. Riprova tra un momento.','bad');return;}
+  RM_CREATING=true;
+  if(btn)btn.disabled=true;
   var state={nomePgRicerca:name,empatiaRicerca:'10',sapienza:'0',tipoRicerca:'attiva',valigiaMagica:'no',summaryVisited:false,outcomeVisited:false,flowPage:'config'};
   var data={ownerUid:RM_FB.user.uid,initialPgName:name,pgName:name,tipoRicerca:'attiva',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'standard-ricerca-v1',state:state};
   rmStatus('rm-session-home-msg','Creazione della Ricerca…','');
-  RM_FB.db.collection(RM_COLLECTION).add(data).then(function(ref){rmNavigateSession(ref.id);}).catch(function(err){console.error(err);rmStatus('rm-session-home-msg','Impossibile creare la Ricerca: '+err.message,'bad');});
+  RM_FB.db.collection(RM_COLLECTION).add(data).then(function(ref){
+    rmNavigateSession(ref.id);
+  }).catch(function(err){
+    console.error(err);
+    RM_CREATING=false;
+    if(btn)btn.disabled=false;
+    rmStatus('rm-session-home-msg','Impossibile creare la Ricerca: '+err.message,'bad');
+  });
 }
 function rmPositionDelete(ev){
   var modal=rmEl('rm-delete-session-modal'),box=modal?modal.querySelector('.session-modal-box'):null;if(!box)return;
   var y=ev&&typeof ev.clientY==='number'?ev.clientY:Math.max(120,(window.innerHeight||600)/2);
   requestAnimationFrame(function(){var h=box.getBoundingClientRect().height||300,vh=window.innerHeight||600,min=Math.min(vh/2,20+h/2),max=Math.max(min,vh-20-h/2);box.style.top=Math.max(min,Math.min(max,y))+'px';});
 }
-function rmOpenDelete(ev){if(!RM_CURRENT_ID||!rmSessionCanEdit(RM_CURRENT_DATA))return;rmEl('rm-delete-session-check').checked=false;rmEl('rm-btn-confirm-delete').disabled=true;rmEl('rm-delete-session-msg').textContent='';var m=rmEl('rm-delete-session-modal');m.classList.add('open');m.setAttribute('aria-hidden','false');rmPositionDelete(ev);}
-function rmCloseDelete(){var m=rmEl('rm-delete-session-modal');if(!m)return;m.classList.remove('open');m.setAttribute('aria-hidden','true');var box=m.querySelector('.session-modal-box');if(box)box.style.top='50%';}
-function rmDelete(){
-  if(!RM_CURRENT_ID||!rmSessionCanEdit(RM_CURRENT_DATA)||!rmEl('rm-delete-session-check').checked)return;
-  rmEl('rm-btn-confirm-delete').disabled=true;rmEl('rm-delete-session-msg').textContent='Eliminazione definitiva in corso…';
-  RM_FB.db.collection(RM_COLLECTION).doc(RM_CURRENT_ID).delete().then(function(){
-    RM_CURRENT_ID='';RM_CURRENT_DATA=null;rmCloseDelete();try{sessionStorage.setItem('rm_deleted_notice','1');}catch(e){}rmNavigateDashboard();
-  }).catch(function(err){console.error(err);rmEl('rm-delete-session-msg').textContent='Eliminazione non riuscita: '+err.message;rmEl('rm-btn-confirm-delete').disabled=false;});
+function rmOpenDelete(ev){
+  if(!RM_CURRENT_ID||RM_DELETING||!rmSessionCanEdit(RM_CURRENT_DATA))return;
+  rmEl('rm-delete-session-check').checked=false;
+  rmEl('rm-btn-confirm-delete').disabled=true;
+  rmEl('rm-btn-cancel-delete').disabled=false;
+  rmEl('rm-delete-session-msg').textContent='';
+  var m=rmEl('rm-delete-session-modal');
+  m.classList.add('open');
+  m.setAttribute('aria-hidden','false');
+  rmPositionDelete(ev);
 }
-function rmBack(){var p=RM_CURRENT_ID&&rmSessionCanEdit(RM_CURRENT_DATA)?rmSaveNow():Promise.resolve();p.finally(rmNavigateDashboard);}
+function rmCloseDelete(){
+  if(RM_DELETING)return;
+  var m=rmEl('rm-delete-session-modal');if(!m)return;
+  m.classList.remove('open');m.setAttribute('aria-hidden','true');
+  var box=m.querySelector('.session-modal-box');if(box)box.style.top='50%';
+}
+function rmDelete(){
+  if(!RM_CURRENT_ID||RM_DELETING||!rmSessionCanEdit(RM_CURRENT_DATA)||!rmEl('rm-delete-session-check').checked)return;
+  var sessionId=RM_CURRENT_ID;
+  RM_DELETING=true;
+  if(RM_SAVE_TIMER){clearTimeout(RM_SAVE_TIMER);RM_SAVE_TIMER=null;}
+  rmEl('rm-btn-confirm-delete').disabled=true;
+  rmEl('rm-btn-cancel-delete').disabled=true;
+  rmEl('rm-delete-session-check').disabled=true;
+  rmEl('rm-btn-back-sessions').disabled=true;
+  rmEl('rm-btn-delete-session').disabled=true;
+  rmEl('rm-delete-session-msg').textContent='Eliminazione definitiva in corso…';
 
+  /* Aspetta le scritture già partite; quelle soltanto accodate vedono
+     RM_DELETING e vengono saltate. Il delete è quindi l'ultima operazione. */
+  RM_SAVE_CHAIN.catch(function(){}).then(function(){
+    return RM_FB.db.collection(RM_COLLECTION).doc(sessionId).delete();
+  }).then(function(){
+    RM_CURRENT_ID='';
+    RM_CURRENT_DATA=null;
+    RM_DELETING=false;
+    rmCloseDelete();
+    try{sessionStorage.setItem('rm_deleted_notice','1');}catch(e){}
+    rmNavigateDashboard();
+  }).catch(function(err){
+    console.error(err);
+    RM_DELETING=false;
+    rmEl('rm-delete-session-msg').textContent='Eliminazione non riuscita: '+err.message;
+    rmEl('rm-btn-cancel-delete').disabled=false;
+    rmEl('rm-delete-session-check').disabled=false;
+    rmEl('rm-btn-back-sessions').disabled=false;
+    rmEl('rm-btn-delete-session').disabled=false;
+    rmEl('rm-btn-confirm-delete').disabled=!rmEl('rm-delete-session-check').checked;
+  });
+}
+function rmBack(){
+  if(RM_DELETING)return;
+  var btn=rmEl('rm-btn-back-sessions');
+  if(btn)btn.disabled=true;
+  var p=RM_CURRENT_ID&&rmSessionCanEdit(RM_CURRENT_DATA)?rmSaveNow():Promise.resolve(true);
+  p.then(function(){
+    rmNavigateDashboard();
+  }).catch(function(){
+    if(btn)btn.disabled=false;
+    rmStatus('rm-save-status','Non posso tornare all’elenco: il salvataggio non è riuscito. Riprova quando Firebase è disponibile.','bad');
+  });
+}
 function rmSetupControls(){
   rmEl('rm-btn-new-session').addEventListener(evtClick,rmCreateSession);
   rmEl('rm-new-session-pg').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();rmCreateSession();}});
@@ -2253,8 +2529,8 @@ function rmSetupControls(){
   document.querySelectorAll('#creature-workspace [data-rm-goto]').forEach(function(b){b.addEventListener(evtClick,function(){rmGoto(b.getAttribute('data-rm-goto'));});});
   rmWorkspace().addEventListener('input',function(){if(RM_RESTORING||RM_READONLY)return;ricalcolaRicerca();rmUpdateToolbar();rmScheduleSave();},true);
   rmWorkspace().addEventListener('change',function(){if(RM_RESTORING||RM_READONLY)return;ricalcolaRicerca();rmUpdateToolbar();rmScheduleSave();},true);
-  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&RM_CURRENT_ID&&!RM_READONLY)rmSaveNow();});
-  window.addEventListener('pagehide',function(){if(RM_CURRENT_ID&&!RM_READONLY)rmSaveNow();});
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&RM_CURRENT_ID&&!RM_READONLY)rmSaveNow().catch(function(){});});
+  window.addEventListener('pagehide',function(){if(RM_CURRENT_ID&&!RM_READONLY)rmSaveNow().catch(function(){});});
 }
 function rmSetupFirebase(){
   rmSetupControls();rmWorkspace().style.display='none';rmEl('creature-session-home').style.display='block';var st=rmEl('rm-firebase-auth-status');
@@ -2278,6 +2554,73 @@ function rmSetupFirebase(){
     });
   }catch(err){console.error(err);st.textContent='Firebase non disponibile: '+err.message;st.className='session-status bad';}
 }
+
+
+/* ---------- INPUT NUMERICI CHIARI ---------- */
+function setupNumericInputs(){
+  document.querySelectorAll('input[type="number"]').forEach(function(el){
+    if(el.getAttribute('data-numeric-ready')==='1')return;
+    el.setAttribute('data-numeric-ready','1');
+
+    var parent=el.parentElement;
+    if(parent && !parent.querySelector(':scope > .numeric-note')){
+      var n=document.createElement('span');
+      n.className='numeric-note';
+      n.textContent='Inserire solo numeri';
+      parent.appendChild(n);
+    }
+
+    function numericRules(){
+      var signed=el.getAttribute('data-signed')==='1';
+      var decimal=el.getAttribute('data-decimal')==='1';
+      return {
+        signed:signed,
+        decimal:decimal,
+        re:decimal ? (signed ? /^-?\d+(?:[.,]\d+)?$/ : /^\d+(?:[.,]\d+)?$/)
+                   : (signed ? /^-?\d+$/ : /^\d+$/)
+      };
+    }
+
+    el.addEventListener('keydown',function(e){
+      if(e.ctrlKey||e.metaKey||e.altKey)return;
+      var r=numericRules();
+      if(e.key==='e'||e.key==='E'||e.key==='+'){e.preventDefault();return;}
+      if(e.key==='-'&&!r.signed){e.preventDefault();return;}
+      if((e.key==='.'||e.key===',')&&!r.decimal){e.preventDefault();return;}
+    });
+
+    el.addEventListener('paste',function(e){
+      var txt=(e.clipboardData||window.clipboardData).getData('text').trim();
+      var r=numericRules();
+      if(txt===''||!r.re.test(txt)){
+        e.preventDefault();
+        el.setCustomValidity('Inserire solo un numero valido.');
+        return;
+      }
+      e.preventDefault();
+      el.setCustomValidity('');
+      el.value=r.decimal?txt.replace(',','.'):txt;
+      el.dispatchEvent(new Event('input',{bubbles:true}));
+      el.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+
+    el.addEventListener('input',function(){
+      var v=el.value;
+      if(v===''){el.setCustomValidity('');return;}
+      var r=numericRules();
+      if(!r.re.test(v)){
+        el.value='';
+        el.setCustomValidity('Inserire solo un numero valido.');
+        return;
+      }
+      el.setCustomValidity('');
+      if(el.validity && (el.validity.rangeUnderflow||el.validity.rangeOverflow||el.validity.stepMismatch)){
+        el.setCustomValidity('Inserire un valore compreso nei limiti previsti.');
+      }
+    });
+  });
+}
+setupNumericInputs();
 
 /* ==================== FINE RICERCA CREATURE MAGICHE ==================== */
 
