@@ -847,11 +847,239 @@ table.fasce td{
   font-style:italic;
 }
 
+
+
+/* ===== REVISIONE v16 — CONTRASTO, BONUS GUIDATI, RICERCA COMPATTA ===== */
+html,body{min-height:100%;overflow-x:hidden;overflow-y:visible!important;}
+body{padding-bottom:36px;}
+.contenitore{overflow:visible!important;padding-bottom:34px;}
+
+/* Contrasto coerente: arancio chiaro = testo scuro; box tecnici = testo chiaro. */
+.scheda,.blocco-incontro{
+  background:linear-gradient(180deg,#e8aa78 0%,#d9915d 100%);
+  color:#2b1208;
+}
+.scheda h2,.blocco-incontro h2{color:#3b1405;}
+.scheda h3,.blocco-incontro h3{color:#461a08;}
+.scheda .nota-regole,.blocco-incontro .nota-regole{color:#422315;font-weight:550;}
+.scheda .formula-tag,.blocco-incontro .formula-tag{
+  background:#3a1d12;border-color:#8f4b28;color:#fff0df;
+}
+.scheda .dice-code,.blocco-incontro .dice-code,.research-bbcode{
+  background:#160d09!important;border-color:#7d4228!important;color:#ffb76f!important;
+}
+.scheda select,.scheda input[type=number],.scheda input[type=text],
+.blocco-incontro select,.blocco-incontro input[type=number],.blocco-incontro input[type=text]{
+  background:#63351f;color:#fff2e6;border-color:#8b4d2c;
+}
+.scheda select option,.blocco-incontro select option{background:#3a1d12;color:#fff1e4;}
+.scheda input::placeholder,.blocco-incontro input::placeholder{color:#e3d3c6;opacity:.78;}
+.scheda .out-tag,.blocco-incontro .out-tag{background:#3a1d12;border-color:#8b4d2c;color:#ffe5cf;}
+.scheda .out-ok,.blocco-incontro .out-ok{background:#442313;border-color:#c76d37;color:#ffd3a8;}
+.scheda .out-fail,.blocco-incontro .out-fail{background:#4c2118;border-color:#b95b42;color:#ffd4c8;}
+
+/* I riquadri scuri non ereditano mai il testo marrone dei pannelli arancio. */
+.mz-bonus-manager,.rm-special,.rm-specie-helper,.summary-box,.session-card,.session-toolbar-card,
+.esito,.blocco-conseguenza .dice-code{
+  color:#f7e8dc;
+}
+.mz-bonus-manager{background:#21120c!important;border-color:#844625!important;}
+.mz-bonus-manager h3{color:#ffc58f!important;}
+.mz-bonus-manager .mz-bonus-help,.mz-bonus-manager .mz-bonus-preset-note,
+.mz-bonus-manager .mz-bonus-share-status,.mz-bonus-manager .mz-bonus-remaining{
+  color:#ead2c0!important;
+}
+.mz-bonus-manager .mz-bonus-field label{color:#f0a060!important;}
+.mz-bonus-manager input,.mz-bonus-manager select{background:#3b2015!important;color:#fff0e4!important;border-color:#724027!important;}
+.mz-bonus-manager select option{background:#2d180f!important;color:#fff0e4!important;}
+.mz-bonus-manager .numeric-note{color:#cbb3a1!important;}
+.rm-special,.rm-specie-helper{background:#21120c!important;color:#f7e8dc!important;border-color:#854824!important;}
+.rm-special h3,.rm-specie-helper h3{color:#ffc58f!important;}
+.rm-special .nota-regole,.rm-specie-helper .nota-regole{color:#ead2c0!important;}
+.rm-specie-helper .campo label,.rm-special .campo label{color:#f0a060!important;}
+.summary-box{background:#1d100b!important;border-color:#754026!important;color:#f8e7d9!important;}
+.summary-box b{color:#ffad67!important;}
+
+/* Regole della Ricerca: niente wall of text. */
+.rm-rules-quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0;}
+.rm-rule-card{padding:11px 13px;border:1px solid #8b4d2c;border-left:4px solid #7b3619;border-radius:7px;background:rgba(255,246,237,.28);color:#30170c;line-height:1.42;font-size:.88em;}
+.rm-rule-card b{color:#411806;}
+.rm-rules-details{margin:10px 0 15px;border:1px solid #8b4d2c;border-radius:7px;background:#2a160f;color:#f5e1d2;overflow:hidden;}
+.rm-rules-details summary{cursor:pointer;padding:10px 13px;color:#ffc58f;font-weight:700;list-style:none;}
+.rm-rules-details summary::-webkit-details-marker{display:none;}
+.rm-rules-details summary:after{content:'▾';float:right;}
+.rm-rules-details[open] summary:after{content:'▴';}
+.rm-rules-details .rm-rules-body{padding:0 13px 12px;line-height:1.5;color:#ead2c0;font-size:.86em;}
+.rm-rules-details .rm-rules-body p{margin:7px 0;}
+
+/* Bonus per fase: catalogo in alto, dettagli tecnici nascosti salvo inserimento manuale. */
+.mz-bonus-row.mz-phase{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;align-items:stretch!important;padding:12px!important;}
+.mz-bonus-preset-wrap{grid-column:1!important;}
+.mz-bonus-preset-wrap label{min-height:auto!important;display:block!important;}
+.mz-bonus-manual-fields{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;align-items:start;padding-top:2px;}
+.mz-bonus-row.is-manual .mz-bonus-manual-fields{display:grid;}
+.mz-bonus-manual-fields .mz-bonus-field{display:grid;grid-template-rows:2.45em 38px auto;align-items:start;}
+.mz-bonus-manual-fields .mz-bonus-field label{min-height:0!important;height:2.45em;display:flex!important;align-items:flex-end!important;margin:0 0 4px!important;}
+.mz-bonus-manual-fields .mz-bonus-field input,.mz-bonus-manual-fields .mz-bonus-field select{height:38px;min-height:38px;}
+.mz-bonus-manual-fields .numeric-note{margin-top:5px!important;min-height:1.3em;}
+.mz-bonus-compact-summary{display:none;padding:9px 11px;border:1px solid #6f3d26;border-radius:6px;background:#160d09;color:#f5e1d2;line-height:1.4;font-size:.84em;}
+.mz-bonus-row.has-preset .mz-bonus-compact-summary{display:block;}
+.mz-bonus-action-row{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;padding-top:4px;}
+.mz-bonus-action-row .mz-used-field{width:145px;flex:0 1 145px;}
+.mz-bonus-action-row .mz-used-field label{min-height:auto!important;display:block!important;margin-bottom:4px!important;}
+.mz-bonus-action-row .mz-used-field input{height:36px;}
+.mz-bonus-action-row .mz-bonus-check{min-height:36px;padding:0 4px;align-self:flex-end;margin:0!important;color:#ffd7b7!important;}
+.mz-bonus-action-row .mz-bonus-remove{align-self:flex-end!important;margin:0!important;height:36px;width:42px;}
+.mz-bonus-action-row .mz-bonus-remaining{flex:1 1 210px;align-self:center;margin:0;}
+
+/* Risolutore guidato per Tecniche/Incantesimi: il player tira i dadi, il tool calcola l'effetto. */
+.mz-bonus-resolver,.rm-search-resolver{display:none;padding:11px;border:1px solid #8a4a29;border-radius:7px;background:#2b170f;color:#f7e8dc;}
+.mz-bonus-row.has-resolver .mz-bonus-resolver,.rm-search-bonus-row.has-resolver .rm-search-resolver{display:block;}
+.mz-resolver-title{font-weight:700;color:#ffc58f;margin-bottom:7px;}
+.mz-resolver-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:end;}
+.mz-resolver-field label{display:block!important;min-height:auto!important;color:#f0a060!important;font-size:.7em;text-transform:uppercase;letter-spacing:.04em;margin:0 0 4px!important;}
+.mz-resolver-field select,.mz-resolver-field input{width:100%;height:38px;box-sizing:border-box;background:#3b2015!important;color:#fff0e4!important;border:1px solid #734029!important;border-radius:5px;padding:6px 8px;}
+.mz-resolver-roll{grid-column:1 / -1;padding:9px;border:1px dashed #6e3c26;border-radius:6px;background:#180e09;}
+.mz-resolver-roll .result-line{margin:6px 0;}
+.mz-resolver-outcome{grid-column:1 / -1;padding:8px 10px;border-left:4px solid #c86b35;background:#1a0f0a;color:#f8dfca;border-radius:4px;font-size:.84em;line-height:1.4;}
+.mz-resolver-pending{color:#d7bdab;}
+
+/* Bonus Ricerca: allineamento più pulito; la nota numerica sta sotto la riga, non sposta l'input. */
+.rm-search-bonus-row{grid-template-columns:minmax(240px,1.7fr) 125px minmax(170px,1.05fr) 42px!important;align-items:start!important;padding:11px 0!important;}
+.rm-search-bonus-row > .mz-bonus-field{display:grid;grid-template-rows:2.35em 38px auto;align-items:start;}
+.rm-search-bonus-row > .mz-bonus-field label{height:2.35em;min-height:0!important;display:flex!important;align-items:flex-end!important;margin:0 0 4px!important;}
+.rm-search-bonus-row > .mz-bonus-field select,.rm-search-bonus-row > .mz-bonus-field input{height:38px;}
+.rm-search-bonus-row .numeric-note{margin-top:5px!important;min-height:1.25em;}
+.rm-search-bonus-row .rm-search-bonus-remove{margin-top:2.35em!important;height:38px!important;}
+.rm-search-bonus-row .rm-search-resolver,.rm-search-bonus-row .rm-search-bonus-manual,.rm-search-bonus-row .rm-search-bonus-note{grid-column:1 / -1;}
+.rm-search-bonus-row .rm-search-bonus-kind,.rm-search-bonus-row .rm-search-bonus-value{display:none!important;}
+
+/* Bolcino separato visivamente e lasciato in fondo ad ogni Incontro. */
+.rm-bolcino-incontro{margin:18px 0 0!important;border-left:4px solid #c96a34!important;}
+
+@media(max-width:760px){
+  .rm-rules-quick{grid-template-columns:1fr;}
+  .mz-bonus-manual-fields,.mz-resolver-grid{grid-template-columns:1fr;}
+  .mz-resolver-roll,.mz-resolver-outcome{grid-column:1;}
+  .rm-search-bonus-row{grid-template-columns:1fr!important;}
+  .rm-search-bonus-row .rm-search-bonus-remove{margin-top:0!important;width:100%!important;}
+  .mz-bonus-action-row{align-items:stretch;}
+  .mz-bonus-action-row .mz-used-field{width:100%;flex:1 1 100%;}
+}
+
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
+<style id="magizoologia-v17-overrides">
+/* ===== REVISIONE v17 — leggibilità, allineamento, anti-taglio ===== */
+.session-card,.session-toolbar-card,.scheda,.blocco-incontro,.summary-box,.rm-special,.rm-specie-helper,.mz-bonus-manager{overflow:visible!important;}
+body{color:#211008!important;}
+.scheda,.blocco-incontro{
+  background:linear-gradient(180deg,#efb889 0%,#e3a06c 100%)!important;
+  color:#231109!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+.scheda h2,.blocco-incontro h2{color:#391306!important;}
+.scheda h3,.blocco-incontro h3{color:#4a1a08!important;}
+.scheda .nota-regole,.blocco-incontro .nota-regole{color:#3d2113!important;font-weight:600;line-height:1.52;}
+.formula-tag{
+  background:#f0b681!important;
+  color:#fff7f0!important;
+  border:1px solid #d78548!important;
+  font-weight:700;
+}
+.scheda .formula-tag,.blocco-incontro .formula-tag{
+  background:#b86b34!important;
+  color:#fff7f0!important;
+  border-color:#8d481f!important;
+}
+.scheda .dice-code,.blocco-incontro .dice-code,.research-bbcode{
+  background:#130b08!important;
+  border:1px solid #8e4c28!important;
+  color:#ffbe79!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);
+}
+.scheda select,.scheda input[type=number],.scheda input[type=text],
+.blocco-incontro select,.blocco-incontro input[type=number],.blocco-incontro input[type=text]{
+  background:#5b301d!important;
+  color:#fff6ef!important;
+  border:1px solid #8b4a29!important;
+}
+.scheda select option,.blocco-incontro select option,.mz-bonus-manager select option{background:#24130c!important;color:#fff4e8!important;}
+.flow-page-btn,.flow-action-btn,.copy-btn,.session-btn{
+  background:#6a371e!important;
+  color:#fff7f0!important;
+  border-color:#9b542c!important;
+}
+.flow-page-btn:hover:not(:disabled),.flow-action-btn:hover:not(:disabled),.copy-btn:hover,.session-btn:hover{background:#874526!important;}
+.summary-box{background:#1a0f0a!important;border-color:#804624!important;color:#f8e8da!important;}
+.summary-box b{color:#ffbc7a!important;}
+.research-bbcode{font-size:13px!important;line-height:1.45!important;}
+.result-line{align-items:flex-start!important;gap:10px!important;}
+.out-tag{font-weight:700;}
+.rm-rules-quick{gap:12px!important;}
+.rm-rule-card{
+  background:rgba(255,248,241,.42)!important;
+  border-color:#a25b31!important;
+  color:#2f180d!important;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+.rm-rule-card b{color:#4b1c09!important;}
+.rm-rules-details{background:#2a160f!important;border-color:#8a4a29!important;}
+.rm-rules-details summary{background:rgba(255,255,255,.03);}
+.rm-rules-details .rm-rules-body p{margin:8px 0!important;}
+.rm-special,.rm-specie-helper,.mz-bonus-manager{background:#24140d!important;border-color:#8a4b28!important;color:#f7e9dd!important;}
+.rm-special h3,.rm-specie-helper h3,.mz-bonus-manager h3{color:#ffc58f!important;}
+.rm-special .nota-regole,.rm-specie-helper .nota-regole,.mz-bonus-manager .mz-bonus-help{color:#f1ddcf!important;}
+.mz-bonus-help{background:rgba(255,255,255,.035);padding:10px 12px;border-radius:7px;border:1px solid rgba(255,197,143,.18);}
+.mz-bonus-manual-fields{gap:10px!important;align-items:start!important;}
+.mz-bonus-manual-fields .mz-bonus-field,
+.rm-search-bonus-row>.mz-bonus-field{grid-template-rows:2.55em 40px 1.45em!important;}
+.mz-bonus-manual-fields .mz-bonus-field label,
+.rm-search-bonus-row>.mz-bonus-field label{height:2.55em!important;line-height:1.15!important;}
+.mz-bonus-manual-fields .mz-bonus-field input,
+.mz-bonus-manual-fields .mz-bonus-field select,
+.rm-search-bonus-row>.mz-bonus-field select,
+.rm-search-bonus-row>.mz-bonus-field input{height:40px!important;min-height:40px!important;}
+.mz-bonus-manual-fields .numeric-note,
+.rm-search-bonus-row .numeric-note{
+  margin-top:7px!important;
+  padding-top:1px!important;
+  min-height:1.45em!important;
+  line-height:1.2!important;
+}
+.mz-bonus-row.is-manual .mz-bonus-manual-fields{display:grid!important;}
+.rm-search-bonus-row{grid-template-columns:minmax(280px,1.8fr) minmax(170px,1fr) 42px!important;column-gap:10px!important;row-gap:8px!important;}
+.rm-search-bonus-row .rm-search-bonus-scope{min-width:0;}
+.rm-search-bonus-row .rm-search-bonus-remove{margin-top:2.55em!important;width:42px!important;}
+.rm-search-bonus-row .rm-search-resolver,.rm-search-bonus-row .rm-search-bonus-manual,.rm-search-bonus-row .rm-search-bonus-note{grid-column:1 / -1!important;}
+.rm-search-bonus-note,.mz-bonus-preset-note,.mz-bonus-remaining,.mz-effective-line{line-height:1.45!important;}
+.mz-bonus-resolver,.rm-search-resolver{background:#1a0f0a!important;border-color:#8a4a29!important;}
+.mz-resolver-roll{background:#140c08!important;}
+.mz-resolver-outcome{background:#23130c!important;}
+.rm-bolcino-incontro{
+  margin-top:20px!important;
+  padding:14px 14px 12px!important;
+  border-left:4px solid #d77d3c!important;
+  box-shadow:0 4px 10px rgba(0,0,0,.12);
+}
+#rm-summary-content .nota-regole{
+  margin-top:10px!important;
+  padding:12px 14px!important;
+  border:1px solid #c27b46!important;
+  border-left:4px solid #9b4d23!important;
+  border-radius:7px!important;
+  background:rgba(255,246,237,.30)!important;
+}
+@media(max-width:760px){
+  .rm-search-bonus-row{grid-template-columns:1fr!important;}
+  .rm-search-bonus-row .rm-search-bonus-remove{margin-top:0!important;width:100%!important;height:40px!important;}
+}
+</style>
+
 </head>
 <body>
 <div class="contenitore">
@@ -1050,7 +1278,7 @@ table.fasce td{
 <div class="riga"><div class="campo"><label>Tentativi di Fiducia eseguiti</label><input type="number" id="tentativiFiducia" data-key="tentativiFiducia" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
 <div class="mz-bonus-manager">
   <h3>Oggetti / Conoscenze — Fiducia</h3>
-  <p class="mz-bonus-help">Inserisci qui <b>tutti i bonus che vuoi usare in Fiducia</b>: Oggetti, Conoscenze, Tecniche, Incantesimi ed effetti generici. «Applica» registra un uso e inserisce il modificatore nel punto corretto della formula. Se un effetto del catalogo è valido anche in altre fasi, puoi renderlo disponibile lì con un solo clic: <b>gli usi resteranno condivisi</b>.</p>
+  <p class="mz-bonus-help">Seleziona qui ciò che usi in Fiducia. Se l’effetto richiede dadi, il tool li prepara e calcola da solo il valore finale. Se un effetto del catalogo è valido anche in altre fasi, puoi renderlo disponibile lì con un solo clic: <b>gli usi resteranno condivisi</b>.</p>
   <div class="mz-bonus-list" id="mzBonusFiducia"></div>
   <button type="button" class="mz-bonus-add" data-mz-add-phase="fiducia">+ Aggiungi bonus</button>
 </div>
@@ -1392,11 +1620,25 @@ table.fasce td{
         <div class="campo"><label>Tipo di Ricerca</label><select id="tipoRicerca" data-key="tipoRicerca"><option value="attiva">Attiva (fino a 3 incontri)</option><option value="passiva">Passiva (1 incontro)</option></select></div>
         <div class="campo"><label>Possiedo la Valigia Magica</label><select id="valigiaMagica" data-key="valigiaMagica"><option value="no">No</option><option value="si">Sì</option></select></div>
       </div>
-      <div class="nota-regole"><b>Ricerca in compagnia:</b> se partecipano due o più PG, <b>tutti i lanci della Ricerca devono essere effettuati solo e soltanto da UNO dei PG partecipanti</b>, indicato qui sopra come PG lanciatore. Non è possibile alternare i lanci fra i partecipanti o usare di volta in volta i Parametri di PG diversi. Ciò che il PG lanciatore trova è disponibile a tutti i PG presenti nella role, ma il ritrovamento condiviso <b>non condivide automaticamente la Fiducia</b>: chi vuole ottenere personalmente una Creatura deve poi seguire la propria procedura prevista dalla Guida. Nella stessa role di gruppo non è inoltre possibile dividere la ricerca fra obiettivi diversi (per esempio un PG cerca Creature e un altro Piante). Per questo, PG con bassa Empatia o senza Sapienza Magizoologica possono scegliere di cercare insieme a un PG Animus/Magizoologo e affidare a lui tutti i lanci della Ricerca.<br><br><b>Zona:</b> la role di Ricerca deve svolgersi in una Zona di Ricerca prevista dal regolamento. Le <b>Creature Esotiche</b> non possono essere incontrate nel Regno Unito: per trovarle bisogna ruolare fuori dal Regno Unito, nelle Coste/Foreste del Mondo Magico. La specie esatta viene poi determinata dalla lista della Zona scelta quando disponibile nel tool.<br><br><b>Interazione dopo il ritrovamento:</b> se scegli di interagire, applica la Guida alla Magizoologia e i relativi costi in Fatica. Se la specie esatta è sempre ostile, oppure diventa ostile, è richiesto l’intervento del Narratore. Esseri, Non-Esseri e Spiriti non possono essere addomesticati.<br><br>Nella Ricerca Passiva non si applica il bonus di Ricerca Attiva e non si può proseguire oltre il Primo Incontro. Nella Ricerca Attiva il bonus di +2 possibilità vale solo per il Primo Incontro. Se catturi una Creatura e non possiedi la Valigia Magica, non puoi proseguire all’Incontro successivo.</div>
+      <div class="rm-rules-quick">
+        <div class="rm-rule-card"><b>Role di gruppo</b><br>Tutti i dadi della Ricerca devono essere lanciati dallo <b>stesso PG</b>. Il ritrovamento è condiviso. La <b>Fiducia</b>, di norma, resta personale; un PG con <b>Amico delle Creature</b> può però estenderla ai compagni presenti nei limiti previsti dal regolamento.</div>
+        <div class="rm-rule-card"><b>Attiva / Passiva</b><br>La Ricerca Passiva termina dopo il Primo Incontro. Nella Ricerca Attiva il <b>+2</b> vale soltanto nel Primo Incontro e si può arrivare fino al Terzo.</div>
+        <div class="rm-rule-card"><b>Zona ed Esotiche</b><br>La role deve svolgersi nella Zona scelta. Le Creature Esotiche si cercano soltanto <b>fuori dal Regno Unito</b>.</div>
+        <div class="rm-rule-card"><b>Dopo il ritrovamento</b><br>Per ottenere personalmente la Creatura si usa la Guida alla Magizoologia. Creature ostili richiedono il Narratore; Esseri, Non-Esseri e Spiriti non sono addomesticabili.</div>
+      </div>
+      <details class="rm-rules-details">
+        <summary>Regole complete della Ricerca di gruppo e della prosecuzione</summary>
+        <div class="rm-rules-body">
+          <p><b>Un solo lanciatore:</b> non si possono alternare i dadi fra PG né usare Parametri di Personaggi diversi durante la stessa Ricerca.</p>
+          <p><b>Fiducia:</b> ogni PG che vuole ottenere personalmente una Creatura segue normalmente la propria procedura di Fiducia. Se il PG che guida la role possiede <b>Amico delle Creature</b>, può estendere ai compagni presenti il beneficio previsto dal regolamento.</p>
+          <p><b>Un solo obiettivo:</b> nella stessa role di gruppo non si divide la Ricerca fra Piante e Creature o fra obiettivi diversi.</p>
+          <p><b>Proseguire:</b> se catturi una Creatura e non possiedi la Valigia Magica, non puoi passare all’Incontro successivo.</p>
+        </div>
+      </details>
 
       <div class="mz-bonus-manager" id="rmBonusRicercaBox">
         <h3>Oggetti / Incantesimi / Conoscenze — Bonus alla Ricerca</h3>
-        <p class="mz-bonus-help">Seleziona direttamente l’effetto che stai usando. Il catalogo comprende anche <b>Tecniche e Incantesimi Magizoologici</b>, oltre agli Oggetti, agli effetti <b>generici alle possibilità</b> e a quelli che aumentano <b>Empatia</b>, perché entrambi possono modificare il dado della Ricerca. Il tool distingue automaticamente il tipo di bonus e lo inserisce nel punto corretto della formula. Per gli effetti a usi limitati, seleziona soltanto gli Incontri/post in cui li stai realmente usando; gli usi del Bagaglio non vengono consumati automaticamente.</p>
+        <p class="mz-bonus-help">Seleziona ciò che stai usando. Per <b>Tecniche e Incantesimi che richiedono dadi</b> il tool mostra automaticamente i tiri da copiare sul forum: tu inserisci i risultati e il bonus viene calcolato da solo. Per gli Oggetti a usi limitati basta scegliere l’Incontro in cui li stai applicando.</p>
         <input type="hidden" id="rmBonusRicercaJson" data-key="bonusRicercaJson" value="[]">
         <div class="mz-bonus-list" id="rmBonusRicercaRows"></div>
         <button type="button" class="mz-bonus-add" id="rmAddBonusRicerca">+ Aggiungi Oggetto / Incantesimo / Conoscenza</button>
@@ -1410,7 +1652,7 @@ table.fasce td{
   <section class="research-flow-page" data-rm-page-panel="summary">
     <div class="scheda">
       <h2>Riepilogo prima della Ricerca</h2>
-      <div class="nota-regole"><b>Consigliato:</b> copia questo riepilogo nel primo post della Ricerca. Serve soprattutto a lasciare visibili i dati usati dal tool — PG, Tipo di Ricerca, Empatia, Sapienza, Valigia ed eventuali modificatori da Oggetti/Incantesimi/Conoscenze. Le percentuali di ritrovamento sono riportate come informazione di supporto.</div>
+      <div class="nota-regole"><b>Consigliato:</b> copia questo riepilogo nel primo post della Ricerca. Ti lascia subito visibili i dati davvero utili: PG lanciatore, tipo di Ricerca, Empatia, Sapienza, Valigia Magica ed eventuali bonus attivi.</div>
       <div id="rm-summary-content"></div>
       <div class="result-line"><div class="research-bbcode" id="rm-summary-bbcode"></div><button class="copy-btn" type="button" data-copy-source="rm-summary-bbcode" data-copy-control="1">Copia per il forum</button></div>
     </div>
@@ -1420,13 +1662,7 @@ table.fasce td{
   <section class="research-flow-page" data-rm-page-panel="enc1">
     <div class="blocco-incontro" id="blocco1">
       <h2>Primo Incontro <span class="badge-incontro badge-sbloccato">sempre disponibile</span></h2>
-      <div class="rm-special rm-bolcino-incontro">
-        <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
-        <div class="nota-regole">Se stai facendo il tiro del Bolcino nello stesso post dell’Incontro, puoi copiare entrambi i dadi direttamente da questa pagina.</div>
-        <div class="result-line"><div class="dice-code" id="codiceBolcino1"></div><button class="copy-btn" type="button" data-copy-source="codiceBolcino1" data-copy-control="1">Copia</button></div>
-        <div class="result-line"><span>Risultato ottenuto (1-100):</span><input type="number" id="risultatoBolcino1" data-key="risultatoBolcino1" min="1" max="100"><span class="out-tag out-neutral" id="tagBolcino1">in attesa</span></div>
-      </div>
-      <h3>Trovo qualcosa? (1d30)</h3>
+            <h3>Trovo qualcosa? (1d30)</h3>
       <div class="formula-tag" id="formulaTrova1"></div>
       <div class="result-line"><div class="dice-code" id="codiceTrova1"></div><button class="copy-btn" type="button" data-copy-source="codiceTrova1" data-copy-control="1">Copia</button></div>
       <div class="result-line"><span>Risultato ottenuto sul forum (1-30):</span><input type="number" id="risultatoTrova1" data-key="risultatoTrova1" min="1" max="30"><span class="out-tag out-neutral" id="tagTrova1">in attesa</span></div>
@@ -1461,6 +1697,13 @@ table.fasce td{
 
         <div class="check-riga"><input type="checkbox" id="catturato1" data-key="catturato1"><label for="catturato1">Ho catturato questa Creatura</label></div>
       </div>
+    
+      <div class="rm-special rm-bolcino-incontro">
+        <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
+        <div class="nota-regole">Se nello stesso post stai facendo anche il tiro del Bolcino, trovi qui sotto il dado già pronto da copiare.</div>
+        <div class="result-line"><div class="dice-code" id="codiceBolcino1"></div><button class="copy-btn" type="button" data-copy-source="codiceBolcino1" data-copy-control="1">Copia</button></div>
+        <div class="result-line"><span>Risultato ottenuto (1-100):</span><input type="number" id="risultatoBolcino1" data-key="risultatoBolcino1" min="1" max="100"><span class="out-tag out-neutral" id="tagBolcino1">in attesa</span></div>
+      </div>
     </div>
     <div class="flow-actions"><button type="button" class="flow-action-btn" data-rm-goto="summary" data-session-control="1">← Riepilogo</button><div><button type="button" class="flow-action-btn" data-rm-goto="outcome" data-session-control="1">Concludi qui</button> <button type="button" class="flow-action-btn" data-rm-goto="enc2" data-session-control="1">Secondo Incontro →</button></div></div>
   </section>
@@ -1470,13 +1713,7 @@ table.fasce td{
       <h2>Secondo Incontro <span class="badge-incontro" id="badge2"></span></h2>
       <div class="blocco-avviso" id="avviso2" style="display:none"></div>
       <div id="corpo2">
-        <div class="rm-special rm-bolcino-incontro">
-          <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
-          <div class="nota-regole">Se stai facendo il tiro del Bolcino nello stesso post dell’Incontro, puoi copiare entrambi i dadi direttamente da questa pagina.</div>
-          <div class="result-line"><div class="dice-code" id="codiceBolcino2"></div><button class="copy-btn" type="button" data-copy-source="codiceBolcino2" data-copy-control="1">Copia</button></div>
-          <div class="result-line"><span>Risultato ottenuto (1-100):</span><input type="number" id="risultatoBolcino2" data-key="risultatoBolcino2" min="1" max="100"><span class="out-tag out-neutral" id="tagBolcino2">in attesa</span></div>
-        </div>
-        <h3>Trovo qualcosa? (1d30)</h3>
+                <h3>Trovo qualcosa? (1d30)</h3>
         <div class="formula-tag" id="formulaTrova2"></div>
         <div class="result-line"><div class="dice-code" id="codiceTrova2"></div><button class="copy-btn" type="button" data-copy-source="codiceTrova2" data-copy-control="1">Copia</button></div>
         <div class="result-line"><span>Risultato ottenuto sul forum (1-30):</span><input type="number" id="risultatoTrova2" data-key="risultatoTrova2" min="1" max="30"><span class="out-tag out-neutral" id="tagTrova2">in attesa</span></div>
@@ -1502,6 +1739,13 @@ table.fasce td{
           <div id="esemplariLista2"></div>
           <div class="check-riga"><input type="checkbox" id="catturato2" data-key="catturato2"><label for="catturato2">Ho catturato una o più Creature di questo incontro</label></div>
         </div>
+      
+        <div class="rm-special rm-bolcino-incontro">
+          <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
+          <div class="nota-regole">Se nello stesso post stai facendo anche il tiro del Bolcino, trovi qui sotto il dado già pronto da copiare.</div>
+          <div class="result-line"><div class="dice-code" id="codiceBolcino2"></div><button class="copy-btn" type="button" data-copy-source="codiceBolcino2" data-copy-control="1">Copia</button></div>
+          <div class="result-line"><span>Risultato ottenuto (1-100):</span><input type="number" id="risultatoBolcino2" data-key="risultatoBolcino2" min="1" max="100"><span class="out-tag out-neutral" id="tagBolcino2">in attesa</span></div>
+        </div>
       </div>
     </div>
     <div class="flow-actions"><button type="button" class="flow-action-btn" data-rm-goto="enc1" data-session-control="1">← Primo Incontro</button><div><button type="button" class="flow-action-btn" data-rm-goto="outcome" data-session-control="1">Concludi qui</button> <button type="button" class="flow-action-btn" data-rm-goto="enc3" data-session-control="1">Terzo Incontro →</button></div></div>
@@ -1512,13 +1756,7 @@ table.fasce td{
       <h2>Terzo Incontro <span class="badge-incontro" id="badge3"></span></h2>
       <div class="blocco-avviso" id="avviso3" style="display:none"></div>
       <div id="corpo3">
-        <div class="rm-special rm-bolcino-incontro">
-          <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
-          <div class="nota-regole">Se stai facendo il tiro del Bolcino nello stesso post dell’Incontro, puoi copiare entrambi i dadi direttamente da questa pagina.</div>
-          <div class="result-line"><div class="dice-code" id="codiceBolcino3"></div><button class="copy-btn" type="button" data-copy-source="codiceBolcino3" data-copy-control="1">Copia</button></div>
-          <div class="result-line"><span>Risultato ottenuto (1-100):</span><input type="number" id="risultatoBolcino3" data-key="risultatoBolcino3" min="1" max="100"><span class="out-tag out-neutral" id="tagBolcino3">in attesa</span></div>
-        </div>
-        <h3>Trovo qualcosa? (1d30)</h3>
+                <h3>Trovo qualcosa? (1d30)</h3>
         <div class="formula-tag" id="formulaTrova3"></div>
         <div class="result-line"><div class="dice-code" id="codiceTrova3"></div><button class="copy-btn" type="button" data-copy-source="codiceTrova3" data-copy-control="1">Copia</button></div>
         <div class="result-line"><span>Risultato ottenuto sul forum (1-30):</span><input type="number" id="risultatoTrova3" data-key="risultatoTrova3" min="1" max="30"><span class="out-tag out-neutral" id="tagTrova3">in attesa</span></div>
@@ -1544,6 +1782,13 @@ table.fasce td{
           <div class="nota-regole">Numeri alti di esemplari possono corrispondere a un’Orda: fai attenzione.</div>
           <div id="esemplariLista3"></div>
           <div class="check-riga"><input type="checkbox" id="catturato3" data-key="catturato3"><label for="catturato3">Ho catturato una o più Creature di questo incontro</label></div>
+        </div>
+      
+        <div class="rm-special rm-bolcino-incontro">
+          <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
+          <div class="nota-regole">Se nello stesso post stai facendo anche il tiro del Bolcino, trovi qui sotto il dado già pronto da copiare.</div>
+          <div class="result-line"><div class="dice-code" id="codiceBolcino3"></div><button class="copy-btn" type="button" data-copy-source="codiceBolcino3" data-copy-control="1">Copia</button></div>
+          <div class="result-line"><span>Risultato ottenuto (1-100):</span><input type="number" id="risultatoBolcino3" data-key="risultatoBolcino3" min="1" max="100"><span class="out-tag out-neutral" id="tagBolcino3">in attesa</span></div>
         </div>
       </div>
     </div>
@@ -1650,8 +1895,8 @@ var MZ_PHASE_BONUS_PRESETS={
   animus_standard:{label:'Manuali dell’Animus — standard (+2 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus',condition:'Versione standard · 10 usi',type:'empatia',value:2,total:10,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'+2 Empatia. Il tool applica il bonus prima delle conversioni della fase (per esempio Empatia/2 in Fiducia).'},
   animus_elfi:{label:'Manuali dell’Animus — Mercato degli Elfi (+1 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus — Mercato degli Elfi',condition:'5 usi',type:'empatia',value:1,total:5,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'+1 Empatia. Il tool applica il bonus prima delle conversioni della fase.'},
   animus_obscurus:{label:'Manuali dell’Animus — Obscurus Books (+2 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus — Obscurus Books',condition:'10 usi',type:'empatia',value:2,total:10,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'+2 Empatia. Il tool applica il bonus prima delle conversioni della fase.'},
-  talismano_empatia_1:{label:'Talismano Astronomico — Empatia +1',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',condition:'Studente: 33%, oppure 66% con 1d2 = 1 · 3 usi',type:'empatia',value:1,total:3,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Talismano di Magia Astrale Avanzata impostato su Empatia.'},
-  talismano_empatia_2:{label:'Talismano Astronomico — Empatia +2',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',condition:'Studente: 100%, oppure 66% con 1d2 = 2 · 3 usi',type:'empatia',value:2,total:3,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Talismano di Magia Astrale Avanzata impostato su Empatia.'},
+  talismano_empatia_1:{label:'Talismano Astronomico — Empatia +1',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',condition:'Valore del Talismano già determinato · 3 usi',type:'empatia',value:1,total:3,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Talismano di Magia Astrale Avanzata impostato su Empatia.'},
+  talismano_empatia_2:{label:'Talismano Astronomico — Empatia +2',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',condition:'Valore del Talismano già determinato · 3 usi',type:'empatia',value:2,total:3,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Talismano di Magia Astrale Avanzata impostato su Empatia.'},
   talismano_empatia_3:{label:'Talismano Astronomico — Empatia +3',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',condition:'Adulto senza Sapienza Elementale · 3 usi',type:'empatia',value:3,total:3,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Talismano di Magia Astrale Avanzata impostato su Empatia.'},
   talismano_empatia_4:{label:'Talismano Astronomico — Empatia +4',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',condition:'Adulto con Sapienza Elementale 1+ · 3 usi',type:'empatia',value:4,total:3,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Talismano di Magia Astrale Avanzata impostato su Empatia.'},
 
@@ -1772,15 +2017,190 @@ mzAddImposium('imposium_sap33','Imposium · Adulto con Sapienza 33% (placa 1-10/
 mzAddImposium('imposium_sap66','Imposium · Adulto con Sapienza 66% (placa 1-11/15)',11,8,11,'Adulto con Sapienza Magizoologica 1+ · Potenza 66%');
 mzAddImposium('imposium_sap100','Imposium · Adulto con Sapienza 100% (placa 1-12/15)',12,9,12,'Adulto con Sapienza Magizoologica 1+ · Potenza 100%');
 
+
+/* v16: nel catalogo si sceglie la Tecnica/Incantesimo una sola volta.
+   I vecchi preset per singolo esito restano come motore interno, ma non sono più mostrati. */
+MZ_PHASE_BONUS_PRESETS.family_mimica={label:'Mimica-Limbica',groupLabel:'Tecniche Magizoologiche',source:'Mimica-Limbica',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1.5,total:1,unlimited:true,stackGroup:'mimica',phases:['fiducia'],resolver:'extraCommon',legacyPrefix:'mimica',note:'Tira qui l’efficacia della Tecnica e, solo quando serve, il dado del bonus. Il tool calcola automaticamente le possibilità ottenute.'};
+MZ_PHASE_BONUS_PRESETS.family_diagnosi={label:'Diagnosi Faunica',groupLabel:'Tecniche Magizoologiche',source:'Diagnosi Faunica',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1.5,total:1,unlimited:true,stackGroup:'diagnosi',phases:['scoperta'],resolver:'extraCommon',legacyPrefix:'diagnosi',note:'Tira qui l’efficacia e l’eventuale dado del bonus; il risultato viene applicato alla Scoperta del problema.'};
+MZ_PHASE_BONUS_PRESETS.family_somministrazione={label:'Somministrazione Faunica',groupLabel:'Tecniche Magizoologiche',source:'Somministrazione Faunica',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1,total:1,unlimited:true,stackGroup:'somministrazione',phases:['cura'],resolver:'extraCommon',legacyPrefix:'somministrazione',note:'Tira qui l’efficacia e l’eventuale dado del bonus. Va usata insieme a Pozione o Incantesimo curativo, come unica azione.'};
+MZ_PHASE_BONUS_PRESETS.family_imitazione={label:'Imitazione',groupLabel:'Tecniche Magizoologiche',source:'Imitazione',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1.5,total:1,unlimited:true,stackGroup:'imitazione',phases:['domesticazione'],resolver:'extraCommon',legacyPrefix:'imitazione',note:'Tira qui l’efficacia e l’eventuale dado del bonus; il risultato viene applicato alla Domesticazione.'};
+MZ_PHASE_BONUS_PRESETS.family_intermediario={label:'Intermediario Faunico',groupLabel:'Tecniche Magizoologiche',source:'Intermediario Faunico',condition:'Esito determinato dai dadi guidati',type:'postPercent',value:0,fatica:2,total:1,unlimited:true,stackGroup:'intermediario-faunico',phases:['allevamento'],resolver:'intermediario',legacyPrefix:'intermediario',note:'Tira qui l’efficacia e l’eventuale 1d2. Il tool ricava automaticamente la riduzione dei post di Riproduzione.'};
+MZ_PHASE_BONUS_PRESETS.family_somnum={label:'Somnum',groupLabel:'Incantesimi Magizoologici',source:'Somnum',condition:'Bonus Empatia determinato dai dadi guidati',type:'empatia',value:0,fatica:1.5,total:1,stackGroup:'somnum',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],resolver:'somnum',legacyPrefix:'somnum',note:'Tira qui l’efficacia e l’eventuale dado del bonus. L’Empatia ottenuta vale per un solo successivo utilizzo; la Fatica registrata corrisponde al lancio di Somnum.'};
+MZ_PHASE_BONUS_PRESETS.family_imposium={label:'Imposium',groupLabel:'Incantesimi Magizoologici',source:'Imposium',condition:'Potenza determinata dal tiro guidato',type:'effetto',value:0,fatica:2,total:1,unlimited:true,stackGroup:'imposium',phases:['fiducia'],resolver:'imposium',legacyPrefix:'imposium',advanced:true,note:'Prima determina la potenza di Imposium con il tiro guidato. Poi il tool prepara il suo 1d15 separato e applica automaticamente le conseguenze.'};
+MZ_PHASE_BONUS_PRESETS.magi_bio_1={label:'Magi Biografia — bonus +1 già ottenuto',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Bonus già preparato in una role precedente · 3 usi',type:'possibilita',value:1,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Usa questa voce se in Scheda possiedi già il bonus +1 di Magi Biografia per la Magizoologia.'};
+MZ_PHASE_BONUS_PRESETS.magi_bio_2={label:'Magi Biografia — bonus +2 già ottenuto',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Bonus già preparato in una role precedente · 3 usi',type:'possibilita',value:2,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Usa questa voce se in Scheda possiedi già il bonus +2 di Magi Biografia per la Magizoologia.'};
+MZ_PHASE_BONUS_PRESETS.magi_bio_3={label:'Magi Biografia — bonus +3 già ottenuto',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Bonus già preparato in una role precedente · 3 usi',type:'possibilita',value:3,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Usa questa voce se in Scheda possiedi già il bonus +3 di Magi Biografia per la Magizoologia.'};
+
+function mzIsLegacyOutcomePreset(k){return /^(?:mimica_|diagnosi_|somministrazione_|imitazione_|intermediario_|somnum_|imposium_|magibiografia_)/.test(k);}
+
 function mzHtml(s){return String(s==null?'':s).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c];});}
 function mzPhasePresetOptions(phase){
   var groups={},order=[];
-  Object.keys(MZ_PHASE_BONUS_PRESETS).forEach(function(k){var p=MZ_PHASE_BONUS_PRESETS[k];if(p.phases.indexOf(phase)<0)return;var g=p.groupLabel||'Altro';if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push({key:k,p:p});});
+  Object.keys(MZ_PHASE_BONUS_PRESETS).forEach(function(k){
+    if(mzIsLegacyOutcomePreset(k))return;
+    var p=MZ_PHASE_BONUS_PRESETS[k];if(!p.phases||p.phases.indexOf(phase)<0)return;
+    var g=p.groupLabel||'Altro';if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push({key:k,p:p});
+  });
   var html='<option value="">— Seleziona dal catalogo —</option>';
   order.forEach(function(g){html+='<optgroup label="'+mzHtml(g)+'">';groups[g].forEach(function(x){html+='<option value="'+mzHtml(x.key)+'">'+mzHtml(x.p.label)+'</option>';});html+='</optgroup>';});
   html+='<option value="manual">Altro bonus / effetto manuale</option>';
   return html;
 }
+
+function mzFriendlyTier(t){return t===0?'Nessun effetto':(t===33?'Efficacia minima':(t===66?'Efficacia buona':'Efficacia piena'));}
+function mzExtraTier(pgType,grade,hasSap,roll){
+  if(pgType==='adulto'){if(hasSap)return 100;if(!intInRange(roll,1,10))return null;return roll===1?0:(roll===2?33:(roll===3?66:100));}
+  if(!intInRange(roll,1,10))return null;roll=Number(roll);grade=grade||'T';
+  if(grade==='T')return roll<=7?0:(roll<=9?33:66);
+  if(grade==='D')return roll<=5?0:(roll<=7?33:(roll<=9?66:100));
+  if(grade==='S')return roll<=3?0:(roll<=5?33:(roll<=8?66:100));
+  if(grade==='A')return roll<=2?0:(roll<=4?33:(roll<=6?66:100));
+  if(grade==='O')return roll===1?0:(roll<=3?33:(roll<=5?66:100));
+  return roll===1?0:(roll===2?33:(roll<=4?66:100));
+}
+function mzAdvancedTier(pgType,grade,sapLevel,roll){
+  if(pgType==='studente'){
+    if(['T','D','S'].indexOf(grade)>=0)return 0;
+    if(!intInRange(roll,1,10))return null;roll=Number(roll);
+    if(grade==='A')return roll<=4?0:(roll<=6?33:(roll<=8?66:100));
+    if(grade==='O')return roll<=3?0:(roll<=5?33:(roll<=7?66:100));
+    return roll<=2?0:(roll<=4?33:(roll<=6?66:100));
+  }
+  sapLevel=Math.max(0,Math.min(5,Math.floor(Number(sapLevel)||0)));
+  if(!intInRange(roll,1,10))return null;roll=Number(roll);
+  if(sapLevel===0)return roll===1?0:(roll<=3?33:(roll<=5?66:100));
+  if(sapLevel===1)return roll<=2?33:(roll<=4?66:100);
+  if(sapLevel===2)return roll===1?33:(roll<=3?66:100);
+  if(sapLevel===3)return roll===1?33:(roll===2?66:100);
+  if(sapLevel===4)return roll===1?66:100;
+  return 100;
+}
+function mzExtraAnswers(pgType,grade,hasSap){
+  if(pgType==='adulto'&&hasSap)return 'Efficacia piena automatica: nessun tiro richiesto.';
+  if(pgType==='adulto')return '1. Nessun effetto\n2. Efficacia minima\n3. Efficacia buona\n4-10. Efficacia piena';
+  var m={T:'1-7. Nessun effetto\n8-9. Efficacia minima\n10. Efficacia buona',D:'1-5. Nessun effetto\n6-7. Efficacia minima\n8-9. Efficacia buona\n10. Efficacia piena',S:'1-3. Nessun effetto\n4-5. Efficacia minima\n6-8. Efficacia buona\n9-10. Efficacia piena',A:'1-2. Nessun effetto\n3-4. Efficacia minima\n5-6. Efficacia buona\n7-10. Efficacia piena',O:'1. Nessun effetto\n2-3. Efficacia minima\n4-5. Efficacia buona\n6-10. Efficacia piena',E:'1. Nessun effetto\n2. Efficacia minima\n3-4. Efficacia buona\n5-10. Efficacia piena'};return m[grade||'T'];
+}
+function mzAdvancedAnswers(pgType,grade,sapLevel){
+  if(pgType==='studente'){
+    if(['T','D','S'].indexOf(grade)>=0)return 'Con questo voto la Conoscenza Avanzata non produce effetto.';
+    var m={A:'1-4. Nessun effetto\n5-6. Efficacia minima\n7-8. Efficacia buona\n9-10. Efficacia piena',O:'1-3. Nessun effetto\n4-5. Efficacia minima\n6-7. Efficacia buona\n8-10. Efficacia piena',E:'1-2. Nessun effetto\n3-4. Efficacia minima\n5-6. Efficacia buona\n7-10. Efficacia piena'};return m[grade];
+  }
+  var m2={0:'1. Nessun effetto\n2-3. Efficacia minima\n4-5. Efficacia buona\n6-10. Efficacia piena',1:'1-2. Efficacia minima\n3-4. Efficacia buona\n5-10. Efficacia piena',2:'1. Efficacia minima\n2-3. Efficacia buona\n4-10. Efficacia piena',3:'1. Efficacia minima\n2. Efficacia buona\n3-10. Efficacia piena',4:'1. Efficacia buona\n2-10. Efficacia piena',5:'1-10. Efficacia piena'};return m2[Math.max(0,Math.min(5,Number(sapLevel)||0))];
+}
+function mzForumRollBlock(title,answers,dice,label){return '<b>'+title+'</b>\n[quote]'+answers+'[/quote]\n\n[dice=1d'+dice+']'+label+'[/dice]';}
+function mzFamilyLegacyKey(p,pgType,tier,bonusRoll){
+  var pre=p.legacyPrefix;
+  if(p.resolver==='extraCommon'){
+    if(tier===0)return '';
+    if(pgType==='studente')return tier===33?pre+'_s33':(tier===66?(bonusRoll?pre+'_s66_'+bonusRoll:''):(tier===100?pre+'_s100':''));
+    if(mzProfiloSapienza()>0)return pre+'_sap100';
+    if(tier===33)return bonusRoll?pre+'_a33_'+bonusRoll:'';
+    if(tier===66)return bonusRoll?pre+'_a66_'+bonusRoll:'';
+    if(tier===100)return bonusRoll?pre+'_a100_'+(1+Number(bonusRoll)):'';
+  }
+  if(p.resolver==='intermediario'){
+    if(tier===0)return '';
+    if(pgType==='studente')return tier===33?'intermediario_s33':(tier===66?(bonusRoll?'intermediario_s66_'+(10*Number(bonusRoll)):''):'intermediario_s100');
+    if(mzProfiloSapienza()>0)return 'intermediario_sap100';
+    if(tier===33)return 'intermediario_a33';
+    if(tier===66)return bonusRoll?'intermediario_a66_'+(10+10*Number(bonusRoll)):'';
+    if(tier===100)return 'intermediario_a100';
+  }
+  if(p.resolver==='somnum'){
+    if(tier===0)return '';
+    if(pgType==='studente')return tier===33?'somnum_s33':(tier===66?(bonusRoll?'somnum_s66_'+bonusRoll:''):(bonusRoll?'somnum_s100_'+bonusRoll:''));
+    if(mzProfiloSapienza()>0)return bonusRoll?'somnum_sap100_'+(3+Number(bonusRoll)):'';
+    if(tier===33)return 'somnum_a33';if(tier===66)return 'somnum_a66';if(tier===100)return bonusRoll?'somnum_a100_'+(2+Number(bonusRoll)):'';
+  }
+  if(p.resolver==='imposium'){
+    if(tier===0)return '';
+    if(pgType==='studente')return tier===33?'imposium_s33':(tier===66?'imposium_s66':'imposium_s100');
+    if(mzProfiloSapienza()>0)return tier===33?'imposium_sap33':(tier===66?'imposium_sap66':'imposium_sap100');
+    return tier===33?'imposium_a33':(tier===66?'imposium_a66':'imposium_a100');
+  }
+  return '';
+}
+function mzFamilySecondaryFaces(p,pgType,tier){
+  if(tier===null||tier===0)return 0;
+  var hasSap=mzProfiloSapienza()>0;
+  if(p.resolver==='extraCommon'){
+    if(pgType==='studente')return tier===66?2:0;
+    if(hasSap)return 0;return tier===33?2:(tier===66?3:(tier===100?2:0));
+  }
+  if(p.resolver==='intermediario'){
+    if(pgType==='studente')return tier===66?2:0;
+    return (!hasSap&&tier===66)?2:0;
+  }
+  if(p.resolver==='somnum'){
+    if(pgType==='studente')return tier===66?2:(tier===100?3:0);
+    if(hasSap)return 3;return tier===100?3:0;
+  }
+  return 0;
+}
+function mzResolverSnapshot(row){
+  var r=row.querySelector('[data-role="resolver"]');if(!r)return null;
+  function v(sel){var e=r.querySelector(sel);return e?e.value:'';}
+  return {grade:v('[data-resolver-grade]'),level:v('[data-resolver-level]'),eff:v('[data-resolver-eff]'),bonus:v('[data-resolver-bonus]')};
+}
+function mzCopyResolverState(from,to){
+  var a=mzResolverSnapshot(from),r=to&&to.querySelector('[data-role="resolver"]');if(!a||!r)return;
+  [['[data-resolver-grade]',a.grade],['[data-resolver-level]',a.level],['[data-resolver-eff]',a.eff],['[data-resolver-bonus]',a.bonus]].forEach(function(x){var e=r.querySelector(x[0]);if(e)e.value=x[1];});
+  mzRefreshFamilyResolver(to,to.dataset.phase||'');
+}
+function mzInitFamilyResolver(row,phase,p){
+  var host=row.querySelector('[data-role="resolver"]');if(!host)return;
+  row.classList.add('has-resolver');row.dataset.resolverFamily=p.resolver||'';
+  var uid=row.dataset.uid||String(Date.now()),pgType=(document.getElementById('pgTipo')||{}).value||'studente';
+  host.innerHTML='<div class="mz-resolver-title">Dadi guidati — '+mzHtml(p.label)+'</div><div class="mz-resolver-grid">'+
+    '<div class="mz-resolver-field" data-grade-wrap><label>Voto in questa Conoscenza</label><select data-resolver-grade><option value="T">T (Troll)</option><option value="D">D (Deludente)</option><option value="S">S (Scarso)</option><option value="A">A (Accettabile)</option><option value="O">O (Oltre le Aspettative)</option><option value="E">E (Eccezionale)</option></select></div>'+
+    '<div class="mz-resolver-field" data-level-wrap style="display:none"><label>Livello di Imposium nella Sapienza</label><select data-resolver-level><option value="1">Livello I</option><option value="2">Livello II</option><option value="3">Livello III</option><option value="4">Livello IV</option><option value="5">Livello V</option></select></div>'+
+    '<div class="mz-resolver-roll" data-eff-wrap><div class="result-line"><div class="dice-code" id="mzEffCode_'+uid+'"></div><button type="button" class="copy-btn" data-copy-source="mzEffCode_'+uid+'">Copia</button></div><div class="result-line"><span>Risultato del dado:</span><input type="number" min="1" max="10" data-resolver-eff></div></div>'+
+    '<div class="mz-resolver-roll" data-bonus-wrap style="display:none"><div class="result-line"><div class="dice-code" id="mzBonusCode_'+uid+'"></div><button type="button" class="copy-btn" data-copy-source="mzBonusCode_'+uid+'">Copia</button></div><div class="result-line"><span>Risultato del dado bonus:</span><input type="number" min="1" data-resolver-bonus></div></div>'+
+    '<div class="mz-resolver-outcome mz-resolver-pending" data-resolver-outcome>Completa i dati richiesti: il tool calcolerà il bonus senza farti scegliere una tabella di esiti.</div></div>';
+  host.querySelectorAll('select,input').forEach(function(e){e.addEventListener('input',function(){mzRefreshFamilyResolver(row,phase);ricalcolaMagizoologia();});e.addEventListener('change',function(){mzRefreshFamilyResolver(row,phase);ricalcolaMagizoologia();});});
+  setupNumericInputs();mzRefreshFamilyResolver(row,phase);
+}
+function mzRefreshFamilyResolver(row,phase){
+  var familyKey=row.dataset.presetKey||'',p=MZ_PHASE_BONUS_PRESETS[familyKey],host=row.querySelector('[data-role="resolver"]');
+  if(!p||!p.resolver||!host)return;
+  var pgType=(document.getElementById('pgTipo')||{}).value||'studente',hasSap=mzProfiloSapienza()>0;
+  var gradeEl=host.querySelector('[data-resolver-grade]'),gradeWrap=host.querySelector('[data-grade-wrap]'),levelEl=host.querySelector('[data-resolver-level]'),levelWrap=host.querySelector('[data-level-wrap]'),effWrap=host.querySelector('[data-eff-wrap]'),effEl=host.querySelector('[data-resolver-eff]'),bonusWrap=host.querySelector('[data-bonus-wrap]'),bonusEl=host.querySelector('[data-resolver-bonus]'),out=host.querySelector('[data-resolver-outcome]');
+  if(gradeWrap)gradeWrap.style.display=pgType==='studente'?'':'none';
+  if(levelWrap)levelWrap.style.display=(p.resolver==='imposium'&&pgType==='adulto'&&hasSap)?'':'none';
+  var grade=gradeEl?gradeEl.value:'T',level=levelEl?Number(levelEl.value||1):0,automaticExtra=pgType==='adulto'&&hasSap&&p.resolver!=='imposium';
+  var automaticAdvanced=(p.resolver==='imposium'&&pgType==='studente'&&['T','D','S'].indexOf(grade)>=0);
+  if(effWrap)effWrap.style.display=(automaticExtra||automaticAdvanced)?'none':'';
+  var answers=p.resolver==='imposium'?mzAdvancedAnswers(pgType,grade,(pgType==='adulto'&&hasSap)?level:0):mzExtraAnswers(pgType,grade,hasSap);
+  var code=host.querySelector('[id^="mzEffCode_"]');if(code)code.textContent=mzForumRollBlock('Quanto è efficace '+p.label+'?',answers,10,'Efficacia '+p.label);
+  var tier;
+  if(p.resolver==='imposium'){
+    tier=automaticAdvanced?0:mzAdvancedTier(pgType,grade,(pgType==='adulto'&&hasSap)?level:0,effEl?effEl.value:'');
+  }else tier=automaticExtra?100:mzExtraTier(pgType,grade,hasSap,effEl?effEl.value:'');
+  var faces=mzFamilySecondaryFaces(p,pgType,tier),bonusRoll=bonusEl&&bonusEl.value!==''?Number(bonusEl.value):null;
+  if(bonusWrap)bonusWrap.style.display=faces?'':'none';
+  if(bonusEl){bonusEl.max=faces?String(faces):'';if(!faces)bonusEl.value='';}
+  var bonusCode=host.querySelector('[id^="mzBonusCode_"]');if(bonusCode&&faces)bonusCode.textContent=mzForumRollBlock('Quanto vale il bonus di '+p.label+'?','Il risultato del dado determina direttamente il valore previsto dalla Conoscenza.',faces,'Bonus '+p.label);
+  var ready=tier!==null && (!faces || (bonusRoll!==null&&intInRange(bonusRoll,1,faces)));
+  var resolvedKey=ready?mzFamilyLegacyKey(p,pgType,tier,bonusRoll):'';
+  row.dataset.resolvedPresetKey=resolvedKey||'';row.dataset.resolverReady=ready?'1':'0';
+  var source=row.querySelector('[data-role="source"]'),condition=row.querySelector('[data-role="condition"]'),type=row.querySelector('[data-role="type"]'),value=row.querySelector('[data-role="value"]'),fatica=row.querySelector('[data-role="fatica"]'),total=row.querySelector('[data-role="total"]');
+  source.value=p.source||p.label;fatica.value=String(p.fatica||0);total.value=String(p.unlimited?999999:(p.total||1));
+  row.dataset.stackGroup=p.stackGroup||'';row.dataset.unlimited=p.unlimited?'1':'';
+  if(ready&&tier===0){condition.value='Nessun effetto dal tiro di efficacia';type.value=p.type||'possibilita';value.value='0';if(out){out.classList.remove('mz-resolver-pending');out.textContent='Esito: nessun bonus prodotto. La Fatica prevista dall’uso della Conoscenza resta comunque consumata.';}}
+  else if(ready&&resolvedKey&&MZ_PHASE_BONUS_PRESETS[resolvedKey]){
+    var rp=MZ_PHASE_BONUS_PRESETS[resolvedKey];type.value=rp.type||p.type||'possibilita';value.value=String(rp.value||0);condition.value=mzFriendlyTier(tier)+(faces?' · dado bonus '+bonusRoll+'/'+faces:'');
+    if(out){out.classList.remove('mz-resolver-pending');out.textContent='Esito calcolato: '+mzEffectValueText({type:type.value,value:Number(value.value||0)})+mzEffectTypeLabel(type.value)+(p.resolver==='imposium'?' · ora usa il 1d15 di Imposium mostrato nella fase.':'');}
+  }else{condition.value='In attesa dei dadi';type.value=p.type||'possibilita';value.value='0';if(out){out.classList.add('mz-resolver-pending');out.textContent=tier===null?'Inserisci il risultato del tiro di efficacia.':'Inserisci anche il risultato del dado bonus.';}}
+  var apply=row.querySelector('[data-role="apply"]');if(apply){if(!ready&&apply.checked)apply.checked=false;apply.disabled=!ready;}
+  mzRefreshPhaseRowDisplay(row,phase);
+}
+function mzRefreshPhaseRowDisplay(row,phase){
+  var key=row.dataset.presetKey||'',p=MZ_PHASE_BONUS_PRESETS[key],manual=key==='manual',summary=row.querySelector('.mz-bonus-compact-summary');
+  row.classList.toggle('is-manual',manual);row.classList.toggle('has-preset',!!p&&!manual);
+  if(summary&&p){var type=(row.querySelector('[data-role="type"]')||{}).value||p.type||'possibilita',val=Number((row.querySelector('[data-role="value"]')||{}).value||0),fat=Number((row.querySelector('[data-role="fatica"]')||{}).value||0),total=Number((row.querySelector('[data-role="total"]')||{}).value||1);summary.textContent='Effetto: '+(val?mzEffectValueText({type:type,value:val}):'')+mzEffectTypeLabel(type)+(p.resolver&&row.dataset.resolverReady!=='1'?' · da determinare con i dadi guidati':'')+(fat?' · Fatica '+fat:'')+(p.unlimited?' · non consumabile':(' · '+total+' usi'));}
+  if(summary&&!p)summary.textContent='';
+}
+
 var MZ_SHARED_BONUSES={};
 var MZ_SHARED_UID=0;
 
@@ -1855,7 +2275,7 @@ function mzPhaseTotals(phase){
     var value=Math.max(0,Math.floor(mzNum((row.querySelector('[data-role="value"]')||{}).value,0)));
     var faticaEl=row.querySelector('[data-role="fatica"]'),fatica=0;
     if(faticaEl&&faticaEl.value!==''&&!(faticaEl.validity&&(faticaEl.validity.rangeUnderflow||faticaEl.validity.rangeOverflow||faticaEl.validity.stepMismatch||faticaEl.validity.badInput))){fatica=Math.max(0,mzNum(faticaEl.value,0));}
-    if(row.dataset.presetKey&&row.dataset.presetKey.indexOf('imposium_')===0&&mzProfiloSapienza()>=25){fatica=0;}
+    if(((row.dataset.resolvedPresetKey||row.dataset.presetKey||'').indexOf('imposium_')===0||row.dataset.presetKey==='family_imposium')&&mzProfiloSapienza()>=25){fatica=0;}
     var shared=row.dataset.linkId?mzSharedState(row,true):null;
     var total=shared?shared.total:Math.max(1,Math.floor(mzNum((row.querySelector('[data-role="total"]')||{}).value,1)));
     var used=shared?shared.used:Math.max(0,Math.min(total,Math.floor(mzNum((row.querySelector('[data-role="used"]')||{}).value,0))));
@@ -1928,11 +2348,10 @@ function mzSharePhaseBonus(row,phase){
     if(existing){
       var existingUsed=Math.max(0,Math.floor(mzNum((existing.querySelector('[data-role="used"]')||{}).value,0)));
       var existingApply=existing.querySelector('[data-role="apply"]');
-      if(existingUsed===0&&!(existingApply&&existingApply.checked)){
-        existing.dataset.linkId=id;existing.dataset.localUsed='0';
-      }else{return;}
+      if(existingUsed===0&&!(existingApply&&existingApply.checked)){existing.dataset.linkId=id;existing.dataset.localUsed='0';if(p.resolver)mzCopyResolverState(row,existing);}
+      else{return;}
     }else{
-      mzCreatePhaseBonusRow(target,{preset:key,linkId:id,localUsed:0,sharedUsed:state.used,silent:true});
+      var created=mzCreatePhaseBonusRow(target,{preset:key,linkId:id,localUsed:0,sharedUsed:state.used,silent:true,resolverState:p.resolver?mzResolverSnapshot(row):null});if(created&&p.resolver)mzCopyResolverState(row,created);
     }
   });
   mzSyncSharedRows(id);ricalcolaMagizoologia();
@@ -1940,20 +2359,11 @@ function mzSharePhaseBonus(row,phase){
 function mzApplyPhasePreset(row,phase){
   var sel=row.querySelector('[data-role="preset"]'),key=sel?sel.value:'',p=MZ_PHASE_BONUS_PRESETS[key];
   var source=row.querySelector('[data-role="source"]'),condition=row.querySelector('[data-role="condition"]'),type=row.querySelector('[data-role="type"]'),value=row.querySelector('[data-role="value"]'),fatica=row.querySelector('[data-role="fatica"]'),total=row.querySelector('[data-role="total"]'),note=row.querySelector('.mz-bonus-preset-note');
-  var fields=[source,condition,value,fatica,total],totalWrap=total?total.closest('.mz-bonus-field'):null;
-  if(p){
-    source.value=p.source||'';condition.value=p.condition||'';type.value=p.type||'possibilita';value.value=String(p.value||0);fatica.value=String(p.fatica||0);total.value=String(p.unlimited?999999:(p.total||1));
-    row.dataset.stackGroup=p.stackGroup||'';row.dataset.unlimited=p.unlimited?'1':'';row.dataset.presetKey=key;
-    fields.forEach(function(x){if(x)x.readOnly=true;});if(type)type.disabled=true;if(totalWrap)totalWrap.style.display=p.unlimited?'none':'';if(note)note.textContent=p.note||'';
-  }else if(key==='manual'){
-    row.dataset.stackGroup='';row.dataset.unlimited='';row.dataset.presetKey=key;if(totalWrap)totalWrap.style.display='';
-    fields.forEach(function(x){if(x)x.readOnly=false;});if(type)type.disabled=false;if(note)note.textContent='Inserisci il valore previsto dal regolamento. Se l’effetto modifica direttamente Empatia, scegli «Bonus Empatia» così il tool lo applica prima delle conversioni della fase. I bonus manuali non vengono copiati automaticamente in altre fasi perché il tool non può verificarne la compatibilità.';
-  }else{
-    row.dataset.stackGroup='';row.dataset.unlimited='';row.dataset.presetKey='';if(totalWrap)totalWrap.style.display='';
-    source.value='';condition.value='';type.value='possibilita';value.value='0';fatica.value='0';total.value='1';
-    fields.forEach(function(x){if(x)x.readOnly=true;});if(type)type.disabled=true;if(note)note.textContent='Seleziona un effetto dal catalogo oppure scegli «Altro bonus / effetto manuale».';
-  }
-  mzSyncBonusRow(row,'preset');mzUpdateShareControl(row,phase);
+  var fields=[source,condition,value,fatica,total];
+  if(p){source.value=p.source||'';condition.value=p.condition||'';type.value=p.type||'possibilita';value.value=String(p.value||0);fatica.value=String(p.fatica||0);total.value=String(p.unlimited?999999:(p.total||1));row.dataset.stackGroup=p.stackGroup||'';row.dataset.unlimited=p.unlimited?'1':'';row.dataset.presetKey=key;fields.forEach(function(x){if(x)x.readOnly=true;});if(type)type.disabled=true;if(note)note.textContent=p.note||'';}
+  else if(key==='manual'){row.dataset.stackGroup='';row.dataset.unlimited='';row.dataset.presetKey=key;fields.forEach(function(x){if(x)x.readOnly=false;});if(type)type.disabled=false;if(note)note.textContent='Inserisci manualmente soltanto un effetto previsto dal regolamento. «Inserire solo numeri» resta sotto i campi numerici e non altera più l’allineamento.';}
+  else{row.dataset.stackGroup='';row.dataset.unlimited='';row.dataset.presetKey='';source.value='';condition.value='';type.value='possibilita';value.value='0';fatica.value='0';total.value='1';fields.forEach(function(x){if(x)x.readOnly=true;});if(type)type.disabled=true;if(note)note.textContent='Seleziona un effetto dal catalogo oppure scegli «Altro bonus / effetto manuale».';}
+  mzSyncBonusRow(row,'preset');mzUpdateShareControl(row,phase);mzRefreshPhaseRowDisplay(row,phase);
 }
 function mzCreatePhaseBonusRow(phase,data){
   data=data||{};MZ_BONUS_UID++;
@@ -1962,16 +2372,18 @@ function mzCreatePhaseBonusRow(phase,data){
   if(data.linkId){row.dataset.linkId=data.linkId;row.dataset.localUsed=String(Math.max(0,Math.floor(mzNum(data.localUsed,0))));}
   var typeLabel=phase==='allevamento'?'Possibilità al tiro':'Possibilità / soglia';
   var typeOptions='<option value="empatia">Bonus Empatia</option><option value="malusEmpatia">Malus Empatia</option><option value="parametro">Bonus al parametro</option><option value="possibilita">'+typeLabel+'</option><option value="malusPossibilita">Malus alle possibilità</option><option value="effetto">Effetto speciale / informativo</option>'+(phase==='allevamento'?'<option value="postPercent">Riduzione % post Accoppiamento</option>':'');
-  row.innerHTML='<div class="mz-bonus-field mz-bonus-preset-wrap"><label>Catalogo Oggetto / Conoscenza / effetto</label><select data-role="preset">'+mzPhasePresetOptions(phase)+'</select></div>'+ 
-    '<div class="mz-bonus-field"><label>Fonte</label><input type="text" data-role="source" maxlength="100" placeholder="Es. Amuleto della Fortuna"></div>'+ 
-    '<div class="mz-bonus-field"><label>Quando si applica / efficacia</label><input type="text" data-role="condition" maxlength="140" placeholder="Es. Studente 66% · 3 usi"></div>'+ 
-    '<div class="mz-bonus-field"><label>Tipo</label><select data-role="type">'+typeOptions+'</select></div>'+ 
-    '<div class="mz-bonus-field"><label>Bonus</label><input type="number" data-role="value" value="0" min="0" step="1"></div>'+ 
-    '<div class="mz-bonus-field"><label>Fatica / uso</label><input type="number" data-role="fatica" value="0" min="0" step="0.5" data-decimal="1"></div>'+ 
-    '<div class="mz-bonus-field"><label>Usi totali</label><input type="number" data-role="total" value="1" min="1" step="1"></div>'+ 
-    '<div class="mz-bonus-field"><label>Usi consumati</label><input type="number" data-role="used" value="0" min="0" step="1"><div class="mz-bonus-remaining">0/1 usi → 1 rimasti</div></div>'+ 
-    '<label class="mz-bonus-check"><input type="checkbox" data-role="apply"> Applica</label>'+ 
-    '<button type="button" class="mz-bonus-remove" title="Elimina bonus" aria-label="Elimina bonus">×</button>'+ 
+  row.innerHTML='<div class="mz-bonus-field mz-bonus-preset-wrap"><label>Oggetto / Conoscenza / Tecnica / Incantesimo</label><select data-role="preset">'+mzPhasePresetOptions(phase)+'</select></div>'+ 
+    '<div class="mz-bonus-resolver" data-role="resolver"></div>'+ 
+    '<div class="mz-bonus-compact-summary"></div>'+ 
+    '<div class="mz-bonus-manual-fields">'+
+      '<div class="mz-bonus-field"><label>Fonte</label><input type="text" data-role="source" maxlength="100" placeholder="Es. Oggetto o Conoscenza"></div>'+ 
+      '<div class="mz-bonus-field"><label>Quando si applica</label><input type="text" data-role="condition" maxlength="140" placeholder="Es. solo se la Creatura è ostile"></div>'+ 
+      '<div class="mz-bonus-field"><label>Tipo di effetto</label><select data-role="type">'+typeOptions+'</select></div>'+ 
+      '<div class="mz-bonus-field"><label>Bonus / malus</label><input type="number" data-role="value" value="0" min="0" step="1"></div>'+ 
+      '<div class="mz-bonus-field"><label>Fatica / uso</label><input type="number" data-role="fatica" value="0" min="0" step="0.5" data-decimal="1"></div>'+ 
+      '<div class="mz-bonus-field"><label>Usi totali</label><input type="number" data-role="total" value="1" min="1" step="1"></div>'+ 
+    '</div>'+ 
+    '<div class="mz-bonus-action-row"><div class="mz-bonus-field mz-used-field"><label>Usi consumati</label><input type="number" data-role="used" value="0" min="0" step="1"></div><div class="mz-bonus-remaining">0/1 usi → 1 rimasti</div><label class="mz-bonus-check"><input type="checkbox" data-role="apply"> Applica ora</label><button type="button" class="mz-bonus-remove" title="Elimina bonus" aria-label="Elimina bonus">×</button></div>'+ 
     '<div class="mz-bonus-preset-note"></div>'+ 
     '<div class="mz-bonus-share" style="display:none"><button type="button" data-role="share-all">Rendi disponibile nelle altre fasi compatibili</button><span class="mz-bonus-share-status"></span></div>';
   var preset=row.querySelector('[data-role="preset"]'),presetKey=data.preset||'';
@@ -1980,46 +2392,31 @@ function mzCreatePhaseBonusRow(phase,data){
   if(presetKey==='manual'){
     ['source','condition','type','value','fatica','total','used'].forEach(function(k){var el=row.querySelector('[data-role="'+k+'"]');if(data[k]!==undefined&&el)el.value=data[k];});
   }
+  var p=MZ_PHASE_BONUS_PRESETS[presetKey];if(p&&p.resolver){mzInitFamilyResolver(row,phase,p);if(data.resolverState){var rr=row.querySelector('[data-role="resolver"]');[['[data-resolver-grade]',data.resolverState.grade],['[data-resolver-level]',data.resolverState.level],['[data-resolver-eff]',data.resolverState.eff],['[data-resolver-bonus]',data.resolverState.bonus]].forEach(function(x){var e=rr&&rr.querySelector(x[0]);if(e&&x[1]!==undefined)e.value=x[1];});mzRefreshFamilyResolver(row,phase);}}
   if(data.linkId){
     var state=MZ_SHARED_BONUSES[data.linkId];
-    if(!state){
-      var p=MZ_PHASE_BONUS_PRESETS[presetKey],unlimited=p&&p.unlimited;
-      MZ_SHARED_BONUSES[data.linkId]={used:Math.max(0,Math.floor(mzNum(data.sharedUsed,0))),total:unlimited?999999:Math.max(1,Math.floor(mzNum((row.querySelector('[data-role="total"]')||{}).value,1))),unlimited:!!unlimited,presetKey:presetKey};
-    }
+    if(!state){var pp=MZ_PHASE_BONUS_PRESETS[presetKey],unlimited=pp&&pp.unlimited;MZ_SHARED_BONUSES[data.linkId]={used:Math.max(0,Math.floor(mzNum(data.sharedUsed,0))),total:unlimited?999999:Math.max(1,Math.floor(mzNum((row.querySelector('[data-role="total"]')||{}).value,1))),unlimited:!!unlimited,presetKey:presetKey};}
   }
-  preset.addEventListener('change',function(){if(row.dataset.linkId)return;mzApplyPhasePreset(row,phase);ricalcolaMagizoologia();});
+  preset.addEventListener('change',function(){if(row.dataset.linkId)return;mzApplyPhasePreset(row,phase);var np=MZ_PHASE_BONUS_PRESETS[preset.value];row.classList.remove('has-resolver');row.dataset.resolverFamily='';row.dataset.resolverReady='';row.dataset.resolvedPresetKey='';var rh=row.querySelector('[data-role="resolver"]');if(rh)rh.innerHTML='';if(np&&np.resolver)mzInitFamilyResolver(row,phase,np);mzRefreshPhaseRowDisplay(row,phase);ricalcolaMagizoologia();});
   var shareBtn=row.querySelector('[data-role="share-all"]');if(shareBtn)shareBtn.addEventListener(evtClick,function(){mzSharePhaseBonus(row,phase);});
   var apply=row.querySelector('[data-role="apply"]');
   apply.addEventListener('change',function(){
+    var family=MZ_PHASE_BONUS_PRESETS[row.dataset.presetKey||''];if(family&&family.resolver&&row.dataset.resolverReady!=='1'){apply.checked=false;apply.disabled=true;return;}
     var totalEl=row.querySelector('[data-role="total"]'),usedEl=row.querySelector('[data-role="used"]'),unlimited=row.dataset.unlimited==='1';
     if(apply.checked){
-      var group=row.dataset.stackGroup||'';
-      if(group){box.querySelectorAll('.mz-bonus-row').forEach(function(other){if(other!==row&&other.dataset.stackGroup===group){var oa=other.querySelector('[data-role="apply"]');if(oa)oa.checked=false;}});}
-      if(row.dataset.linkId){
-        var state=mzSharedState(row,true);
-        if(!state.unlimited&&state.used>=state.total){apply.checked=false;}else{
-          state.used+=1;row.dataset.localUsed=String(mzLocalUsed(row)+1);mzSyncSharedRows(row.dataset.linkId);
-        }
-      }else{
-        var total=unlimited?999999:Math.max(1,Math.floor(mzNum(totalEl.value,1))),used=Math.max(0,Math.min(total,Math.floor(mzNum(usedEl.value,0))));
-        if(!unlimited&&used>=total){apply.checked=false;}else{usedEl.value=String(used+1);}
-      }
+      var group=row.dataset.stackGroup||'';if(group){box.querySelectorAll('.mz-bonus-row').forEach(function(other){if(other!==row&&other.dataset.stackGroup===group){var oa=other.querySelector('[data-role="apply"]');if(oa)oa.checked=false;}});}
+      if(row.dataset.linkId){var state=mzSharedState(row,true);if(!state.unlimited&&state.used>=state.total){apply.checked=false;}else{state.used+=1;row.dataset.localUsed=String(mzLocalUsed(row)+1);mzSyncSharedRows(row.dataset.linkId);}}
+      else{var total=unlimited?999999:Math.max(1,Math.floor(mzNum(totalEl.value,1))),used=Math.max(0,Math.min(total,Math.floor(mzNum(usedEl.value,0))));if(!unlimited&&used>=total){apply.checked=false;}else{usedEl.value=String(used+1);}}
     }
-    mzSyncBonusRow(row,'apply');ricalcolaMagizoologia();
+    mzSyncBonusRow(row,'apply');if(family&&family.resolver)mzRefreshFamilyResolver(row,phase);mzRefreshPhaseRowDisplay(row,phase);ricalcolaMagizoologia();
   });
-  row.querySelector('[data-role="total"]').addEventListener('input',function(){mzSyncBonusRow(row,'total');});
-  row.querySelector('[data-role="used"]').addEventListener('input',function(){mzSyncBonusRow(row,'used');});
+  row.querySelector('[data-role="total"]').addEventListener('input',function(){mzSyncBonusRow(row,'total');mzRefreshPhaseRowDisplay(row,phase);});
+  row.querySelector('[data-role="used"]').addEventListener('input',function(){mzSyncBonusRow(row,'used');mzRefreshPhaseRowDisplay(row,phase);});
   row.querySelector('.mz-bonus-remove').addEventListener(evtClick,function(){
-    if(row.dataset.linkId){
-      var local=mzLocalUsed(row);
-      if(local>0){window.alert('Questo effetto ha già usi registrati in questa fase. Per non perdere lo storico degli usi e della Fatica non può essere rimosso singolarmente: usa il reset della Guida se vuoi azzerare tutto.');return;}
-      var id=row.dataset.linkId;row.remove();var rest=mzLinkedRows(id);if(!rest.length)delete MZ_SHARED_BONUSES[id];else mzSyncSharedRows(id);ricalcolaMagizoologia();return;
-    }
-    var used=Math.floor(mzNum((row.querySelector('[data-role="used"]')||{}).value,0));
-    if(used>0&&!window.confirm('Questo bonus ha già usi consumati. Eliminarlo rimuoverà anche la Fatica storica registrata per questi usi. Continuare?'))return;
-    row.remove();ricalcolaMagizoologia();
+    if(row.dataset.linkId){var local=mzLocalUsed(row);if(local>0){window.alert('Questo effetto ha già usi registrati in questa fase. Per non perdere lo storico degli usi e della Fatica non può essere rimosso singolarmente: usa il reset della Guida se vuoi azzerare tutto.');return;}var id=row.dataset.linkId;row.remove();var rest=mzLinkedRows(id);if(!rest.length)delete MZ_SHARED_BONUSES[id];else mzSyncSharedRows(id);ricalcolaMagizoologia();return;}
+    var used=Math.floor(mzNum((row.querySelector('[data-role="used"]')||{}).value,0));if(used>0&&!window.confirm('Questo bonus ha già usi consumati. Eliminarlo rimuoverà anche la Fatica storica registrata per questi usi. Continuare?'))return;row.remove();ricalcolaMagizoologia();
   });
-  box.appendChild(row);mzSyncBonusRow(row);mzUpdateShareControl(row,phase);setupNumericInputs();if(!data.silent)ricalcolaMagizoologia();return row;
+  box.appendChild(row);mzSyncBonusRow(row);mzUpdateShareControl(row,phase);setupNumericInputs();mzRefreshPhaseRowDisplay(row,phase);if(p&&p.resolver)mzRefreshFamilyResolver(row,phase);if(!data.silent)ricalcolaMagizoologia();return row;
 }
 function mzEffectTypeLabel(type){
   return type==='empatia'?'EMPATIA':(type==='malusEmpatia'?'MALUS EMPATIA':(type==='parametro'?'PARAMETRO':(type==='postPercent'?'RIDUZIONE POST':(type==='malusPossibilita'?'MALUS POSSIBILITÀ':(type==='effetto'?'EFFETTO':'POSSIBILITÀ')))));
@@ -3302,8 +3699,8 @@ var RM_SEARCH_BONUS_PRESETS={
   animus_standard:{label:'Manuali dell’Animus — standard (+2 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus',kind:'empatia',value:2,uses:10,note:'Versione standard · +2 Empatia · 10 usi.'},
   animus_elfi:{label:'Manuali dell’Animus — Mercato degli Elfi (+1 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus — Mercato degli Elfi',kind:'empatia',value:1,uses:5,note:'Mercato degli Elfi · +1 Empatia · 5 usi.'},
   animus_obscurus:{label:'Manuali dell’Animus — Obscurus Books (+2 Empatia)',groupLabel:'Bonus a Empatia',source:'Manuali dell’Animus — Obscurus Books',kind:'empatia',value:2,uses:10,note:'Obscurus Books · +2 Empatia · 10 usi.'},
-  talismano_empatia_1:{label:'Talismano Astronomico — Empatia +1',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',kind:'empatia',value:1,uses:3,note:'Studente: 33%, oppure 66% con 1d2 = 1 · 3 usi.'},
-  talismano_empatia_2:{label:'Talismano Astronomico — Empatia +2',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',kind:'empatia',value:2,uses:3,note:'Studente: 100%, oppure 66% con 1d2 = 2 · 3 usi.'},
+  talismano_empatia_1:{label:'Talismano Astronomico — Empatia +1',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',kind:'empatia',value:1,uses:3,note:'Valore del Talismano già determinato · +1 Empatia · 3 usi.'},
+  talismano_empatia_2:{label:'Talismano Astronomico — Empatia +2',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',kind:'empatia',value:2,uses:3,note:'Valore del Talismano già determinato · +2 Empatia · 3 usi.'},
   talismano_empatia_3:{label:'Talismano Astronomico — Empatia +3',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',kind:'empatia',value:3,uses:3,note:'Adulto senza Sapienza Elementale · 3 usi.'},
   talismano_empatia_4:{label:'Talismano Astronomico — Empatia +4',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',kind:'empatia',value:4,uses:3,note:'Adulto con Sapienza Elementale 1+ · 3 usi.'},
   amuleto_1:{label:'Amuleto della Fortuna (+1)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',kind:'possibilita',value:1,uses:3,stackGroup:'fortuna',note:'+1 possibilità su un’azione che richiede dado · 3 usi · massimo 1 Amuleto della Fortuna per role.'},
@@ -3360,8 +3757,12 @@ rmAddSomnum('somnum_sap100_4','Somnum · Adulto con Sapienza · 100% · 3+1d3=4 
 rmAddSomnum('somnum_sap100_5','Somnum · Adulto con Sapienza · 100% · 3+1d3=5 (+5 Empatia)',5,'Adulto con Sapienza Magizoologica 1+ · Efficacia 100% · 1d3 = 2');
 rmAddSomnum('somnum_sap100_6','Somnum · Adulto con Sapienza · 100% · 3+1d3=6 (+6 Empatia)',6,'Adulto con Sapienza Magizoologica 1+ · Efficacia 100% · 1d3 = 3');
 
+
+RM_SEARCH_BONUS_PRESETS.family_fiuto={label:'Fiuto Faunico',groupLabel:'Tecniche Magizoologiche',source:'Fiuto Faunico',kind:'possibilita',value:0,uses:null,defaultScope:'1',singleScope:true,stackGroup:'fiuto-faunico',resolver:'extraCommon',legacyPrefix:'fiuto',note:'Usa i dadi guidati: il tool ricava il bonus e lo applica soltanto al primo step «Trovo qualcosa?» e al primo tentativo dell’Incontro scelto. Fatica: -1,5.'};
+RM_SEARCH_BONUS_PRESETS.family_somnum={label:'Somnum',groupLabel:'Incantesimi Magizoologici',source:'Somnum',kind:'empatia',value:0,uses:1,singleScope:true,stackGroup:'somnum',resolver:'somnum',legacyPrefix:'somnum',note:'Usa i dadi guidati per determinare il bonus di Empatia. Vale per un solo successivo utilizzo di Empatia. Fatica del lancio: -1,5.'};
+function rmIsLegacyOutcomePreset(k){return /^(?:fiuto_|somnum_)/.test(k);}
 function rmSearchPresetOptions(){
-  var groups={},order=[];Object.keys(RM_SEARCH_BONUS_PRESETS).forEach(function(k){var p=RM_SEARCH_BONUS_PRESETS[k],g=p.groupLabel||'Altro';if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push({key:k,p:p});});
+  var groups={},order=[];Object.keys(RM_SEARCH_BONUS_PRESETS).forEach(function(k){if(rmIsLegacyOutcomePreset(k))return;var p=RM_SEARCH_BONUS_PRESETS[k],g=p.groupLabel||'Altro';if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push({key:k,p:p});});
   var h='<option value="">— Seleziona —</option>';order.forEach(function(g){h+='<optgroup label="'+rmEsc(g)+'">';groups[g].forEach(function(x){h+='<option value="'+rmEsc(x.key)+'">'+rmEsc(x.p.label)+'</option>';});h+='</optgroup>';});return h+'<option value="manual">Altro bonus manuale</option>';
 }
 function rmSearchBonusRows(){var h=rmEl('rmBonusRicercaRows');return h?Array.prototype.slice.call(h.querySelectorAll('.rm-search-bonus-row')):[];}
@@ -3371,18 +3772,39 @@ function rmInferSearchBonusPreset(data){
   for(var i=0;i<keys.length;i++){var x=RM_SEARCH_BONUS_PRESETS[keys[i]];if(src===x.source&&v===x.value&&(!data.kind||kind===x.kind))return keys[i];}
   return (src||v)?'manual':'';
 }
-function rmSearchBonusData(){return rmSearchBonusRows().map(function(r){return {preset:(r.querySelector('.rm-search-bonus-preset')||{}).value||'',source:(r.querySelector('.rm-search-bonus-source')||{}).value||'',kind:(r.querySelector('.rm-search-bonus-kind')||{}).value||'possibilita',value:Math.max(0,parseInt((r.querySelector('.rm-search-bonus-value')||{}).value||'0',10)||0),scope:(r.querySelector('.rm-search-bonus-scope')||{}).value||'all'};});}
+function rmSearchBonusData(){return rmSearchBonusRows().map(function(r){var rr=r.querySelector('.rm-search-resolver');function rv(s){var e=rr&&rr.querySelector(s);return e?e.value:'';}return {preset:(r.querySelector('.rm-search-bonus-preset')||{}).value||'',source:(r.querySelector('.rm-search-bonus-source')||{}).value||'',kind:(r.querySelector('.rm-search-bonus-kind')||{}).value||'possibilita',value:Math.max(0,parseInt((r.querySelector('.rm-search-bonus-value')||{}).value||'0',10)||0),scope:(r.querySelector('.rm-search-bonus-scope')||{}).value||'all',resolverGrade:rv('[data-resolver-grade]'),resolverEff:rv('[data-resolver-eff]'),resolverBonus:rv('[data-resolver-bonus]')};});}
 function rmSyncSearchBonusHidden(){var h=rmEl('rmBonusRicercaJson'),host=rmEl('rmBonusRicercaRows');if(!h||!host)return;h.value=JSON.stringify(rmSearchBonusData());host.setAttribute('data-serialized',h.value);}
-function rmApplySearchBonusPreset(row){
-  if(!row)return;var sel=row.querySelector('.rm-search-bonus-preset'),src=row.querySelector('.rm-search-bonus-source'),kind=row.querySelector('.rm-search-bonus-kind'),val=row.querySelector('.rm-search-bonus-value'),manual=row.querySelector('.rm-search-bonus-manual'),note=row.querySelector('.rm-search-bonus-note'),scope=row.querySelector('.rm-search-bonus-scope'),p=sel?sel.value:'';
-  if(scope){var allOpt=scope.querySelector('option[value="all"]');if(allOpt)allOpt.disabled=false;scope.disabled=false;}
-  if(p&&RM_SEARCH_BONUS_PRESETS[p]){
-    var x=RM_SEARCH_BONUS_PRESETS[p];if(src)src.value=x.source;if(kind){kind.value=x.kind;kind.disabled=true;}if(val){val.value=String(x.value);val.readOnly=true;}if(manual)manual.style.display='none';
-    if(scope&&x.defaultScope)scope.value=x.defaultScope;
-    if(scope&&x.singleScope){var ao=scope.querySelector('option[value="all"]');if(ao)ao.disabled=true;if(scope.value==='all')scope.value='1';}
-    if(scope&&x.lockScope)scope.disabled=true;
-    if(note)note.textContent=x.note+((x.uses&&x.uses>0)?(' · '+x.uses+' uso/i disponibili per il bonus.'):'');
+
+function rmInitSearchResolver(row,p,data){
+  var host=row.querySelector('.rm-search-resolver');if(!host||!p||!p.resolver)return;row.classList.add('has-resolver');
+  var uid='rm_'+Math.random().toString(36).slice(2,9),pgType=(document.getElementById('pgTipo')||{}).value||'studente';
+  host.innerHTML='<div class="mz-resolver-title">Dadi guidati — '+rmEsc(p.label)+'</div><div class="mz-resolver-grid"><div class="mz-resolver-field" data-grade-wrap><label>Voto in questa Conoscenza</label><select data-resolver-grade><option value="T">T (Troll)</option><option value="D">D (Deludente)</option><option value="S">S (Scarso)</option><option value="A">A (Accettabile)</option><option value="O">O (Oltre le Aspettative)</option><option value="E">E (Eccezionale)</option></select></div><div class="mz-resolver-roll" data-eff-wrap><div class="result-line"><div class="dice-code" id="'+uid+'_eff"></div><button type="button" class="copy-btn" data-copy-source="'+uid+'_eff">Copia</button></div><div class="result-line"><span>Risultato del dado:</span><input type="number" min="1" max="10" data-resolver-eff></div></div><div class="mz-resolver-roll" data-bonus-wrap style="display:none"><div class="result-line"><div class="dice-code" id="'+uid+'_bonus"></div><button type="button" class="copy-btn" data-copy-source="'+uid+'_bonus">Copia</button></div><div class="result-line"><span>Risultato del dado bonus:</span><input type="number" min="1" data-resolver-bonus></div></div><div class="mz-resolver-outcome mz-resolver-pending" data-resolver-outcome>Inserisci i risultati richiesti.</div></div>';
+  data=data||{};var g=host.querySelector('[data-resolver-grade]'),e=host.querySelector('[data-resolver-eff]'),b=host.querySelector('[data-resolver-bonus]');if(g&&data.resolverGrade)g.value=data.resolverGrade;if(e&&data.resolverEff)e.value=data.resolverEff;if(b&&data.resolverBonus)b.value=data.resolverBonus;
+  host.querySelectorAll('select,input').forEach(function(el){el.addEventListener('input',function(){rmRefreshSearchResolver(row);rmSyncSearchBonusHidden();ricalcolaRicerca();});el.addEventListener('change',function(){rmRefreshSearchResolver(row);rmSyncSearchBonusHidden();ricalcolaRicerca();});});setupNumericInputs();rmRefreshSearchResolver(row);
+}
+function rmRefreshSearchResolver(row){
+  var sel=row.querySelector('.rm-search-bonus-preset'),p=sel&&RM_SEARCH_BONUS_PRESETS[sel.value],host=row.querySelector('.rm-search-resolver');if(!p||!p.resolver||!host)return;
+  var pgType=(document.getElementById('pgTipo')||{}).value||'studente',hasSap=mzProfiloSapienza()>0,gradeEl=host.querySelector('[data-resolver-grade]'),gradeWrap=host.querySelector('[data-grade-wrap]'),effWrap=host.querySelector('[data-eff-wrap]'),effEl=host.querySelector('[data-resolver-eff]'),bonusWrap=host.querySelector('[data-bonus-wrap]'),bonusEl=host.querySelector('[data-resolver-bonus]'),out=host.querySelector('[data-resolver-outcome]');
+  if(gradeWrap)gradeWrap.style.display=pgType==='studente'?'':'none';var automatic=pgType==='adulto'&&hasSap;if(effWrap)effWrap.style.display=automatic?'none':'';
+  var grade=gradeEl?gradeEl.value:'T',answers=mzExtraAnswers(pgType,grade,hasSap),code=host.querySelector('[id$="_eff"]');if(code)code.textContent=mzForumRollBlock('Quanto è efficace '+p.label+'?',answers,10,'Efficacia '+p.label);
+  var tier=automatic?100:mzExtraTier(pgType,grade,hasSap,effEl?effEl.value:''),fake={resolver:p.resolver,legacyPrefix:p.legacyPrefix},faces=mzFamilySecondaryFaces(fake,pgType,tier),bonusRoll=bonusEl&&bonusEl.value!==''?Number(bonusEl.value):null;
+  if(bonusWrap)bonusWrap.style.display=faces?'':'none';if(bonusEl){bonusEl.max=faces?String(faces):'';if(!faces)bonusEl.value='';}var bcode=host.querySelector('[id$="_bonus"]');if(bcode&&faces)bcode.textContent=mzForumRollBlock('Quanto vale il bonus di '+p.label+'?','Il risultato del dado determina direttamente il bonus.',faces,'Bonus '+p.label);
+  var ready=tier!==null&&(!faces||(bonusRoll!==null&&intInRange(bonusRoll,1,faces))),key='';
+  if(ready&&tier!==0){
+    if(p.legacyPrefix==='fiuto'){if(pgType==='studente')key=tier===33?'fiuto_s33':(tier===66?'fiuto_s66_'+bonusRoll:'fiuto_s100');else if(hasSap)key='fiuto_sap100';else key=tier===33?'fiuto_a33_'+bonusRoll:(tier===66?'fiuto_a66_'+bonusRoll:'fiuto_a100_'+(1+Number(bonusRoll)));}
+    if(p.legacyPrefix==='somnum'){if(pgType==='studente')key=tier===33?'somnum_s33':(tier===66?'somnum_s66_'+bonusRoll:'somnum_s100_'+bonusRoll);else if(hasSap)key='somnum_sap100_'+(3+Number(bonusRoll));else key=tier===33?'somnum_a33':(tier===66?'somnum_a66':'somnum_a100_'+(2+Number(bonusRoll)));}
   }
+  var rp=key&&RM_SEARCH_BONUS_PRESETS[key],src=row.querySelector('.rm-search-bonus-source'),kind=row.querySelector('.rm-search-bonus-kind'),val=row.querySelector('.rm-search-bonus-value');src.value=p.source;kind.value=p.kind;
+  if(ready&&tier===0){val.value='0';out.classList.remove('mz-resolver-pending');out.textContent='Esito: nessun bonus prodotto. La Fatica della Conoscenza resta comunque consumata.';}
+  else if(rp){val.value=String(rp.value||0);out.classList.remove('mz-resolver-pending');out.textContent='Esito calcolato: '+(p.kind==='empatia'?'+':'')+(rp.value||0)+' '+(p.kind==='empatia'?'Empatia':'possibilità')+'.';}
+  else{val.value='0';out.classList.add('mz-resolver-pending');out.textContent=tier===null?'Inserisci il risultato del tiro di efficacia.':'Inserisci anche il risultato del dado bonus.';}
+  row.dataset.resolverReady=ready?'1':'0';
+}
+function rmApplySearchBonusPreset(row,data){
+  if(!row)return;var sel=row.querySelector('.rm-search-bonus-preset'),src=row.querySelector('.rm-search-bonus-source'),kind=row.querySelector('.rm-search-bonus-kind'),val=row.querySelector('.rm-search-bonus-value'),manual=row.querySelector('.rm-search-bonus-manual'),note=row.querySelector('.rm-search-bonus-note'),scope=row.querySelector('.rm-search-bonus-scope'),p=sel?sel.value:'';
+  row.classList.remove('has-resolver');var resolver=row.querySelector('.rm-search-resolver');if(resolver)resolver.innerHTML='';
+  if(scope){var allOpt=scope.querySelector('option[value="all"]');if(allOpt)allOpt.disabled=false;scope.disabled=false;}
+  if(p&&RM_SEARCH_BONUS_PRESETS[p]){var x=RM_SEARCH_BONUS_PRESETS[p];if(src)src.value=x.source;if(kind){kind.value=x.kind;kind.disabled=true;}if(val){val.value=String(x.value||0);val.readOnly=true;}if(manual)manual.style.display='none';if(scope&&x.defaultScope)scope.value=x.defaultScope;if(scope&&x.singleScope){var ao=scope.querySelector('option[value="all"]');if(ao)ao.disabled=true;if(scope.value==='all')scope.value='1';}if(scope&&x.lockScope)scope.disabled=true;if(note)note.textContent=x.note+((x.uses&&x.uses>0)?(' · '+x.uses+' uso/i disponibili per il bonus.'):'');if(x.resolver)rmInitSearchResolver(row,x,data||{});}
   else if(p==='manual'){if(kind)kind.disabled=false;if(val)val.readOnly=false;if(manual)manual.style.display='flex';if(note)note.textContent='Inserisci manualmente soltanto un modificatore previsto dal regolamento e specifica se aumenta/diminuisce Empatia oppure modifica le possibilità del tiro.';}
   else{if(src)src.value='';if(kind){kind.value='possibilita';kind.disabled=true;}if(val){val.value='0';val.readOnly=true;}if(manual)manual.style.display='none';if(note)note.textContent='Seleziona un effetto dall’elenco.';}
 }
@@ -3393,11 +3815,12 @@ function rmBuildSearchBonusRow(data){
     '<div class="mz-bonus-field"><label>Bonus</label><input type="number" class="rm-search-bonus-value" min="0" value="0" readonly></div>'+ 
     '<div class="mz-bonus-field"><label>Si applica a</label><select class="rm-search-bonus-scope"><option value="all">Tutti gli Incontri</option><option value="1">Solo Incontro I</option><option value="2">Solo Incontro II</option><option value="3">Solo Incontro III</option></select></div>'+ 
     '<button type="button" class="rm-search-bonus-remove" title="Elimina bonus" aria-label="Elimina bonus">×</button>'+ 
+    '<div class="rm-search-resolver"></div>'+ 
     '<div class="mz-bonus-field rm-search-bonus-manual" style="display:none"><label>Fonte del bonus manuale</label><input type="text" class="rm-search-bonus-source" maxlength="100" placeholder="Nome dell’Oggetto, Incantesimo o Conoscenza"></div>'+ 
     '<div class="rm-search-bonus-note"></div>';
   data=data||{};var preset=row.querySelector('.rm-search-bonus-preset'),src=row.querySelector('.rm-search-bonus-source'),kind=row.querySelector('.rm-search-bonus-kind'),v=row.querySelector('.rm-search-bonus-value'),sc=row.querySelector('.rm-search-bonus-scope');
   var inferred=rmInferSearchBonusPreset(data);if(preset)preset.value=inferred;if(src)src.value=data.source||'';if(kind)kind.value=data.kind||'possibilita';if(v)v.value=String(Math.max(0,parseInt(data.value,10)||0));if(sc)sc.value=['all','1','2','3'].indexOf(String(data.scope))>=0?String(data.scope):'all';
-  rmApplySearchBonusPreset(row);
+  rmApplySearchBonusPreset(row,data);
   if(inferred==='manual'){if(src)src.value=data.source||'';if(kind)kind.value=data.kind||'possibilita';if(v)v.value=String(Math.max(0,parseInt(data.value,10)||0));}
   return row;
 }
@@ -3601,24 +4024,23 @@ function rmGating(){
   return {g2:g2,g3:g3};
 }
 
-function rmPercent(th){var v=Math.max(0,Math.min(30,th));return Math.round(v/30*100);}
 function rmRenderSummary(){
   var host=rmEl('rm-summary-content'),bb=rmEl('rm-summary-bbcode');if(!host||!bb)return;
   var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'',zona=rmZonaLabel(),first=rmTrovaThreshold(1),second=rmTrovaThreshold(2),third=rmTrovaThreshold(3),bonusLines=rmSearchBonusSummaryText();
   host.innerHTML='<div class="summary-grid">'+
     '<div class="summary-box"><b>Zona di Ricerca</b><br>'+rmEsc(zona||'—')+'</div>'+
-    '<div class="summary-box"><b>PG</b><br>'+rmEsc(name||'—')+'</div>'+ 
+    '<div class="summary-box"><b>PG lanciatore</b><br>'+rmEsc(name||'—')+'</div>'+ 
     '<div class="summary-box"><b>Tipo</b><br>'+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'</div>'+ 
-    '<div class="summary-box"><b>Empatia</b><br>'+rmEmpatia()+'</div>'+ 
+    '<div class="summary-box"><b>Empatia base</b><br>'+rmEmpatia()+'</div>'+ 
     '<div class="summary-box"><b>Sapienza Magizoologica</b><br>'+rmSapienza()+' → bonus +'+rmBonusSapienza()+'</div>'+ 
-    '<div class="summary-box"><b>Primo Incontro</b><br>'+first+'/30 · '+rmPercent(first)+'%</div>'+ 
-    '<div class="summary-box"><b>Secondo Incontro</b><br>'+(rmTipo()==='attiva'?(second+'/30 · '+rmPercent(second)+'%'):'non disponibile')+'</div>'+ 
-    '<div class="summary-box"><b>Terzo Incontro</b><br>'+(rmTipo()==='attiva'?(third+'/30 · '+rmPercent(third)+'%'):'non disponibile')+'</div>'+ 
+    '<div class="summary-box"><b>Incontro I</b><br>'+first+'/30</div>'+ 
+    '<div class="summary-box"><b>Incontro II</b><br>'+(rmTipo()==='attiva'?(second+'/30'):'non disponibile')+'</div>'+ 
+    '<div class="summary-box"><b>Incontro III</b><br>'+(rmTipo()==='attiva'?(third+'/30'):'non disponibile')+'</div>'+ 
     '<div class="summary-box"><b>Valigia Magica</b><br>'+(rmValigia()==='si'?'Sì':'No')+'</div></div>'+ 
-    (bonusLines.length?'<div class="nota-regole"><b>Bonus / modificatori applicati:</b> '+bonusLines.map(rmEsc).join(' · ')+'</div>':'')+
-    '<div class="nota-regole">La percentuale indica la probabilità di trovare una Creatura con il tiro 1d30. Un totale di 30 o più rende il ritrovamento autoconclusivo.</div>';
-  var bonusBB=bonusLines.length?'\nBonus / modificatori applicati: '+bonusLines.join(' | '):'';
-  bb.textContent='<b>Riepilogo Ricerca Creature Magiche — '+(name||'PG')+'</b>\n[quote]Zona di Ricerca: '+(zona||'—')+'\nPG: '+(name||'PG')+'\nTipo: '+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'\nEmpatia: '+rmEmpatia()+'\nSapienza Magizoologica: '+rmSapienza()+' (bonus +'+rmBonusSapienza()+')'+bonusBB+'\nPrimo Incontro: '+first+'/30 ('+rmPercent(first)+'%)\n'+(rmTipo()==='attiva'?'Secondo Incontro: '+second+'/30 ('+rmPercent(second)+'%)\nTerzo Incontro: '+third+'/30 ('+rmPercent(third)+'%)\n':'')+'Valigia Magica: '+(rmValigia()==='si'?'Sì':'No')+'[/quote]';
+    (bonusLines.length?'<div class="nota-regole"><b>Bonus selezionati:</b> '+bonusLines.map(rmEsc).join(' · ')+'</div>':'')+
+    '<div class="nota-regole"><b>Role di gruppo:</b> tutti i dadi della Ricerca sono lanciati dallo stesso PG. Il ritrovamento è condiviso; la Fiducia è personale. <b>Amico delle Creature</b> può estendere ai compagni soltanto la non-ostilità della Creatura, non la Fiducia necessaria per portarla nella propria Riserva.</div>';
+  var bonusBB=bonusLines.length?'\nBonus selezionati: '+bonusLines.join(' | '):'';
+  bb.textContent='<b>Riepilogo Ricerca Creature Magiche — '+(name||'PG')+'</b>\n[quote]Zona di Ricerca: '+(zona||'—')+'\nPG lanciatore: '+(name||'PG')+'\nTipo: '+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'\nEmpatia base: '+rmEmpatia()+'\nSapienza Magizoologica: '+rmSapienza()+' (bonus +'+rmBonusSapienza()+')'+bonusBB+'\nIncontro I: '+first+'/30'+(rmTipo()==='attiva'?('\nIncontro II: '+second+'/30\nIncontro III: '+third+'/30'):'')+'\nValigia Magica: '+(rmValigia()==='si'?'Sì':'No')+'\nRole di gruppo: un solo PG lancia tutti i dadi; il ritrovamento è condiviso. Amico delle Creature può estendere ai compagni solo la non-ostilità, non la Fiducia personale.[/quote]';
 }
 
 function rmEncounterSummary(n){
@@ -4204,8 +4626,8 @@ rmApplyState=function(state){
 rmRenderSummary=function(){
   var host=rmEl('rm-summary-content'),bb=rmEl('rm-summary-bbcode');if(!host||!bb)return;
   var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'',zone=rmZonaLabel(),t1=rmTrovaThreshold(1),t2=rmTrovaThreshold(2),t3=rmTrovaThreshold(3),bonus=rmSearchBonusSummaryText();
-  host.innerHTML='<div class="summary-grid"><div class="summary-box"><b>Zona di Ricerca</b><br>'+rmEsc(zone||'—')+'</div><div class="summary-box"><b>PG lanciatore</b><br>'+rmEsc(name||'—')+'</div><div class="summary-box"><b>Tipo</b><br>'+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'</div><div class="summary-box"><b>Empatia base</b><br>'+rmEmpatia()+'</div><div class="summary-box"><b>Sapienza Magizoologica</b><br>'+rmSapienza()+' → bonus +'+rmBonusSapienza()+'</div><div class="summary-box"><b>Incontro I</b><br>'+t1+'/30 · '+rmPercent(t1)+'%</div><div class="summary-box"><b>Incontro II</b><br>'+(rmTipo()==='attiva'?(t2+'/30 · '+rmPercent(t2)+'%'):'non disponibile')+'</div><div class="summary-box"><b>Incontro III</b><br>'+(rmTipo()==='attiva'?(t3+'/30 · '+rmPercent(t3)+'%'):'non disponibile')+'</div><div class="summary-box"><b>Valigia Magica</b><br>'+(rmValigia()==='si'?'Sì':'No')+'</div></div>'+(bonus.length?'<div class="nota-regole"><b>Bonus selezionati:</b> '+bonus.map(rmEsc).join(' · ')+'</div>':'')+'<div class="nota-regole"><b>Consigliato:</b> copia il riepilogo nel primo post della Ricerca. Le percentuali servono come informazione di supporto; i dati e i bonus riportati rendono verificabile il calcolo.<br><br><b>Role di gruppo:</b> tutti i dadi devono essere lanciati dallo stesso PG. Il ritrovamento è condiviso, la Fiducia no.<br><br><b>Creature Esotiche:</b> possono essere incontrate soltanto fuori dal Regno Unito.</div>';
-  bb.textContent='<b>Riepilogo Ricerca Creature Magiche — '+(name||'PG')+'</b>\n[quote]Zona di Ricerca: '+(zone||'—')+'\nPG lanciatore: '+(name||'PG')+'\nTipo: '+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'\nEmpatia base: '+rmEmpatia()+'\nSapienza Magizoologica: '+rmSapienza()+' (bonus +'+rmBonusSapienza()+')\nIncontro I: '+t1+'/30 ('+rmPercent(t1)+'%)\n'+(rmTipo()==='attiva'?('Incontro II: '+t2+'/30 ('+rmPercent(t2)+'%)\nIncontro III: '+t3+'/30 ('+rmPercent(t3)+'%)\n'):'')+'Valigia Magica: '+(rmValigia()==='si'?'Sì':'No')+(bonus.length?'\nBonus: '+bonus.join('; '):'')+'\nNota: è consigliato copiare questo riepilogo nel primo post; le percentuali sono informazioni di supporto.[/quote]';
+  host.innerHTML='<div class="summary-grid"><div class="summary-box"><b>Zona di Ricerca</b><br>'+rmEsc(zone||'—')+'</div><div class="summary-box"><b>PG lanciatore</b><br>'+rmEsc(name||'—')+'</div><div class="summary-box"><b>Tipo</b><br>'+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'</div><div class="summary-box"><b>Empatia base</b><br>'+rmEmpatia()+'</div><div class="summary-box"><b>Sapienza Magizoologica</b><br>'+rmSapienza()+' → bonus +'+rmBonusSapienza()+'</div><div class="summary-box"><b>Incontro I</b><br>'+t1+'/30</div><div class="summary-box"><b>Incontro II</b><br>'+(rmTipo()==='attiva'?(t2+'/30'):'non disponibile')+'</div><div class="summary-box"><b>Incontro III</b><br>'+(rmTipo()==='attiva'?(t3+'/30'):'non disponibile')+'</div><div class="summary-box"><b>Valigia Magica</b><br>'+(rmValigia()==='si'?'Sì':'No')+'</div></div>'+(bonus.length?'<div class="nota-regole"><b>Bonus selezionati:</b> '+bonus.map(rmEsc).join(' · ')+'</div>':'')+'<div class="nota-regole"><b>Consigliato:</b> copia il riepilogo nel primo post della Ricerca.<br><br><b>Role di gruppo:</b> tutti i dadi devono essere lanciati dallo stesso PG. Il ritrovamento è condiviso; la Fiducia resta personale. <b>Amico delle Creature</b> può estendere ai compagni soltanto la non-ostilità, non la Fiducia necessaria per portare la Creatura nella propria Riserva.<br><br><b>Creature Esotiche:</b> possono essere incontrate soltanto fuori dal Regno Unito.</div>';
+  bb.textContent='<b>Riepilogo Ricerca Creature Magiche — '+(name||'PG')+'</b>\n[quote]Zona di Ricerca: '+(zone||'—')+'\nPG lanciatore: '+(name||'PG')+'\nTipo: '+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'\nEmpatia base: '+rmEmpatia()+'\nSapienza Magizoologica: '+rmSapienza()+' (bonus +'+rmBonusSapienza()+')\nIncontro I: '+t1+'/30'+(rmTipo()==='attiva'?('\nIncontro II: '+t2+'/30\nIncontro III: '+t3+'/30'):'')+'\nValigia Magica: '+(rmValigia()==='si'?'Sì':'No')+(bonus.length?'\nBonus: '+bonus.join('; '):'')+'\nRole di gruppo: un solo PG lancia tutti i dadi; il ritrovamento è condiviso. Amico delle Creature può estendere ai compagni solo la non-ostilità, non la Fiducia personale.[/quote]';
 };
 
 var RM_V8_ZONE=null,RM_V8_NAME=null,rmV8BaseRicalcola=ricalcolaRicerca;
@@ -4220,6 +4642,97 @@ attachCopy('copiaScrofungulus','codiceScrofungulus');
 document.addEventListener('change',function(e){if(e.target&&e.target.id==='rmNuotoLago')rmV8RecomputeLago();},true);
 document.addEventListener('input',function(e){if(e.target&&e.target.id==='risultatoScrofungulus')ricalcolaRicerca();},true);
 aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
+})();
+
+
+/* ===== ALTEZZA DINAMICA IFRAME — Magizoologia v16 ===== */
+(function(){
+  var scheduled=false,last=0;
+  function measure(){
+    scheduled=false;
+    var b=document.body,d=document.documentElement;
+    var h=Math.max(b?b.scrollHeight:0,b?b.offsetHeight:0,d?d.scrollHeight:0,d?d.offsetHeight:0,d?d.clientHeight:0)+36;
+    if(Math.abs(h-last)<2)return;last=h;
+    try{window.parent.postMessage({tipo:'altezzaMagizoologia',altezza:h},'*');}catch(e){}
+    try{window.parent.postMessage({tipo:'altezzaTool',tool:'magizoologia',altezza:h},'*');}catch(e){}
+    try{if(window.frameElement)window.frameElement.style.height=h+'px';}catch(e){}
+  }
+  function schedule(){if(scheduled)return;scheduled=true;(window.requestAnimationFrame||function(f){setTimeout(f,30);})(measure);}
+  window.mzNotifyHeight=schedule;
+  window.addEventListener('load',function(){schedule();setTimeout(schedule,120);setTimeout(schedule,600);});
+  window.addEventListener('resize',schedule);
+  if(window.ResizeObserver){try{new ResizeObserver(schedule).observe(document.documentElement);}catch(e){}}
+  if(window.MutationObserver){try{new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,attributes:true});}catch(e){}}
+  document.addEventListener('click',function(){setTimeout(schedule,30);setTimeout(schedule,250);},true);
+  document.addEventListener('input',function(){setTimeout(schedule,30);},true);
+})();
+</script>
+
+
+<script id="magizoologia-v17-script">
+(function(){
+  function notify(){
+    if(typeof window.mzNotifyHeight==='function'){
+      setTimeout(window.mzNotifyHeight,30);
+      setTimeout(window.mzNotifyHeight,180);
+      setTimeout(window.mzNotifyHeight,450);
+    }
+  }
+
+  if(typeof window.rmRenderSummary==='function'){
+    window.rmRenderSummary=function(){
+      var host=document.getElementById('rm-summary-content'),bb=document.getElementById('rm-summary-bbcode');
+      if(!host||!bb)return;
+      var name=(document.getElementById('nomePgRicerca')||{}).value||'';
+      name=String(name).trim();
+      var zone=typeof rmZonaLabel==='function'?rmZonaLabel():'';
+      var t1=typeof rmTrovaThreshold==='function'?rmTrovaThreshold(1):0;
+      var t2=typeof rmTrovaThreshold==='function'?rmTrovaThreshold(2):0;
+      var t3=typeof rmTrovaThreshold==='function'?rmTrovaThreshold(3):0;
+      var tipo=typeof rmTipo==='function'&&rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva';
+      var valigia=typeof rmValigia==='function'&&rmValigia()==='si'?'Sì':'No';
+      var emp=typeof rmEmpatia==='function'?rmEmpatia():0;
+      var sap=typeof rmSapienza==='function'?rmSapienza():0;
+      var bs=typeof rmBonusSapienza==='function'?rmBonusSapienza():0;
+      var bonus=typeof rmSearchBonusSummaryText==='function'?rmSearchBonusSummaryText():[];
+      var cards=''
+        +'<div class="summary-grid">'
+        +'<div class="summary-box"><b>Zona di Ricerca</b><br>'+rmEsc(zone||'—')+'</div>'
+        +'<div class="summary-box"><b>PG lanciatore</b><br>'+rmEsc(name||'—')+'</div>'
+        +'<div class="summary-box"><b>Tipo</b><br>'+tipo+'</div>'
+        +'<div class="summary-box"><b>Empatia base</b><br>'+emp+'</div>'
+        +'<div class="summary-box"><b>Sapienza Magizoologica</b><br>'+sap+' → bonus +'+bs+'</div>'
+        +'<div class="summary-box"><b>Incontro I</b><br>soglia '+t1+'/30</div>'
+        +'<div class="summary-box"><b>Incontro II</b><br>'+(tipo==='Ricerca Attiva'?('soglia '+t2+'/30'):'non disponibile')+'</div>'
+        +'<div class="summary-box"><b>Incontro III</b><br>'+(tipo==='Ricerca Attiva'?('soglia '+t3+'/30'):'non disponibile')+'</div>'
+        +'<div class="summary-box"><b>Valigia Magica</b><br>'+valigia+'</div>'
+        +'</div>';
+      var bonusBlock=bonus.length?'<div class="nota-regole"><b>Bonus selezionati</b><br>'+bonus.map(rmEsc).join(' · ')+'</div>':'';
+      var notes='<div class="nota-regole"><b>Promemoria rapido</b><br>• Tutti i dadi della Ricerca vanno lanciati dallo stesso PG.<br>• Il ritrovamento è condiviso.<br>• La Fiducia è normalmente personale; <b>Amico delle Creature</b> può estenderla ai compagni presenti nei limiti previsti dal regolamento.<br>• Le Creature Esotiche si cercano solo fuori dal Regno Unito.</div>';
+      host.innerHTML=cards+bonusBlock+notes;
+      bb.textContent='<b>Riepilogo Ricerca Creature Magiche — '+(name||'PG')+'</b>\n[quote]Zona di Ricerca: '+(zone||'—')+'\nPG lanciatore: '+(name||'PG')+'\nTipo: '+tipo+'\nEmpatia base: '+emp+'\nSapienza Magizoologica: '+sap+' (bonus +'+bs+')\nIncontro I: soglia '+t1+'/30'+(tipo==='Ricerca Attiva'?('\nIncontro II: soglia '+t2+'/30\nIncontro III: soglia '+t3+'/30'):'')+'\nValigia Magica: '+valigia+(bonus.length?'\nBonus: '+bonus.join('; '):'')+'\nRole di gruppo: tutti i dadi della Ricerca vanno lanciati dallo stesso PG. Il ritrovamento è condiviso. La Fiducia è normalmente personale; Amico delle Creature può estenderla ai compagni presenti nei limiti previsti dal regolamento.[/quote]';
+      notify();
+    };
+  }
+
+  if(typeof window.ricalcolaMagizoologia==='function'){
+    var oldMag=window.ricalcolaMagizoologia;
+    window.ricalcolaMagizoologia=function(){var r=oldMag.apply(this,arguments);notify();return r;};
+  }
+  if(typeof window.ricalcolaRicerca==='function'){
+    var oldRic=window.ricalcolaRicerca;
+    window.ricalcolaRicerca=function(){var r=oldRic.apply(this,arguments);notify();return r;};
+  }
+
+  document.addEventListener('change',function(e){
+    var t=e.target;
+    if(!t)return;
+    if(t.matches('.rm-search-bonus-preset,.rm-search-bonus-scope,[data-resolver-grade],[data-resolver-eff],[data-resolver-bonus],select,input'))notify();
+  },true);
+  document.addEventListener('input',function(){notify();},true);
+  document.addEventListener('toggle',function(){notify();},true);
+  window.addEventListener('load',notify);
+  setTimeout(notify,350);
 })();
 </script>
 
