@@ -1904,6 +1904,27 @@ body{color:#211008!important;}
   .mz-phase-footer-nav span:empty{display:none;}
 }
 
+
+.mz-retry-status{
+  margin:0 0 10px;
+  padding:8px 10px;
+  border:1px solid #7b452c;
+  border-radius:6px;
+  background:#21110c;
+  color:#f3d7c6;
+  line-height:1.4;
+}
+.mz-retry-status.ready{
+  border-color:#6e8f4d;
+  background:#1d2916;
+  color:#dff2cf;
+}
+.mz-retry-status.hostile{
+  border-color:#b04a53;
+  background:#351518;
+  color:#ffd7d5;
+}
+
 </style>
 
 </head>
@@ -2231,10 +2252,11 @@ body{color:#211008!important;}
 
   <div class="mz-retry-fiducia" id="mzRetryFiduciaBox" style="display:none">
     <div class="mz-retry-copy">
-      <b>Vuoi tentare di nuovo la Fiducia?</b>
-      <span>Il nuovo tentativo mantiene automaticamente tutti i dati già inseriti del PG e della Creatura. Verranno azzerati soltanto il risultato della Fiducia e il dado della conseguenza.</span>
+      <b>Fiducia fallita: puoi ritentare</b>
+      <span>Il nuovo tentativo mantiene automaticamente tutti i dati già inseriti del PG, della Creatura e dei bonus. Verranno azzerati soltanto il risultato della Fiducia e il dado della conseguenza.</span>
     </div>
-    <button type="button" class="bottone-azione" id="mzRiprovaFiducia">Riprova Fiducia</button>
+    <div class="mz-retry-status" id="mzRetryFiduciaStatus">Prima inserisci il risultato del dado della conseguenza.</div>
+    <button type="button" class="bottone-azione" id="mzRiprovaFiducia" disabled>Riprova Fiducia</button>
   </div>
   <div class="mz-fiducia-history" id="mzFiduciaHistory" style="display:none"></div>
 </div>
@@ -3783,15 +3805,22 @@ function mzRenderFiduciaConsequenceDescription(fase,val){
   var box=document.getElementById('descrizioneConseguenzaFiducia');
   var retry=document.getElementById('mzRetryFiduciaBox');
   var btn=document.getElementById('mzRiprovaFiducia');
+  var status=document.getElementById('mzRetryFiduciaStatus');
   if(!box)return null;
   var d=mzConseguenzaFiduciaDescription(fase,val);
   box.className='mz-consequence-description';
+
   if(!d){
     box.innerHTML='';
-    if(retry)retry.style.display='none';
+    if(retry)retry.style.display='block';
     if(btn)btn.disabled=true;
+    if(status){
+      status.className='mz-retry-status';
+      status.textContent='Prima inserisci un risultato valido nel dado della conseguenza; poi potrai avviare il nuovo tentativo.';
+    }
     return null;
   }
+
   box.classList.add('show');
   if(d.hostile)box.classList.add('is-hostile');
   if(d.positive)box.classList.add('is-positive');
@@ -3800,16 +3829,25 @@ function mzRenderFiduciaConsequenceDescription(fase,val){
   if(d.hostile){
     html+='<br><span class="rm-narratore-call">ATTENZIONE</span> la Creatura è ostile: <a href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">contatta il Narratore</a>. Dopo aver scongiurato il pericolo puoi tentare di placarla di nuovo con <b>-3 possibilità</b>.';
   }else if(!d.positive){
-    html+='<br>La Fiducia può essere tentata di nuovo: usa il pulsante qui sotto quando vuoi avviare il nuovo tentativo.';
+    html+='<br>La Fiducia può essere tentata di nuovo con gli stessi dati già inseriti.';
   }
   box.innerHTML=html;
 
-  if(retry){
-    retry.style.display=d.positive?'none':'block';
-  }
-  if(btn){
-    btn.disabled=!!d.positive;
-    btn.dataset.hostile=d.hostile?'1':'0';
+  if(d.positive){
+    if(retry)retry.style.display='none';
+    if(btn)btn.disabled=true;
+  }else{
+    if(retry)retry.style.display='block';
+    if(btn){
+      btn.disabled=false;
+      btn.dataset.hostile=d.hostile?'1':'0';
+    }
+    if(status){
+      status.className='mz-retry-status '+(d.hostile?'hostile':'ready');
+      status.innerHTML=d.hostile
+        ? '<b>Ritentativo disponibile dopo aver gestito l’ostilità.</b> Il nuovo tiro applicherà automaticamente <b>-3 possibilità</b>.'
+        : '<b>Ritentativo pronto.</b> Premi il pulsante: PG, Creatura e bonus restano invariati.';
+    }
   }
   return d;
 }
@@ -4182,6 +4220,16 @@ function recomputeFiducia(){
   if(conseguenza){
     guardFormula('conseguenzaFiducia', pg.faseVitale + '|' + totale + '|' + v, 'risultatoConseguenzaFiducia');
     blocco.style.display = 'block';
+    if(retryBox){
+      retryBox.style.display='block';
+      var retryBtn=document.getElementById('mzRiprovaFiducia');
+      var retryStatus=document.getElementById('mzRetryFiduciaStatus');
+      if(retryBtn)retryBtn.disabled=true;
+      if(retryStatus){
+        retryStatus.className='mz-retry-status';
+        retryStatus.textContent='Prima inserisci il risultato del dado della conseguenza; poi il pulsante Riprova Fiducia si attiverà.';
+      }
+    }
     document.getElementById('codiceConseguenzaFiducia').textContent = mzForumDiceBlock('Qual è la conseguenza del fallimento in Fiducia?', mzConseguenzaFiduciaAnswers(pg.faseVitale), '[dice=1d' + conseguenza.dado + ']Conseguenze del fallimento in Fiducia — ' + pg.faseVitale + '[/dice]');
     var inpC = document.getElementById('risultatoConseguenzaFiducia');
     inpC.max = String(conseguenza.dado);
@@ -4190,6 +4238,7 @@ function recomputeFiducia(){
     if(vc === ''){
       tagC.textContent = 'in attesa';
       tagC.className = 'out-tag out-neutral';
+      mzRenderFiduciaConsequenceDescription(pg.faseVitale,null);
     } else if(intInRange(vc, 1, conseguenza.dado)){
       tagC.textContent = 'Esito: ' + vc;
       tagC.className = 'out-tag out-neutral';
