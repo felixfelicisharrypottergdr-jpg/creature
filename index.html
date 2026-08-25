@@ -1035,6 +1035,11 @@ body{color:#211008!important;}
 .rm-special h3,.rm-specie-helper h3,.mz-bonus-manager h3{color:#ffc58f!important;}
 .rm-special .nota-regole,.rm-specie-helper .nota-regole,.mz-bonus-manager .mz-bonus-help{color:#f1ddcf!important;}
 .mz-bonus-help{background:rgba(255,255,255,.035);padding:10px 12px;border-radius:7px;border:1px solid rgba(255,197,143,.18);}
+.nota-regole a,.rm-rule-card a,.rm-rules-body a{color:#fff0c8!important;font-weight:700;text-decoration:underline;}
+.rm-narratore-call{display:inline-block;margin-right:4px;color:#fff0c8;font-weight:700;letter-spacing:.02em;}
+#noteFase1{margin-top:8px!important;}
+#blocco1 h2 .badge-incontro{display:none!important;}
+
 .mz-bonus-manual-fields{gap:10px!important;align-items:start!important;}
 .mz-bonus-manual-fields .mz-bonus-field,
 .rm-search-bonus-row>.mz-bonus-field{grid-template-rows:2.55em 40px 1.45em!important;}
@@ -1624,7 +1629,7 @@ body{color:#211008!important;}
         <div class="rm-rule-card"><b>Role di gruppo</b><br>Tutti i dadi della Ricerca devono essere lanciati dallo <b>stesso PG</b>. Il ritrovamento è condiviso. La <b>Fiducia</b>, di norma, resta personale; un PG con <b>Amico delle Creature</b> può però estenderla ai compagni presenti nei limiti previsti dal regolamento.</div>
         <div class="rm-rule-card"><b>Attiva / Passiva</b><br>La Ricerca Passiva termina dopo il Primo Incontro. Nella Ricerca Attiva il <b>+2</b> vale soltanto nel Primo Incontro e si può arrivare fino al Terzo.</div>
         <div class="rm-rule-card"><b>Zona ed Esotiche</b><br>La role deve svolgersi nella Zona scelta. Le Creature Esotiche si cercano soltanto <b>fuori dal Regno Unito</b>.</div>
-        <div class="rm-rule-card"><b>Dopo il ritrovamento</b><br>Per ottenere personalmente la Creatura si usa la Guida alla Magizoologia. Creature ostili richiedono il Narratore; Esseri, Non-Esseri e Spiriti non sono addomesticabili.</div>
+        <div class="rm-rule-card"><b>Dopo il ritrovamento</b><br>Per ottenere personalmente la Creatura si usa la Guida alla Magizoologia. Creature ostili richiedono il <a href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">Narratore</a>; Esseri, Non-Esseri e Spiriti non sono addomesticabili.</div>
       </div>
       <details class="rm-rules-details">
         <summary>Regole complete della Ricerca di gruppo e della prosecuzione</summary>
@@ -1661,7 +1666,7 @@ body{color:#211008!important;}
 
   <section class="research-flow-page" data-rm-page-panel="enc1">
     <div class="blocco-incontro" id="blocco1">
-      <h2>Primo Incontro <span class="badge-incontro badge-sbloccato">sempre disponibile</span></h2>
+      <h2>Primo Incontro</h2>
             <h3>Trovo qualcosa? (1d30)</h3>
       <div class="formula-tag" id="formulaTrova1"></div>
       <div class="result-line"><div class="dice-code" id="codiceTrova1"></div><button class="copy-btn" type="button" data-copy-source="codiceTrova1" data-copy-control="1">Copia</button></div>
@@ -1678,13 +1683,13 @@ body{color:#211008!important;}
           <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie1" data-key="dadoSpecie1" min="1" max="999"></div></div>
           <div class="result-line"><div class="dice-code" id="codiceSpecie1"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie1" data-copy-control="1">Copia</button></div>
           <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie1" data-key="risultatoSpecie1" min="1"><span class="out-tag out-neutral" id="tagSpecie1">in attesa</span></div>
-          <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura1">Creatura specifica trovata</label><input type="text" id="specieCreatura1" data-key="specieCreatura1" maxlength="100" placeholder="Es. Ippogrifo"></div></div>
+          <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura1">Creatura specifica trovata</label><input type="text" id="specieCreatura1" data-key="specieCreatura1" maxlength="100" placeholder=""></div></div>
         </div>
 
         <h3>Sesso e Fase Vitale (1d40)</h3>
         <div class="result-line"><div class="dice-code" id="codiceFase1"></div><button class="copy-btn" type="button" data-copy-source="codiceFase1" data-copy-control="1">Copia</button></div>
         <div class="result-line"><span>Risultato (1-40):</span><input type="number" id="risultatoFase1" data-key="risultatoFase1" min="1" max="40"><span class="out-tag out-neutral" id="tagFase1">in attesa</span></div>
-        <div class="nota-regole">Le Uova sono catturabili autoconclusivamente. Esseri/Non-Esseri solo da Adolescente in su, Spiriti solo Adulti.</div>
+        <div class="nota-regole" id="noteFase1" style="display:none"></div>
 
         <h3 id="titoloSalute1">Stato di Salute (1d15)</h3>
         <div class="result-line"><div class="dice-code" id="codiceSalute1"></div><button class="copy-btn" type="button" data-copy-source="codiceSalute1" data-copy-control="1">Copia</button></div>
@@ -1729,7 +1734,7 @@ body{color:#211008!important;}
             <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie2" data-key="dadoSpecie2" min="1" max="999"></div></div>
             <div class="result-line"><div class="dice-code" id="codiceSpecie2"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie2" data-copy-control="1">Copia</button></div>
             <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie2" data-key="risultatoSpecie2" min="1"><span class="out-tag out-neutral" id="tagSpecie2">in attesa</span></div>
-            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura2">Creatura specifica trovata</label><input type="text" id="specieCreatura2" data-key="specieCreatura2" maxlength="100" placeholder="Nome della Creatura"></div></div>
+            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura2">Creatura specifica trovata</label><input type="text" id="specieCreatura2" data-key="specieCreatura2" maxlength="100" placeholder=""></div></div>
           </div>
 
           <h3>Numero di esemplari (1d5)</h3>
@@ -1772,7 +1777,7 @@ body{color:#211008!important;}
             <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie3" data-key="dadoSpecie3" min="1" max="999"></div></div>
             <div class="result-line"><div class="dice-code" id="codiceSpecie3"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie3" data-copy-control="1">Copia</button></div>
             <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie3" data-key="risultatoSpecie3" min="1"><span class="out-tag out-neutral" id="tagSpecie3">in attesa</span></div>
-            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura3">Creatura specifica trovata</label><input type="text" id="specieCreatura3" data-key="specieCreatura3" maxlength="100" placeholder="Nome della Creatura"></div></div>
+            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura3">Creatura specifica trovata</label><input type="text" id="specieCreatura3" data-key="specieCreatura3" maxlength="100" placeholder=""></div></div>
           </div>
 
           <h3>Numero di esemplari (1d10)</h3>
@@ -3873,6 +3878,19 @@ function rmSetStaticSemanticCodes(){
   rmSetCode('codiceEsemplari3','Quanti esemplari vengono trovati nel Terzo Incontro?','Il risultato del dado corrisponde direttamente al numero di esemplari trovati.','[dice=1d10]Numero di esemplari — Terzo Incontro[/dice]');
 }
 
+function rmNarratoreLinkHtml(){
+  return '<span class="rm-narratore-call">ATTENZIONE:</span> prima di procedere <a href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">contatta il Narratore</a>.';
+}
+function rmUpdateFaseNote(classe,fase){
+  var box=rmEl('noteFase1');
+  if(!box)return;
+  var notes=[];
+  if(fase&&fase.indexOf('Uovo')!==-1)notes.push('<b>Uova:</b> sono catturabili autoconclusivamente.');
+  if(classe==='Essere/Spirito/Non-Essere')notes.push('<b>Essere / Non-Esseri:</b> solo da Adolescente in su. <b>Spiriti:</b> solo Adulti.');
+  if(notes.length){box.innerHTML=notes.join(' ');box.style.display='block';}
+  else{box.innerHTML='';box.style.display='none';}
+}
+
 function rmHealthTableForPhase(fase){
   return fase==='Femmina Adulta in Gestazione'?rmStatoSaluteGestazioneTab:rmStatoSaluteTab;
 }
@@ -3908,7 +3926,7 @@ function rmImpostaTagValore(tag,id,valore,testoValido,classeValida){
   tag.className='out-tag '+(classeValida||'out-ok');
 }
 function rmRecomputeCascata1(trovato){
-  var c=rmEl('cascata1');if(!c)return;if(!trovato){c.style.display='none';return;}c.style.display='block';
+  var c=rmEl('cascata1');if(!c)return;if(!trovato){c.style.display='none';rmUpdateFaseNote(null,null);return;}c.style.display='block';
   var vc=rmNumber('risultatoClasse1',1,16),vf=rmNumber('risultatoFase1',1,40),vs=rmNumber('risultatoSalute1',1,15),vci=rmNumber('risultatoCibo1',1,5);
   var tc=rmEl('tagClasse1'),tf=rmEl('tagFase1'),ts=rmEl('tagSalute1'),ns=rmEl('noteSalute1'),tci=rmEl('tagCibo1');
   var classe=vc===null?null:rmLookup(rmClasseTab1,vc);
@@ -3918,8 +3936,9 @@ function rmRecomputeCascata1(trovato){
   else if(!rmFaseSpecialeCompatibile(classe,fase)){rmImpostaTagValore(tf,'risultatoFase1',vf,'Fase incompatibile con Essere/Spirito/Non-Essere','out-fail');}
   else if(rmFaseSpecialeSoloNonSpirito(classe,fase)){rmImpostaTagValore(tf,'risultatoFase1',vf,fase+' — compatibile solo con Essere/Non-Essere','out-neutral');}
   else{rmImpostaTagValore(tf,'risultatoFase1',vf,fase||'','out-ok');}
-  if(vs===null){rmImpostaTagValore(ts,'risultatoSalute1',vs,'','out-neutral');if(ns)ns.textContent='';}
-  else{var stato=rmLookup(healthTable,vs);rmImpostaTagValore(ts,'risultatoSalute1',vs,stato,stato==='In salute'?'out-ok':'out-fail');if(ns)ns.textContent=stato!=='In salute'?'Contatta il Narratore prima di procedere.':'';}
+  rmUpdateFaseNote(classe,fase);
+  if(vs===null){rmImpostaTagValore(ts,'risultatoSalute1',vs,'','out-neutral');if(ns)ns.innerHTML='';}
+  else{var stato=rmLookup(healthTable,vs);rmImpostaTagValore(ts,'risultatoSalute1',vs,stato,stato==='In salute'?'out-ok':'out-fail');if(ns)ns.innerHTML=stato!=='In salute'?rmNarratoreLinkHtml():'';}
   if(vci===null){rmImpostaTagValore(tci,'risultatoCibo1',vci,'','out-neutral');}
   else if(vci<=2){rmImpostaTagValore(tci,'risultatoCibo1',vci,'Cibo trovato: +1 possibilità futura','out-ok');}
   else{rmImpostaTagValore(tci,'risultatoCibo1',vci,'Niente di utile','out-neutral');}
@@ -4582,9 +4601,9 @@ rmRecomputeSpecie=function(n){
   var z=rmV8Zone(),cls=rmClasseCorrente(n),list=RM_ZONE_CREATURES[z]&&RM_ZONE_CREATURES[z][cls],auto=Array.isArray(list),ctx=z+'|'+cls;
   if(!RM_RESTORING&&RM_V8_SPEC_CTX[n]!==null&&RM_V8_SPEC_CTX[n]!==ctx){face.value='';res.value='';name.value='';}
   RM_V8_SPEC_CTX[n]=ctx;
-  if(!cls){face.value='';res.value='';name.value='';face.readOnly=false;name.readOnly=false;name.classList.remove('rm-auto-name');res.removeAttribute('max');code.textContent='Prima completa il tiro di Classificazione.';note.textContent='In attesa della Classificazione.';tag.textContent='in attesa';tag.className='out-tag out-neutral';return;}
+  if(!cls){face.value='';res.value='';name.value='';face.readOnly=false;name.readOnly=false;name.placeholder='';name.classList.remove('rm-auto-name');res.removeAttribute('max');code.textContent='Prima completa il tiro di Classificazione.';note.textContent='In attesa della Classificazione.';tag.textContent='in attesa';tag.className='out-tag out-neutral';return;}
   if(auto){
-    face.value=String(list.length);face.readOnly=true;name.readOnly=true;name.classList.add('rm-auto-name');
+    face.value=String(list.length);face.readOnly=true;name.readOnly=true;name.placeholder='';name.classList.add('rm-auto-name');
     if(list.length===0){res.value='';name.value='';res.removeAttribute('max');code.textContent='La lista fornita per '+z+' non contiene Creature di Classificazione '+cls+'. Il tool non inventa un risultato: verifica sul regolamento se il tiro di Classificazione vada ripetuto.';note.textContent='Nessuna Creatura disponibile nella lista della Zona per questa Classificazione.';tag.textContent='Nessun risultato in lista';tag.className='out-tag out-fail';return;}
     res.max=String(list.length);
     rmSetCode('codiceSpecie'+n,'Quale Creatura specifica di Classificazione '+cls+' viene trovata in '+z+'?',list.map(function(x,i){return (i+1)+'. '+x;}).join('\n'),'[dice=1d'+list.length+']Creatura specifica — '+z+' — Classificazione '+cls+'[/dice]');
@@ -4593,7 +4612,7 @@ rmRecomputeSpecie=function(n){
     if(!Number.isInteger(v)||v<1||v>list.length){name.value='';tag.textContent='Risultato impossibile';tag.className='out-tag out-fail';return;}
     name.value=list[v-1];tag.textContent=list[v-1];tag.className='out-tag out-ok';return;
   }
-  face.readOnly=false;name.readOnly=false;name.classList.remove('rm-auto-name');
+  face.readOnly=false;name.readOnly=false;name.placeholder='Inserisci il nome trovato';name.classList.remove('rm-auto-name');
   var f=face.value!==''?Number(face.value):null;
   if(f===null||!Number.isInteger(f)||f<1||f>999){res.removeAttribute('max');code.textContent='Per '+(z||'questa Zona')+' non è presente nel materiale fornito una lista automatizzabile. Consulta la lista del forum per la Classificazione '+cls+', inserisci qui il numero di risultati e il tool genererà il dado.';note.textContent='Modalità manuale: inserisci le facce del dado e, dopo il tiro, il nome della Creatura corrispondente.';tag.textContent=res.value===''?'in attesa':'Inserisci prima le facce';tag.className='out-tag '+(res.value===''?'out-neutral':'out-fail');return;}
   res.max=String(f);rmSetCode('codiceSpecie'+n,'Quale Creatura specifica di Classificazione '+cls+' viene trovata in '+(z||'Zona scelta')+'?','Consulta la lista della Zona e associa il risultato alla Creatura corrispondente.','[dice=1d'+f+']Creatura specifica — '+(z||'Zona')+' — Classificazione '+cls+'[/dice]');
@@ -4645,7 +4664,7 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
 })();
 
 
-/* ===== ALTEZZA DINAMICA IFRAME — Magizoologia v16 ===== */
+/* ===== ALTEZZA DINAMICA IFRAME — Magizoologia v18 ===== */
 (function(){
   var scheduled=false,last=0;
   function measure(){
@@ -4665,11 +4684,14 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
   if(window.MutationObserver){try{new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,attributes:true});}catch(e){}}
   document.addEventListener('click',function(){setTimeout(schedule,30);setTimeout(schedule,250);},true);
   document.addEventListener('input',function(){setTimeout(schedule,30);},true);
+  window.addEventListener('transitionend',schedule,true);
+  var mzHeightInterval=setInterval(schedule,900);
+  setTimeout(function(){clearInterval(mzHeightInterval);},15000);
 })();
 </script>
 
 
-<script id="magizoologia-v17-script">
+<script id="magizoologia-v18-script">
 (function(){
   function notify(){
     if(typeof window.mzNotifyHeight==='function'){
