@@ -936,6 +936,29 @@ body{padding-bottom:36px;}
 .mz-bonus-resolver,.rm-search-resolver{display:none;padding:11px;border:1px solid #8a4a29;border-radius:7px;background:#2b170f;color:#f7e8dc;}
 .mz-bonus-row.has-resolver .mz-bonus-resolver,.rm-search-bonus-row.has-resolver .rm-search-resolver{display:block;}
 .mz-resolver-title{font-weight:700;color:#ffc58f;margin-bottom:7px;}
+.mz-knowledge-tool{
+  grid-column:1 / -1;
+  padding:10px 12px;
+  border:1px solid #9a5b2c;
+  border-left:4px solid #d8873c;
+  border-radius:6px;
+  background:#26150e;
+  color:#f6dfcf;
+  line-height:1.45;
+}
+.mz-knowledge-tool a{
+  display:inline-block;
+  margin-top:6px;
+  padding:7px 11px;
+  border:1px solid #b86c32;
+  border-radius:5px;
+  background:#6b351d;
+  color:#fff4e7!important;
+  font-weight:700;
+  text-decoration:none!important;
+}
+.mz-knowledge-tool a:hover{background:#8a4727;}
+
 .mz-resolver-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:end;}
 .mz-resolver-field label{display:block!important;min-height:auto!important;color:#f0a060!important;font-size:.7em;text-transform:uppercase;letter-spacing:.04em;margin:0 0 4px!important;}
 .mz-resolver-field select,.mz-resolver-field input{width:100%;height:38px;box-sizing:border-box;background:#3b2015!important;color:#fff0e4!important;border:1px solid #734029!important;border-radius:5px;padding:6px 8px;}
@@ -1709,7 +1732,7 @@ body{color:#211008!important;}
 
       <div class="mz-bonus-manager" id="rmBonusRicercaBox">
         <h3>Oggetti / Incantesimi / Conoscenze — Bonus alla Ricerca</h3>
-        <p class="mz-bonus-help">Seleziona ciò che stai usando. Per <b>Tecniche e Incantesimi che richiedono dadi</b> il tool mostra automaticamente i tiri da copiare sul forum: tu inserisci i risultati e il bonus viene calcolato da solo. Per gli Oggetti a usi limitati basta scegliere l’Incontro in cui li stai applicando.</p>
+        <p class="mz-bonus-help">Seleziona ciò che stai usando. Quando una Conoscenza richiede prima di stabilirne la riuscita, usa il <a href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener"><b>Generatore di Riuscita delle Conoscenze</b></a>; qui comparirà poi soltanto l’eventuale dado necessario a determinare il valore del bonus. Per gli Oggetti a usi limitati basta scegliere l’Incontro in cui li stai applicando.</p>
         <input type="hidden" id="rmBonusRicercaJson" data-key="bonusRicercaJson" value="[]">
         <div class="mz-bonus-list" id="rmBonusRicercaRows"></div>
         <button type="button" class="mz-bonus-add" id="rmAddBonusRicerca">+ Aggiungi Oggetto / Incantesimo / Conoscenza</button>
@@ -2086,13 +2109,13 @@ mzAddImposium('imposium_sap100','Imposium · Adulto con Sapienza 100% (placa 1-1
 
 /* v16: nel catalogo si sceglie la Tecnica/Incantesimo una sola volta.
    I vecchi preset per singolo esito restano come motore interno, ma non sono più mostrati. */
-MZ_PHASE_BONUS_PRESETS.family_mimica={label:'Mimica-Limbica',groupLabel:'Tecniche Magizoologiche',source:'Mimica-Limbica',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1.5,total:1,unlimited:true,stackGroup:'mimica',phases:['fiducia'],resolver:'extraCommon',legacyPrefix:'mimica',note:'Tira qui l’efficacia della Tecnica e, solo quando serve, il dado del bonus. Il tool calcola automaticamente le possibilità ottenute.'};
-MZ_PHASE_BONUS_PRESETS.family_diagnosi={label:'Diagnosi Faunica',groupLabel:'Tecniche Magizoologiche',source:'Diagnosi Faunica',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1.5,total:1,unlimited:true,stackGroup:'diagnosi',phases:['scoperta'],resolver:'extraCommon',legacyPrefix:'diagnosi',note:'Tira qui l’efficacia e l’eventuale dado del bonus; il risultato viene applicato alla Scoperta del problema.'};
-MZ_PHASE_BONUS_PRESETS.family_somministrazione={label:'Somministrazione Faunica',groupLabel:'Tecniche Magizoologiche',source:'Somministrazione Faunica',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1,total:1,unlimited:true,stackGroup:'somministrazione',phases:['cura'],resolver:'extraCommon',legacyPrefix:'somministrazione',note:'Tira qui l’efficacia e l’eventuale dado del bonus. Va usata insieme a Pozione o Incantesimo curativo, come unica azione.'};
-MZ_PHASE_BONUS_PRESETS.family_imitazione={label:'Imitazione',groupLabel:'Tecniche Magizoologiche',source:'Imitazione',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1.5,total:1,unlimited:true,stackGroup:'imitazione',phases:['domesticazione'],resolver:'extraCommon',legacyPrefix:'imitazione',note:'Tira qui l’efficacia e l’eventuale dado del bonus; il risultato viene applicato alla Domesticazione.'};
-MZ_PHASE_BONUS_PRESETS.family_intermediario={label:'Intermediario Faunico',groupLabel:'Tecniche Magizoologiche',source:'Intermediario Faunico',condition:'Esito determinato dai dadi guidati',type:'postPercent',value:0,fatica:2,total:1,unlimited:true,stackGroup:'intermediario-faunico',phases:['allevamento'],resolver:'intermediario',legacyPrefix:'intermediario',note:'Tira qui l’efficacia e l’eventuale 1d2. Il tool ricava automaticamente la riduzione dei post di Riproduzione.'};
-MZ_PHASE_BONUS_PRESETS.family_somnum={label:'Somnum',groupLabel:'Incantesimi Magizoologici',source:'Somnum',condition:'Bonus Empatia determinato dai dadi guidati',type:'empatia',value:0,fatica:1.5,total:1,stackGroup:'somnum',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],resolver:'somnum',legacyPrefix:'somnum',note:'Tira qui l’efficacia e l’eventuale dado del bonus. L’Empatia ottenuta vale per un solo successivo utilizzo; la Fatica registrata corrisponde al lancio di Somnum.'};
-MZ_PHASE_BONUS_PRESETS.family_imposium={label:'Imposium',groupLabel:'Incantesimi Magizoologici',source:'Imposium',condition:'Potenza determinata dal tiro guidato',type:'effetto',value:0,fatica:2,total:1,unlimited:true,stackGroup:'imposium',phases:['fiducia'],resolver:'imposium',legacyPrefix:'imposium',advanced:true,note:'Prima determina la potenza di Imposium con il tiro guidato. Poi il tool prepara il suo 1d15 separato e applica automaticamente le conseguenze.'};
+MZ_PHASE_BONUS_PRESETS.family_mimica={label:'Mimica-Limbica',groupLabel:'Tecniche Magizoologiche',source:'Mimica-Limbica',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1.5,total:1,unlimited:true,stackGroup:'mimica',phases:['fiducia'],resolver:'extraCommon',legacyPrefix:'mimica',note:'Determina la riuscita nel Generatore dedicato; qui comparirà soltanto l’eventuale dado del bonus. Il tool calcola automaticamente le possibilità ottenute.'};
+MZ_PHASE_BONUS_PRESETS.family_diagnosi={label:'Diagnosi Faunica',groupLabel:'Tecniche Magizoologiche',source:'Diagnosi Faunica',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1.5,total:1,unlimited:true,stackGroup:'diagnosi',phases:['scoperta'],resolver:'extraCommon',legacyPrefix:'diagnosi',note:'Determina la riuscita nel Generatore dedicato; qui usa poi l’eventuale dado del bonus; il risultato viene applicato alla Scoperta del problema.'};
+MZ_PHASE_BONUS_PRESETS.family_somministrazione={label:'Somministrazione Faunica',groupLabel:'Tecniche Magizoologiche',source:'Somministrazione Faunica',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1,total:1,unlimited:true,stackGroup:'somministrazione',phases:['cura'],resolver:'extraCommon',legacyPrefix:'somministrazione',note:'Determina la riuscita nel Generatore dedicato; qui usa poi l’eventuale dado del bonus. Va usata insieme a Pozione o Incantesimo curativo, come unica azione.'};
+MZ_PHASE_BONUS_PRESETS.family_imitazione={label:'Imitazione',groupLabel:'Tecniche Magizoologiche',source:'Imitazione',condition:'Esito determinato dai dadi guidati',type:'possibilita',value:0,fatica:1.5,total:1,unlimited:true,stackGroup:'imitazione',phases:['domesticazione'],resolver:'extraCommon',legacyPrefix:'imitazione',note:'Determina la riuscita nel Generatore dedicato; qui usa poi l’eventuale dado del bonus; il risultato viene applicato alla Domesticazione.'};
+MZ_PHASE_BONUS_PRESETS.family_intermediario={label:'Intermediario Faunico',groupLabel:'Tecniche Magizoologiche',source:'Intermediario Faunico',condition:'Esito determinato dai dadi guidati',type:'postPercent',value:0,fatica:2,total:1,unlimited:true,stackGroup:'intermediario-faunico',phases:['allevamento'],resolver:'intermediario',legacyPrefix:'intermediario',note:'Determina la riuscita nel Generatore dedicato; qui comparirà poi l’eventuale 1d2. Il tool ricava automaticamente la riduzione dei post di Riproduzione.'};
+MZ_PHASE_BONUS_PRESETS.family_somnum={label:'Somnum',groupLabel:'Incantesimi Magizoologici',source:'Somnum',condition:'Bonus Empatia determinato dai dadi guidati',type:'empatia',value:0,fatica:1.5,total:1,stackGroup:'somnum',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],resolver:'somnum',legacyPrefix:'somnum',note:'Determina la riuscita nel Generatore dedicato; qui usa poi l’eventuale dado del bonus. L’Empatia ottenuta vale per un solo successivo utilizzo; la Fatica registrata corrisponde al lancio di Somnum.'};
+MZ_PHASE_BONUS_PRESETS.family_imposium={label:'Imposium',groupLabel:'Incantesimi Magizoologici',source:'Imposium',condition:'Potenza determinata dal tiro guidato',type:'effetto',value:0,fatica:2,total:1,unlimited:true,stackGroup:'imposium',phases:['fiducia'],resolver:'imposium',legacyPrefix:'imposium',advanced:true,note:'Prima determina la riuscita/potenza di Imposium con il Generatore dedicato. Poi il tool prepara il suo 1d15 separato e applica automaticamente le conseguenze.'};
 MZ_PHASE_BONUS_PRESETS.magi_bio_1={label:'Magi Biografia — bonus +1 già ottenuto',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Bonus già preparato in una role precedente · 3 usi',type:'possibilita',value:1,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Usa questa voce se in Scheda possiedi già il bonus +1 di Magi Biografia per la Magizoologia.'};
 MZ_PHASE_BONUS_PRESETS.magi_bio_2={label:'Magi Biografia — bonus +2 già ottenuto',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Bonus già preparato in una role precedente · 3 usi',type:'possibilita',value:2,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Usa questa voce se in Scheda possiedi già il bonus +2 di Magi Biografia per la Magizoologia.'};
 MZ_PHASE_BONUS_PRESETS.magi_bio_3={label:'Magi Biografia — bonus +3 già ottenuto',groupLabel:'Altre Conoscenze',source:'Magi Biografia — Newt Scamander',condition:'Bonus già preparato in una role precedente · 3 usi',type:'possibilita',value:3,total:3,stackGroup:'magi-biografia',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Usa questa voce se in Scheda possiedi già il bonus +3 di Magi Biografia per la Magizoologia.'};
@@ -2206,23 +2229,23 @@ function mzFamilySecondaryFaces(p,pgType,tier){
 function mzResolverSnapshot(row){
   var r=row.querySelector('[data-role="resolver"]');if(!r)return null;
   function v(sel){var e=r.querySelector(sel);return e?e.value:'';}
-  return {grade:v('[data-resolver-grade]'),level:v('[data-resolver-level]'),eff:v('[data-resolver-eff]'),bonus:v('[data-resolver-bonus]')};
+  return {eff:v('[data-resolver-eff]'),bonus:v('[data-resolver-bonus]')};
 }
 function mzCopyResolverState(from,to){
   var a=mzResolverSnapshot(from),r=to&&to.querySelector('[data-role="resolver"]');if(!a||!r)return;
-  [['[data-resolver-grade]',a.grade],['[data-resolver-level]',a.level],['[data-resolver-eff]',a.eff],['[data-resolver-bonus]',a.bonus]].forEach(function(x){var e=r.querySelector(x[0]);if(e)e.value=x[1];});
+  [['[data-resolver-eff]',a.eff],['[data-resolver-bonus]',a.bonus]].forEach(function(x){var e=r.querySelector(x[0]);if(e)e.value=x[1];});
   mzRefreshFamilyResolver(to,to.dataset.phase||'');
 }
 function mzInitFamilyResolver(row,phase,p){
   var host=row.querySelector('[data-role="resolver"]');if(!host)return;
   row.classList.add('has-resolver');row.dataset.resolverFamily=p.resolver||'';
-  var uid=row.dataset.uid||String(Date.now()),pgType=(document.getElementById('pgTipo')||{}).value||'studente';
-  host.innerHTML='<div class="mz-resolver-title">Dadi guidati — '+mzHtml(p.label)+'</div><div class="mz-resolver-grid">'+
-    '<div class="mz-resolver-field" data-grade-wrap><label>Voto in questa Conoscenza</label><select data-resolver-grade><option value="T">T (Troll)</option><option value="D">D (Deludente)</option><option value="S">S (Scarso)</option><option value="A">A (Accettabile)</option><option value="O">O (Oltre le Aspettative)</option><option value="E">E (Eccezionale)</option></select></div>'+
-    '<div class="mz-resolver-field" data-level-wrap style="display:none"><label>Livello di Imposium nella Sapienza</label><select data-resolver-level><option value="1">Livello I</option><option value="2">Livello II</option><option value="3">Livello III</option><option value="4">Livello IV</option><option value="5">Livello V</option></select></div>'+
-    '<div class="mz-resolver-roll" data-eff-wrap><div class="result-line"><div class="dice-code" id="mzEffCode_'+uid+'"></div><button type="button" class="copy-btn" data-copy-source="mzEffCode_'+uid+'">Copia</button></div><div class="result-line"><span>Risultato del dado:</span><input type="number" min="1" max="10" data-resolver-eff></div></div>'+
+  var uid=row.dataset.uid||String(Date.now());
+  host.innerHTML='<div class="mz-resolver-title">Riuscita e bonus — '+mzHtml(p.label)+'</div><div class="mz-resolver-grid">'+
+    '<div class="mz-knowledge-tool"><b>Prima determina la riuscita della Conoscenza.</b><br>Usa il generatore dedicato, poi torna qui e riporta l’esito ottenuto.'+
+    '<br><a href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener">Apri il Generatore di Riuscita delle Conoscenze ↗</a></div>'+
+    '<div class="mz-resolver-field" data-eff-wrap><label>Riuscita ottenuta</label><select data-resolver-eff><option value="">— Seleziona l’esito —</option><option value="0">0% · nessun effetto</option><option value="33">33%</option><option value="66">66%</option><option value="100">100%</option></select></div>'+
     '<div class="mz-resolver-roll" data-bonus-wrap style="display:none"><div class="result-line"><div class="dice-code" id="mzBonusCode_'+uid+'"></div><button type="button" class="copy-btn" data-copy-source="mzBonusCode_'+uid+'">Copia</button></div><div class="result-line"><span>Risultato del dado bonus:</span><input type="number" min="1" data-resolver-bonus></div></div>'+
-    '<div class="mz-resolver-outcome mz-resolver-pending" data-resolver-outcome>Completa i dati richiesti: il tool calcolerà il bonus senza farti scegliere una tabella di esiti.</div></div>';
+    '<div class="mz-resolver-outcome mz-resolver-pending" data-resolver-outcome>Determina prima la riuscita della Conoscenza nel generatore dedicato.</div></div>';
   host.querySelectorAll('select,input').forEach(function(e){e.addEventListener('input',function(){mzRefreshFamilyResolver(row,phase);ricalcolaMagizoologia();});e.addEventListener('change',function(){mzRefreshFamilyResolver(row,phase);ricalcolaMagizoologia();});});
   setupNumericInputs();mzRefreshFamilyResolver(row,phase);
 }
@@ -2230,18 +2253,11 @@ function mzRefreshFamilyResolver(row,phase){
   var familyKey=row.dataset.presetKey||'',p=MZ_PHASE_BONUS_PRESETS[familyKey],host=row.querySelector('[data-role="resolver"]');
   if(!p||!p.resolver||!host)return;
   var pgType=(document.getElementById('pgTipo')||{}).value||'studente',hasSap=mzProfiloSapienza()>0;
-  var gradeEl=host.querySelector('[data-resolver-grade]'),gradeWrap=host.querySelector('[data-grade-wrap]'),levelEl=host.querySelector('[data-resolver-level]'),levelWrap=host.querySelector('[data-level-wrap]'),effWrap=host.querySelector('[data-eff-wrap]'),effEl=host.querySelector('[data-resolver-eff]'),bonusWrap=host.querySelector('[data-bonus-wrap]'),bonusEl=host.querySelector('[data-resolver-bonus]'),out=host.querySelector('[data-resolver-outcome]');
-  if(gradeWrap)gradeWrap.style.display=pgType==='studente'?'':'none';
-  if(levelWrap)levelWrap.style.display=(p.resolver==='imposium'&&pgType==='adulto'&&hasSap)?'':'none';
-  var grade=gradeEl?gradeEl.value:'T',level=levelEl?Number(levelEl.value||1):0,automaticExtra=pgType==='adulto'&&hasSap&&p.resolver!=='imposium';
-  var automaticAdvanced=(p.resolver==='imposium'&&pgType==='studente'&&['T','D','S'].indexOf(grade)>=0);
-  if(effWrap)effWrap.style.display=(automaticExtra||automaticAdvanced)?'none':'';
-  var answers=p.resolver==='imposium'?mzAdvancedAnswers(pgType,grade,(pgType==='adulto'&&hasSap)?level:0):mzExtraAnswers(pgType,grade,hasSap);
-  var code=host.querySelector('[id^="mzEffCode_"]');if(code)code.textContent=mzForumRollBlock('Quanto è efficace '+p.label+'?',answers,10,'Efficacia '+p.label);
-  var tier;
-  if(p.resolver==='imposium'){
-    tier=automaticAdvanced?0:mzAdvancedTier(pgType,grade,(pgType==='adulto'&&hasSap)?level:0,effEl?effEl.value:'');
-  }else tier=automaticExtra?100:mzExtraTier(pgType,grade,hasSap,effEl?effEl.value:'');
+  var effWrap=host.querySelector('[data-eff-wrap]'),effEl=host.querySelector('[data-resolver-eff]'),bonusWrap=host.querySelector('[data-bonus-wrap]'),bonusEl=host.querySelector('[data-resolver-bonus]'),out=host.querySelector('[data-resolver-outcome]'),toolBox=host.querySelector('.mz-knowledge-tool');
+  var automaticExtra=pgType==='adulto'&&hasSap&&p.resolver!=='imposium';
+  var tier=automaticExtra?100:((effEl&&['0','33','66','100'].indexOf(effEl.value)>=0)?Number(effEl.value):null);
+  if(effWrap)effWrap.style.display=automaticExtra?'none':'';
+  if(toolBox)toolBox.style.display=automaticExtra?'none':'';
   var faces=mzFamilySecondaryFaces(p,pgType,tier),bonusRoll=bonusEl&&bonusEl.value!==''?Number(bonusEl.value):null;
   if(bonusWrap)bonusWrap.style.display=faces?'':'none';
   if(bonusEl){bonusEl.max=faces?String(faces):'';if(!faces)bonusEl.value='';}
@@ -2252,11 +2268,11 @@ function mzRefreshFamilyResolver(row,phase){
   var source=row.querySelector('[data-role="source"]'),condition=row.querySelector('[data-role="condition"]'),type=row.querySelector('[data-role="type"]'),value=row.querySelector('[data-role="value"]'),fatica=row.querySelector('[data-role="fatica"]'),total=row.querySelector('[data-role="total"]');
   source.value=p.source||p.label;fatica.value=String(p.fatica||0);total.value=String(p.unlimited?999999:(p.total||1));
   row.dataset.stackGroup=p.stackGroup||'';row.dataset.unlimited=p.unlimited?'1':'';
-  if(ready&&tier===0){condition.value='Nessun effetto dal tiro di efficacia';type.value=p.type||'possibilita';value.value='0';if(out){out.classList.remove('mz-resolver-pending');out.textContent='Esito: nessun bonus prodotto. La Fatica prevista dall’uso della Conoscenza resta comunque consumata.';}}
+  if(ready&&tier===0){condition.value='Riuscita 0% · nessun effetto';type.value=p.type||'possibilita';value.value='0';if(out){out.classList.remove('mz-resolver-pending');out.textContent='Esito: nessun bonus prodotto. La Fatica prevista dall’uso della Conoscenza resta comunque consumata.';}}
   else if(ready&&resolvedKey&&MZ_PHASE_BONUS_PRESETS[resolvedKey]){
-    var rp=MZ_PHASE_BONUS_PRESETS[resolvedKey];type.value=rp.type||p.type||'possibilita';value.value=String(rp.value||0);condition.value=mzFriendlyTier(tier)+(faces?' · dado bonus '+bonusRoll+'/'+faces:'');
+    var rp=MZ_PHASE_BONUS_PRESETS[resolvedKey];type.value=rp.type||p.type||'possibilita';value.value=String(rp.value||0);condition.value=(automaticExtra?'Riuscita 100% automatica':('Riuscita '+tier+'%'))+(faces?' · dado bonus '+bonusRoll+'/'+faces:'');
     if(out){out.classList.remove('mz-resolver-pending');out.textContent='Esito calcolato: '+mzEffectValueText({type:type.value,value:Number(value.value||0)})+mzEffectTypeLabel(type.value)+(p.resolver==='imposium'?' · ora usa il 1d15 di Imposium mostrato nella fase.':'');}
-  }else{condition.value='In attesa dei dadi';type.value=p.type||'possibilita';value.value='0';if(out){out.classList.add('mz-resolver-pending');out.textContent=tier===null?'Inserisci il risultato del tiro di efficacia.':'Inserisci anche il risultato del dado bonus.';}}
+  }else{condition.value='In attesa della riuscita';type.value=p.type||'possibilita';value.value='0';if(out){out.classList.add('mz-resolver-pending');out.textContent=tier===null?'Apri il Generatore di Riuscita delle Conoscenze e riporta qui l’esito.':'Inserisci anche il risultato del dado bonus.';}}
   var apply=row.querySelector('[data-role="apply"]');if(apply){if(!ready&&apply.checked)apply.checked=false;apply.disabled=!ready;}
   mzRefreshPhaseRowDisplay(row,phase);
 }
@@ -2458,7 +2474,7 @@ function mzCreatePhaseBonusRow(phase,data){
   if(presetKey==='manual'){
     ['source','condition','type','value','fatica','total','used'].forEach(function(k){var el=row.querySelector('[data-role="'+k+'"]');if(data[k]!==undefined&&el)el.value=data[k];});
   }
-  var p=MZ_PHASE_BONUS_PRESETS[presetKey];if(p&&p.resolver){mzInitFamilyResolver(row,phase,p);if(data.resolverState){var rr=row.querySelector('[data-role="resolver"]');[['[data-resolver-grade]',data.resolverState.grade],['[data-resolver-level]',data.resolverState.level],['[data-resolver-eff]',data.resolverState.eff],['[data-resolver-bonus]',data.resolverState.bonus]].forEach(function(x){var e=rr&&rr.querySelector(x[0]);if(e&&x[1]!==undefined)e.value=x[1];});mzRefreshFamilyResolver(row,phase);}}
+  var p=MZ_PHASE_BONUS_PRESETS[presetKey];if(p&&p.resolver){mzInitFamilyResolver(row,phase,p);if(data.resolverState){var rr=row.querySelector('[data-role="resolver"]');[['[data-resolver-eff]',data.resolverState.eff],['[data-resolver-bonus]',data.resolverState.bonus]].forEach(function(x){var e=rr&&rr.querySelector(x[0]);if(e&&x[1]!==undefined)e.value=x[1];});mzRefreshFamilyResolver(row,phase);}}
   if(data.linkId){
     var state=MZ_SHARED_BONUSES[data.linkId];
     if(!state){var pp=MZ_PHASE_BONUS_PRESETS[presetKey],unlimited=pp&&pp.unlimited;MZ_SHARED_BONUSES[data.linkId]={used:Math.max(0,Math.floor(mzNum(data.sharedUsed,0))),total:unlimited?999999:Math.max(1,Math.floor(mzNum((row.querySelector('[data-role="total"]')||{}).value,1))),unlimited:!!unlimited,presetKey:presetKey};}
@@ -3837,33 +3853,37 @@ function rmInferSearchBonusPreset(data){
   for(var i=0;i<keys.length;i++){var x=RM_SEARCH_BONUS_PRESETS[keys[i]];if(src===x.source&&v===x.value&&(!data.kind||kind===x.kind))return keys[i];}
   return (src||v)?'manual':'';
 }
-function rmSearchBonusData(){return rmSearchBonusRows().map(function(r){var rr=r.querySelector('.rm-search-resolver');function rv(s){var e=rr&&rr.querySelector(s);return e?e.value:'';}return {preset:(r.querySelector('.rm-search-bonus-preset')||{}).value||'',source:(r.querySelector('.rm-search-bonus-source')||{}).value||'',kind:(r.querySelector('.rm-search-bonus-kind')||{}).value||'possibilita',value:Math.max(0,parseInt((r.querySelector('.rm-search-bonus-value')||{}).value||'0',10)||0),scope:(r.querySelector('.rm-search-bonus-scope')||{}).value||'all',resolverGrade:rv('[data-resolver-grade]'),resolverEff:rv('[data-resolver-eff]'),resolverBonus:rv('[data-resolver-bonus]')};});}
+function rmSearchBonusData(){return rmSearchBonusRows().map(function(r){var rr=r.querySelector('.rm-search-resolver');function rv(s){var e=rr&&rr.querySelector(s);return e?e.value:'';}return {preset:(r.querySelector('.rm-search-bonus-preset')||{}).value||'',source:(r.querySelector('.rm-search-bonus-source')||{}).value||'',kind:(r.querySelector('.rm-search-bonus-kind')||{}).value||'possibilita',value:Math.max(0,parseInt((r.querySelector('.rm-search-bonus-value')||{}).value||'0',10)||0),scope:(r.querySelector('.rm-search-bonus-scope')||{}).value||'all',resolverEff:rv('[data-resolver-eff]'),resolverBonus:rv('[data-resolver-bonus]')};});}
 function rmSyncSearchBonusHidden(){var h=rmEl('rmBonusRicercaJson'),host=rmEl('rmBonusRicercaRows');if(!h||!host)return;h.value=JSON.stringify(rmSearchBonusData());host.setAttribute('data-serialized',h.value);}
 
 function rmInitSearchResolver(row,p,data){
   var host=row.querySelector('.rm-search-resolver');if(!host||!p||!p.resolver)return;row.classList.add('has-resolver');
-  var uid='rm_'+Math.random().toString(36).slice(2,9),pgType=(document.getElementById('pgTipo')||{}).value||'studente';
-  host.innerHTML='<div class="mz-resolver-title">Dadi guidati — '+rmEsc(p.label)+'</div><div class="mz-resolver-grid"><div class="mz-resolver-field" data-grade-wrap><label>Voto in questa Conoscenza</label><select data-resolver-grade><option value="T">T (Troll)</option><option value="D">D (Deludente)</option><option value="S">S (Scarso)</option><option value="A">A (Accettabile)</option><option value="O">O (Oltre le Aspettative)</option><option value="E">E (Eccezionale)</option></select></div><div class="mz-resolver-roll" data-eff-wrap><div class="result-line"><div class="dice-code" id="'+uid+'_eff"></div><button type="button" class="copy-btn" data-copy-source="'+uid+'_eff">Copia</button></div><div class="result-line"><span>Risultato del dado:</span><input type="number" min="1" max="10" data-resolver-eff></div></div><div class="mz-resolver-roll" data-bonus-wrap style="display:none"><div class="result-line"><div class="dice-code" id="'+uid+'_bonus"></div><button type="button" class="copy-btn" data-copy-source="'+uid+'_bonus">Copia</button></div><div class="result-line"><span>Risultato del dado bonus:</span><input type="number" min="1" data-resolver-bonus></div></div><div class="mz-resolver-outcome mz-resolver-pending" data-resolver-outcome>Inserisci i risultati richiesti.</div></div>';
-  data=data||{};var g=host.querySelector('[data-resolver-grade]'),e=host.querySelector('[data-resolver-eff]'),b=host.querySelector('[data-resolver-bonus]');if(g&&data.resolverGrade)g.value=data.resolverGrade;if(e&&data.resolverEff)e.value=data.resolverEff;if(b&&data.resolverBonus)b.value=data.resolverBonus;
-  host.querySelectorAll('select,input').forEach(function(el){el.addEventListener('input',function(){rmRefreshSearchResolver(row);rmSyncSearchBonusHidden();ricalcolaRicerca();});el.addEventListener('change',function(){rmRefreshSearchResolver(row);rmSyncSearchBonusHidden();ricalcolaRicerca();});});setupNumericInputs();rmRefreshSearchResolver(row);
+  var uid='rmResolver_'+(++RM_SEARCH_BONUS_UID);
+  host.innerHTML='<div class="mz-resolver-title">Riuscita e bonus — '+rmEsc(p.label)+'</div><div class="mz-resolver-grid">'+
+    '<div class="mz-knowledge-tool"><b>Prima determina la riuscita della Conoscenza.</b><br>Usa il generatore dedicato, poi torna qui e riporta l’esito ottenuto.'+
+    '<br><a href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener">Apri il Generatore di Riuscita delle Conoscenze ↗</a></div>'+
+    '<div class="mz-resolver-field" data-eff-wrap><label>Riuscita ottenuta</label><select data-resolver-eff><option value="">— Seleziona l’esito —</option><option value="0">0% · nessun effetto</option><option value="33">33%</option><option value="66">66%</option><option value="100">100%</option></select></div>'+
+    '<div class="mz-resolver-roll" data-bonus-wrap style="display:none"><div class="result-line"><div class="dice-code" id="'+uid+'_bonus"></div><button type="button" class="copy-btn" data-copy-source="'+uid+'_bonus">Copia</button></div><div class="result-line"><span>Risultato del dado bonus:</span><input type="number" min="1" data-resolver-bonus></div></div>'+
+    '<div class="mz-resolver-outcome mz-resolver-pending" data-resolver-outcome>Determina prima la riuscita della Conoscenza nel generatore dedicato.</div></div>';
+  data=data||{};var e=host.querySelector('[data-resolver-eff]'),b=host.querySelector('[data-resolver-bonus]');if(e&&data.resolverEff)e.value=data.resolverEff;if(b&&data.resolverBonus)b.value=data.resolverBonus;
+  host.querySelectorAll('select,input').forEach(function(el){el.addEventListener('input',function(){rmRefreshSearchResolver(row);ricalcolaRicerca();});el.addEventListener('change',function(){rmRefreshSearchResolver(row);ricalcolaRicerca();});});
+  setupNumericInputs();rmRefreshSearchResolver(row);
 }
 function rmRefreshSearchResolver(row){
   var sel=row.querySelector('.rm-search-bonus-preset'),p=sel&&RM_SEARCH_BONUS_PRESETS[sel.value],host=row.querySelector('.rm-search-resolver');if(!p||!p.resolver||!host)return;
-  var pgType=(document.getElementById('pgTipo')||{}).value||'studente',hasSap=mzProfiloSapienza()>0,gradeEl=host.querySelector('[data-resolver-grade]'),gradeWrap=host.querySelector('[data-grade-wrap]'),effWrap=host.querySelector('[data-eff-wrap]'),effEl=host.querySelector('[data-resolver-eff]'),bonusWrap=host.querySelector('[data-bonus-wrap]'),bonusEl=host.querySelector('[data-resolver-bonus]'),out=host.querySelector('[data-resolver-outcome]');
-  if(gradeWrap)gradeWrap.style.display=pgType==='studente'?'':'none';var automatic=pgType==='adulto'&&hasSap;if(effWrap)effWrap.style.display=automatic?'none':'';
-  var grade=gradeEl?gradeEl.value:'T',answers=mzExtraAnswers(pgType,grade,hasSap),code=host.querySelector('[id$="_eff"]');if(code)code.textContent=mzForumRollBlock('Quanto è efficace '+p.label+'?',answers,10,'Efficacia '+p.label);
-  var tier=automatic?100:mzExtraTier(pgType,grade,hasSap,effEl?effEl.value:''),fake={resolver:p.resolver,legacyPrefix:p.legacyPrefix},faces=mzFamilySecondaryFaces(fake,pgType,tier),bonusRoll=bonusEl&&bonusEl.value!==''?Number(bonusEl.value):null;
-  if(bonusWrap)bonusWrap.style.display=faces?'':'none';if(bonusEl){bonusEl.max=faces?String(faces):'';if(!faces)bonusEl.value='';}var bcode=host.querySelector('[id$="_bonus"]');if(bcode&&faces)bcode.textContent=mzForumRollBlock('Quanto vale il bonus di '+p.label+'?','Il risultato del dado determina direttamente il bonus.',faces,'Bonus '+p.label);
-  var ready=tier!==null&&(!faces||(bonusRoll!==null&&intInRange(bonusRoll,1,faces))),key='';
-  if(ready&&tier!==0){
-    if(p.legacyPrefix==='fiuto'){if(pgType==='studente')key=tier===33?'fiuto_s33':(tier===66?'fiuto_s66_'+bonusRoll:'fiuto_s100');else if(hasSap)key='fiuto_sap100';else key=tier===33?'fiuto_a33_'+bonusRoll:(tier===66?'fiuto_a66_'+bonusRoll:'fiuto_a100_'+(1+Number(bonusRoll)));}
-    if(p.legacyPrefix==='somnum'){if(pgType==='studente')key=tier===33?'somnum_s33':(tier===66?'somnum_s66_'+bonusRoll:'somnum_s100_'+bonusRoll);else if(hasSap)key='somnum_sap100_'+(3+Number(bonusRoll));else key=tier===33?'somnum_a33':(tier===66?'somnum_a66':'somnum_a100_'+(2+Number(bonusRoll)));}
-  }
-  var rp=key&&RM_SEARCH_BONUS_PRESETS[key],src=row.querySelector('.rm-search-bonus-source'),kind=row.querySelector('.rm-search-bonus-kind'),val=row.querySelector('.rm-search-bonus-value');src.value=p.source;kind.value=p.kind;
-  if(ready&&tier===0){val.value='0';out.classList.remove('mz-resolver-pending');out.textContent='Esito: nessun bonus prodotto. La Fatica della Conoscenza resta comunque consumata.';}
-  else if(rp){val.value=String(rp.value||0);out.classList.remove('mz-resolver-pending');out.textContent='Esito calcolato: '+(p.kind==='empatia'?'+':'')+(rp.value||0)+' '+(p.kind==='empatia'?'Empatia':'possibilità')+'.';}
-  else{val.value='0';out.classList.add('mz-resolver-pending');out.textContent=tier===null?'Inserisci il risultato del tiro di efficacia.':'Inserisci anche il risultato del dado bonus.';}
+  var pgType=(document.getElementById('pgTipo')||{}).value||'studente',hasSap=mzProfiloSapienza()>0,effWrap=host.querySelector('[data-eff-wrap]'),effEl=host.querySelector('[data-resolver-eff]'),bonusWrap=host.querySelector('[data-bonus-wrap]'),bonusEl=host.querySelector('[data-resolver-bonus]'),out=host.querySelector('[data-resolver-outcome]'),toolBox=host.querySelector('.mz-knowledge-tool');
+  var automatic=pgType==='adulto'&&hasSap;
+  var tier=automatic?100:((effEl&&['0','33','66','100'].indexOf(effEl.value)>=0)?Number(effEl.value):null);
+  if(effWrap)effWrap.style.display=automatic?'none':'';
+  if(toolBox)toolBox.style.display=automatic?'none':'';
+  var fake={resolver:p.resolver,legacyPrefix:p.legacyPrefix},faces=mzFamilySecondaryFaces(fake,pgType,tier),bonusRoll=bonusEl&&bonusEl.value!==''?Number(bonusEl.value):null;
+  if(bonusWrap)bonusWrap.style.display=faces?'':'none';if(bonusEl){bonusEl.max=faces?String(faces):'';if(!faces)bonusEl.value='';}
+  var bc=host.querySelector('[id$="_bonus"]');if(bc&&faces)bc.textContent=mzForumRollBlock('Quanto vale il bonus di '+p.label+'?','Il risultato del dado determina il valore del bonus previsto.',faces,'Bonus '+p.label);
+  var ready=tier!==null&&(!faces||(bonusRoll!==null&&intInRange(bonusRoll,1,faces))),rp=ready?rmResolveSearchFamily(p,pgType,tier,bonusRoll):null,val=row.querySelector('.rm-search-bonus-value');
   row.dataset.resolverReady=ready?'1':'0';
+  if(ready&&tier===0){val.value='0';out.classList.remove('mz-resolver-pending');out.textContent='Esito: nessun bonus prodotto.';}
+  else if(rp){val.value=String(rp.value||0);out.classList.remove('mz-resolver-pending');out.textContent='Esito calcolato: '+(p.kind==='empatia'?'+':'')+(rp.value||0)+' '+(p.kind==='empatia'?'Empatia':'possibilità')+'.';}
+  else{val.value='0';out.classList.add('mz-resolver-pending');out.textContent=tier===null?'Apri il Generatore di Riuscita delle Conoscenze e riporta qui l’esito.':'Inserisci anche il risultato del dado bonus.';}
 }
 function rmApplySearchBonusPreset(row,data){
   if(!row)return;var sel=row.querySelector('.rm-search-bonus-preset'),src=row.querySelector('.rm-search-bonus-source'),kind=row.querySelector('.rm-search-bonus-kind'),val=row.querySelector('.rm-search-bonus-value'),manual=row.querySelector('.rm-search-bonus-manual'),note=row.querySelector('.rm-search-bonus-note'),scope=row.querySelector('.rm-search-bonus-scope'),p=sel?sel.value:'';
@@ -4808,7 +4828,7 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
   document.addEventListener('change',function(e){
     var t=e.target;
     if(!t)return;
-    if(t.matches('.rm-search-bonus-preset,.rm-search-bonus-scope,[data-resolver-grade],[data-resolver-eff],[data-resolver-bonus],select,input'))notify();
+    if(t.matches('.rm-search-bonus-preset,.rm-search-bonus-scope,[data-resolver-eff],[data-resolver-bonus],select,input'))notify();
   },true);
   document.addEventListener('input',function(){notify();},true);
   document.addEventListener('toggle',function(){notify();},true);
