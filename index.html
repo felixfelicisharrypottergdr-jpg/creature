@@ -840,6 +840,13 @@ table.fasce td{
   color:#f1c7aa;cursor:pointer;font-size:18px;line-height:1;
 }
 .rm-search-bonus-row .rm-search-bonus-remove:hover{background:#351a11;color:#fff1e7;}
+.rm-search-bonus-row .rm-search-effect-field,.rm-search-bonus-row .rm-search-value-field{display:block;}
+.rm-search-bonus-row.compact-preset{grid-template-columns:minmax(280px,1.8fr) minmax(180px,1fr) 42px!important;}
+.rm-search-bonus-row.compact-preset .rm-search-effect-field,.rm-search-bonus-row.compact-preset .rm-search-value-field{display:none!important;}
+.rm-search-bonus-row.compact-preset .rm-search-bonus-note{grid-column:1 / -1;background:#2a160e;border:1px solid #8a4a29;border-radius:7px;padding:8px 10px;color:#f2decf;font-size:.8em;line-height:1.4;}
+.rm-search-bonus-row.compact-preset .rm-search-bonus-remove{margin-top:2.25em!important;}
+@media(max-width:900px){.rm-search-bonus-row.compact-preset{grid-template-columns:1fr 1fr 42px!important;}}
+@media(max-width:560px){.rm-search-bonus-row.compact-preset{grid-template-columns:1fr!important;}.rm-search-bonus-row.compact-preset .rm-search-bonus-remove{margin-top:0!important;width:100%!important;}}
 .rm-specie-helper{
   margin:10px 0 14px;
   padding:12px 14px;
@@ -1032,14 +1039,6 @@ body{padding-bottom:36px;}
   .mz-bonus-action-row{align-items:stretch;}
   .mz-bonus-action-row .mz-used-field{width:100%;flex:1 1 100%;}
 }
-
-
-
-/* ===== PONTE MAGIZOOLOGIA ↔ RIUSCITA DELLE CONOSCENZE v2 — una chiave per requestId ===== */
-.mz-bridge-status{margin-top:7px;padding:7px 9px;border-radius:5px;background:rgba(255,255,255,.035);color:#ead2c0;font-size:.78em;line-height:1.4;}
-.mz-bridge-status.ok{border-left:3px solid #8fb260;color:#e7f4d8;}
-.mz-bridge-status.warn{border-left:3px solid #d79a55;color:#ffe2bf;}
-.mz-knowledge-tool a[data-mz-bridge-open]{display:inline-flex;align-items:center;gap:6px;}
 
 </style>
 
@@ -3004,7 +3003,7 @@ body{color:#211008!important;}
           <option value="storica" disabled>Zona non registrata (vecchia sessione)</option>
         </select></div>
       </div>
-      <div class="nota-regole"><b>Prima scegli dove si svolge la role.</b> Per le Zone presenti nel materiale fornito, dopo l’estrazione della Classificazione il tool costruisce automaticamente il dado corretto e ricava la Creatura specifica dal risultato. Per Diagon Alley e per le ricerche fuori dal Regno Unito, dove non è stata fornita una lista esplicitamente etichettata, resta disponibile il metodo manuale.</div>
+      <div class="nota-regole"><b>Prima scegli dove si svolge la role.</b> Per tutte le Zone per cui mi hai fornito la lista, dopo l’estrazione della Classificazione il tool costruisce automaticamente il dado corretto e ricava la Creatura specifica dal risultato. Il metodo manuale resta solo dove manca davvero una lista associata alla Zona scelta.</div>
       <div class="rm-special" id="rmLagoNeroBox" style="display:none">
         <h3>Lago Nero — controllo Scrofungulus</h3>
         <label class="check-riga"><input type="checkbox" id="rmNuotoLago" data-key="rmNuotoLago"> Il PG sta nuotando nel Lago Nero</label>
@@ -3037,7 +3036,7 @@ body{color:#211008!important;}
 
       <div class="mz-bonus-manager" id="rmBonusRicercaBox">
         <h3>Oggetti / Incantesimi / Conoscenze — Bonus alla Ricerca</h3>
-        <p class="mz-bonus-help">Seleziona ciò che stai usando. Quando una Conoscenza richiede prima di stabilirne la riuscita, apri il <b>Generatore di Riuscita delle Conoscenze</b> dal riquadro che comparirà nella riga: la Conoscenza sarà già selezionata e il 0/33/66/100% verrà importato automaticamente al ritorno. Qui resterà da completare soltanto l’eventuale dado specifico che determina il valore del bonus. Per gli Oggetti a usi limitati basta scegliere l’Incontro in cui li stai applicando.</p>
+        <p class="mz-bonus-help">Seleziona ciò che stai usando. Quando una Conoscenza richiede prima di stabilirne la riuscita, usa il <a href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener"><b>Generatore di Riuscita delle Conoscenze</b></a>; qui comparirà poi soltanto l’eventuale dado necessario a determinare il valore del bonus. Per gli Oggetti a usi limitati basta scegliere l’Incontro in cui li stai applicando.</p>
         <input type="hidden" id="rmBonusRicercaJson" data-key="bonusRicercaJson" value="[]">
         <div class="mz-bonus-list" id="rmBonusRicercaRows"></div>
         <button type="button" class="mz-bonus-add" id="rmAddBonusRicerca">+ Aggiungi Oggetto / Incantesimo / Conoscenza</button>
@@ -3569,115 +3568,18 @@ function mzCopyResolverState(from,to){
   [['[data-resolver-eff]',a.eff],['[data-resolver-bonus]',a.bonus]].forEach(function(x){var e=r.querySelector(x[0]);if(e)e.value=x[1];});
   mzRefreshFamilyResolver(to,to.dataset.phase||'');
 }
-
-/* ===== PONTE MAGIZOOLOGIA ↔ RIUSCITA DELLE CONOSCENZE ===== */
-var MZ_KNOWLEDGE_BRIDGE_REQUEST_PREFIX='ffgdr_mz_knowledge_request_v2_';
-var MZ_KNOWLEDGE_BRIDGE_RESPONSE_PREFIX='ffgdr_mz_knowledge_response_v2_';
-var MZ_KNOWLEDGE_BRIDGE_LEGACY_REQUEST_KEY='ffgdr_mz_knowledge_request_v1';
-var MZ_KNOWLEDGE_BRIDGE_LEGACY_RESPONSE_KEY='ffgdr_mz_knowledge_response_v1';
-var MZ_KNOWLEDGE_TOOL_URL='https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze';
-function mzBridgeId(){return 'mz_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);}
-function mzBridgeProfile(){
-  var type=(document.getElementById('pgTipo')||{}).value||'studente',vote='',sap=0;
-  if(type==='studente'){
-    var follows=(document.getElementById('pgSegueCDCM')||{}).value||'si';
-    vote=follows==='no'?'T':((document.getElementById('pgVoto')||{}).value||'T');
-  }else{
-    try{sap=mzProfiloSapienza();}catch(e){sap=0;}
-  }
-  return {pgType:type,studentVote:vote,sapienzaScore:sap,hasSapienza:type==='adulto'&&sap>0};
-}
-function mzBridgeStatus(row,message,kind){
-  if(!row)return;var el=row.querySelector('[data-mz-bridge-status]');if(!el)return;
-  el.className='mz-bridge-status'+(kind?' '+kind:'');el.textContent=message||'';
-}
-function mzBridgeCleanupStorage(){
-  var now=Date.now(),remove=[];
-  try{
-    for(var i=0;i<window.localStorage.length;i++){
-      var key=window.localStorage.key(i)||'';
-      if(key.indexOf(MZ_KNOWLEDGE_BRIDGE_REQUEST_PREFIX)!==0 && key.indexOf(MZ_KNOWLEDGE_BRIDGE_RESPONSE_PREFIX)!==0)continue;
-      var obj=null;try{obj=JSON.parse(window.localStorage.getItem(key)||'');}catch(e){obj=null;}
-      if(!obj || !obj.createdAt || now-Number(obj.createdAt)>2*60*60*1000)remove.push(key);
-    }
-    remove.forEach(function(key){window.localStorage.removeItem(key);});
-  }catch(e){}
-}
-function mzBridgeMakeRequest(row,phase,p,context){
-  if(!row||!p)return false;
-  var profile=mzBridgeProfile(),id=mzBridgeId();
-  row.dataset.mzBridgeRequestId=id;
-  var req={version:1,requestId:id,knowledge:p.source||p.label,label:p.label||p.source||'',phase:phase||'',context:context||'guida',pgType:profile.pgType,studentVote:profile.studentVote,sapienzaScore:profile.sapienzaScore,hasSapienza:profile.hasSapienza,createdAt:Date.now()};
-  try{
-    mzBridgeCleanupStorage();
-    window.localStorage.setItem(MZ_KNOWLEDGE_BRIDGE_REQUEST_PREFIX+id,JSON.stringify(req));
-    mzBridgeStatus(row,'Richiesta '+id+' preparata: il Generatore aprirà '+(p.source||p.label)+' già selezionata e riporterà l’esito soltanto in questa riga.','');
-    return true;
-  }catch(e){
-    mzBridgeStatus(row,'Collegamento automatico non disponibile: usa comunque il Generatore e riporta qui manualmente la riuscita ottenuta.','warn');
-    return false;
-  }
-}
-function mzBridgeBindLink(row,phase,p,context){
-  if(!row)return;var link=row.querySelector('[data-mz-bridge-open]');if(!link)return;
-  link.addEventListener('click',function(){mzBridgeMakeRequest(row,phase,p,context);});
-}
-function mzBridgeFindWaitingRow(requestId){
-  if(!requestId)return null;var found=null;
-  document.querySelectorAll('.mz-bonus-row.mz-phase,.rm-search-bonus-row').forEach(function(row){if(!found&&row.dataset.mzBridgeRequestId===requestId)found=row;});
-  return found;
-}
-function mzBridgeImportResponse(raw){
-  var resp=null;
-  try{resp=typeof raw==='string'?JSON.parse(raw):raw;}catch(e){resp=null;}
-  if(!resp||!resp.requestId||[0,33,66,100].indexOf(Number(resp.pct))<0)return false;
-  if(resp.createdAt&&Date.now()-Number(resp.createdAt)>2*60*60*1000)return false;
-  var row=mzBridgeFindWaitingRow(resp.requestId);if(!row)return false;
-  var eff=row.querySelector('[data-resolver-eff]');if(!eff)return false;
-  eff.value=String(Number(resp.pct));
-  try{eff.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){
-    if(row.classList.contains('mz-bonus-row')){mzRefreshFamilyResolver(row,row.dataset.phase||'');ricalcolaMagizoologia();}
-    else{rmRefreshSearchResolver(row);if(typeof ricalcolaRicerca==='function')ricalcolaRicerca();}
-  }
-  mzBridgeStatus(row,'Riuscita importata automaticamente dal Generatore: '+Number(resp.pct)+'%. '+(row.querySelector('[data-bonus-wrap]')&&row.querySelector('[data-bonus-wrap]').style.display!=='none'?'Completa ora l’eventuale dado bonus mostrato qui sotto.':'L’effetto è stato aggiornato nel tool.'),'ok');
-  row.dataset.mzBridgeImported='1';
-  try{window.localStorage.removeItem(MZ_KNOWLEDGE_BRIDGE_RESPONSE_PREFIX+resp.requestId);}catch(e){}
-  return true;
-}
-function mzBridgeCheckStoredResponse(){
-  mzBridgeCleanupStorage();
-  var rows=document.querySelectorAll('.mz-bonus-row.mz-phase,.rm-search-bonus-row');
-  for(var i=0;i<rows.length;i++){
-    var id=rows[i].dataset.mzBridgeRequestId;if(!id)continue;
-    var raw=null;try{raw=window.localStorage.getItem(MZ_KNOWLEDGE_BRIDGE_RESPONSE_PREFIX+id);}catch(e){raw=null;}
-    if(raw)mzBridgeImportResponse(raw);
-  }
-  /* Un solo fallback v1, usato soltanto durante la transizione. */
-  try{
-    var legacy=window.localStorage.getItem(MZ_KNOWLEDGE_BRIDGE_LEGACY_RESPONSE_KEY);
-    if(legacy && mzBridgeImportResponse(legacy))window.localStorage.removeItem(MZ_KNOWLEDGE_BRIDGE_LEGACY_RESPONSE_KEY);
-  }catch(e){}
-}
-window.addEventListener('storage',function(e){
-  if(e.key && e.key.indexOf(MZ_KNOWLEDGE_BRIDGE_RESPONSE_PREFIX)===0 && e.newValue)mzBridgeImportResponse(e.newValue);
-  else if(e.key===MZ_KNOWLEDGE_BRIDGE_LEGACY_RESPONSE_KEY && e.newValue)mzBridgeImportResponse(e.newValue);
-});
-window.addEventListener('focus',mzBridgeCheckStoredResponse);
-document.addEventListener('visibilitychange',function(){if(!document.hidden)mzBridgeCheckStoredResponse();});
-
 function mzInitFamilyResolver(row,phase,p){
   var host=row.querySelector('[data-role="resolver"]');if(!host)return;
   row.classList.add('has-resolver');row.dataset.resolverFamily=p.resolver||'';
   var uid=row.dataset.uid||String(Date.now());
   host.innerHTML='<div class="mz-resolver-title">Riuscita e bonus — '+mzHtml(p.label)+'</div><div class="mz-resolver-grid">'+
-    '<div class="mz-knowledge-tool"><b>Prima determina la riuscita della Conoscenza.</b><br>Apri il Generatore dedicato: la Conoscenza verrà preselezionata e, appena calcoli l’esito, la riuscita tornerà automaticamente in questa riga.'+
-    '<br><a data-mz-bridge-open="1" href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener">Apri il Generatore di Riuscita delle Conoscenze ↗</a><div class="mz-bridge-status" data-mz-bridge-status>In attesa di aprire il Generatore.</div></div>'+
+    '<div class="mz-knowledge-tool"><b>Prima determina la riuscita della Conoscenza.</b><br>Usa il generatore dedicato, poi torna qui e riporta l’esito ottenuto.'+
+    '<br><a href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener">Apri il Generatore di Riuscita delle Conoscenze ↗</a></div>'+
     '<div class="mz-resolver-field" data-eff-wrap><label>Riuscita ottenuta</label><select data-resolver-eff><option value="">— Seleziona l’esito —</option><option value="0">0% · nessun effetto</option><option value="33">33%</option><option value="66">66%</option><option value="100">100%</option></select></div>'+
     '<div class="mz-resolver-roll" data-bonus-wrap style="display:none"><div class="result-line"><div class="dice-code" id="mzBonusCode_'+uid+'"></div><button type="button" class="copy-btn" data-copy-source="mzBonusCode_'+uid+'">Copia</button></div><div class="result-line"><span>Risultato del dado bonus:</span><input type="number" min="1" data-resolver-bonus></div></div>'+
     '<div class="mz-resolver-outcome mz-resolver-pending" data-resolver-outcome>Determina prima la riuscita della Conoscenza nel generatore dedicato.</div></div>';
   host.querySelectorAll('select,input').forEach(function(e){e.addEventListener('input',function(){mzRefreshFamilyResolver(row,phase);ricalcolaMagizoologia();});e.addEventListener('change',function(){mzRefreshFamilyResolver(row,phase);ricalcolaMagizoologia();});});
-  mzBridgeBindLink(row,phase,p,'guida');
-  setupNumericInputs();mzRefreshFamilyResolver(row,phase);mzBridgeCheckStoredResponse();
+  setupNumericInputs();mzRefreshFamilyResolver(row,phase);
 }
 function mzRefreshFamilyResolver(row,phase){
   var familyKey=row.dataset.presetKey||'',p=MZ_PHASE_BONUS_PRESETS[familyKey],host=row.querySelector('[data-role="resolver"]');
@@ -6063,6 +5965,12 @@ function rmSearchPresetOptions(){
   var h='<option value="">— Seleziona —</option>';order.forEach(function(g){h+='<optgroup label="'+rmEsc(g)+'">';groups[g].forEach(function(x){h+='<option value="'+rmEsc(x.key)+'">'+rmEsc(x.p.label)+'</option>';});h+='</optgroup>';});return h+'<option value="manual">Altro bonus manuale</option>';
 }
 function rmSearchBonusRows(){var h=rmEl('rmBonusRicercaRows');return h?Array.prototype.slice.call(h.querySelectorAll('.rm-search-bonus-row')):[];}
+function rmFormatSearchBonusEffect(kind,value){
+  value=Math.max(0,parseInt(value,10)||0);
+  if(kind==='empatia')return '+'+value+' Empatia';
+  if(kind==='malusEmpatia')return '−'+value+' Empatia';
+  return '+'+value+' possibilità';
+}
 function rmInferSearchBonusPreset(data){
   data=data||{};var p=String(data.preset||'');if(p&&RM_SEARCH_BONUS_PRESETS[p])return p;if(p==='manual')return 'manual';
   var src=String(data.source||'').trim(),v=Math.max(0,parseInt(data.value,10)||0),kind=String(data.kind||'possibilita'),keys=Object.keys(RM_SEARCH_BONUS_PRESETS);
@@ -6076,15 +5984,14 @@ function rmInitSearchResolver(row,p,data){
   var host=row.querySelector('.rm-search-resolver');if(!host||!p||!p.resolver)return;row.classList.add('has-resolver');
   var uid='rmResolver_'+(++RM_SEARCH_BONUS_UID);
   host.innerHTML='<div class="mz-resolver-title">Riuscita e bonus — '+rmEsc(p.label)+'</div><div class="mz-resolver-grid">'+
-    '<div class="mz-knowledge-tool"><b>Prima determina la riuscita della Conoscenza.</b><br>Apri il Generatore dedicato: la Conoscenza verrà preselezionata e la riuscita tornerà automaticamente in questa riga.'+
-    '<br><a data-mz-bridge-open="1" href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener">Apri il Generatore di Riuscita delle Conoscenze ↗</a><div class="mz-bridge-status" data-mz-bridge-status>In attesa di aprire il Generatore.</div></div>'+
+    '<div class="mz-knowledge-tool"><b>Prima determina la riuscita della Conoscenza.</b><br>Usa il generatore dedicato, poi torna qui e riporta l’esito ottenuto.'+
+    '<br><a href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener">Apri il Generatore di Riuscita delle Conoscenze ↗</a></div>'+
     '<div class="mz-resolver-field" data-eff-wrap><label>Riuscita ottenuta</label><select data-resolver-eff><option value="">— Seleziona l’esito —</option><option value="0">0% · nessun effetto</option><option value="33">33%</option><option value="66">66%</option><option value="100">100%</option></select></div>'+
     '<div class="mz-resolver-roll" data-bonus-wrap style="display:none"><div class="result-line"><div class="dice-code" id="'+uid+'_bonus"></div><button type="button" class="copy-btn" data-copy-source="'+uid+'_bonus">Copia</button></div><div class="result-line"><span>Risultato del dado bonus:</span><input type="number" min="1" data-resolver-bonus></div></div>'+
     '<div class="mz-resolver-outcome mz-resolver-pending" data-resolver-outcome>Determina prima la riuscita della Conoscenza nel generatore dedicato.</div></div>';
   data=data||{};var e=host.querySelector('[data-resolver-eff]'),b=host.querySelector('[data-resolver-bonus]');if(e&&data.resolverEff)e.value=data.resolverEff;if(b&&data.resolverBonus)b.value=data.resolverBonus;
   host.querySelectorAll('select,input').forEach(function(el){el.addEventListener('input',function(){rmRefreshSearchResolver(row);ricalcolaRicerca();});el.addEventListener('change',function(){rmRefreshSearchResolver(row);ricalcolaRicerca();});});
-  mzBridgeBindLink(row,'ricerca',p,'ricerca');
-  setupNumericInputs();rmRefreshSearchResolver(row);mzBridgeCheckStoredResponse();
+  setupNumericInputs();rmRefreshSearchResolver(row);
 }
 function rmRefreshSearchResolver(row){
   var sel=row.querySelector('.rm-search-bonus-preset'),p=sel&&RM_SEARCH_BONUS_PRESETS[sel.value],host=row.querySelector('.rm-search-resolver');if(!p||!p.resolver||!host)return;
@@ -6104,17 +6011,17 @@ function rmRefreshSearchResolver(row){
 }
 function rmApplySearchBonusPreset(row,data){
   if(!row)return;var sel=row.querySelector('.rm-search-bonus-preset'),src=row.querySelector('.rm-search-bonus-source'),kind=row.querySelector('.rm-search-bonus-kind'),val=row.querySelector('.rm-search-bonus-value'),manual=row.querySelector('.rm-search-bonus-manual'),note=row.querySelector('.rm-search-bonus-note'),scope=row.querySelector('.rm-search-bonus-scope'),p=sel?sel.value:'';
-  row.classList.remove('has-resolver');var resolver=row.querySelector('.rm-search-resolver');if(resolver)resolver.innerHTML='';
+  row.classList.remove('has-resolver','compact-preset');var resolver=row.querySelector('.rm-search-resolver');if(resolver)resolver.innerHTML='';
   if(scope){var allOpt=scope.querySelector('option[value="all"]');if(allOpt)allOpt.disabled=false;scope.disabled=false;}
-  if(p&&RM_SEARCH_BONUS_PRESETS[p]){var x=RM_SEARCH_BONUS_PRESETS[p];if(src)src.value=x.source;if(kind){kind.value=x.kind;kind.disabled=true;}if(val){val.value=String(x.value||0);val.readOnly=true;}if(manual)manual.style.display='none';if(scope&&x.defaultScope)scope.value=x.defaultScope;if(scope&&x.singleScope){var ao=scope.querySelector('option[value="all"]');if(ao)ao.disabled=true;if(scope.value==='all')scope.value='1';}if(scope&&x.lockScope)scope.disabled=true;if(note)note.textContent=x.note+((x.uses&&x.uses>0)?(' · '+x.uses+' uso/i disponibili per il bonus.'):'');if(x.resolver)rmInitSearchResolver(row,x,data||{});}
+  if(p&&RM_SEARCH_BONUS_PRESETS[p]){var x=RM_SEARCH_BONUS_PRESETS[p],scopeLabel='';if(src)src.value=x.source;if(kind){kind.value=x.kind;kind.disabled=true;}if(val){val.value=String(x.value||0);val.readOnly=true;}if(manual)manual.style.display='none';if(scope&&x.defaultScope)scope.value=x.defaultScope;if(scope&&x.singleScope){var ao=scope.querySelector('option[value="all"]');if(ao)ao.disabled=true;if(scope.value==='all')scope.value='1';}if(scope&&x.lockScope)scope.disabled=true;scopeLabel=scope?((scope.value==='all')?'Tutti gli Incontri':('Solo Incontro '+({1:'I',2:'II',3:'III'}[scope.value]||scope.value))):'';if(note)note.innerHTML='<b>'+rmEsc(rmFormatSearchBonusEffect(x.kind,x.value))+'</b>'+(scopeLabel?(' · '+rmEsc(scopeLabel)):'')+'<br>'+rmEsc(x.note+((x.uses&&x.uses>0)?(' · '+x.uses+' uso/i disponibili per il bonus.'):''));row.classList.add('compact-preset');if(x.resolver)rmInitSearchResolver(row,x,data||{});}
   else if(p==='manual'){if(kind)kind.disabled=false;if(val)val.readOnly=false;if(manual)manual.style.display='flex';if(note)note.textContent='Inserisci manualmente soltanto un modificatore previsto dal regolamento e specifica se aumenta/diminuisce Empatia oppure modifica le possibilità del tiro.';}
   else{if(src)src.value='';if(kind){kind.value='possibilita';kind.disabled=true;}if(val){val.value='0';val.readOnly=true;}if(manual)manual.style.display='none';if(note)note.textContent='Seleziona un effetto dall’elenco.';}
 }
 function rmBuildSearchBonusRow(data){
   var row=document.createElement('div');row.className='rm-search-bonus-row';
   row.innerHTML='<div class="mz-bonus-field"><label>Oggetto / Incantesimo / Conoscenza</label><select class="rm-search-bonus-preset">'+rmSearchPresetOptions()+'</select></div>'+ 
-    '<div class="mz-bonus-field"><label>Effetto</label><select class="rm-search-bonus-kind"><option value="possibilita">+ Possibilità</option><option value="empatia">+ Empatia</option><option value="malusEmpatia">− Empatia</option></select></div>'+ 
-    '<div class="mz-bonus-field"><label>Bonus</label><input type="number" class="rm-search-bonus-value" min="0" value="0" readonly></div>'+ 
+    '<div class="mz-bonus-field rm-search-effect-field"><label>Effetto</label><select class="rm-search-bonus-kind"><option value="possibilita">+ Possibilità</option><option value="empatia">+ Empatia</option><option value="malusEmpatia">− Empatia</option></select></div>'+ 
+    '<div class="mz-bonus-field rm-search-value-field"><label>Bonus</label><input type="number" class="rm-search-bonus-value" min="0" value="0" readonly></div>'+ 
     '<div class="mz-bonus-field"><label>Si applica a</label><select class="rm-search-bonus-scope"><option value="all">Tutti gli Incontri</option><option value="1">Solo Incontro I</option><option value="2">Solo Incontro II</option><option value="3">Solo Incontro III</option></select></div>'+ 
     '<button type="button" class="rm-search-bonus-remove" title="Elimina bonus" aria-label="Elimina bonus">×</button>'+ 
     '<div class="rm-search-resolver"></div>'+ 
@@ -6881,7 +6788,7 @@ if(document.readyState === 'loading'){
    ============================================================ */
 (function(){
 'use strict';
-var RM_ZONE_CREATURES={"Lago Nero":{"X":["Glowbug","Marmite","Rospo"],"XX":["Avvincino","Bundimun","Chizpurfle","Clabbert","Horklump","Imp","Ippocampo","Jobberknoll"],"XXX":["Lobalug","Malacaw Maculato","Moke","Pogrebin","Plimpi","Purvincolo","Sblorb","Streeler"],"XXXX":["Kappa","Kelpie","Maride","Thestral","Unicorno"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Gytrash","Marciotto","Molliccio"]},"Foresta Proibita":{"X":["Rospo","Vermicolo","Gufo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Fata","Gnomo","Horklump","Imp","Jobberknoll","Lumaca Carnivora","Mooncalf"],"XXX":["Berretto Rosso","Billywig","Doxy","Dugbog","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Centauro","Kappa","Schiopodo Sparacoda","Thestral","Troll","Unicorno"],"XXXXX":["Acromantula"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Gytrash","Marciotto","Molliccio"]},"Valli di Hogwarts":{"X":["Rospo","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Diricawl","Fata","Gnomo","Horklump","Imp","Jobberknoll","Mooncalf","Porlock"],"XXX":["Billywig","Doxy","Dugbog","Fiammagranchio","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Bicorno","Centauro","Grifone","Schiopodo Sparacoda","Thestral"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Lepricani","Megera","Nano","Ninfa dei Boschi","Orco","Vampiro","Veela","Ammuntadore","Gytrash","Marciotto"]},"Vicoli di Notturn Alley":{"X":["Gatto","Gufo","Rospo","Vermicolo"],"XX":["Augurey","Bundimun","Chizpurfle","Clabbert","Ghoul","Horklump","Imp","Lumaca Carnivora"],"XXX":["Ashwinder","Crup","Fwooper","Kneazle","Moke","Nogtail","Streeler"],"XXXX":["Matagot"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Goblin","Megera","Vampiro","Veela","Ammuntadore","Banshee","Borges","Fantasma","Gytrash","Marciotto","Molliccio","Polterigeist"]},"Valli di Hogsmeade":{"X":["Rospo","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Diricawl","Fata","Gnomo","Horklump","Imp","Jobberknoll","Mooncalf","Porlock"],"XXX":["Billywig","Doxy","Dugbog","Fiammagranchio","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Bicorno","Centauro","Grifone","Schiopodo Sparacoda","Thestral"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Lepricani","Megera","Nano","Ninfa dei Boschi","Orco","Vampiro","Veela","Ammuntadore","Gytrash","Marciotto"]},"Vie di Hogsmeade":{"X":["Glowbug","Gufo","Rospo","Vermicolo"],"XX":["Asticello","Augurey","Bundimun","Diricawl","Ghoul","Horklump","Jobberknoll","Lumaca Carnivora","Porlock"],"XXX":["Ashwinder","Billywig","Crup","Doxy","Glumbumble","Jarvey","Knarl","Kneazle","Moke","Nogtail","Purvincolo","Snaso","Streeler"],"XXXX":[],"XXXXX":[],"Essere/Spirito/Non-Essere":["Elfo Domestico","Goblin","Megera","Vampiro","Veela","Ammuntadore","Borges","Fantasma","Molliccio","Polterigeist"]},"Foreste Magiche Inglesi":{"X":["Glowbug","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Chizpurfle","Clabbert","Diricawl","Fata","Gnomo","Horklump","Jobberknoll","Mooncalf","Porlock"],"XXX":["Ashwinder","Billywig","Doxy","Dugbog","Fiammagranchio","Fwooper","Glumbumble","Ippogrifo","Jarvey","Knarl","Kneazle","Moke","Pixie","Puffskein","Purvincolo","Salamandra","Sblorb","Snaso","Streeler"],"XXXX":["Bicorno","Centauro","Erkling","Grifone","Kelpie","Thestral","Unicorno","Velenottero"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Orco","Ammuntadore","Borges","Fantasma","Gytrash","Marciotto","Molliccio"]},"Foreste Oscure":{"X":["Rospo","Vermicolo"],"XX":["Augurey","Ghoul","Horklump","Imp","Lumaca Carnivora"],"XXX":["Ashwinder","Berretto Rosso","Fiammagranchio","Fwooper","Nogtail","Pogrebin","Salamandra"],"XXXX":["Erkling","Kappa","Kelpie","Lupo Mannaro","Schiopodo Sparacoda","Thestral","Troll","Velenottero"],"XXXXX":["Acromantula","Manticora","Quintaped"],"Essere/Spirito/Non-Essere":["Gigante","Megera","Vampiro","Veela","Ammuntadore","Banshee","Borges","Dissennatore","Gytrash","Inferius","Marciotto","Molliccio","Polterigeist"]},"Coste Magiche Inglesi":{"X":["Glowbug","Marmite","Rospo"],"XX":["Avvincino","Ippocampo"],"XXX":["Lobalug","Malacaw Maculato","Plimpi"],"XXXX":["Maride"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Veela","Ammuntadore","Fantasma","Gytrash","Inferius","Marciotto","Molliccio","Polterigeist"]}};
+var RM_ZONE_CREATURES={"Lago Nero":{"X":["Glowbug","Marmite","Rospo"],"XX":["Avvincino","Bundimun","Chizpurfle","Clabbert","Horklump","Imp","Ippocampo","Jobberknoll"],"XXX":["Lobalug","Malacaw Maculato","Moke","Pogrebin","Plimpi","Purvincolo","Sblorb","Streeler"],"XXXX":["Kappa","Kelpie","Maride","Thestral","Unicorno"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Gytrash","Marciotto","Molliccio"]},"Foresta Proibita":{"X":["Rospo","Vermicolo","Gufo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Fata","Gnomo","Horklump","Imp","Jobberknoll","Lumaca Carnivora","Mooncalf"],"XXX":["Berretto Rosso","Billywig","Doxy","Dugbog","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Centauro","Kappa","Schiopodo Sparacoda","Thestral","Troll","Unicorno"],"XXXXX":["Acromantula"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Gytrash","Marciotto","Molliccio"]},"Valli di Hogwarts":{"X":["Rospo","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Diricawl","Fata","Gnomo","Horklump","Imp","Jobberknoll","Mooncalf","Porlock"],"XXX":["Billywig","Doxy","Dugbog","Fiammagranchio","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Bicorno","Centauro","Grifone","Schiopodo Sparacoda","Thestral"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Lepricani","Megera","Nano","Ninfa dei Boschi","Orco","Vampiro","Veela","Ammuntadore","Gytrash","Marciotto"]},"Diagon Alley":{"X":["Gatto","Gufo","Puffola Pigmea"],"XX":["Bundimun","Chizpurfle","Clabbert","Ghoul","Horklump","Jobberknoll","Porlock"],"XXX":["Crup","Doxy","Fwooper","Jarvey","Knarl","Kneazle","Moke","Puffskein","Snaso"],"XXXX":["Matagot"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Elfo Domestico","Goblin","Megera","Vampiro","Veela","Fantasma","Marciotto","Molliccio","Ammuntadore"]},"Vicoli di Notturn Alley":{"X":["Gatto","Gufo","Rospo","Vermicolo"],"XX":["Augurey","Bundimun","Chizpurfle","Clabbert","Ghoul","Horklump","Imp","Lumaca Carnivora"],"XXX":["Ashwinder","Crup","Fwooper","Kneazle","Moke","Nogtail","Streeler"],"XXXX":["Matagot"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Goblin","Megera","Vampiro","Veela","Ammuntadore","Banshee","Borges","Fantasma","Gytrash","Marciotto","Molliccio","Polterigeist"]},"Valli di Hogsmeade":{"X":["Rospo","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Diricawl","Fata","Gnomo","Horklump","Imp","Jobberknoll","Mooncalf","Porlock"],"XXX":["Billywig","Doxy","Dugbog","Fiammagranchio","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Bicorno","Centauro","Grifone","Schiopodo Sparacoda","Thestral"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Lepricani","Megera","Nano","Ninfa dei Boschi","Orco","Vampiro","Veela","Ammuntadore","Gytrash","Marciotto"]},"Vie di Hogsmeade":{"X":["Glowbug","Gufo","Rospo","Vermicolo"],"XX":["Asticello","Augurey","Bundimun","Diricawl","Ghoul","Horklump","Jobberknoll","Lumaca Carnivora","Porlock"],"XXX":["Ashwinder","Billywig","Crup","Doxy","Glumbumble","Jarvey","Knarl","Kneazle","Moke","Nogtail","Purvincolo","Snaso","Streeler"],"XXXX":[],"XXXXX":[],"Essere/Spirito/Non-Essere":["Elfo Domestico","Goblin","Megera","Vampiro","Veela","Ammuntadore","Borges","Fantasma","Molliccio","Polterigeist"]},"Foreste Magiche Inglesi":{"X":["Glowbug","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Chizpurfle","Clabbert","Diricawl","Fata","Gnomo","Horklump","Jobberknoll","Mooncalf","Porlock"],"XXX":["Ashwinder","Billywig","Doxy","Dugbog","Fiammagranchio","Fwooper","Glumbumble","Ippogrifo","Jarvey","Knarl","Kneazle","Moke","Pixie","Puffskein","Purvincolo","Salamandra","Sblorb","Snaso","Streeler"],"XXXX":["Bicorno","Centauro","Erkling","Grifone","Kelpie","Thestral","Unicorno","Velenottero"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Orco","Ammuntadore","Borges","Fantasma","Gytrash","Marciotto","Molliccio"]},"Foreste Oscure":{"X":["Rospo","Vermicolo"],"XX":["Augurey","Ghoul","Horklump","Imp","Lumaca Carnivora"],"XXX":["Ashwinder","Berretto Rosso","Fiammagranchio","Fwooper","Nogtail","Pogrebin","Salamandra"],"XXXX":["Erkling","Kappa","Kelpie","Lupo Mannaro","Schiopodo Sparacoda","Thestral","Troll","Velenottero"],"XXXXX":["Acromantula","Manticora","Quintaped"],"Essere/Spirito/Non-Essere":["Gigante","Megera","Vampiro","Veela","Ammuntadore","Banshee","Borges","Dissennatore","Gytrash","Inferius","Marciotto","Molliccio","Polterigeist"]},"Coste Magiche Inglesi":{"X":["Glowbug","Marmite","Rospo"],"XX":["Avvincino","Ippocampo"],"XXX":["Lobalug","Malacaw Maculato","Plimpi"],"XXXX":["Maride"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Veela","Ammuntadore","Fantasma","Gytrash","Inferius","Marciotto","Molliccio","Polterigeist"]}};
 var RM_ZONE_ALIASES={'Valle di Hogwarts':'Valli di Hogwarts','Notturn Alley':'Vicoli di Notturn Alley','Foreste Magiche Oscure':'Foreste Oscure'};
 function rmV8Zone(){var z=rmZona();return RM_ZONE_ALIASES[z]||z;}
 rmZonaLabel=function(){var z=rmV8Zone();return z==='storica'?'Non registrata (vecchia sessione)':z;};
@@ -6890,21 +6797,22 @@ var RM_V8_SPEC_CTX={1:null,2:null,3:null};
 rmRecomputeSpecie=function(n){
   var face=rmEl('dadoSpecie'+n),res=rmEl('risultatoSpecie'+n),name=rmEl('specieCreatura'+n),tag=rmEl('tagSpecie'+n),note=rmEl('rmSpecieNota'+n),code=rmEl('codiceSpecie'+n);
   if(!face||!res||!name||!tag||!note||!code)return;
+  var faceRow=face.closest('.riga'),nameRow=name.closest('.riga');
   var z=rmV8Zone(),cls=rmClasseCorrente(n),list=RM_ZONE_CREATURES[z]&&RM_ZONE_CREATURES[z][cls],auto=Array.isArray(list),ctx=z+'|'+cls;
   if(!RM_RESTORING&&RM_V8_SPEC_CTX[n]!==null&&RM_V8_SPEC_CTX[n]!==ctx){face.value='';res.value='';name.value='';}
   RM_V8_SPEC_CTX[n]=ctx;
-  if(!cls){face.value='';res.value='';name.value='';face.readOnly=false;name.readOnly=false;name.placeholder='';name.classList.remove('rm-auto-name');res.removeAttribute('max');code.textContent='Prima completa il tiro di Classificazione.';note.textContent='In attesa della Classificazione.';tag.textContent='in attesa';tag.className='out-tag out-neutral';return;}
+  if(!cls){face.value='';res.value='';name.value='';face.readOnly=false;name.readOnly=false;name.placeholder='';name.classList.remove('rm-auto-name');if(faceRow)faceRow.style.display='';if(nameRow)nameRow.style.display='';res.removeAttribute('max');code.textContent='Prima completa il tiro di Classificazione.';note.textContent='In attesa della Classificazione.';tag.textContent='in attesa';tag.className='out-tag out-neutral';return;}
   if(auto){
-    face.value=String(list.length);face.readOnly=true;name.readOnly=true;name.placeholder='';name.classList.add('rm-auto-name');
+    face.value=String(list.length);face.readOnly=true;name.readOnly=true;name.placeholder='';name.classList.add('rm-auto-name');if(faceRow)faceRow.style.display='none';if(nameRow)nameRow.style.display='';
     if(list.length===0){res.value='';name.value='';res.removeAttribute('max');code.textContent='La lista fornita per '+z+' non contiene Creature di Classificazione '+cls+'. Il tool non inventa un risultato: verifica sul regolamento se il tiro di Classificazione vada ripetuto.';note.textContent='Nessuna Creatura disponibile nella lista della Zona per questa Classificazione.';tag.textContent='Nessun risultato in lista';tag.className='out-tag out-fail';return;}
     res.max=String(list.length);
     rmSetCode('codiceSpecie'+n,'Quale Creatura specifica di Classificazione '+cls+' viene trovata in '+z+'?',list.map(function(x,i){return (i+1)+'. '+x;}).join('\n'),'[dice=1d'+list.length+']Creatura specifica — '+z+' — Classificazione '+cls+'[/dice]');
-    note.textContent='Lista incorporata: '+list.length+' '+(list.length===1?'risultato':'risultati')+' per '+z+' · '+cls+'. Il risultato del dado compila automaticamente il nome.';
+    note.textContent='Lista incorporata: '+list.length+' '+(list.length===1?'risultato':'risultati')+' per '+z+' · '+cls+'. Non devi cercare tu la creatura: il nome viene compilato automaticamente dal risultato del dado.';
     var v=res.value!==''?Number(res.value):null;if(v===null){name.value='';tag.textContent='in attesa';tag.className='out-tag out-neutral';return;}
     if(!Number.isInteger(v)||v<1||v>list.length){name.value='';tag.textContent='Risultato impossibile';tag.className='out-tag out-fail';return;}
     name.value=list[v-1];tag.textContent=list[v-1];tag.className='out-tag out-ok';return;
   }
-  face.readOnly=false;name.readOnly=false;name.placeholder='Inserisci il nome trovato';name.classList.remove('rm-auto-name');
+  if(faceRow)faceRow.style.display='';if(nameRow)nameRow.style.display='';face.readOnly=false;name.readOnly=false;name.placeholder='Inserisci il nome trovato';name.classList.remove('rm-auto-name');
   var f=face.value!==''?Number(face.value):null;
   if(f===null||!Number.isInteger(f)||f<1||f>999){res.removeAttribute('max');code.textContent='Per '+(z||'questa Zona')+' non è presente nel materiale fornito una lista automatizzabile. Consulta la lista del forum per la Classificazione '+cls+', inserisci qui il numero di risultati e il tool genererà il dado.';note.textContent='Modalità manuale: inserisci le facce del dado e, dopo il tiro, il nome della Creatura corrispondente.';tag.textContent=res.value===''?'in attesa':'Inserisci prima le facce';tag.className='out-tag '+(res.value===''?'out-neutral':'out-fail');return;}
   res.max=String(f);rmSetCode('codiceSpecie'+n,'Quale Creatura specifica di Classificazione '+cls+' viene trovata in '+(z||'Zona scelta')+'?','Consulta la lista della Zona e associa il risultato alla Creatura corrispondente.','[dice=1d'+f+']Creatura specifica — '+(z||'Zona')+' — Classificazione '+cls+'[/dice]');
@@ -6948,6 +6856,17 @@ ricalcolaRicerca=function(){
   if(!RM_RESTORING&&RM_V8_NAME!==null&&RM_V8_NAME!==nm){for(var j=1;j<=3;j++){var bb=rmEl('risultatoBolcino'+j);if(bb)bb.value='';}}
   RM_V8_ZONE=z;RM_V8_NAME=nm;rmV8BaseRicalcola();rmV8RecomputeLago();
 };
+
+function rmReorderEncounterLayout(){
+  [1,2,3].forEach(function(n){
+    var formula=rmEl('formulaTrova'+n),code=rmEl('codiceTrova'+n);
+    if(formula&&code&&code.parentNode&&formula.parentNode===code.parentNode.parentNode){
+      var line=code.parentNode;
+      if(line.nextSibling!==formula) line.parentNode.insertBefore(formula,line.nextSibling);
+    }
+  });
+}
+rmReorderEncounterLayout();
 
 attachCopy('copiaScrofungulus','codiceScrofungulus');
 document.addEventListener('change',function(e){if(e.target&&e.target.id==='rmNuotoLago')rmV8RecomputeLago();},true);
