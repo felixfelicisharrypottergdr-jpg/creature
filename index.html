@@ -443,12 +443,16 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 .mz-bonus-row{
   display:grid;gap:8px;align-items:end;padding:10px;border:1px solid #6e4028;border-radius:7px;background:#1b100b;
 }
-.mz-bonus-row.mz-general{grid-template-columns:minmax(145px,1.35fr) minmax(130px,1.15fr) minmax(150px,1.25fr) 86px 72px 38px;}
-.mz-bonus-row.mz-phase{grid-template-columns:minmax(135px,1.25fr) minmax(125px,1.1fr) minmax(130px,1.05fr) 82px 92px 82px 82px 72px 38px;}
+.mz-bonus-row.mz-phase{
+  grid-template-columns:minmax(135px,1.25fr) minmax(125px,1.1fr) minmax(130px,1.05fr) 82px 92px 82px 82px 72px 38px;
+}
 .mz-bonus-field{display:flex;flex-direction:column;min-width:0;}
-.mz-bonus-field label{font-size:.69em;text-transform:uppercase;letter-spacing:.045em;color:#d97932;margin-bottom:3px;min-height:2.4em;display:flex;align-items:flex-end;line-height:1.15;}
-.mz-bonus-row .mz-bonus-check{align-self:end;margin-bottom:4px;}
-.mz-bonus-row .mz-bonus-remove{align-self:end;margin-bottom:4px;}
+.mz-bonus-field label{
+  font-size:.69em;text-transform:uppercase;letter-spacing:.045em;color:#d97932;
+  margin-bottom:3px;min-height:2.4em;display:flex;align-items:flex-end;line-height:1.15;
+}
+.mz-bonus-row.mz-phase .mz-bonus-check{align-self:end;margin-bottom:4px;}
+.mz-bonus-row.mz-phase .mz-bonus-remove{align-self:end;margin-bottom:4px;}
 .mz-bonus-field input[type=text],.mz-bonus-field input[type=number],.mz-bonus-field select{
   width:100%;box-sizing:border-box;background:#120b07;color:#f0ddcc;border:1px solid #6e4028;border-radius:4px;padding:6px 7px;font-family:inherit;
 }
@@ -465,16 +469,51 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 .mz-summary-empty{color:#c99a7a;font-size:.86em;font-style:italic;}
 .mz-fatigue-total{margin-top:10px;padding:9px 11px;border:1px solid #6e4028;border-radius:6px;background:#120b07;color:#f0ddcc;}
 .mz-fatigue-total strong{color:#f0a060;}
+.mz-bonus-share{
+  grid-column:1 / -1;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+  padding-top:8px;
+  margin-top:1px;
+  border-top:1px dashed #6e4028;
+}
+.mz-bonus-share button{
+  margin:0;
+  padding:7px 10px;
+  border:1px solid #9a431f;
+  border-radius:6px;
+  background:#4a291b;
+  color:#f0ddcc;
+  font-family:inherit;
+  font-size:.78em;
+  cursor:pointer;
+}
+.mz-bonus-share button:hover:not(:disabled){background:#6e4028;}
+.mz-bonus-share button:disabled{opacity:.52;cursor:default;}
+.mz-bonus-share-status{font-size:.74em;line-height:1.35;color:#f1d5c0;flex:1 1 260px;}
+.mz-bonus-shared-badge{
+  display:inline-block;
+  margin-left:6px;
+  padding:2px 7px;
+  border:1px solid #b85d27;
+  border-radius:12px;
+  color:#ffc998;
+  font-size:.68em;
+  vertical-align:1px;
+}
 @media(max-width:900px){
-  .mz-bonus-row.mz-general{grid-template-columns:1fr 1fr 1fr;}
   .mz-bonus-row.mz-phase{grid-template-columns:1fr 1fr 1fr;}
 }
 @media(max-width:560px){
-  .mz-bonus-row.mz-general,.mz-bonus-row.mz-phase{grid-template-columns:1fr;}
+  .mz-bonus-row.mz-phase{grid-template-columns:1fr;}
   .mz-bonus-field label{min-height:auto;display:block;line-height:1.2;}
   .mz-bonus-check{justify-content:flex-start;}
-  .mz-bonus-row .mz-bonus-check,.mz-bonus-row .mz-bonus-remove{margin-bottom:0;}
-  .mz-bonus-remove{width:100%;}
+  .mz-bonus-row.mz-phase .mz-bonus-check,.mz-bonus-row.mz-phase .mz-bonus-remove{margin-bottom:0;}
+  .mz-bonus-row.mz-phase .mz-bonus-remove{width:100%;}
+  .mz-bonus-share{align-items:stretch;}
+  .mz-bonus-share button{width:100%;}
 }
 
 
@@ -926,12 +965,6 @@ table.fasce td{
 </div>
 </div>
 
-<div class="mz-bonus-manager">
-  <h3>Bonus generali da Oggetti / Conoscenze / altri effetti</h3>
-  <p class="mz-bonus-help">Inserisci qui soltanto i bonus che modificano il Personaggio o una Base in modo generale, cioè che non sono legati all'utilizzo in una singola fase. Per esempio, un bonus generale a Empatia va inserito qui e viene applicato prima delle conversioni previste dalle varie fasi. Se invece un Oggetto, una Conoscenza, una Tecnica o un Incantesimo viene usato specificamente in Fiducia, Scoperta, Cura, Domesticazione o Allevamento, selezionalo direttamente nella relativa fase.</p>
-  <div class="mz-bonus-list" id="mzBonusGenerali"></div>
-  <button type="button" class="mz-bonus-add" id="mzAddBonusGenerale">+ Aggiungi bonus</button>
-</div>
 </div>
 </div>
 
@@ -1017,7 +1050,7 @@ table.fasce td{
 <div class="riga"><div class="campo"><label>Tentativi di Fiducia eseguiti</label><input type="number" id="tentativiFiducia" data-key="tentativiFiducia" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
 <div class="mz-bonus-manager">
   <h3>Oggetti / Conoscenze — Fiducia</h3>
-  <p class="mz-bonus-help">Puoi scegliere direttamente dal catalogo gli effetti compatibili con questa fase, compresi bonus indiretti come <b>Empatia</b> e bonus generici alle <b>possibilità</b>. «Applica» registra un uso e inserisce il modificatore nel punto corretto della formula.</p>
+  <p class="mz-bonus-help">Inserisci qui <b>tutti i bonus che vuoi usare in Fiducia</b>: Oggetti, Conoscenze, Tecniche, Incantesimi ed effetti generici. «Applica» registra un uso e inserisce il modificatore nel punto corretto della formula. Se un effetto del catalogo è valido anche in altre fasi, puoi renderlo disponibile lì con un solo clic: <b>gli usi resteranno condivisi</b>.</p>
   <div class="mz-bonus-list" id="mzBonusFiducia"></div>
   <button type="button" class="mz-bonus-add" data-mz-add-phase="fiducia">+ Aggiungi bonus</button>
 </div>
@@ -1073,7 +1106,7 @@ table.fasce td{
 <div class="riga"><div class="campo"><label>Tentativi di Scoperta eseguiti</label><input type="number" id="tentativiScoperta" data-key="tentativiScoperta" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
 <div class="mz-bonus-manager">
   <h3>Oggetti / Conoscenze — Scoperta</h3>
-  <p class="mz-bonus-help">Il catalogo include anche le Tecniche e gli Incantesimi Magizoologici pertinenti, modificatori generici alle possibilità ed effetti che aumentano temporaneamente l’Empatia.</p>
+  <p class="mz-bonus-help">Inserisci qui <b>tutti i bonus che vuoi usare nella Scoperta</b>. Il catalogo include Tecniche e Incantesimi Magizoologici, bonus generici alle possibilità ed effetti sull’Empatia. Gli effetti validi anche in altre fasi possono essere resi disponibili lì mantenendo <b>un unico contatore di usi</b>.</p>
   <div class="mz-bonus-list" id="mzBonusScoperta"></div>
   <button type="button" class="mz-bonus-add" data-mz-add-phase="scoperta">+ Aggiungi bonus</button>
 </div>
@@ -1107,7 +1140,7 @@ table.fasce td{
 </div>
 <div class="mz-bonus-manager" style="margin-top:10px">
   <h3>Oggetti / Conoscenze — Cura</h3>
-  <p class="mz-bonus-help">Oltre agli effetti specifici della Cura, puoi usare bonus generici alle possibilità o bonus temporanei di Empatia.</p>
+  <p class="mz-bonus-help">Inserisci qui <b>tutti i bonus che vuoi usare nella Cura</b>, compresi bonus generici alle possibilità o bonus temporanei di Empatia. Se lo stesso effetto è valido in più fasi, puoi renderlo disponibile nelle altre senza duplicarne gli usi.</p>
   <div class="mz-bonus-list" id="mzBonusCura"></div>
   <button type="button" class="mz-bonus-add" data-mz-add-phase="cura">+ Aggiungi bonus</button>
 </div>
@@ -1265,7 +1298,7 @@ table.fasce td{
 
 <div class="scheda" id="mzRiepilogoBonus">
   <h2>Riepilogo Oggetti, Conoscenze e Fatica</h2>
-  <div class="nota-regole">Sono mostrati soltanto bonus realmente configurati o usi già consumati: i valori standard non occupano spazio.</div>
+  <div class="nota-regole">Sono mostrati soltanto bonus realmente applicati o con usi già consumati. Se lo stesso Oggetto, Conoscenza o effetto è stato reso disponibile in più fasi, compare una sola volta con il contatore degli usi condiviso e l’indicazione delle fasi in cui è stato usato.</div>
   <div class="mz-effects-summary" id="mzEffectsSummary"></div>
   <div class="mz-fatigue-total" id="mzFaticaSummary"><strong>Fatica extra consumata:</strong> 0</div>
 </div>
@@ -1592,16 +1625,7 @@ function mzNum(v, fallback){
   var n=Number(v);
   return isFinite(n)?n:(fallback===undefined?0:fallback);
 }
-function mzGeneralBonus(target){
-  var tot=0;
-  document.querySelectorAll('#mzBonusGenerali .mz-bonus-row').forEach(function(row){
-    var active=row.querySelector('[data-role="active"]');
-    var sel=row.querySelector('[data-role="target"]');
-    var val=row.querySelector('[data-role="value"]');
-    if(active&&active.checked&&sel&&sel.value===target&&val){tot+=Math.max(0,Math.floor(mzNum(val.value,0)));}
-  });
-  return tot;
-}
+function mzGeneralBonus(target){ return 0; }
 var MZ_PHASE_BONUS_PRESETS={
   /* Bonus generici: l'Amuleto della Fortuna può intervenire su un'azione che richiede un dado. */
   amuleto_1:{label:'Amuleto della Fortuna (+1)',groupLabel:'Bonus generici',source:'Amuleto della Fortuna',condition:'3 usi · massimo 1 Amuleto della Fortuna per role',type:'possibilita',value:1,total:3,stackGroup:'fortuna',phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Bonus generico di +1 possibilità. Gli Amuleti della Fortuna non sono cumulabili: se ne inserisci più di uno, il tool applica soltanto il valore più alto.'},
@@ -1757,33 +1781,105 @@ function mzPhasePresetOptions(phase){
   html+='<option value="manual">Altro bonus / effetto manuale</option>';
   return html;
 }
+var MZ_SHARED_BONUSES={};
+var MZ_SHARED_UID=0;
+
+function mzPhaseLabel(phase){
+  return {fiducia:'Fiducia',scoperta:'Scoperta',cura:'Cura',domesticazione:'Domesticazione',allevamento:'Allevamento'}[phase]||phase;
+}
+function mzPhaseBox(phase){
+  return document.getElementById('mzBonus'+phase.charAt(0).toUpperCase()+phase.slice(1));
+}
+function mzNewSharedId(){MZ_SHARED_UID++;return 'mzshare_'+MZ_SHARED_UID;}
+function mzLinkedRows(linkId){
+  if(!linkId)return [];
+  return Array.prototype.slice.call(document.querySelectorAll('.mz-bonus-row.mz-phase')).filter(function(r){return r.dataset.linkId===linkId;});
+}
+function mzSharedState(row,createIfMissing){
+  var id=row&&row.dataset?row.dataset.linkId:'';
+  if(!id)return null;
+  if(!MZ_SHARED_BONUSES[id]&&createIfMissing){
+    var totalEl=row.querySelector('[data-role="total"]'),usedEl=row.querySelector('[data-role="used"]');
+    var unlimited=row.dataset.unlimited==='1';
+    MZ_SHARED_BONUSES[id]={
+      total:unlimited?999999:Math.max(1,Math.floor(mzNum(totalEl?totalEl.value:1,1))),
+      used:Math.max(0,Math.floor(mzNum(usedEl?usedEl.value:0,0))),
+      unlimited:unlimited,
+      presetKey:row.dataset.presetKey||''
+    };
+  }
+  return MZ_SHARED_BONUSES[id]||null;
+}
+function mzLocalUsed(row){
+  if(row.dataset.linkId){return Math.max(0,Math.floor(mzNum(row.dataset.localUsed,0)));}
+  var usedEl=row.querySelector('[data-role="used"]');
+  return Math.max(0,Math.floor(mzNum(usedEl?usedEl.value:0,0)));
+}
+function mzSyncSharedRows(linkId){
+  var state=MZ_SHARED_BONUSES[linkId];if(!state)return;
+  var rows=mzLinkedRows(linkId);
+  rows.forEach(function(row){
+    var usedEl=row.querySelector('[data-role="used"]'),totalEl=row.querySelector('[data-role="total"]'),remaining=row.querySelector('.mz-bonus-remaining'),apply=row.querySelector('[data-role="apply"]'),preset=row.querySelector('[data-role="preset"]');
+    if(usedEl){usedEl.value=String(state.used);usedEl.readOnly=true;}
+    if(totalEl){totalEl.value=String(state.total);totalEl.readOnly=true;}
+    if(remaining){remaining.textContent=state.unlimited?(state.used+' usi condivisi registrati · non consumabile'):(state.used+'/'+state.total+' usi condivisi → '+Math.max(0,state.total-state.used)+' rimasti');}
+    if(apply){apply.disabled=!apply.checked&&!state.unlimited&&state.used>=state.total;}
+    if(preset){preset.disabled=true;}
+    mzUpdateShareControl(row,row.dataset.phase||'');
+  });
+}
+function mzSyncBonusRow(row,changedRole){
+  if(row.dataset.linkId){mzSharedState(row,true);mzSyncSharedRows(row.dataset.linkId);return;}
+  var totalEl=row.querySelector('[data-role="total"]'),usedEl=row.querySelector('[data-role="used"]'),apply=row.querySelector('[data-role="apply"]'),remaining=row.querySelector('.mz-bonus-remaining');
+  if(!totalEl||!usedEl||!apply)return;
+  var unlimited=row.dataset.unlimited==='1';
+  var total=unlimited?999999:Math.max(1,Math.floor(mzNum(totalEl.value,1)));
+  var used=Math.max(0,Math.floor(mzNum(usedEl.value,0)));
+  if(unlimited){
+    if(apply.checked&&used<1)used=1;
+    totalEl.value='999999';if(usedEl.value!=='')usedEl.value=String(used);
+    if(remaining)remaining.textContent=used+' usi registrati · non consumabile';
+    apply.disabled=false;return;
+  }
+  if(changedRole==='used'){used=Math.min(total,used);}else{total=Math.max(total,used);}
+  if(apply.checked&&used<1)used=1;
+  if(totalEl.value!=='')totalEl.value=String(total);
+  if(usedEl.value!=='')usedEl.value=String(used);
+  if(remaining)remaining.textContent=used+'/'+total+' usi → '+Math.max(0,total-used)+' rimasti';
+  apply.disabled=!apply.checked&&used>=total;
+}
 function mzPhaseTotals(phase){
   var out={empatia:0,parametro:0,possibilita:0,fatica:0,postReductionPct:0,effects:[]},possibilityGroups={},empatiaGroups={},postDirect=0,postGroups={};
-  var box=document.getElementById('mzBonus'+phase.charAt(0).toUpperCase()+phase.slice(1));
-  if(!box)return out;
+  var box=mzPhaseBox(phase);if(!box)return out;
   box.querySelectorAll('.mz-bonus-row').forEach(function(row){
     var value=Math.max(0,Math.floor(mzNum((row.querySelector('[data-role="value"]')||{}).value,0)));
-    var faticaEl=row.querySelector('[data-role="fatica"]');
-    var fatica=0;
-    if(faticaEl && faticaEl.value!=='' && !(faticaEl.validity && (faticaEl.validity.rangeUnderflow||faticaEl.validity.rangeOverflow||faticaEl.validity.stepMismatch||faticaEl.validity.badInput))){fatica=Math.max(0,mzNum(faticaEl.value,0));}
+    var faticaEl=row.querySelector('[data-role="fatica"]'),fatica=0;
+    if(faticaEl&&faticaEl.value!==''&&!(faticaEl.validity&&(faticaEl.validity.rangeUnderflow||faticaEl.validity.rangeOverflow||faticaEl.validity.stepMismatch||faticaEl.validity.badInput))){fatica=Math.max(0,mzNum(faticaEl.value,0));}
     if(row.dataset.presetKey&&row.dataset.presetKey.indexOf('imposium_')===0&&mzProfiloSapienza()>=25){fatica=0;}
-    var total=Math.max(1,Math.floor(mzNum((row.querySelector('[data-role="total"]')||{}).value,1)));
-    var used=Math.max(0,Math.min(total,Math.floor(mzNum((row.querySelector('[data-role="used"]')||{}).value,0))));
+    var shared=row.dataset.linkId?mzSharedState(row,true):null;
+    var total=shared?shared.total:Math.max(1,Math.floor(mzNum((row.querySelector('[data-role="total"]')||{}).value,1)));
+    var used=shared?shared.used:Math.max(0,Math.min(total,Math.floor(mzNum((row.querySelector('[data-role="used"]')||{}).value,0))));
+    var localUsed=mzLocalUsed(row);
     var apply=row.querySelector('[data-role="apply"]');
     var type=(row.querySelector('[data-role="type"]')||{}).value||'possibilita';
-    var group=row.dataset.stackGroup||'';
-    var unlimited=row.dataset.unlimited==='1';
+    var group=row.dataset.stackGroup||'',unlimited=row.dataset.unlimited==='1';
     if(apply&&apply.checked){
       if(type==='empatia'){if(group)empatiaGroups[group]=Math.max(empatiaGroups[group]||0,value);else out.empatia+=value;}
       else if(type==='malusEmpatia'){out.empatia-=value;}
-      else if(type==='parametro')out.parametro+=value;
+      else if(type==='parametro'){out.parametro+=value;}
       else if(type==='postPercent'){if(group)postGroups[group]=Math.max(postGroups[group]||0,value);else postDirect+=value;}
-      else if(type==='malusPossibilita')out.possibilita-=value;
+      else if(type==='malusPossibilita'){out.possibilita-=value;}
       else if(type==='possibilita'){if(group)possibilityGroups[group]=Math.max(possibilityGroups[group]||0,value);else out.possibilita+=value;}
     }
-    out.fatica+=fatica*used;
-    if((apply&&apply.checked)||used>0){
-      out.effects.push({source:((row.querySelector('[data-role="source"]')||{}).value||'Bonus').trim()||'Bonus',condition:((row.querySelector('[data-role="condition"]')||{}).value||'').trim(),type:type,value:value,fatica:fatica,total:total,used:used,applied:!!(apply&&apply.checked),phase:phase,stackGroup:group,unlimited:unlimited});
+    out.fatica+=fatica*localUsed;
+    if((apply&&apply.checked)||localUsed>0){
+      out.effects.push({
+        source:((row.querySelector('[data-role="source"]')||{}).value||'Bonus').trim()||'Bonus',
+        condition:((row.querySelector('[data-role="condition"]')||{}).value||'').trim(),
+        type:type,value:value,fatica:fatica,total:total,used:used,localUsed:localUsed,
+        applied:!!(apply&&apply.checked),phase:phase,stackGroup:group,unlimited:unlimited,
+        linkId:row.dataset.linkId||'',presetKey:row.dataset.presetKey||''
+      });
     }
   });
   Object.keys(possibilityGroups).forEach(function(k){out.possibilita+=possibilityGroups[k];});
@@ -1791,77 +1887,84 @@ function mzPhaseTotals(phase){
   Object.keys(postGroups).forEach(function(k){postDirect+=postGroups[k];});out.postReductionPct=Math.min(100,postDirect);
   return out;
 }
-function mzPhaseLabel(phase){
-  return {fiducia:'Fiducia',scoperta:'Scoperta',cura:'Cura',domesticazione:'Domesticazione',allevamento:'Allevamento'}[phase]||phase;
-}
-function mzSyncBonusRow(row, changedRole){
-  var totalEl=row.querySelector('[data-role="total"]'),usedEl=row.querySelector('[data-role="used"]'),apply=row.querySelector('[data-role="apply"]'),remaining=row.querySelector('.mz-bonus-remaining');
-  if(!totalEl||!usedEl||!apply)return;
-  var unlimited=row.dataset.unlimited==='1';
-  var total=unlimited?999999:Math.max(1,Math.floor(mzNum(totalEl.value,1)));
-  var used=Math.max(0,Math.floor(mzNum(usedEl.value,0)));
-  /* Lo storico degli usi consumati non va mai cancellato abbassando gli usi totali.
-     Se si modifica il totale sotto gli usi già consumati, il totale viene ricondotto
-     almeno allo storico. Se invece si modifica direttamente "Usi consumati" oltre
-     il totale disponibile, viene limitato al totale. */
-  if(unlimited){
-    if(apply.checked&&used<1)used=1;
-    totalEl.value='999999';
-    if(usedEl.value!=='')usedEl.value=String(used);
-    if(remaining)remaining.textContent=used+' usi registrati · non consumabile';
-    apply.disabled=false;
+function mzUpdateShareControl(row,phase){
+  var share=row.querySelector('.mz-bonus-share'),btn=row.querySelector('[data-role="share-all"]'),status=row.querySelector('.mz-bonus-share-status');
+  if(!share||!btn||!status)return;
+  var key=row.dataset.presetKey||'',p=MZ_PHASE_BONUS_PRESETS[key];
+  if(!p||!key||key==='manual'||!p.phases||p.phases.length<2){share.style.display='none';return;}
+  share.style.display='flex';
+  var compatible=p.phases.filter(function(x){return x!==phase;});
+  if(!row.dataset.linkId){
+    btn.disabled=false;btn.textContent='Rendi disponibile nelle altre fasi compatibili';
+    status.textContent='Disponibile anche in: '+compatible.map(mzPhaseLabel).join(', ')+'. Le copie useranno lo stesso contatore: gli usi non verranno duplicati.';
     return;
   }
-  if(changedRole==='used'){
-    used=Math.min(total,used);
-  }else{
-    total=Math.max(total,used);
-  }
-  if(apply.checked&&used<1)used=1;
-  if(totalEl.value!=='')totalEl.value=String(total);
-  if(usedEl.value!=='')usedEl.value=String(used);
-  var rem=Math.max(0,total-used);
-  if(remaining)remaining.textContent=used+'/'+total+' usi → '+rem+' rimasti';
-  apply.disabled=!apply.checked&&rem<=0;
+  var linked=mzLinkedRows(row.dataset.linkId),linkedPhases=linked.map(function(r){return r.dataset.phase;});
+  var missing=compatible.filter(function(x){return linkedPhases.indexOf(x)<0;});
+  status.textContent='Usi condivisi tra: '+linkedPhases.map(mzPhaseLabel).join(', ')+'. Ogni utilizzo in una fase riduce gli usi rimasti in tutte le altre.';
+  if(missing.length){btn.disabled=false;btn.textContent='Aggiungi alle altre fasi compatibili';}
+  else{btn.disabled=true;btn.textContent='Già disponibile in tutte le fasi compatibili';}
 }
-function mzCreateGeneralBonusRow(data){
-  data=data||{};MZ_BONUS_UID++;
-  var row=document.createElement('div');row.className='mz-bonus-row mz-general';row.dataset.uid='g'+MZ_BONUS_UID;
-  row.innerHTML='<div class="mz-bonus-field"><label>Fonte / Oggetto / Conoscenza</label><input type="text" data-role="source" maxlength="100" placeholder="Es. Manuali dell’Animus"></div>'+
-    '<div class="mz-bonus-field"><label>Condizione / Efficacia</label><input type="text" data-role="condition" maxlength="100" placeholder="Es. attivo finché l’Oggetto è utilizzato"></div>'+
-    '<div class="mz-bonus-field"><label>Parametro</label><select data-role="target"><option value="empatia">Empatia</option><option value="fiduciaBase">Base Fiducia</option><option value="curaBase">Base Cura</option><option value="domesticazioneBase">Base Domesticazione</option><option value="allevamentoBase">Base Allevamento</option></select></div>'+
-    '<div class="mz-bonus-field"><label>Bonus</label><input type="number" data-role="value" value="0" min="0" step="1"></div>'+
-    '<label class="mz-bonus-check"><input type="checkbox" data-role="active" checked> Attivo</label>'+
-    '<button type="button" class="mz-bonus-remove" title="Elimina bonus" aria-label="Elimina bonus">×</button>';
-  row.querySelector('[data-role="source"]').value=data.source||'';row.querySelector('[data-role="condition"]').value=data.condition||'';
-  if(data.target)row.querySelector('[data-role="target"]').value=data.target;if(data.value!==undefined)row.querySelector('[data-role="value"]').value=data.value;
-  row.querySelector('.mz-bonus-remove').addEventListener(evtClick,function(){row.remove();ricalcolaMagizoologia();});
-  document.getElementById('mzBonusGenerali').appendChild(row);setupNumericInputs();ricalcolaMagizoologia();
+function mzSharePhaseBonus(row,phase){
+  var key=row.dataset.presetKey||'',p=MZ_PHASE_BONUS_PRESETS[key];
+  if(!p||!p.phases||p.phases.length<2)return;
+  var id=row.dataset.linkId;
+  if(!id){
+    id=mzNewSharedId();row.dataset.linkId=id;
+    var usedEl=row.querySelector('[data-role="used"]'),totalEl=row.querySelector('[data-role="total"]');
+    var unlimited=row.dataset.unlimited==='1';
+    var used=Math.max(0,Math.floor(mzNum(usedEl?usedEl.value:0,0)));
+    var total=unlimited?999999:Math.max(1,Math.floor(mzNum(totalEl?totalEl.value:1,1)));
+    row.dataset.localUsed=String(used);
+    MZ_SHARED_BONUSES[id]={used:used,total:total,unlimited:unlimited,presetKey:key};
+  }else{mzSharedState(row,true);}
+  var state=MZ_SHARED_BONUSES[id];
+  p.phases.forEach(function(target){
+    if(target===phase)return;
+    var box=mzPhaseBox(target);if(!box)return;
+    var sameLinked=Array.prototype.slice.call(box.querySelectorAll('.mz-bonus-row')).some(function(r){return r.dataset.linkId===id;});
+    if(sameLinked)return;
+    var existing=Array.prototype.slice.call(box.querySelectorAll('.mz-bonus-row')).find(function(r){return r.dataset.presetKey===key&&!r.dataset.linkId;});
+    if(existing){
+      var existingUsed=Math.max(0,Math.floor(mzNum((existing.querySelector('[data-role="used"]')||{}).value,0)));
+      var existingApply=existing.querySelector('[data-role="apply"]');
+      if(existingUsed===0&&!(existingApply&&existingApply.checked)){
+        existing.dataset.linkId=id;existing.dataset.localUsed='0';
+      }else{return;}
+    }else{
+      mzCreatePhaseBonusRow(target,{preset:key,linkId:id,localUsed:0,sharedUsed:state.used,silent:true});
+    }
+  });
+  mzSyncSharedRows(id);ricalcolaMagizoologia();
 }
 function mzApplyPhasePreset(row,phase){
   var sel=row.querySelector('[data-role="preset"]'),key=sel?sel.value:'',p=MZ_PHASE_BONUS_PRESETS[key];
   var source=row.querySelector('[data-role="source"]'),condition=row.querySelector('[data-role="condition"]'),type=row.querySelector('[data-role="type"]'),value=row.querySelector('[data-role="value"]'),fatica=row.querySelector('[data-role="fatica"]'),total=row.querySelector('[data-role="total"]'),note=row.querySelector('.mz-bonus-preset-note');
-  var fields=[source,condition,value,fatica,total];
-  var totalWrap=total?total.closest('.mz-bonus-field'):null;
+  var fields=[source,condition,value,fatica,total],totalWrap=total?total.closest('.mz-bonus-field'):null;
   if(p){
-    source.value=p.source||'';condition.value=p.condition||'';type.value=p.type||'possibilita';value.value=String(p.value||0);fatica.value=String(p.fatica||0);total.value=String(p.unlimited?999999:(p.total||1));row.dataset.stackGroup=p.stackGroup||'';row.dataset.unlimited=p.unlimited?'1':'';row.dataset.presetKey=key;
+    source.value=p.source||'';condition.value=p.condition||'';type.value=p.type||'possibilita';value.value=String(p.value||0);fatica.value=String(p.fatica||0);total.value=String(p.unlimited?999999:(p.total||1));
+    row.dataset.stackGroup=p.stackGroup||'';row.dataset.unlimited=p.unlimited?'1':'';row.dataset.presetKey=key;
     fields.forEach(function(x){if(x)x.readOnly=true;});if(type)type.disabled=true;if(totalWrap)totalWrap.style.display=p.unlimited?'none':'';if(note)note.textContent=p.note||'';
   }else if(key==='manual'){
-    row.dataset.stackGroup='';row.dataset.unlimited='';row.dataset.presetKey=key||'';if(totalWrap)totalWrap.style.display='';fields.forEach(function(x){if(x)x.readOnly=false;});if(type)type.disabled=false;if(note)note.textContent='Inserisci il valore previsto dal regolamento. Se l’effetto modifica direttamente Empatia, scegli «Bonus Empatia» così il tool lo applica prima delle conversioni della fase.';
+    row.dataset.stackGroup='';row.dataset.unlimited='';row.dataset.presetKey=key;if(totalWrap)totalWrap.style.display='';
+    fields.forEach(function(x){if(x)x.readOnly=false;});if(type)type.disabled=false;if(note)note.textContent='Inserisci il valore previsto dal regolamento. Se l’effetto modifica direttamente Empatia, scegli «Bonus Empatia» così il tool lo applica prima delle conversioni della fase. I bonus manuali non vengono copiati automaticamente in altre fasi perché il tool non può verificarne la compatibilità.';
   }else{
-    row.dataset.stackGroup='';row.dataset.unlimited='';row.dataset.presetKey='';if(totalWrap)totalWrap.style.display='';source.value='';condition.value='';type.value='possibilita';value.value='0';fatica.value='0';total.value='1';fields.forEach(function(x){if(x)x.readOnly=true;});if(type)type.disabled=true;if(note)note.textContent='Seleziona un effetto dal catalogo oppure scegli «Altro bonus / effetto manuale».';
+    row.dataset.stackGroup='';row.dataset.unlimited='';row.dataset.presetKey='';if(totalWrap)totalWrap.style.display='';
+    source.value='';condition.value='';type.value='possibilita';value.value='0';fatica.value='0';total.value='1';
+    fields.forEach(function(x){if(x)x.readOnly=true;});if(type)type.disabled=true;if(note)note.textContent='Seleziona un effetto dal catalogo oppure scegli «Altro bonus / effetto manuale».';
   }
-  mzSyncBonusRow(row,'preset');
+  mzSyncBonusRow(row,'preset');mzUpdateShareControl(row,phase);
 }
 function mzCreatePhaseBonusRow(phase,data){
   data=data||{};MZ_BONUS_UID++;
-  var box=document.getElementById('mzBonus'+phase.charAt(0).toUpperCase()+phase.slice(1));if(!box)return;
+  var box=mzPhaseBox(phase);if(!box)return null;
   var row=document.createElement('div');row.className='mz-bonus-row mz-phase';row.dataset.phase=phase;row.dataset.uid='p'+MZ_BONUS_UID;
+  if(data.linkId){row.dataset.linkId=data.linkId;row.dataset.localUsed=String(Math.max(0,Math.floor(mzNum(data.localUsed,0))));}
   var typeLabel=phase==='allevamento'?'Possibilità al tiro':'Possibilità / soglia';
   var typeOptions='<option value="empatia">Bonus Empatia</option><option value="malusEmpatia">Malus Empatia</option><option value="parametro">Bonus al parametro</option><option value="possibilita">'+typeLabel+'</option><option value="malusPossibilita">Malus alle possibilità</option><option value="effetto">Effetto speciale / informativo</option>'+(phase==='allevamento'?'<option value="postPercent">Riduzione % post Accoppiamento</option>':'');
   row.innerHTML='<div class="mz-bonus-field mz-bonus-preset-wrap"><label>Catalogo Oggetto / Conoscenza / effetto</label><select data-role="preset">'+mzPhasePresetOptions(phase)+'</select></div>'+ 
     '<div class="mz-bonus-field"><label>Fonte</label><input type="text" data-role="source" maxlength="100" placeholder="Es. Amuleto della Fortuna"></div>'+ 
-    '<div class="mz-bonus-field"><label>Condizione / Efficacia</label><input type="text" data-role="condition" maxlength="140" placeholder="Es. 3 usi · solo in questa fase"></div>'+ 
+    '<div class="mz-bonus-field"><label>Quando si applica / efficacia</label><input type="text" data-role="condition" maxlength="140" placeholder="Es. Studente 66% · 3 usi"></div>'+ 
     '<div class="mz-bonus-field"><label>Tipo</label><select data-role="type">'+typeOptions+'</select></div>'+ 
     '<div class="mz-bonus-field"><label>Bonus</label><input type="number" data-role="value" value="0" min="0" step="1"></div>'+ 
     '<div class="mz-bonus-field"><label>Fatica / uso</label><input type="number" data-role="fatica" value="0" min="0" step="0.5" data-decimal="1"></div>'+ 
@@ -1869,52 +1972,88 @@ function mzCreatePhaseBonusRow(phase,data){
     '<div class="mz-bonus-field"><label>Usi consumati</label><input type="number" data-role="used" value="0" min="0" step="1"><div class="mz-bonus-remaining">0/1 usi → 1 rimasti</div></div>'+ 
     '<label class="mz-bonus-check"><input type="checkbox" data-role="apply"> Applica</label>'+ 
     '<button type="button" class="mz-bonus-remove" title="Elimina bonus" aria-label="Elimina bonus">×</button>'+ 
-    '<div class="mz-bonus-preset-note"></div>';
-  var preset=row.querySelector('[data-role="preset"]');
-  var presetKey=data.preset||'';
-  if(!presetKey && (data.source||data.value!==undefined))presetKey='manual';
-  preset.value=presetKey;
+    '<div class="mz-bonus-preset-note"></div>'+ 
+    '<div class="mz-bonus-share" style="display:none"><button type="button" data-role="share-all">Rendi disponibile nelle altre fasi compatibili</button><span class="mz-bonus-share-status"></span></div>';
+  var preset=row.querySelector('[data-role="preset"]'),presetKey=data.preset||'';
+  if(!presetKey&&(data.source||data.value!==undefined))presetKey='manual';preset.value=presetKey;
   mzApplyPhasePreset(row,phase);
   if(presetKey==='manual'){
     ['source','condition','type','value','fatica','total','used'].forEach(function(k){var el=row.querySelector('[data-role="'+k+'"]');if(data[k]!==undefined&&el)el.value=data[k];});
   }
-  preset.addEventListener('change',function(){mzApplyPhasePreset(row,phase);ricalcolaMagizoologia();});
+  if(data.linkId){
+    var state=MZ_SHARED_BONUSES[data.linkId];
+    if(!state){
+      var p=MZ_PHASE_BONUS_PRESETS[presetKey],unlimited=p&&p.unlimited;
+      MZ_SHARED_BONUSES[data.linkId]={used:Math.max(0,Math.floor(mzNum(data.sharedUsed,0))),total:unlimited?999999:Math.max(1,Math.floor(mzNum((row.querySelector('[data-role="total"]')||{}).value,1))),unlimited:!!unlimited,presetKey:presetKey};
+    }
+  }
+  preset.addEventListener('change',function(){if(row.dataset.linkId)return;mzApplyPhasePreset(row,phase);ricalcolaMagizoologia();});
+  var shareBtn=row.querySelector('[data-role="share-all"]');if(shareBtn)shareBtn.addEventListener(evtClick,function(){mzSharePhaseBonus(row,phase);});
   var apply=row.querySelector('[data-role="apply"]');
   apply.addEventListener('change',function(){
-    var totalEl=row.querySelector('[data-role="total"]'),usedEl=row.querySelector('[data-role="used"]');
-    var unlimited=row.dataset.unlimited==='1';
-    var total=unlimited?999999:Math.max(1,Math.floor(mzNum(totalEl.value,1))),used=Math.max(0,Math.min(total,Math.floor(mzNum(usedEl.value,0))));
-    if(apply.checked){if(!unlimited&&used>=total){apply.checked=false;}else{
+    var totalEl=row.querySelector('[data-role="total"]'),usedEl=row.querySelector('[data-role="used"]'),unlimited=row.dataset.unlimited==='1';
+    if(apply.checked){
       var group=row.dataset.stackGroup||'';
       if(group){box.querySelectorAll('.mz-bonus-row').forEach(function(other){if(other!==row&&other.dataset.stackGroup===group){var oa=other.querySelector('[data-role="apply"]');if(oa)oa.checked=false;}});}
-      usedEl.value=String(used+1);
-    }}
+      if(row.dataset.linkId){
+        var state=mzSharedState(row,true);
+        if(!state.unlimited&&state.used>=state.total){apply.checked=false;}else{
+          state.used+=1;row.dataset.localUsed=String(mzLocalUsed(row)+1);mzSyncSharedRows(row.dataset.linkId);
+        }
+      }else{
+        var total=unlimited?999999:Math.max(1,Math.floor(mzNum(totalEl.value,1))),used=Math.max(0,Math.min(total,Math.floor(mzNum(usedEl.value,0))));
+        if(!unlimited&&used>=total){apply.checked=false;}else{usedEl.value=String(used+1);}
+      }
+    }
     mzSyncBonusRow(row,'apply');ricalcolaMagizoologia();
   });
   row.querySelector('[data-role="total"]').addEventListener('input',function(){mzSyncBonusRow(row,'total');});
   row.querySelector('[data-role="used"]').addEventListener('input',function(){mzSyncBonusRow(row,'used');});
   row.querySelector('.mz-bonus-remove').addEventListener(evtClick,function(){
+    if(row.dataset.linkId){
+      var local=mzLocalUsed(row);
+      if(local>0){window.alert('Questo effetto ha già usi registrati in questa fase. Per non perdere lo storico degli usi e della Fatica non può essere rimosso singolarmente: usa il reset della Guida se vuoi azzerare tutto.');return;}
+      var id=row.dataset.linkId;row.remove();var rest=mzLinkedRows(id);if(!rest.length)delete MZ_SHARED_BONUSES[id];else mzSyncSharedRows(id);ricalcolaMagizoologia();return;
+    }
     var used=Math.floor(mzNum((row.querySelector('[data-role="used"]')||{}).value,0));
     if(used>0&&!window.confirm('Questo bonus ha già usi consumati. Eliminarlo rimuoverà anche la Fatica storica registrata per questi usi. Continuare?'))return;
     row.remove();ricalcolaMagizoologia();
   });
-  box.appendChild(row);mzSyncBonusRow(row);setupNumericInputs();ricalcolaMagizoologia();
+  box.appendChild(row);mzSyncBonusRow(row);mzUpdateShareControl(row,phase);setupNumericInputs();if(!data.silent)ricalcolaMagizoologia();return row;
+}
+function mzEffectTypeLabel(type){
+  return type==='empatia'?'EMPATIA':(type==='malusEmpatia'?'MALUS EMPATIA':(type==='parametro'?'PARAMETRO':(type==='postPercent'?'RIDUZIONE POST':(type==='malusPossibilita'?'MALUS POSSIBILITÀ':(type==='effetto'?'EFFETTO':'POSSIBILITÀ')))));
+}
+function mzEffectValueText(e){
+  if(e.type==='effetto')return '';
+  if(e.type==='postPercent')return '-'+e.value+'% ';
+  if(e.type==='malusPossibilita'||e.type==='malusEmpatia')return '-'+e.value+' ';
+  return '+'+e.value+' ';
 }
 function mzUpdateBonusSummary(){
   var host=document.getElementById('mzEffectsSummary');if(!host)return;
-  host.innerHTML='';var effects=[];var fatigue=0;
-  document.querySelectorAll('#mzBonusGenerali .mz-bonus-row').forEach(function(row){
-    var active=row.querySelector('[data-role="active"]');var val=Math.max(0,Math.floor(mzNum((row.querySelector('[data-role="value"]')||{}).value,0)));
-    if(active&&active.checked&&val>0){effects.push({general:true,source:((row.querySelector('[data-role="source"]')||{}).value||'Bonus generale').trim()||'Bonus generale',condition:((row.querySelector('[data-role="condition"]')||{}).value||'').trim(),target:(row.querySelector('[data-role="target"]')||{}).selectedOptions?row.querySelector('[data-role="target"]').selectedOptions[0].textContent:'Parametro',value:val});}
-  });
+  host.innerHTML='';var effects=[],fatigue=0;
   ['fiducia','scoperta','cura','domesticazione','allevamento'].forEach(function(phase){var t=mzPhaseTotals(phase);fatigue+=t.fatica;effects=effects.concat(t.effects);});
   var fatigueBase=mzProfiloSapienza()>=25?0:(bonusValore('tentativiFiducia')+bonusValore('tentativiScoperta')+bonusValore('tentativiCura')+(bonusValore('tentativiDomesticazione')*2));
-  if(!effects.length){var e=document.createElement('div');e.className='mz-summary-empty';e.textContent='Nessun Oggetto/Conoscenza applicato o consumato in questa sessione.';host.appendChild(e);}
-  effects.forEach(function(e){var d=document.createElement('div');d.className='mz-effect-chip';if(e.general){d.textContent=e.source+(e.condition?' · '+e.condition:'')+' → +'+e.value+' '+e.target+' · BONUS GENERALE';}else{var typ=e.type==='empatia'?'EMPATIA':(e.type==='malusEmpatia'?'MALUS EMPATIA':(e.type==='parametro'?'PARAMETRO':(e.type==='postPercent'?'RIDUZIONE POST':(e.type==='malusPossibilita'?'MALUS POSSIBILITÀ':(e.type==='effetto'?'EFFETTO':'POSSIBILITÀ')))));var rem=Math.max(0,e.total-e.used);var faticaUsata=e.fatica*e.used;var valoreTxt=e.type==='effetto'?'':(e.type==='postPercent'?('-'+e.value+'% '):((e.type==='malusPossibilita'||e.type==='malusEmpatia')?('-'+e.value+' '):('+'+e.value+' ')));d.textContent=e.source+(e.condition?' · '+e.condition:'')+' → '+valoreTxt+typ+' · '+mzPhaseLabel(e.phase)+(faticaUsata>0?' · -'+faticaUsata+' FATICA':'')+' · '+(e.unlimited?(e.used+' USI REGISTRATI · NON CONSUMABILE'):(e.used+'/'+e.total+' USI → '+rem+' RIMASTI'))+(e.applied?' · APPLICATO ORA':'');}host.appendChild(d);});
+  if(!effects.length){var empty=document.createElement('div');empty.className='mz-summary-empty';empty.textContent='Nessun Oggetto, Conoscenza, Tecnica o effetto applicato o consumato in questa sessione.';host.appendChild(empty);}
+  var linked={},standalone=[];
+  effects.forEach(function(e){
+    if(!e.linkId){standalone.push(e);return;}
+    if(!linked[e.linkId])linked[e.linkId]={base:e,phaseUses:{},fatigue:0,applied:[]};
+    var g=linked[e.linkId];if(e.localUsed>0)g.phaseUses[e.phase]=(g.phaseUses[e.phase]||0)+e.localUsed;g.fatigue+=e.fatica*e.localUsed;if(e.applied)g.applied.push(e.phase);
+  });
+  standalone.forEach(function(e){
+    var d=document.createElement('div');d.className='mz-effect-chip';var typ=mzEffectTypeLabel(e.type),rem=Math.max(0,e.total-e.used),faticaUsata=e.fatica*e.localUsed;
+    d.textContent=e.source+(e.condition?' · '+e.condition:'')+' → '+mzEffectValueText(e)+typ+' · '+mzPhaseLabel(e.phase)+(faticaUsata>0?' · -'+faticaUsata+' FATICA':'')+' · '+(e.unlimited?(e.used+' USI REGISTRATI · NON CONSUMABILE'):(e.used+'/'+e.total+' USI → '+rem+' RIMASTI'))+(e.applied?' · APPLICATO ORA':'');host.appendChild(d);
+  });
+  Object.keys(linked).forEach(function(id){
+    var g=linked[id],e=g.base,d=document.createElement('div');d.className='mz-effect-chip';var typ=mzEffectTypeLabel(e.type),rem=Math.max(0,e.total-e.used);
+    var usage=Object.keys(g.phaseUses).map(function(ph){return mzPhaseLabel(ph)+' ×'+g.phaseUses[ph];}).join(', ');
+    d.textContent=e.source+(e.condition?' · '+e.condition:'')+' → '+mzEffectValueText(e)+typ+' · USI CONDIVISI '+(e.unlimited?(e.used+' registrati'):(e.used+'/'+e.total+' → '+rem+' rimasti'))+(usage?' · usato in: '+usage:'')+(g.fatigue>0?' · -'+g.fatigue+' FATICA':'')+(g.applied.length?' · applicato ora: '+g.applied.map(mzPhaseLabel).join(', '):'');host.appendChild(d);
+  });
   var fat=document.getElementById('mzFaticaSummary');if(fat){var fatigueTot=fatigueBase+fatigue;fat.style.display=fatigueTot>0?'block':'none';fat.innerHTML=fatigueTot>0?('<strong>Fatica totale registrata:</strong> -'+fatigueTot+(fatigueBase>0?' · procedure -'+fatigueBase:'')+(fatigue>0?' · Oggetti/Conoscenze -'+fatigue:'')):'';}
 }
 function mzSetupBonusManagers(){
-  var addG=document.getElementById('mzAddBonusGenerale');if(addG)addG.addEventListener(evtClick,function(){mzCreateGeneralBonusRow();});
   document.querySelectorAll('[data-mz-add-phase]').forEach(function(btn){btn.addEventListener(evtClick,function(){mzCreatePhaseBonusRow(btn.getAttribute('data-mz-add-phase'));});});
 }
 
@@ -2133,7 +2272,7 @@ function resetGuidaMagizoologia(){
     el.disabled=false;
   });
   document.querySelectorAll('#mzBonusFiducia,#mzBonusScoperta,#mzBonusCura,#mzBonusDomesticazione,#mzBonusAllevamento').forEach(function(x){x.innerHTML='';});
-  formulaSignatures={};curaEbbeUnFallimento=false;MZ_SCOPERTA_FALLITA=false;MZ_CURA_FALLITA=false;MZ_CURA_MALUS_ALLEVAMENTO=0;MZ_LAST_CURA_BONUS_DOM=0;MZ_IMPOSIUM_SUCCESS=false;MZ_IMPOSIUM_DOM_MALUS=0;MZ_IMPOSIUM_POST_MALUS=0;MZ_BONUS_UID=0;MZ_ILLEGAL_SIGNATURES={cura:null,allevamento:null};
+  formulaSignatures={};curaEbbeUnFallimento=false;MZ_SCOPERTA_FALLITA=false;MZ_CURA_FALLITA=false;MZ_CURA_MALUS_ALLEVAMENTO=0;MZ_LAST_CURA_BONUS_DOM=0;MZ_IMPOSIUM_SUCCESS=false;MZ_IMPOSIUM_DOM_MALUS=0;MZ_IMPOSIUM_POST_MALUS=0;MZ_BONUS_UID=0;MZ_SHARED_BONUSES={};MZ_SHARED_UID=0;MZ_ILLEGAL_SIGNATURES={cura:null,allevamento:null};
   ricalcolaMagizoologia();
 }
 
