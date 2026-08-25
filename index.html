@@ -2053,6 +2053,83 @@ body{color:#211008!important;}
   .mz-attempts-auto-value{justify-self:start;}
 }
 
+
+/* ===== v34 — automazioni Scoperta / Cura / Domesticazione ===== */
+.mz-phase-retry-box{
+  margin:14px 0;
+  padding:12px 13px;
+  border:1px solid #d27c43;
+  border-left:5px solid #ed9956;
+  border-radius:7px;
+  background:linear-gradient(180deg,rgba(129,58,26,.80),rgba(83,36,19,.95));
+  color:#fff0df;
+}
+.mz-phase-retry-copy{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  margin-bottom:10px;
+  line-height:1.45;
+}
+.mz-phase-retry-copy b{color:#ffd0a3;}
+.mz-phase-retry-box .bottone-azione{
+  background:#a14d27!important;
+  border-color:#e89553!important;
+  color:#fff7ee!important;
+}
+.mz-phase-history{
+  margin:12px 0;
+  padding:11px 12px;
+  border:1px solid #7c472d;
+  border-radius:7px;
+  background:#1c100b;
+  color:#ead3c5;
+  line-height:1.45;
+}
+.mz-phase-history b{color:#ffc18d;}
+.mz-phase-history ul{margin:7px 0 0;padding-left:20px;}
+.mz-phase-history li{margin:5px 0;}
+#mzRetryDomesticazioneBox.is-terminal{
+  border-color:#b9574d;
+  border-left-color:#d36a5e;
+  background:linear-gradient(180deg,rgba(94,34,28,.90),rgba(57,23,19,.97));
+}
+#mzRetryDomesticazioneBox.is-hostile{
+  border-color:#c2545c;
+  border-left-color:#e26d75;
+  background:linear-gradient(180deg,rgba(103,31,33,.91),rgba(61,21,23,.97));
+}
+
+
+/* ===== v35 — allineamento visivo/organizzativo delle fasi ===== */
+.mz-preliminary-block{
+  margin:14px 0 16px;
+  padding:12px 13px;
+  border:1px solid #9d5832;
+  border-left:5px solid #c9763f;
+  border-radius:7px;
+  background:#382016;
+  color:#f7e3d5;
+}
+.mz-preliminary-block h3{
+  margin:0 0 8px!important;
+  padding-bottom:6px;
+  border-bottom:1px solid #75432d;
+  color:#ffc18e!important;
+  font-size:1em!important;
+}
+.mz-preliminary-block .nota-regole{
+  margin:6px 0 10px!important;
+  color:#f3dccd!important;
+}
+.mz-preliminary-block .riga{margin:0!important;}
+#pannelloAllevamento > .nota-regole:first-of-type{
+  padding:10px 12px!important;
+  border-left:4px solid #c6753f;
+  border-radius:6px;
+  background:#321b12;
+}
+
 </style>
 
 </head>
@@ -2397,8 +2474,9 @@ body{color:#211008!important;}
 <h2>Cura della Creatura</h2>
 
 <h3 class="mz-step-title">1. Scoperta del problema <span>1d35</span></h3>
-<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito. <b>Con Sapienza Magizoologica 25 il costo è 0 Fatica.</b></div>
-<div class="riga"><div class="campo"><label>Tentativi di Scoperta eseguiti</label><input type="number" id="tentativiScoperta" data-key="tentativiScoperta" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
+<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito. <b>Con Sapienza Magizoologica 25 il costo è 0 Fatica.</b> Se fallisci, devi riuscire nella Scoperta prima di passare alla Cura: ogni fallimento accumulato applica automaticamente <b>-3 possibilità</b> alla futura Cura.</div>
+<input type="hidden" id="tentativiScoperta" data-key="tentativiScoperta" value="0">
+<input type="hidden" id="malusExtraScoperta" data-key="malusExtraScoperta" value="0">
 <div class="mz-bonus-manager">
   <h3>Oggetti / Conoscenze — Scoperta</h3>
   <p class="mz-bonus-help">Inserisci qui <b>tutti i bonus che vuoi usare nella Scoperta</b>. Il catalogo include Tecniche e Incantesimi Magizoologici, bonus generici alle possibilità ed effetti sull’Empatia. Gli effetti validi anche in altre fasi possono essere resi disponibili lì mantenendo <b>un unico contatore di usi</b>.</p>
@@ -2416,21 +2494,37 @@ body{color:#211008!important;}
   <span class="out-tag out-neutral" id="tagScoperta">in attesa</span>
 </div>
 <div class="nota-regole" id="noteScoperta"></div>
-<div class="riga">
-  <div class="campo">
-    <label>Malus extra per ulteriori Scoperte fallite (facoltativo)</label>
-    <input type="number" id="malusExtraScoperta" data-key="malusExtraScoperta" value="0" min="0">
-  </div>
-</div>
 <div class="info-bonus" id="bonusCuraMostrato"></div>
+<div class="mz-phase-retry-box" id="mzRetryScopertaBox" style="display:none">
+  <div class="mz-phase-retry-copy">
+    <b>Scoperta fallita: ritenta</b>
+    <span>I dati del PG, della Creatura e i bonus restano invariati. Il fallimento viene registrato automaticamente e varrà <b>-3 possibilità</b> nella successiva Cura.</span>
+  </div>
+  <button type="button" class="bottone-azione" id="mzRiprovaScoperta">Riprova Scoperta</button>
+</div>
+<div class="mz-phase-history" id="mzScopertaHistory" style="display:none"></div>
+<div class="mz-attempts-row mz-attempts-auto">
+  <div class="mz-attempts-auto-copy">
+    <b>Tentativi di Scoperta registrati automaticamente</b>
+    <span>Il tool conta i tiri e i ritentativi senza richiedere inserimenti manuali.</span>
+  </div>
+  <div class="mz-attempts-auto-value" id="mzTentativiScopertaDisplay">0 tentativi</div>
+</div>
 
 <h3 class="mz-step-title">2. Cura del problema <span>1d35</span></h3>
-<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito. Il dado viene lanciato dal Narratore. <b>Con Sapienza Magizoologica 25 il costo è 0 Fatica.</b></div>
-<div class="riga"><div class="campo"><label>Tentativi di Cura eseguiti</label><input type="number" id="tentativiCura" data-key="tentativiCura" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
-<div class="riga">
-  <div class="campo">
-    <label>Bonus del Narratore (0-5)</label>
-    <input type="number" id="bonusNarratore" data-key="bonusNarratore" value="0" min="0" max="5">
+<div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito. Il dado viene lanciato dal Narratore. <b>Con Sapienza Magizoologica 25 il costo è 0 Fatica.</b> Il tool conta automaticamente i fallimenti consecutivi: al terzo fallimento compare il tiro 1d5 previsto dal regolamento.</div>
+<input type="hidden" id="tentativiCura" data-key="tentativiCura" value="0">
+<input type="hidden" id="fallimentiCuraConsecutivi" data-key="fallimentiCuraConsecutivi" value="0">
+<input type="checkbox" id="scopertaFallimentoPrecedente" data-key="scopertaFallimentoPrecedente" style="display:none">
+<input type="checkbox" id="curaFallimentoPrecedente" data-key="curaFallimentoPrecedente" style="display:none">
+<div class="mz-preliminary-block">
+  <h3>Modificatore preliminare della fase</h3>
+  <div class="riga">
+    <div class="campo">
+      <label>Bonus del Narratore (0-5)</label>
+      <input type="number" id="bonusNarratore" data-key="bonusNarratore" value="0" min="0" max="5">
+      <div class="numeric-note">Valore assegnato dal Narratore per questo specifico tentativo.</div>
+    </div>
   </div>
 </div>
 <div class="mz-bonus-manager" style="margin-top:10px">
@@ -2463,23 +2557,17 @@ body{color:#211008!important;}
   <span class="out-tag out-neutral" id="tagGravidanza">in attesa</span>
 </div>
 
-<div class="riga">
-  <div class="campo">
-    <label>Fallimenti consecutivi nella Cura del problema (0-3)</label>
-    <input type="number" id="fallimentiCuraConsecutivi" data-key="fallimentiCuraConsecutivi" value="0" min="0" max="3">
+<div class="nota-regole" id="mzCuraMalusAutoInfo">I malus di Scoperta e Cura vengono registrati automaticamente. Un minimo di un fallimento in ciascuna fase si somma fino a <b>-2d2 cuccioli e +10 post</b> in Allevamento.</div>
+<div class="mz-phase-retry-box" id="mzRetryCuraBox" style="display:none">
+  <div class="mz-phase-retry-copy">
+    <b>Cura fallita: puoi fare un nuovo tentativo</b>
+    <span>PG, Creatura e bonus restano invariati. Il <b>Bonus del Narratore</b> viene azzerato perché può cambiare a ogni tentativo; se la Creatura è in gravidanza, anche il relativo 1d10 va rilanciato.</span>
   </div>
+  <button type="button" class="bottone-azione" id="mzRiprovaCura">Riprova Cura</button>
 </div>
-<div class="check-riga">
-  <input type="checkbox" id="scopertaFallimentoPrecedente" data-key="scopertaFallimentoPrecedente">
-  <label for="scopertaFallimentoPrecedente">La Scoperta del problema ha avuto almeno un fallimento (malus Allevamento: -1d2 cuccioli e +5 post)</label>
-</div>
-<div class="check-riga">
-  <input type="checkbox" id="curaFallimentoPrecedente" data-key="curaFallimentoPrecedente">
-  <label for="curaFallimentoPrecedente">La Cura del problema ha avuto almeno un fallimento (ulteriore -1d2 cuccioli e +5 post)</label>
-</div>
-<div class="nota-regole">Il tool conserva separatamente i fallimenti delle due fasi: più fallimenti nella stessa fase non aumentano il suo malus, ma un fallimento in <b>Scoperta</b> e uno in <b>Cura</b> si sommano fino a <b>-2d2 cuccioli e +10 post</b>.</div>
+<div class="mz-phase-history" id="mzCuraHistory" style="display:none"></div>
 <div class="blocco-conseguenza" id="conseguenzaCura" style="display:none">
-  <h3>Tre fallimenti di fila: tiro 1d5</h3>
+  <h3>Tre fallimenti consecutivi: conseguenza finale (1d5)</h3>
   <div class="result-line">
     <div class="dice-code" id="codiceConseguenzaCura">&lt;b&gt;Qual è la conseguenza di 3 fallimenti consecutivi nella Cura?&lt;/b&gt;
 [quote]1-3. La Creatura muore
@@ -2488,6 +2576,19 @@ body{color:#211008!important;}
 [dice=1d5]Conseguenze di 3 fallimenti consecutivi nella Cura[/dice]</div>
     <button class="copy-btn" id="copiaConseguenzaCura">Copia</button>
   </div>
+  <div class="result-line">
+    <span>Risultato ottenuto:</span>
+    <input type="number" id="risultatoConseguenzaCura" data-key="risultatoConseguenzaCura" min="1" max="5">
+    <span class="out-tag out-neutral" id="tagConseguenzaCura">in attesa</span>
+  </div>
+  <div class="mz-consequence-description" id="descrizioneConseguenzaCura"></div>
+</div>
+<div class="mz-attempts-row mz-attempts-auto">
+  <div class="mz-attempts-auto-copy">
+    <b>Tentativi di Cura registrati automaticamente</b>
+    <span>Il contatore comprende ogni tiro effettivamente eseguito e alimenta automaticamente la Fatica.</span>
+  </div>
+  <div class="mz-attempts-auto-value" id="mzTentativiCuraDisplay">0 tentativi</div>
 </div>
 
 <div class="blocco-conseguenza" id="rischioIllegaleCura" style="display:none">
@@ -2512,24 +2613,27 @@ body{color:#211008!important;}
 
 <div class="pannello" id="pannelloDomesticazione">
 <h2>Domesticazione (1d35)</h2>
-<div class="nota-regole">Costo: -2 Fatica per ogni tentativo effettivamente eseguito. <b>Con Sapienza Magizoologica 25 il costo è 0 Fatica.</b> Non serve per Creature nate nella propria Riserva o trovate in fase Uovo/Cucciolo.</div>
-<div class="riga"><div class="campo"><label>Tentativi di Domesticazione eseguiti</label><input type="number" id="tentativiDomesticazione" data-key="tentativiDomesticazione" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
-<div class="nota-regole" id="baseAddestratoreInfo"></div>
-<div class="result-line" id="rigaAddestratoreD4" style="display:none">
-  <div class="dice-code" id="codiceAddestratoreD4">&lt;b&gt;Qual è il Bonus Domesticazione dell’Adulto senza Addestratore?&lt;/b&gt;
+<div class="nota-regole">Costo: -2 Fatica per ogni tentativo effettivamente eseguito. <b>Con Sapienza Magizoologica 25 il costo è 0 Fatica.</b> Non serve per Creature nate nella propria Riserva o trovate in fase Uovo/Cucciolo. Dopo un fallimento, un nuovo tentativo è possibile soltanto <b>dopo 5 post del PG o una settimana OFFGame</b>.</div>
+<input type="hidden" id="tentativiDomesticazione" data-key="tentativiDomesticazione" value="0">
+<div class="mz-preliminary-block">
+  <h3>Modificatore preliminare della fase</h3>
+  <div class="nota-regole" id="baseAddestratoreInfo"></div>
+  <div class="result-line" id="rigaAddestratoreD4" style="display:none">
+    <div class="dice-code" id="codiceAddestratoreD4">&lt;b&gt;Qual è il Bonus Domesticazione dell’Adulto senza Addestratore?&lt;/b&gt;
 [quote]Il risultato del dado corrisponde direttamente al Bonus ottenuto.[/quote]
 
 [dice=1d4]Bonus Domesticazione — Adulto senza Addestratore di Creature Magiche[/dice]</div>
-  <button class="copy-btn" id="copiaAddestratoreD4">Copia</button>
-  <input type="number" id="risultatoAddestratoreD4" data-key="risultatoAddestratoreD4" min="1" max="4" placeholder="1-4">
+    <button class="copy-btn" id="copiaAddestratoreD4">Copia</button>
+    <input type="number" id="risultatoAddestratoreD4" data-key="risultatoAddestratoreD4" min="1" max="4" placeholder="1-4">
+  </div>
 </div>
-<div class="info-bonus" id="bonusCuraPerDomesticazioneInfo">Bonus da Cura: nessuno finché la Cura non riesce.</div>
 <div class="mz-bonus-manager">
   <h3>Oggetti / Conoscenze — Domesticazione</h3>
   <p class="mz-bonus-help">Il catalogo comprende Tecniche e Incantesimi Magizoologici, bonus specifici, bonus generici alle possibilità e modificatori temporanei di Empatia. Gli effetti vengono applicati solo quando spunti «Applica».</p>
   <div class="mz-bonus-list" id="mzBonusDomesticazione"></div>
   <button type="button" class="mz-bonus-add" data-mz-add-phase="domesticazione">+ Aggiungi bonus</button>
 </div>
+<div class="info-bonus" id="bonusCuraPerDomesticazioneInfo">Bonus da Cura: nessuno finché la Cura non riesce.</div>
 <div class="formula-tag" id="formulaDomesticazione"></div>
 <div class="result-line">
   <div class="dice-code" id="codiceDomesticazione"></div>
@@ -2553,6 +2657,20 @@ body{color:#211008!important;}
     <input type="number" id="risultatoConseguenzaDomesticazione" data-key="risultatoConseguenzaDomesticazione" min="1">
     <span class="out-tag out-neutral" id="tagConseguenzaDomesticazione">in attesa</span>
   </div>
+  <div class="mz-consequence-description" id="descrizioneConseguenzaDomesticazione"></div>
+  <div class="mz-phase-retry-box" id="mzRetryDomesticazioneBox" style="display:none">
+    <div class="mz-phase-retry-copy" id="mzRetryDomesticazioneCopy"></div>
+    <div class="mz-retry-status" id="mzRetryDomesticazioneStatus"></div>
+    <button type="button" class="bottone-azione" id="mzRiprovaDomesticazione">Riprova Domesticazione</button>
+  </div>
+</div>
+<div class="mz-phase-history" id="mzDomesticazioneHistory" style="display:none"></div>
+<div class="mz-attempts-row mz-attempts-auto">
+  <div class="mz-attempts-auto-copy">
+    <b>Tentativi di Domesticazione registrati automaticamente</b>
+    <span>Il tool aggiorna da solo il conteggio e la Fatica. Per i ritentativi usa il pulsante che compare dopo aver risolto la conseguenza.</span>
+  </div>
+  <div class="mz-attempts-auto-value" id="mzTentativiDomesticazioneDisplay">0 tentativi</div>
 </div>
 <div class="mz-phase-footer-nav" data-current-phase="Domesticazione">
   <button type="button" class="bottone-azione mz-nav-prev" data-mz-go="Cura">← Cura</button>
@@ -2562,18 +2680,19 @@ body{color:#211008!important;}
 
 <div class="pannello" id="pannelloAllevamento">
 <h2>Allevamento: Produzione e Riproduzione (1d10)</h2>
-<div class="formula-tag" id="formulaAllevamento"></div>
-<div class="mz-table-block">
-  <div class="mz-table-intro"><b>1. Individua la fascia di Allevamento.</b><br>La tabella mostra gli esiti del 1d10 in base alla fascia ottenuta dalla formula qui sopra.</div>
-  <div id="tabellaFasceAllevamento"></div>
-</div>
-<div class="mz-flow-separator"><b>2. Applica eventuali Oggetti, Conoscenze o effetti.</b><br>Solo dopo aver determinato la fascia considera i modificatori che agiscono sul tiro o sui post.</div>
+<div class="nota-regole">Ordine della fase: <b>seleziona prima gli eventuali bonus</b>, poi il tool calcola la fascia di Allevamento e infine prepara il 1d10 da lanciare. Gli effetti che riducono i post di Accoppiamento restano separati e non modificano il dado.</div>
 <div class="mz-bonus-manager">
   <h3>Oggetti / Conoscenze — Allevamento</h3>
-  <p class="mz-bonus-help">Qui la distinzione è decisiva: <b>Empatia/Parametro</b> modificano la Forza complessiva prima della scelta della fascia; «Possibilità al tiro» modifica il risultato del 1d10 dopo la fascia. Gli effetti che riducono i post di Accoppiamento vengono mostrati a parte e non alterano il dado.</p>
+  <p class="mz-bonus-help"><b>Empatia/Parametro</b> modificano la Forza complessiva prima della scelta della fascia; <b>Possibilità al tiro</b> modifica invece il risultato del 1d10. Le riduzioni dei post di Accoppiamento vengono mostrate a parte.</p>
   <div class="mz-bonus-list" id="mzBonusAllevamento"></div>
   <button type="button" class="mz-bonus-add" data-mz-add-phase="allevamento">+ Aggiungi bonus</button>
 </div>
+<div class="formula-tag" id="formulaAllevamento"></div>
+<div class="mz-table-block">
+  <div class="mz-table-intro"><b>Fascia di Allevamento</b><br>La formula qui sopra determina quale tabella di esiti usare per il 1d10.</div>
+  <div id="tabellaFasceAllevamento"></div>
+</div>
+<div class="mz-flow-separator"><b>Lancio finale della fase</b><br>Copia il dado, lancialo sul forum e riporta qui il risultato.</div>
 <div class="result-line">
   <div class="dice-code" id="codiceAllevamento"></div>
   <button class="copy-btn" id="copiaAllevamento">Copia</button>
@@ -2974,6 +3093,23 @@ function bonusValore(id){
   return Math.floor(n);
 }
 
+
+function mzUpdatePhaseAttemptDisplay(inputId,displayId){
+  var el=document.getElementById(inputId),out=document.getElementById(displayId);
+  if(!el||!out)return;
+  var n=Math.max(0,Math.floor(mzNum(el.value,0)));
+  out.textContent=n+' '+(n===1?'tentativo':'tentativi');
+}
+function mzSyncAllAttemptDisplays(){
+  mzUpdateFiduciaAttemptDisplay();
+  mzUpdatePhaseAttemptDisplay('tentativiScoperta','mzTentativiScopertaDisplay');
+  mzUpdatePhaseAttemptDisplay('tentativiCura','mzTentativiCuraDisplay');
+  mzUpdatePhaseAttemptDisplay('tentativiDomesticazione','mzTentativiDomesticazioneDisplay');
+}
+var MZ_SCOPERTA_HISTORY=[],MZ_SCOPERTA_FAILURES=0;
+var MZ_CURA_HISTORY=[],MZ_CURA_FAILURES=0;
+var MZ_DOMESTICAZIONE_HISTORY=[];
+
 function mzUpdateFiduciaAttemptDisplay(){
   var el=document.getElementById('tentativiFiducia');
   var out=document.getElementById('mzTentativiFiduciaDisplay');
@@ -2987,6 +3123,9 @@ function mzEnsureAttemptCounter(id){
   var n=Math.max(0,Math.floor(mzNum(el.value,0)));
   if(n<1){el.value='1';}
   if(id==='tentativiFiducia')mzUpdateFiduciaAttemptDisplay();
+  if(id==='tentativiScoperta')mzUpdatePhaseAttemptDisplay('tentativiScoperta','mzTentativiScopertaDisplay');
+  if(id==='tentativiCura')mzUpdatePhaseAttemptDisplay('tentativiCura','mzTentativiCuraDisplay');
+  if(id==='tentativiDomesticazione')mzUpdatePhaseAttemptDisplay('tentativiDomesticazione','mzTentativiDomesticazioneDisplay');
 }
 
 
@@ -4177,7 +4316,8 @@ function resetGuidaMagizoologia(){
     el.disabled=false;
   });
   document.querySelectorAll('#mzBonusFiducia,#mzBonusScoperta,#mzBonusCura,#mzBonusDomesticazione,#mzBonusAllevamento').forEach(function(x){x.innerHTML='';});
-  formulaSignatures={};curaEbbeUnFallimento=false;MZ_SCOPERTA_FALLITA=false;MZ_CURA_FALLITA=false;MZ_CURA_MALUS_ALLEVAMENTO=0;MZ_LAST_CURA_BONUS_DOM=0;MZ_IMPOSIUM_SUCCESS=false;MZ_IMPOSIUM_DOM_MALUS=0;MZ_IMPOSIUM_POST_MALUS=0;MZ_BONUS_UID=0;MZ_SHARED_BONUSES={};MZ_SHARED_UID=0;MZ_ILLEGAL_SIGNATURES={cura:null,allevamento:null};MZ_FIDUCIA_HISTORY=[];mzRenderFiduciaHistory();mzUpdateFiduciaAttemptDisplay();
+  formulaSignatures={};curaEbbeUnFallimento=false;MZ_SCOPERTA_FALLITA=false;MZ_CURA_FALLITA=false;MZ_CURA_MALUS_ALLEVAMENTO=0;MZ_LAST_CURA_BONUS_DOM=0;MZ_IMPOSIUM_SUCCESS=false;MZ_IMPOSIUM_DOM_MALUS=0;MZ_IMPOSIUM_POST_MALUS=0;MZ_BONUS_UID=0;MZ_SHARED_BONUSES={};MZ_SHARED_UID=0;MZ_ILLEGAL_SIGNATURES={cura:null,allevamento:null};MZ_FIDUCIA_HISTORY=[];MZ_SCOPERTA_HISTORY=[];MZ_SCOPERTA_FAILURES=0;MZ_CURA_HISTORY=[];MZ_CURA_FAILURES=0;MZ_DOMESTICAZIONE_HISTORY=[];
+  mzRenderFiduciaHistory();mzRenderScopertaHistory();mzRenderCuraHistory();mzRenderDomesticazioneHistory();mzSyncAllAttemptDisplays();
   ricalcolaMagizoologia();
 }
 
@@ -4423,6 +4563,39 @@ function baseCustode(pg){
   return base + mzGeneralBonus('curaBase');
 }
 
+
+function mzRenderScopertaHistory(){
+  var host=document.getElementById('mzScopertaHistory');
+  if(!host)return;
+  if(!MZ_SCOPERTA_HISTORY.length){host.style.display='none';host.innerHTML='';return;}
+  host.style.display='block';
+  host.innerHTML='<b>Tentativi precedenti di Scoperta</b><ul>'+
+    MZ_SCOPERTA_HISTORY.map(function(x){
+      return '<li>Tentativo '+x.n+': 1d35 = <b>'+mzHtml(String(x.roll))+'</b> · fallimento · malus cumulato alla Cura: <b>-'+(x.failures*3)+'</b></li>';
+    }).join('')+'</ul>';
+}
+function mzStartScopertaRetry(){
+  var inp=document.getElementById('risultatoScoperta');
+  var roll=Number((inp||{}).value||0);
+  if(!intInRange(roll,1,35))return;
+  var pg=leggiPG(),bonusFase=mzPhaseTotals('scoperta'),emp=pg.empatia+bonusFase.empatia;
+  var totale=emp+baseCustode(pg)+classCura[pg.classificazione]+bonusFase.parametro+bonusFase.possibilita;
+  if(roll<=totale)return;
+
+  var attempts=document.getElementById('tentativiScoperta');
+  var current=Math.max(1,Math.floor(mzNum((attempts||{}).value,1)));
+  MZ_SCOPERTA_FAILURES++;
+  MZ_SCOPERTA_HISTORY.push({n:current,roll:roll,failures:MZ_SCOPERTA_FAILURES});
+  if(attempts)attempts.value=String(current+1);
+  var legacy=document.getElementById('malusExtraScoperta');if(legacy)legacy.value=String(MZ_SCOPERTA_FAILURES*3);
+  var flag=document.getElementById('scopertaFallimentoPrecedente');if(flag)flag.checked=true;
+  if(inp)inp.value='';
+  mzRenderScopertaHistory();
+  mzSyncAllAttemptDisplays();
+  ricalcolaMagizoologia();
+  if(inp)inp.focus();
+}
+
 function recomputeScoperta(){
   var formulaEl = document.getElementById('formulaScoperta');
   var codiceEl = document.getElementById('codiceScoperta');
@@ -4440,9 +4613,11 @@ function recomputeScoperta(){
   guardFormula('scoperta', totale, 'risultatoScoperta');
   formulaEl.textContent = 'Empatia fase ' + empatiaFase + (bonusFase.empatia?' (+'+bonusFase.empatia+' temporanea)':'') + ' + Base/Custode ' + baseCustode(pg) + ' + Classificazione ' + classCura[pg.classificazione] + ' + Bonus parametro ' + bonusFase.parametro + ' + Possibilità extra ' + bonusFase.possibilita + ' = ' + totale + ' su 35';
 
-  var malusExtra = bonusValore('malusExtraScoperta');
+  var malusExtra = MZ_SCOPERTA_FAILURES*3;
+  var legacyMalus=document.getElementById('malusExtraScoperta');if(legacyMalus)legacyMalus.value=String(malusExtra);
   var storicoScopertaEl=document.getElementById('scopertaFallimentoPrecedente');
-  if(malusExtra>0&&storicoScopertaEl)storicoScopertaEl.checked=true;
+  if(storicoScopertaEl)storicoScopertaEl.checked=MZ_SCOPERTA_FAILURES>0;
+  var retryScoperta=document.getElementById('mzRetryScopertaBox');if(retryScoperta)retryScoperta.style.display='none';
 
   if(totale >= 35){
     codiceEl.textContent = 'Autoconclusivo: possibilita ' + totale + ' su 35, nessun tiro necessario.';
@@ -4490,13 +4665,75 @@ function recomputeScoperta(){
   } else {
     tagEl.textContent = 'Fallimento';
     tagEl.className = 'out-tag out-fail';
-    noteEl.textContent = 'La Creatura si aggrava: -3 possibilità per la Cura del problema. In Allevamento: -1d2 cuccioli e +5 post. Ulteriori fallimenti di Scoperta non aumentano questo specifico malus.';
+    var currentFailures=MZ_SCOPERTA_FAILURES+1;
+    noteEl.textContent = 'La Scoperta fallisce. Devi ritentare prima di passare alla Cura. Se il prossimo tentativo riuscirà, la Cura terrà conto automaticamente di -3 possibilità per ciascun fallimento accumulato.';
     if(storicoScopertaEl)storicoScopertaEl.checked=true;
-    bonus = -3;
+    bonusMostrato.textContent = 'Fallimenti di Scoperta accumulati contando questo tentativo: '+currentFailures+' · malus futuro alla Cura: -'+(currentFailures*3)+'.';
+    if(retryScoperta)retryScoperta.style.display='block';
+    return null;
   }
   bonus = bonus - malusExtra;
   bonusMostrato.textContent = 'Bonus/malus da riportare sulla Cura del problema: ' + (bonus >= 0 ? '+' + bonus : bonus);
   return bonus;
+}
+
+
+function mzRenderCuraHistory(){
+  var host=document.getElementById('mzCuraHistory');
+  if(!host)return;
+  if(!MZ_CURA_HISTORY.length){host.style.display='none';host.innerHTML='';return;}
+  host.style.display='block';
+  host.innerHTML='<b>Tentativi precedenti di Cura</b><ul>'+
+    MZ_CURA_HISTORY.map(function(x){
+      return '<li>Tentativo '+x.n+': 1d35 = <b>'+mzHtml(String(x.roll))+'</b> · fallimento'+
+        (x.pregnancy?(' · gravidanza 1d10 = '+mzHtml(String(x.pregnancy))):'')+'</li>';
+    }).join('')+'</ul>';
+}
+function mzStartCuraRetry(){
+  var inp=document.getElementById('risultatoCura'),roll=Number((inp||{}).value||0);
+  if(!intInRange(roll,1,35))return;
+  if(!/Fallimento/i.test((document.getElementById('tagCura')||{}).textContent||''))return;
+  var currentFailures=MZ_CURA_FAILURES+1;
+  if(currentFailures>=3)return;
+
+  var attempts=document.getElementById('tentativiCura');
+  var current=Math.max(1,Math.floor(mzNum((attempts||{}).value,1)));
+  var pgRoll=document.getElementById('femminaGravidanza')&&document.getElementById('femminaGravidanza').checked
+    ? Number((document.getElementById('risultatoGravidanza')||{}).value||0):0;
+  MZ_CURA_FAILURES++;
+  MZ_CURA_HISTORY.push({n:current,roll:roll,pregnancy:pgRoll||null});
+  if(attempts)attempts.value=String(current+1);
+  var consecutive=document.getElementById('fallimentiCuraConsecutivi');if(consecutive)consecutive.value=String(MZ_CURA_FAILURES);
+  var flag=document.getElementById('curaFallimentoPrecedente');if(flag)flag.checked=true;
+  if(inp)inp.value='';
+  var bn=document.getElementById('bonusNarratore');if(bn)bn.value='0';
+  clearDependentResult('risultatoGravidanza','tagGravidanza');
+  clearDependentResult('risultatoConseguenzaCura','tagConseguenzaCura');
+  mzRenderCuraHistory();
+  mzSyncAllAttemptDisplays();
+  ricalcolaMagizoologia();
+  if(inp)inp.focus();
+}
+function mzRenderCuraTerminalConsequence(){
+  var inp=document.getElementById('risultatoConseguenzaCura');
+  var tag=document.getElementById('tagConseguenzaCura');
+  var desc=document.getElementById('descrizioneConseguenzaCura');
+  if(!inp||!tag||!desc)return;
+  var v=inp.value;
+  desc.className='mz-consequence-description';
+  if(v===''){tag.textContent='in attesa';tag.className='out-tag out-neutral';desc.innerHTML='';return;}
+  if(!intInRange(v,1,5)){tag.textContent='Risultato impossibile';tag.className='out-tag out-fail';desc.innerHTML='';return;}
+  v=Number(v);
+  tag.className='out-tag out-fail';
+  desc.classList.add('show');
+  if(v<=3){
+    tag.textContent='La Creatura muore';
+    desc.innerHTML='<b>Esito:</b> la Creatura muore. La Cura termina qui e non sono possibili ulteriori tentativi.';
+  }else{
+    tag.textContent='Ostile, poi muore';
+    desc.classList.add('is-hostile');
+    desc.innerHTML='<b>Esito:</b> la Creatura diventa ostile, attacca con le ultime forze e poi muore.<br><span class="rm-narratore-call">ATTENZIONE</span> <a href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">contatta il Narratore</a>.';
+  }
 }
 
 function recomputeCura(bonusScoperta){
@@ -4507,13 +4744,14 @@ function recomputeCura(bonusScoperta){
   var tagEl = document.getElementById('tagCura');
   var noteEl = document.getElementById('noteCura');
   var bonusDomMostrato = document.getElementById('bonusDomesticazioneMostrato');
+  var retryCura=document.getElementById('mzRetryCuraBox');if(retryCura)retryCura.style.display='none';
 
   /* Scoperta e Cura producono due malus di Allevamento distinti: ciascuno
      si applica al massimo una volta, ma i due malus si sommano fra loro. */
   var storicoScopertaEl=document.getElementById('scopertaFallimentoPrecedente');
   var storicoCuraEl=document.getElementById('curaFallimentoPrecedente');
-  MZ_SCOPERTA_FALLITA=!!(storicoScopertaEl&&storicoScopertaEl.checked)||bonusValore('malusExtraScoperta')>0||(bonusScoperta!==null&&bonusScoperta<0);
-  MZ_CURA_FALLITA=!!(storicoCuraEl&&storicoCuraEl.checked)||bonusValore('fallimentiCuraConsecutivi')>0;
+  MZ_SCOPERTA_FALLITA=MZ_SCOPERTA_FAILURES>0;
+  MZ_CURA_FALLITA=MZ_CURA_FAILURES>0;
   if(MZ_SCOPERTA_FALLITA&&storicoScopertaEl)storicoScopertaEl.checked=true;
   if(MZ_CURA_FALLITA&&storicoCuraEl)storicoCuraEl.checked=true;
   MZ_CURA_MALUS_ALLEVAMENTO=(MZ_SCOPERTA_FALLITA?1:0)+(MZ_CURA_FALLITA?1:0);
@@ -4591,6 +4829,7 @@ function recomputeCura(bonusScoperta){
     tagEl.className = 'out-tag out-ok';
     noteEl.textContent = 'La Creatura viene curata correttamente: +3 possibilita in Domesticazione (se non gia addomesticata).';
     bonusDomMostrato.textContent = 'Bonus automatico per la Domesticazione: +3';MZ_LAST_CURA_BONUS_DOM=3;
+    var consecutiveOk=document.getElementById('fallimentiCuraConsecutivi');if(consecutiveOk)consecutiveOk.value='0';
   } else {
     tagEl.textContent = 'Fallimento';
     tagEl.className = 'out-tag out-fail';
@@ -4598,6 +4837,14 @@ function recomputeCura(bonusScoperta){
     bonusDomMostrato.textContent = 'Nessun bonus per la Domesticazione.';MZ_LAST_CURA_BONUS_DOM=0;
     MZ_CURA_FALLITA=true;curaEbbeUnFallimento=true;MZ_CURA_MALUS_ALLEVAMENTO=(MZ_SCOPERTA_FALLITA?1:0)+1;
     if(storicoCuraEl){storicoCuraEl.checked = true;}
+    var currentFailures=MZ_CURA_FAILURES+1;
+    var consecutiveEl=document.getElementById('fallimentiCuraConsecutivi');if(consecutiveEl)consecutiveEl.value=String(Math.min(3,currentFailures));
+    if(currentFailures<3){
+      if(retryCura)retryCura.style.display='block';
+      noteEl.textContent += ' Puoi effettuare un nuovo tentativo; al terzo fallimento consecutivo scatterà il tiro 1d5 finale.';
+    }else{
+      noteEl.textContent += ' Questo è il terzo fallimento consecutivo: risolvi il tiro 1d5 finale qui sotto.';
+    }
   }
 }
 
@@ -4639,11 +4886,16 @@ function recomputeCuraCompleta(){
   }
 
   var blocco3 = document.getElementById('conseguenzaCura');
-  var fallimenti = document.getElementById('fallimentiCuraConsecutivi').value;
-  if(intInRange(fallimenti, 3, 3)){
+  var currentCuraFail=/Fallimento/i.test((document.getElementById('tagCura')||{}).textContent||'');
+  var fallimenti = MZ_CURA_FAILURES + (currentCuraFail?1:0);
+  var legacyFc=document.getElementById('fallimentiCuraConsecutivi');if(legacyFc)legacyFc.value=String(Math.min(3,fallimenti));
+  if(fallimenti>=3){
     blocco3.style.display = 'block';
+    mzRenderCuraTerminalConsequence();
   } else {
     blocco3.style.display = 'none';
+    clearDependentResult('risultatoConseguenzaCura','tagConseguenzaCura');
+    var descC=document.getElementById('descrizioneConseguenzaCura');if(descC){descC.className='mz-consequence-description';descC.innerHTML='';}
   }
 }
 
@@ -4660,6 +4912,101 @@ var testiConseguenzaDomesticazione = {
   anziana: {dado:5, testo:'con risultato 5 la Creatura ripensa e la Domesticazione diventa positiva.'}
 };
 
+
+function mzConseguenzaDomesticazioneDescription(fase,val){
+  val=Number(val);
+  if(fase==='infante')return val===7?{state:'hostile',text:'La Creatura diventa ostile.'}:{state:'neutral',text:'Nessuna conseguenza ulteriore: la Domesticazione resta fallita.'};
+  if(fase==='adolescente')return val===5?{state:'hostile',text:'La Creatura diventa ostile.'}:{state:'neutral',text:'Nessuna conseguenza ulteriore: la Domesticazione resta fallita.'};
+  if(fase==='adulta')return (val===4||val===5)?{state:'hostile',text:'La Creatura diventa ostile.'}:{state:'neutral',text:'Nessuna conseguenza ulteriore: la Domesticazione resta fallita.'};
+  if(fase==='anziana')return val===5?{state:'positive',text:'La Creatura ci ripensa: la Domesticazione diventa positiva.'}:{state:'neutral',text:'Nessuna conseguenza ulteriore: la Domesticazione resta fallita.'};
+  return null;
+}
+function mzRenderDomesticazioneHistory(){
+  var host=document.getElementById('mzDomesticazioneHistory');
+  if(!host)return;
+  if(!MZ_DOMESTICAZIONE_HISTORY.length){host.style.display='none';host.innerHTML='';return;}
+  host.style.display='block';
+  host.innerHTML='<b>Tentativi precedenti di Domesticazione</b><ul>'+
+    MZ_DOMESTICAZIONE_HISTORY.map(function(x){
+      return '<li>Tentativo '+x.n+': 1d35 = <b>'+mzHtml(String(x.roll))+'</b> · fallimento · conseguenza '+mzHtml(String(x.consequenceRoll))+': '+mzHtml(x.consequence)+'</li>';
+    }).join('')+'</ul>';
+}
+function mzRenderDomesticazioneConsequence(fase,val){
+  var d=mzConseguenzaDomesticazioneDescription(fase,val);
+  var desc=document.getElementById('descrizioneConseguenzaDomesticazione');
+  var box=document.getElementById('mzRetryDomesticazioneBox');
+  var copy=document.getElementById('mzRetryDomesticazioneCopy');
+  var status=document.getElementById('mzRetryDomesticazioneStatus');
+  var btn=document.getElementById('mzRiprovaDomesticazione');
+  if(desc){desc.className='mz-consequence-description';desc.innerHTML='';}
+  if(box){box.style.display='none';box.classList.remove('is-terminal','is-hostile');}
+  if(!d)return null;
+
+  if(desc){
+    desc.classList.add('show');
+    if(d.state==='hostile')desc.classList.add('is-hostile');
+    if(d.state==='positive')desc.classList.add('is-positive');
+    desc.innerHTML='<b>Esito del dado:</b> '+mzHtml(d.text);
+  }
+
+  if(d.state==='positive'){
+    return d;
+  }
+  if(box)box.style.display='block';
+
+  if(d.state==='neutral'){
+    if(copy)copy.innerHTML='<b>Nuovo tentativo possibile dopo l’attesa</b><span>Puoi riprovare la Domesticazione soltanto dopo <b>5 post qualsiasi del PG</b> oppure <b>una settimana OFFGame</b>. Quando l’attesa è terminata, il pulsante conserva PG, Creatura e bonus e prepara un nuovo tentativo.</span>';
+    if(status){status.className='mz-retry-status ready';status.textContent='Premi il pulsante solo quando uno dei due tempi di attesa è stato completato.';}
+    if(btn){btn.style.display='';btn.textContent='Riprova Domesticazione (attesa completata)';btn.dataset.mode='retry';}
+  }else if(d.state==='hostile'){
+    if(box)box.classList.add('is-hostile');
+    if(desc)desc.innerHTML+='<br><span class="rm-narratore-call">ATTENZIONE</span> <a href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">contatta il Narratore</a>.';
+    if(copy)copy.innerHTML='<b>La Creatura è diventata ostile</b><span>Non si ritenta subito la Domesticazione. Dopo esserti difeso puoi provare a placarla con un <b>nuovo dado Fiducia a -3 possibilità</b>.</span>';
+    if(status){status.className='mz-retry-status hostile';status.textContent='Il pulsante ti riporta alla Fiducia mantenendo i dati del PG e della Creatura e applicando automaticamente il -3.';}
+    if(btn){btn.style.display='';btn.textContent='Vai alla Fiducia con -3';btn.dataset.mode='fiducia';}
+  }
+  return d;
+}
+function mzStartDomesticazioneRetry(){
+  var mode=(document.getElementById('mzRiprovaDomesticazione')||{}).dataset.mode||'';
+  var pg=leggiPG();
+  var roll=Number((document.getElementById('risultatoDomesticazione')||{}).value||0);
+  var cEl=document.getElementById('risultatoConseguenzaDomesticazione');
+  var cRoll=Number((cEl||{}).value||0);
+  var d=mzConseguenzaDomesticazioneDescription(pg.faseVitale,cRoll);
+  if(!roll||!d)return;
+
+  var attempts=document.getElementById('tentativiDomesticazione');
+  var current=Math.max(1,Math.floor(mzNum((attempts||{}).value,1)));
+  MZ_DOMESTICAZIONE_HISTORY.push({n:current,roll:roll,consequenceRoll:cRoll,consequence:d.text});
+  mzRenderDomesticazioneHistory();
+
+  if(mode==='fiducia'&&d.state==='hostile'){
+    var fidAttempts=document.getElementById('tentativiFiducia');
+    var fcur=Math.max(0,Math.floor(mzNum((fidAttempts||{}).value,0)));
+    if(fidAttempts)fidAttempts.value=String(fcur+1);
+    var ostile=document.getElementById('ritentativoOstile');if(ostile)ostile.checked=true;
+    var rf=document.getElementById('risultatoFiducia');if(rf)rf.value='';
+    clearDependentResult('risultatoConseguenzaFiducia','tagConseguenzaFiducia');
+    mzSyncAllAttemptDisplays();
+    ricalcolaMagizoologia();
+    mostraPannello('Fiducia');
+    var pf=document.getElementById('pannelloFiducia');if(pf&&pf.scrollIntoView)pf.scrollIntoView({behavior:'smooth',block:'start'});
+    return;
+  }
+
+  if(mode==='retry'&&d.state==='neutral'){
+    if(attempts)attempts.value=String(current+1);
+    var main=document.getElementById('risultatoDomesticazione');if(main)main.value='';
+    if(cEl)cEl.value='';
+    var d4=document.getElementById('risultatoAddestratoreD4');if(d4)d4.value='';
+    clearDependentResult('risultatoConseguenzaDomesticazione','tagConseguenzaDomesticazione');
+    mzSyncAllAttemptDisplays();
+    ricalcolaMagizoologia();
+    if(main&&!main.disabled)main.focus();
+  }
+}
+
 function recomputeDomesticazione(){
   var formulaEl = document.getElementById('formulaDomesticazione');
   var codiceEl = document.getElementById('codiceDomesticazione');
@@ -4670,6 +5017,8 @@ function recomputeDomesticazione(){
   var blocco = document.getElementById('conseguenzaDomesticazione');
   var rigaD4 = document.getElementById('rigaAddestratoreD4');
   var infoAddestratore = document.getElementById('baseAddestratoreInfo');
+  var domRetry=document.getElementById('mzRetryDomesticazioneBox');if(domRetry)domRetry.style.display='none';
+  var domDesc=document.getElementById('descrizioneConseguenzaDomesticazione');if(domDesc){domDesc.className='mz-consequence-description';domDesc.innerHTML='';}
 
   var pg = leggiPG();
   blocco.style.display = 'none';
@@ -4809,12 +5158,26 @@ function recomputeDomesticazione(){
     if(vc === ''){
       tagC.textContent = 'in attesa';
       tagC.className = 'out-tag out-neutral';
+      mzRenderDomesticazioneConsequence(pg.faseVitale,null);
     } else if(intInRange(vc, 1, conseguenza.dado)){
-      tagC.textContent = 'Esito: ' + vc;
-      tagC.className = 'out-tag out-neutral';
+      var dd=mzRenderDomesticazioneConsequence(pg.faseVitale,vc);
+      if(dd&&dd.state==='positive'){
+        tagC.textContent = 'Esito positivo';
+        tagC.className = 'out-tag out-ok';
+        tagEl.textContent='Successo dopo la conseguenza';
+        tagEl.className='out-tag out-ok';
+        noteEl.textContent='La Creatura anziana ci ha ripensato: la Domesticazione è considerata riuscita.';
+      }else if(dd&&dd.state==='hostile'){
+        tagC.textContent = 'Creatura ostile';
+        tagC.className = 'out-tag out-fail';
+      }else{
+        tagC.textContent = 'Nessuna conseguenza ulteriore';
+        tagC.className = 'out-tag out-neutral';
+      }
     } else {
       tagC.textContent = 'Risultato impossibile';
       tagC.className = 'out-tag out-fail';
+      mzRenderDomesticazioneConsequence(pg.faseVitale,null);
     }
   }
 }
@@ -5096,7 +5459,7 @@ function ricalcolaMagizoologia(){
   recomputeIllegalita();
   mzUpdateBonusSummary();
   mzRenderGuideSummary();
-  mzUpdateFiduciaAttemptDisplay();
+  mzSyncAllAttemptDisplays();
 }
 
 /* ---------- TAB ---------- */
@@ -5125,6 +5488,11 @@ document.getElementById('tabDomesticazione').addEventListener(evtClick, function
 document.getElementById('tabAllevamento').addEventListener(evtClick, function(){ mostraPannello('Allevamento'); });
 document.getElementById('tabRiepilogo').addEventListener(evtClick, function(){ mzRenderGuideSummary(); mostraPannello('Riepilogo'); });
 document.getElementById('mzRiprovaFiducia').addEventListener(evtClick, function(){ mzStartFiduciaRetry(); });
+document.getElementById('mzRiprovaScoperta').addEventListener(evtClick, function(){ mzStartScopertaRetry(); });
+document.getElementById('mzRiprovaCura').addEventListener(evtClick, function(){ mzStartCuraRetry(); });
+document.getElementById('mzRiprovaDomesticazione').addEventListener(evtClick, function(){ mzStartDomesticazioneRetry(); });
+document.getElementById('risultatoConseguenzaCura').addEventListener('input', mzRenderCuraTerminalConsequence);
+document.getElementById('risultatoConseguenzaCura').addEventListener('change', mzRenderCuraTerminalConsequence);
 document.querySelectorAll('[data-mz-go]').forEach(function(btn){
   btn.addEventListener(evtClick,function(){
     var target=btn.getAttribute('data-mz-go');
