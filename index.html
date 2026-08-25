@@ -2003,6 +2003,56 @@ body{color:#211008!important;}
   opacity:1!important;
 }
 
+
+.mz-retry-fiducia.is-terminal{
+  background:linear-gradient(180deg,rgba(91,35,26,.88),rgba(59,24,18,.96))!important;
+  border-color:#a85b45!important;
+}
+.mz-retry-fiducia.is-terminal .mz-retry-copy b{
+  color:#ffb0a1!important;
+}
+.mz-retry-fiducia.is-hostile-retry{
+  background:linear-gradient(180deg,rgba(104,35,34,.90),rgba(63,22,23,.97))!important;
+  border-color:#c85a61!important;
+}
+.mz-retry-fiducia.is-hostile-retry .mz-retry-copy b{
+  color:#ffb3ad!important;
+}
+
+
+.mz-attempts-auto{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:14px;
+  align-items:center;
+}
+.mz-attempts-auto-copy{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  color:#ffe4ce;
+  line-height:1.42;
+}
+.mz-attempts-auto-copy b{
+  color:#ffd0a3;
+}
+.mz-attempts-auto-value{
+  min-width:112px;
+  padding:9px 12px;
+  border:1px solid #ef9b55;
+  border-radius:999px;
+  background:#542817;
+  color:#fff6ec;
+  font-family:Consolas,"Courier New",monospace;
+  font-weight:800;
+  text-align:center;
+  white-space:nowrap;
+}
+@media(max-width:620px){
+  .mz-attempts-auto{grid-template-columns:1fr!important;}
+  .mz-attempts-auto-value{justify-self:start;}
+}
+
 </style>
 
 </head>
@@ -2291,9 +2341,9 @@ body{color:#211008!important;}
   </div>
   <div class="nota-regole" id="noteImposiumEsito"></div>
 </div>
-<div class="check-riga">
+<div class="check-riga" style="display:none">
   <input type="checkbox" id="ritentativoOstile" data-key="ritentativoOstile">
-  <label for="ritentativoOstile">Sto ritentando dopo che la Creatura e diventata ostile (-3)</label>
+  <label for="ritentativoOstile">Ritentativo automatico dopo ostilità (-3)</label>
 </div>
 <div class="formula-tag" id="formulaFiducia"></div>
 <div class="result-line">
@@ -2306,14 +2356,6 @@ body{color:#211008!important;}
   <span class="out-tag out-neutral" id="tagFiducia">in attesa</span>
 </div>
 <div class="nota-regole" id="noteFiducia"></div>
-
-<div class="riga mz-attempts-row">
-  <div class="campo">
-    <label>Tentativi di Fiducia eseguiti</label>
-    <input type="number" id="tentativiFiducia" data-key="tentativiFiducia" value="0" min="0" step="1">
-    <div class="numeric-note">Questo conteggio serve alla Fatica: passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo soltanto se hai effettuato altri tentativi.</div>
-  </div>
-</div>
 
 <div class="blocco-conseguenza" id="conseguenzaFiducia" style="display:none">
   <h3>Conseguenze del fallimento (in base alla Fase Vitale)</h3>
@@ -2329,15 +2371,22 @@ body{color:#211008!important;}
   <div class="mz-consequence-description" id="descrizioneConseguenzaFiducia"></div>
 
   <div class="mz-retry-fiducia" id="mzRetryFiduciaBox" style="display:none">
-    <div class="mz-retry-copy">
-      <b>Fiducia fallita: puoi ritentare</b>
-      <span>Il nuovo tentativo mantiene automaticamente tutti i dati già inseriti del PG, della Creatura e dei bonus. Verranno azzerati soltanto il risultato della Fiducia e il dado della conseguenza.</span>
-    </div>
-    <div class="mz-retry-status" id="mzRetryFiduciaStatus">Prima inserisci il risultato del dado della conseguenza.</div>
-    <button type="button" class="bottone-azione" id="mzRiprovaFiducia" disabled>Riprova Fiducia</button>
+    <div class="mz-retry-copy" id="mzRetryFiduciaCopy"></div>
+    <div class="mz-retry-status" id="mzRetryFiduciaStatus"></div>
+    <button type="button" class="bottone-azione" id="mzRiprovaFiducia">Riprova Fiducia</button>
   </div>
   <div class="mz-fiducia-history" id="mzFiduciaHistory" style="display:none"></div>
 </div>
+
+<div class="mz-attempts-row mz-attempts-auto">
+  <input type="hidden" id="tentativiFiducia" data-key="tentativiFiducia" value="0">
+  <div class="mz-attempts-auto-copy">
+    <b>Tentativi di Fiducia registrati automaticamente</b>
+    <span>Il tool li conta da solo in base ai tiri effettuati e ai pulsanti <b>Riprova Fiducia</b>. Non devi inserire nulla manualmente.</span>
+  </div>
+  <div class="mz-attempts-auto-value" id="mzTentativiFiduciaDisplay">0 tentativi</div>
+</div>
+
 <div class="mz-phase-footer-nav" data-current-phase="Fiducia">
   <button type="button" class="bottone-azione mz-nav-prev" data-mz-go="Riconoscimento">← Riconoscimento</button>
   <button type="button" class="bottone-azione mz-nav-next" data-mz-go="Cura">Vai a Cura →</button>
@@ -2925,11 +2974,19 @@ function bonusValore(id){
   return Math.floor(n);
 }
 
+function mzUpdateFiduciaAttemptDisplay(){
+  var el=document.getElementById('tentativiFiducia');
+  var out=document.getElementById('mzTentativiFiduciaDisplay');
+  if(!el||!out)return;
+  var n=Math.max(0,Math.floor(mzNum(el.value,0)));
+  out.textContent=n+' '+(n===1?'tentativo':'tentativi');
+}
 function mzEnsureAttemptCounter(id){
   var el=document.getElementById(id);
   if(!el)return;
   var n=Math.max(0,Math.floor(mzNum(el.value,0)));
   if(n<1){el.value='1';}
+  if(id==='tentativiFiducia')mzUpdateFiduciaAttemptDisplay();
 }
 
 
@@ -3861,71 +3918,93 @@ function mzConseguenzaFiduciaAnswers(fase){
 function mzConseguenzaFiduciaDescription(fase,val){
   val=Number(val);
   if(fase==='infante'){
-    if(val>=1&&val<=3)return {text:'La Creatura resta sul posto e ignora i PG.',hostile:false,positive:false};
-    if(val===4)return {text:'La Creatura si allontana.',hostile:false,positive:false};
+    if(val>=1&&val<=3)return {state:'stay',text:'La Creatura resta sul posto e ignora i PG.',hostile:false,positive:false};
+    if(val===4)return {state:'away',text:'La Creatura si allontana.',hostile:false,positive:false};
   }
   if(fase==='adolescente'){
-    if(val>=1&&val<=2)return {text:'La Creatura resta sul posto e ignora i PG.',hostile:false,positive:false};
-    if(val===3)return {text:'La Creatura si allontana.',hostile:false,positive:false};
-    if(val===4)return {text:'La Creatura diventa ostile.',hostile:true,positive:false};
+    if(val>=1&&val<=2)return {state:'stay',text:'La Creatura resta sul posto e ignora i PG.',hostile:false,positive:false};
+    if(val===3)return {state:'away',text:'La Creatura si allontana.',hostile:false,positive:false};
+    if(val===4)return {state:'hostile',text:'La Creatura diventa ostile.',hostile:true,positive:false};
   }
   if(fase==='adulta'){
-    if(val>=1&&val<=2)return {text:'La Creatura si allontana.',hostile:false,positive:false};
-    if(val>=3&&val<=4)return {text:'La Creatura diventa ostile.',hostile:true,positive:false};
+    if(val>=1&&val<=2)return {state:'away',text:'La Creatura si allontana.',hostile:false,positive:false};
+    if(val>=3&&val<=4)return {state:'hostile',text:'La Creatura diventa ostile.',hostile:true,positive:false};
   }
   if(fase==='anziana'){
-    if(val>=1&&val<=3)return {text:'La Creatura si allontana.',hostile:false,positive:false};
-    if(val===4)return {text:'La Creatura ci ripensa: l’interazione diventa positiva e la Fiducia è considerata riuscita.',hostile:false,positive:true};
+    if(val>=1&&val<=3)return {state:'away',text:'La Creatura si allontana.',hostile:false,positive:false};
+    if(val===4)return {state:'positive',text:'La Creatura ci ripensa: l’interazione diventa positiva e la Fiducia è considerata riuscita.',hostile:false,positive:true};
   }
   return null;
 }
 function mzRenderFiduciaConsequenceDescription(fase,val){
   var box=document.getElementById('descrizioneConseguenzaFiducia');
   var retry=document.getElementById('mzRetryFiduciaBox');
+  var copy=document.getElementById('mzRetryFiduciaCopy');
   var btn=document.getElementById('mzRiprovaFiducia');
   var status=document.getElementById('mzRetryFiduciaStatus');
   if(!box)return null;
+
   var d=mzConseguenzaFiduciaDescription(fase,val);
   box.className='mz-consequence-description';
+  if(retry){
+    retry.style.display='none';
+    retry.classList.remove('is-terminal','is-hostile-retry');
+  }
+  if(btn){
+    btn.style.display='';
+    btn.disabled=false;
+    btn.textContent='Riprova Fiducia';
+  }
 
   if(!d){
     box.innerHTML='';
-    if(retry)retry.style.display='block';
-    if(btn)btn.disabled=true;
-    if(status){
-      status.className='mz-retry-status';
-      status.textContent='Prima inserisci un risultato valido nel dado della conseguenza; poi potrai avviare il nuovo tentativo.';
-    }
     return null;
   }
 
   box.classList.add('show');
   if(d.hostile)box.classList.add('is-hostile');
   if(d.positive)box.classList.add('is-positive');
+  box.innerHTML='<b>Esito del dado:</b> '+mzHtml(d.text);
 
-  var html='<b>Esito del dado:</b> '+mzHtml(d.text);
-  if(d.hostile){
-    html+='<br><span class="rm-narratore-call">ATTENZIONE</span> la Creatura è ostile: <a href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">contatta il Narratore</a>. Dopo aver scongiurato il pericolo puoi tentare di placarla di nuovo con <b>-3 possibilità</b>.';
-  }else if(!d.positive){
-    html+='<br>La Fiducia può essere tentata di nuovo con gli stessi dati già inseriti.';
-  }
-  box.innerHTML=html;
-
-  if(d.positive){
-    if(retry)retry.style.display='none';
-    if(btn)btn.disabled=true;
-  }else{
+  if(d.state==='stay'){
     if(retry)retry.style.display='block';
-    if(btn){
-      btn.disabled=false;
-      btn.dataset.hostile=d.hostile?'1':'0';
-    }
+    if(copy)copy.innerHTML='<b>La Creatura è ancora presente: puoi ritentare la Fiducia</b><span>Il nuovo tentativo mantiene automaticamente PG, Creatura e bonus già inseriti. Verranno azzerati soltanto i risultati dei dadi della Fiducia.</span>';
     if(status){
-      status.className='mz-retry-status '+(d.hostile?'hostile':'ready');
-      status.innerHTML=d.hostile
-        ? '<b>Ritentativo disponibile dopo aver gestito l’ostilità.</b> Il nuovo tiro applicherà automaticamente <b>-3 possibilità</b>.'
-        : '<b>Ritentativo pronto.</b> Premi il pulsante: PG, Creatura e bonus restano invariati.';
+      status.className='mz-retry-status ready';
+      status.innerHTML='<b>Ritentativo normale disponibile.</b> Nessun malus aggiuntivo viene applicato.';
     }
+    if(btn){
+      btn.textContent='Riprova Fiducia';
+      btn.dataset.retryType='normal';
+    }
+  }else if(d.state==='away'){
+    if(retry){
+      retry.style.display='block';
+      retry.classList.add('is-terminal');
+    }
+    if(copy)copy.innerHTML='<b>Interazione conclusa</b><span>La Creatura si è allontanata: non è più presente nella scena e non puoi ritentare la Fiducia con questo stesso incontro.</span>';
+    if(status){
+      status.className='mz-retry-status';
+      status.textContent='Per interagire nuovamente con questa Creatura sarà necessario un nuovo incontro.';
+    }
+    if(btn)btn.style.display='none';
+  }else if(d.state==='hostile'){
+    if(retry){
+      retry.style.display='block';
+      retry.classList.add('is-hostile-retry');
+    }
+    box.innerHTML+='<br><span class="rm-narratore-call">ATTENZIONE</span> la Creatura è ostile: <a href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">contatta il Narratore</a>.';
+    if(copy)copy.innerHTML='<b>Ritentativo speciale dopo l’ostilità</b><span>Il regolamento consente di provare a placarla una seconda volta <b>dopo aver scongiurato il pericolo</b>. Il nuovo dado Fiducia avrà automaticamente <b>-3 possibilità</b>.</span>';
+    if(status){
+      status.className='mz-retry-status hostile';
+      status.innerHTML='Usa il pulsante soltanto quando la situazione di ostilità gestita dal Narratore è stata risolta.';
+    }
+    if(btn){
+      btn.textContent='Riprova Fiducia con -3';
+      btn.dataset.retryType='hostile';
+    }
+  }else if(d.state==='positive'){
+    if(retry)retry.style.display='none';
   }
   return d;
 }
@@ -3953,7 +4032,7 @@ function mzStartFiduciaRetry(){
   var cEl=document.getElementById('risultatoConseguenzaFiducia');
   var cRoll=Number((cEl||{}).value||0);
   var d=mzConseguenzaFiduciaDescription(pg.faseVitale,cRoll);
-  if(!roll || !d || d.positive)return;
+  if(!roll || !d || (d.state!=='stay'&&d.state!=='hostile'))return;
 
   var attempts=document.getElementById('tentativiFiducia');
   var current=Math.max(1,Math.floor(Number((attempts||{}).value||1)));
@@ -3962,13 +4041,15 @@ function mzStartFiduciaRetry(){
     roll:roll,
     consequenceRoll:cRoll,
     consequence:d.text,
-    hostile:!!d.hostile
+    hostile:!!d.hostile,
+    retryType:d.state
   });
   mzRenderFiduciaHistory();
 
   if(attempts)attempts.value=String(current+1);
+  mzUpdateFiduciaAttemptDisplay();
   var ostile=document.getElementById('ritentativoOstile');
-  if(ostile && d.hostile)ostile.checked=true;
+  if(ostile)ostile.checked=(d.state==='hostile');
 
   var main=document.getElementById('risultatoFiducia');
   if(main)main.value='';
@@ -4096,7 +4177,7 @@ function resetGuidaMagizoologia(){
     el.disabled=false;
   });
   document.querySelectorAll('#mzBonusFiducia,#mzBonusScoperta,#mzBonusCura,#mzBonusDomesticazione,#mzBonusAllevamento').forEach(function(x){x.innerHTML='';});
-  formulaSignatures={};curaEbbeUnFallimento=false;MZ_SCOPERTA_FALLITA=false;MZ_CURA_FALLITA=false;MZ_CURA_MALUS_ALLEVAMENTO=0;MZ_LAST_CURA_BONUS_DOM=0;MZ_IMPOSIUM_SUCCESS=false;MZ_IMPOSIUM_DOM_MALUS=0;MZ_IMPOSIUM_POST_MALUS=0;MZ_BONUS_UID=0;MZ_SHARED_BONUSES={};MZ_SHARED_UID=0;MZ_ILLEGAL_SIGNATURES={cura:null,allevamento:null};MZ_FIDUCIA_HISTORY=[];mzRenderFiduciaHistory();
+  formulaSignatures={};curaEbbeUnFallimento=false;MZ_SCOPERTA_FALLITA=false;MZ_CURA_FALLITA=false;MZ_CURA_MALUS_ALLEVAMENTO=0;MZ_LAST_CURA_BONUS_DOM=0;MZ_IMPOSIUM_SUCCESS=false;MZ_IMPOSIUM_DOM_MALUS=0;MZ_IMPOSIUM_POST_MALUS=0;MZ_BONUS_UID=0;MZ_SHARED_BONUSES={};MZ_SHARED_UID=0;MZ_ILLEGAL_SIGNATURES={cura:null,allevamento:null};MZ_FIDUCIA_HISTORY=[];mzRenderFiduciaHistory();mzUpdateFiduciaAttemptDisplay();
   ricalcolaMagizoologia();
 }
 
@@ -4299,14 +4380,8 @@ function recomputeFiducia(){
     guardFormula('conseguenzaFiducia', pg.faseVitale + '|' + totale + '|' + v, 'risultatoConseguenzaFiducia');
     blocco.style.display = 'block';
     if(retryBox){
-      retryBox.style.display='block';
-      var retryBtn=document.getElementById('mzRiprovaFiducia');
-      var retryStatus=document.getElementById('mzRetryFiduciaStatus');
-      if(retryBtn)retryBtn.disabled=true;
-      if(retryStatus){
-        retryStatus.className='mz-retry-status';
-        retryStatus.textContent='Prima inserisci il risultato del dado della conseguenza; poi il pulsante Riprova Fiducia si attiverà.';
-      }
+      retryBox.style.display='none';
+      retryBox.classList.remove('is-terminal','is-hostile-retry');
     }
     document.getElementById('codiceConseguenzaFiducia').textContent = mzForumDiceBlock('Qual è la conseguenza del fallimento in Fiducia?', mzConseguenzaFiduciaAnswers(pg.faseVitale), '[dice=1d' + conseguenza.dado + ']Conseguenze del fallimento in Fiducia — ' + pg.faseVitale + '[/dice]');
     var inpC = document.getElementById('risultatoConseguenzaFiducia');
@@ -5021,6 +5096,7 @@ function ricalcolaMagizoologia(){
   recomputeIllegalita();
   mzUpdateBonusSummary();
   mzRenderGuideSummary();
+  mzUpdateFiduciaAttemptDisplay();
 }
 
 /* ---------- TAB ---------- */
