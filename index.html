@@ -5809,8 +5809,13 @@ function rmCopyText(txt,btn){
 
 document.addEventListener(evtClick,function(e){
   var b=e.target&&e.target.closest?e.target.closest('.copy-btn[data-copy-source]'):null;
-  if(!b||!rmEl('modoRicerca')||!rmEl('modoRicerca').contains(b))return;
-  e.preventDefault();var src=rmEl(b.getAttribute('data-copy-source'));if(!src||!src.textContent)return;rmCopyText(src.textContent,b);
+  if(!b)return;
+  e.preventDefault();
+  var src=rmEl(b.getAttribute('data-copy-source'));
+  if(!src)return;
+  var txt=src.textContent||src.value||'';
+  if(!txt)return;
+  rmCopyText(txt,b);
 },true);
 
 var rmSapienzaTiers=[{max:0,val:0},{max:5,val:1},{max:10,val:2},{max:15,val:3},{max:20,val:4},{max:25,val:5}];
