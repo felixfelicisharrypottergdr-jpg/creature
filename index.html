@@ -1083,6 +1083,60 @@ body{color:#211008!important;}
   .rm-search-bonus-row{grid-template-columns:1fr!important;}
   .rm-search-bonus-row .rm-search-bonus-remove{margin-top:0!important;width:100%!important;height:40px!important;}
 }
+
+/* ===== BOLCINO D'ORO — stile dorato/metallizzato ===== */
+.rm-bolcino-incontro{
+  position:relative;
+  overflow:hidden!important;
+  margin-top:22px!important;
+  padding:16px!important;
+  border:1px solid #b88719!important;
+  border-left:5px solid #f0c64d!important;
+  background:
+    linear-gradient(135deg,rgba(255,245,183,.12),rgba(91,57,7,.14) 36%,rgba(255,220,96,.10) 55%,rgba(50,31,6,.18)),
+    linear-gradient(180deg,#4a320d 0%,#2e1d07 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,244,184,.35),
+    inset 0 -1px 0 rgba(104,69,7,.8),
+    0 5px 14px rgba(0,0,0,.22)!important;
+}
+.rm-bolcino-incontro:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(115deg,transparent 0 34%,rgba(255,246,185,.18) 45%,transparent 56% 100%);
+  transform:translateX(-30%);
+}
+.rm-bolcino-incontro h3{
+  color:#ffe49a!important;
+  text-shadow:0 1px 0 #513500,0 0 8px rgba(255,208,73,.24);
+}
+.rm-bolcino-incontro .nota-regole{
+  color:#f8e9bd!important;
+}
+.rm-bolcino-incontro .out-tag{
+  background:linear-gradient(180deg,#d6a52c,#8b630e)!important;
+  border-color:#f1ce64!important;
+  color:#fff9df!important;
+  text-shadow:0 1px 0 #563800;
+}
+.rm-bolcino-incontro .dice-code{
+  background:#171006!important;
+  border-color:#ae7b17!important;
+  color:#ffd66f!important;
+}
+.rm-bolcino-incontro .copy-btn{
+  background:linear-gradient(180deg,#bd8a1c,#7f570b)!important;
+  border-color:#e4bb43!important;
+  color:#fff6d2!important;
+}
+.rm-bolcino-incontro input[type=number]{
+  background:#3a270b!important;
+  border-color:#aa791a!important;
+  color:#fff3c8!important;
+}
+
 </style>
 
 </head>
@@ -1696,12 +1750,6 @@ body{color:#211008!important;}
         <div class="result-line"><span>Risultato (1-15):</span><input type="number" id="risultatoSalute1" data-key="risultatoSalute1" min="1" max="15"><span class="out-tag out-neutral" id="tagSalute1">in attesa</span></div>
         <div class="nota-regole" id="noteSalute1"></div>
 
-        <h3>Cibo trovato nei dintorni (facoltativo, 1d5)</h3>
-        <div class="result-line"><div class="dice-code" id="codiceCibo1"></div><button class="copy-btn" type="button" data-copy-source="codiceCibo1" data-copy-control="1">Copia</button></div>
-        <div class="result-line"><span>Risultato (1-5):</span><input type="number" id="risultatoCibo1" data-key="risultatoCibo1" min="1" max="5"><span class="out-tag out-neutral" id="tagCibo1">in attesa</span></div>
-
-        <div class="check-riga"><input type="checkbox" id="catturato1" data-key="catturato1"><label for="catturato1">Ho catturato questa Creatura</label></div>
-      </div>
     
       <div class="rm-special rm-bolcino-incontro">
         <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
@@ -1906,7 +1954,6 @@ var MZ_PHASE_BONUS_PRESETS={
   talismano_empatia_4:{label:'Talismano Astronomico — Empatia +4',groupLabel:'Bonus a Empatia',source:'Talismano Astronomico — Venere/Terra',condition:'Adulto con Sapienza Elementale 1+ · 3 usi',type:'empatia',value:4,total:3,phases:['fiducia','scoperta','cura','domesticazione','allevamento'],note:'Talismano di Magia Astrale Avanzata impostato su Empatia.'},
 
   /* Effetti specifici della Guida. */
-  cibo_ricerca:{label:'Cibo trovato durante la Ricerca (+1)',groupLabel:'Bonus specifici Magizoologia',source:'Cibo trovato durante la Ricerca',condition:'Ottenuto con 1-2 su 1d5 dopo l’incontro',type:'possibilita',value:1,total:1,phases:['fiducia','cura','domesticazione'],note:'+1 possibilità nella fase scelta, come previsto dal ritrovamento di cibo adatto durante la Ricerca.'},
   creatura_donata_fiducia:{label:'Creatura donata da un PG di cui si fidava (+5 Fiducia)',groupLabel:'Bonus specifici Magizoologia',source:'Creatura donata dopo Fiducia ottenuta dal donatore',condition:'Prima Fiducia con il nuovo PG',type:'possibilita',value:5,total:1,phases:['fiducia'],note:'+5 possibilità in Fiducia perché la Creatura si era già fidata del PG donatore.'},
   cibi_standard:{label:'Cibi speciali — standard (+4)',groupLabel:'Bonus specifici Magizoologia',source:'Cibi speciali',condition:'Versione standard · 3 usi',type:'possibilita',value:4,total:3,phases:['fiducia','cura','domesticazione'],note:'+4 possibilità in Fiducia, Cura o Domesticazione.'},
   cibi_elfi:{label:'Cibi speciali — Mercato degli Elfi (+2)',groupLabel:'Bonus specifici Magizoologia',source:'Cibi speciali — Mercato degli Elfi',condition:'3 usi',type:'possibilita',value:2,total:3,phases:['fiducia','cura','domesticazione'],note:'+2 possibilità in Fiducia, Cura o Domesticazione.'},
@@ -3656,7 +3703,6 @@ var rmClassAnswers3='1. X\n2-3. XX\n4-6. XXX\n7-10. XXXX\n11-15. XXXXX\n16-18. E
 var rmSessoFaseAnswers='1-2. Uovo (Maschio)\n3-5. Maschio Infante\n6-10. Maschio Adolescente\n11-15. Maschio Adulta\n16-20. Maschio Anziana\n21-22. Uovo (Femmina)\n23-25. Femmina Infante\n26-30. Femmina Adolescente\n31-33. Femmina Adulta\n34-35. Femmina Adulta in Gestazione\n36-40. Femmina Anziana';
 var rmSaluteAnswers='1-11. In salute\n12-14. Ammalata o ferita\n15. Morente';
 var rmSaluteGestazioneAnswers='1-10. In salute\n11-12. Partoriente\n13-14. Ammalata o ferita\n15. Morente';
-var rmCiboAnswers='1-2. Cibo trovato: +1 possibilità futura in Fiducia, Cura o Domesticazione\n3-5. Niente di utile';
 
 function rmEmpatia(){var v=rmNumber('empatiaRicerca',0,999);return v===null?0:v;}
 function rmProfiloEmpatia(){var v=rmNumber('empatia',0,999);return v;}
@@ -3871,7 +3917,6 @@ function rmRecomputeTrova(n){
 function rmSetStaticSemanticCodes(){
   rmSetCode('codiceClasse1','Qual è la Classificazione della Creatura trovata nel Primo Incontro?',rmClassAnswers1,'[dice=1d16]Classificazione Creatura — Primo Incontro[/dice]');
   rmSetCode('codiceFase1','Quali sono Sesso e Fase Vitale della Creatura trovata nel Primo Incontro?',rmSessoFaseAnswers,'[dice=1d40]Sesso e Fase Vitale Creatura — Primo Incontro[/dice]');
-  rmSetCode('codiceCibo1','Il PG trova del Cibo utile nei dintorni della Creatura?',rmCiboAnswers,'[dice=1d5]Cibo trovato nei dintorni della Creatura[/dice]');
   rmSetCode('codiceClasse2','Qual è la Classificazione delle Creature trovate nel Secondo Incontro?',rmClassAnswers2,'[dice=1d18]Classificazione Creature — Secondo Incontro[/dice]');
   rmSetCode('codiceEsemplari2','Quanti esemplari vengono trovati nel Secondo Incontro?','Il risultato del dado corrisponde direttamente al numero di esemplari trovati.','[dice=1d5]Numero di esemplari — Secondo Incontro[/dice]');
   rmSetCode('codiceClasse3','Qual è la Classificazione delle Creature trovate nel Terzo Incontro?',rmClassAnswers3,'[dice=1d18]Classificazione Creature — Terzo Incontro[/dice]');
@@ -3927,8 +3972,8 @@ function rmImpostaTagValore(tag,id,valore,testoValido,classeValida){
 }
 function rmRecomputeCascata1(trovato){
   var c=rmEl('cascata1');if(!c)return;if(!trovato){c.style.display='none';rmUpdateFaseNote(null,null);return;}c.style.display='block';
-  var vc=rmNumber('risultatoClasse1',1,16),vf=rmNumber('risultatoFase1',1,40),vs=rmNumber('risultatoSalute1',1,15),vci=rmNumber('risultatoCibo1',1,5);
-  var tc=rmEl('tagClasse1'),tf=rmEl('tagFase1'),ts=rmEl('tagSalute1'),ns=rmEl('noteSalute1'),tci=rmEl('tagCibo1');
+  var vc=rmNumber('risultatoClasse1',1,16),vf=rmNumber('risultatoFase1',1,40),vs=rmNumber('risultatoSalute1',1,15);
+  var tc=rmEl('tagClasse1'),tf=rmEl('tagFase1'),ts=rmEl('tagSalute1'),ns=rmEl('noteSalute1');
   var classe=vc===null?null:rmLookup(rmClasseTab1,vc);
   var fase=vf===null?null:rmLookup(rmSessoFaseTab,vf),healthTable=rmSetHealthCode(1,0,fase);
   rmImpostaTagValore(tc,'risultatoClasse1',vc,vc===null?'':'Classificazione '+classe,'out-ok');
@@ -3939,9 +3984,6 @@ function rmRecomputeCascata1(trovato){
   rmUpdateFaseNote(classe,fase);
   if(vs===null){rmImpostaTagValore(ts,'risultatoSalute1',vs,'','out-neutral');if(ns)ns.innerHTML='';}
   else{var stato=rmLookup(healthTable,vs);rmImpostaTagValore(ts,'risultatoSalute1',vs,stato,stato==='In salute'?'out-ok':'out-fail');if(ns)ns.innerHTML=stato!=='In salute'?rmNarratoreLinkHtml():'';}
-  if(vci===null){rmImpostaTagValore(tci,'risultatoCibo1',vci,'','out-neutral');}
-  else if(vci<=2){rmImpostaTagValore(tci,'risultatoCibo1',vci,'Cibo trovato: +1 possibilità futura','out-ok');}
-  else{rmImpostaTagValore(tci,'risultatoCibo1',vci,'Niente di utile','out-neutral');}
 }
 
 function rmBuildEsemplari(n,count){
@@ -4069,10 +4111,9 @@ function rmEncounterSummary(n){
   if(n===1){
     var fase=rmLookup(rmSessoFaseTab,rmNumber('risultatoFase1',1,40));
     var salute=rmLookup(rmHealthTableForPhase(fase),rmNumber('risultatoSalute1',1,15));
-    var cibo=rmNumber('risultatoCibo1',1,5),ciboTxt=cibo===null?'':(cibo<=2?' · Cibo trovato':' · Nessun Cibo utile');
     return {
-      html:'<b>'+rmEsc((rmEl('specieCreatura1')||{}).value||'Creatura')+'</b> · Classificazione '+rmEsc(cls)+' · '+rmEsc(fase)+' · '+rmEsc(salute)+ciboTxt,
-      bb:'Creatura '+(((rmEl('specieCreatura1')||{}).value||'Creatura'))+'; Classificazione '+cls+'; Sesso/Fase '+fase+'; Salute '+salute+(cibo===null?'':(cibo<=2?'; Cibo trovato (+1 possibilità futura)':' ; nessun Cibo utile'))+(rmEl('catturato1').checked?'; catturata':'')
+      html:'<b>'+rmEsc((rmEl('specieCreatura1')||{}).value||'Creatura')+'</b> · Classificazione '+rmEsc(cls)+' · '+rmEsc(fase)+' · '+rmEsc(salute),
+      bb:'Creatura '+(((rmEl('specieCreatura1')||{}).value||'Creatura'))+'; Classificazione '+cls+'; Sesso/Fase '+fase+'; Salute '+salute+(rmEl('catturato1').checked?'; catturata':'')
     };
   }
   var max=n===2?5:10,count=rmNumber('risultatoEsemplari'+n,1,max),parts=[];
@@ -4664,17 +4705,23 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
 })();
 
 
-/* ===== ALTEZZA DINAMICA IFRAME — Magizoologia v18 ===== */
+/* ===== ALTEZZA DINAMICA IFRAME — Magizoologia v19 ===== */
 (function(){
   var scheduled=false,last=0;
   function measure(){
     scheduled=false;
-    var b=document.body,d=document.documentElement;
-    var h=Math.max(b?b.scrollHeight:0,b?b.offsetHeight:0,d?d.scrollHeight:0,d?d.offsetHeight:0,d?d.clientHeight:0)+36;
+    var box=document.querySelector('.contenitore');
+    var h=0;
+    if(box){
+      var rect=box.getBoundingClientRect();
+      h=Math.ceil(rect.bottom + (window.pageYOffset||0) + 28);
+    }else{
+      h=Math.ceil((document.body ? document.body.getBoundingClientRect().bottom : 0) + (window.pageYOffset||0) + 28);
+    }
+    if(!Number.isFinite(h)||h<300)return;
     if(Math.abs(h-last)<2)return;last=h;
     try{window.parent.postMessage({tipo:'altezzaMagizoologia',altezza:h},'*');}catch(e){}
     try{window.parent.postMessage({tipo:'altezzaTool',tool:'magizoologia',altezza:h},'*');}catch(e){}
-    try{if(window.frameElement)window.frameElement.style.height=h+'px';}catch(e){}
   }
   function schedule(){if(scheduled)return;scheduled=true;(window.requestAnimationFrame||function(f){setTimeout(f,30);})(measure);}
   window.mzNotifyHeight=schedule;
@@ -4685,13 +4732,11 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
   document.addEventListener('click',function(){setTimeout(schedule,30);setTimeout(schedule,250);},true);
   document.addEventListener('input',function(){setTimeout(schedule,30);},true);
   window.addEventListener('transitionend',schedule,true);
-  var mzHeightInterval=setInterval(schedule,900);
-  setTimeout(function(){clearInterval(mzHeightInterval);},15000);
 })();
 </script>
 
 
-<script id="magizoologia-v18-script">
+<script id="magizoologia-v19-script">
 (function(){
   function notify(){
     if(typeof window.mzNotifyHeight==='function'){
