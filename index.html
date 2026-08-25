@@ -1036,7 +1036,7 @@ body{color:#211008!important;}
 .rm-special .nota-regole,.rm-specie-helper .nota-regole,.mz-bonus-manager .mz-bonus-help{color:#f1ddcf!important;}
 .mz-bonus-help{background:rgba(255,255,255,.035);padding:10px 12px;border-radius:7px;border:1px solid rgba(255,197,143,.18);}
 .nota-regole a,.rm-rule-card a,.rm-rules-body a{color:#fff0c8!important;font-weight:700;text-decoration:underline;}
-.rm-narratore-call{display:inline-block;margin-right:4px;color:#fff0c8;font-weight:700;letter-spacing:.02em;}
+.rm-narratore-call{display:inline-block;margin-right:6px;padding:2px 8px;border-radius:999px;background:linear-gradient(180deg,#a51f1f 0%,#6f1010 100%);border:1px solid #e07a7a;color:#fff4f4;font-weight:800;letter-spacing:.03em;text-transform:uppercase;box-shadow:0 2px 6px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.12);} .rm-special .nota-regole a.rm-narratore-link,.rm-specie-helper .nota-regole a.rm-narratore-link,.nota-regole a.rm-narratore-link{color:#b31212!important;font-weight:800;text-decoration:underline;}
 #noteFase1{margin-top:8px!important;}
 #blocco1 h2 .badge-incontro{display:none!important;}
 
@@ -3924,7 +3924,7 @@ function rmSetStaticSemanticCodes(){
 }
 
 function rmNarratoreLinkHtml(){
-  return '<span class="rm-narratore-call">ATTENZIONE:</span> prima di procedere <a href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">contatta il Narratore</a>.';
+  return '<span class="rm-narratore-call">ATTENZIONE</span> prima di procedere <a class="rm-narratore-link" href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">contatta il Narratore</a>.';
 }
 function rmUpdateFaseNote(classe,fase){
   var box=rmEl('noteFase1');
