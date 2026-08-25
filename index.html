@@ -446,7 +446,9 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 .mz-bonus-row.mz-general{grid-template-columns:minmax(145px,1.35fr) minmax(130px,1.15fr) minmax(150px,1.25fr) 86px 72px 38px;}
 .mz-bonus-row.mz-phase{grid-template-columns:minmax(135px,1.25fr) minmax(125px,1.1fr) minmax(130px,1.05fr) 82px 92px 82px 82px 72px 38px;}
 .mz-bonus-field{display:flex;flex-direction:column;min-width:0;}
-.mz-bonus-field label{font-size:.69em;text-transform:uppercase;letter-spacing:.045em;color:#d97932;margin-bottom:3px;}
+.mz-bonus-field label{font-size:.69em;text-transform:uppercase;letter-spacing:.045em;color:#d97932;margin-bottom:3px;min-height:2.4em;display:flex;align-items:flex-end;line-height:1.15;}
+.mz-bonus-row .mz-bonus-check{align-self:end;margin-bottom:4px;}
+.mz-bonus-row .mz-bonus-remove{align-self:end;margin-bottom:4px;}
 .mz-bonus-field input[type=text],.mz-bonus-field input[type=number],.mz-bonus-field select{
   width:100%;box-sizing:border-box;background:#120b07;color:#f0ddcc;border:1px solid #6e4028;border-radius:4px;padding:6px 7px;font-family:inherit;
 }
@@ -469,7 +471,9 @@ button:focus-visible,select:focus-visible,input:focus-visible{
 }
 @media(max-width:560px){
   .mz-bonus-row.mz-general,.mz-bonus-row.mz-phase{grid-template-columns:1fr;}
+  .mz-bonus-field label{min-height:auto;display:block;line-height:1.2;}
   .mz-bonus-check{justify-content:flex-start;}
+  .mz-bonus-row .mz-bonus-check,.mz-bonus-row .mz-bonus-remove{margin-bottom:0;}
   .mz-bonus-remove{width:100%;}
 }
 
@@ -794,6 +798,16 @@ table.fasce td{
 .rm-specie-helper .campo label,.rm-specie-helper .result-line>span:not(.out-tag){color:#f0ddcc;}
 .rm-auto-name[readonly]{background:#3a2116!important;color:#ffd0ab!important;font-weight:700;}
 
+
+/* ===== ESEMPI NELLE CASELLE DI TESTO ===== */
+.mz-bonus-manager input[type="text"]::placeholder,
+.rm-special input[type="text"]::placeholder,
+.rm-specie-helper input[type="text"]::placeholder{
+  color:#cfc8c2;
+  opacity:.82;
+  font-style:italic;
+}
+
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
@@ -913,8 +927,8 @@ table.fasce td{
 </div>
 
 <div class="mz-bonus-manager">
-  <h3>Bonus generali del Personaggio</h3>
-  <p class="mz-bonus-help">Inserisci qui una sola volta i bonus permanenti. I bonus a Empatia vengono applicati prima delle conversioni previste dalle singole fasi; gli altri modificano la Base indicata.</p>
+  <h3>Bonus generali da Oggetti / Conoscenze / altri effetti</h3>
+  <p class="mz-bonus-help">Inserisci qui soltanto i bonus che modificano il Personaggio o una Base in modo generale, cioè che non sono legati all'utilizzo in una singola fase. Per esempio, un bonus generale a Empatia va inserito qui e viene applicato prima delle conversioni previste dalle varie fasi. Se invece un Oggetto, una Conoscenza, una Tecnica o un Incantesimo viene usato specificamente in Fiducia, Scoperta, Cura, Domesticazione o Allevamento, selezionalo direttamente nella relativa fase.</p>
   <div class="mz-bonus-list" id="mzBonusGenerali"></div>
   <button type="button" class="mz-bonus-add" id="mzAddBonusGenerale">+ Aggiungi bonus</button>
 </div>
@@ -1813,8 +1827,8 @@ function mzSyncBonusRow(row, changedRole){
 function mzCreateGeneralBonusRow(data){
   data=data||{};MZ_BONUS_UID++;
   var row=document.createElement('div');row.className='mz-bonus-row mz-general';row.dataset.uid='g'+MZ_BONUS_UID;
-  row.innerHTML='<div class="mz-bonus-field"><label>Fonte / Oggetto / Conoscenza</label><input type="text" data-role="source" maxlength="100"></div>'+
-    '<div class="mz-bonus-field"><label>Condizione / Efficacia</label><input type="text" data-role="condition" maxlength="100"></div>'+
+  row.innerHTML='<div class="mz-bonus-field"><label>Fonte / Oggetto / Conoscenza</label><input type="text" data-role="source" maxlength="100" placeholder="Es. Manuali dell’Animus"></div>'+
+    '<div class="mz-bonus-field"><label>Condizione / Efficacia</label><input type="text" data-role="condition" maxlength="100" placeholder="Es. attivo finché l’Oggetto è utilizzato"></div>'+
     '<div class="mz-bonus-field"><label>Parametro</label><select data-role="target"><option value="empatia">Empatia</option><option value="fiduciaBase">Base Fiducia</option><option value="curaBase">Base Cura</option><option value="domesticazioneBase">Base Domesticazione</option><option value="allevamentoBase">Base Allevamento</option></select></div>'+
     '<div class="mz-bonus-field"><label>Bonus</label><input type="number" data-role="value" value="0" min="0" step="1"></div>'+
     '<label class="mz-bonus-check"><input type="checkbox" data-role="active" checked> Attivo</label>'+
@@ -1846,8 +1860,8 @@ function mzCreatePhaseBonusRow(phase,data){
   var typeLabel=phase==='allevamento'?'Possibilità al tiro':'Possibilità / soglia';
   var typeOptions='<option value="empatia">Bonus Empatia</option><option value="malusEmpatia">Malus Empatia</option><option value="parametro">Bonus al parametro</option><option value="possibilita">'+typeLabel+'</option><option value="malusPossibilita">Malus alle possibilità</option><option value="effetto">Effetto speciale / informativo</option>'+(phase==='allevamento'?'<option value="postPercent">Riduzione % post Accoppiamento</option>':'');
   row.innerHTML='<div class="mz-bonus-field mz-bonus-preset-wrap"><label>Catalogo Oggetto / Conoscenza / effetto</label><select data-role="preset">'+mzPhasePresetOptions(phase)+'</select></div>'+ 
-    '<div class="mz-bonus-field"><label>Fonte</label><input type="text" data-role="source" maxlength="100"></div>'+ 
-    '<div class="mz-bonus-field"><label>Condizione / Efficacia</label><input type="text" data-role="condition" maxlength="140"></div>'+ 
+    '<div class="mz-bonus-field"><label>Fonte</label><input type="text" data-role="source" maxlength="100" placeholder="Es. Amuleto della Fortuna"></div>'+ 
+    '<div class="mz-bonus-field"><label>Condizione / Efficacia</label><input type="text" data-role="condition" maxlength="140" placeholder="Es. 3 usi · solo in questa fase"></div>'+ 
     '<div class="mz-bonus-field"><label>Tipo</label><select data-role="type">'+typeOptions+'</select></div>'+ 
     '<div class="mz-bonus-field"><label>Bonus</label><input type="number" data-role="value" value="0" min="0" step="1"></div>'+ 
     '<div class="mz-bonus-field"><label>Fatica / uso</label><input type="number" data-role="fatica" value="0" min="0" step="0.5" data-decimal="1"></div>'+ 
