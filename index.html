@@ -816,7 +816,7 @@ table.fasce td{
 <div id="modoPersonaggio" class="modo-sezione visibile">
 <div class="scheda">
 <h2>Il tuo Personaggio</h2>
-<div class="profilo-condiviso-note">Compila questo profilo una sola volta: ogni funzione usa automaticamente i dati del Personaggio che le servono. <b>Empatia</b> e <b>Sapienza Magizoologica</b> vengono condivise anche con la Ricerca Creature Magiche. Per i PG Studenti la Sapienza utile viene considerata al massimo al livello I.</div>
+<div class="profilo-condiviso-note">Compila questo profilo una sola volta: ogni funzione usa automaticamente i dati del Personaggio che le servono. <b>Empatia</b> e <b>Sapienza Magizoologica</b> vengono condivise anche con la Ricerca Creature Magiche. Per i PG Studenti la Sapienza utile viene considerata al massimo al livello I. I <b>PG Studenti che non seguono CDCM</b> utilizzano automaticamente i valori del voto <b>Troll</b>.</div>
 <div class="riga">
   <div class="campo">
     <label>Tipo di PG</label>
@@ -824,6 +824,14 @@ table.fasce td{
       <option value="studente">Studente</option>
       <option value="adulto">Adulto</option>
     </select>
+  </div>
+  <div class="campo" id="campoSegueCDCM">
+    <label>Segue Cura delle Creature Magiche (CDCM)?</label>
+    <select id="pgSegueCDCM" data-key="pgSegueCDCM">
+      <option value="si" selected>Sì</option>
+      <option value="no">No — usa i valori del voto Troll</option>
+    </select>
+    <div class="numeric-note">Se non segue CDCM, il voto effettivo usato dal tool è sempre T (Troll).</div>
   </div>
   <div class="campo" id="campoVotoStudente">
     <label>Voto nella Conoscenza della Creatura</label>
@@ -835,6 +843,7 @@ table.fasce td{
       <option value="O">O (Oltre le Aspettative)</option>
       <option value="E">E (Eccezionale)</option>
     </select>
+    <div class="mz-effective-line" id="mzVotoEffettivo"></div>
   </div>
   <div class="campo">
     <label>Empatia</label>
@@ -1928,16 +1937,32 @@ function aggiornaCampiTipoPG(){
   var tipoEl = document.getElementById('pgTipo');
   if(!tipoEl){ return; }
   var studente = tipoEl.value === 'studente';
+  var campoCDCM = document.getElementById('campoSegueCDCM');
   var campoVoto = document.getElementById('campoVotoStudente');
   var campiAdulto = document.getElementById('campiAdultoPG');
+  var segueCDCM = document.getElementById('pgSegueCDCM');
+  var votoEl = document.getElementById('pgVoto');
+  var votoInfo = document.getElementById('mzVotoEffettivo');
+
+  if(campoCDCM){ campoCDCM.style.display = studente ? '' : 'none'; }
   if(campoVoto){ campoVoto.style.display = studente ? '' : 'none'; }
   if(campiAdulto){ campiAdulto.style.display = studente ? 'none' : ''; }
+
+  var usaTroll = studente && segueCDCM && segueCDCM.value === 'no';
+  if(votoEl){ votoEl.disabled = !!usaTroll; }
+  if(votoInfo){
+    votoInfo.textContent = usaTroll
+      ? 'Voto effettivo: T (Troll) — il voto selezionato non entra nei calcoli.'
+      : '';
+  }
 }
 
 function leggiPG(){
   var pg = {};
   pg.tipo = document.getElementById('pgTipo').value;
-  pg.voto = pg.tipo === 'studente' ? document.getElementById('pgVoto').value : null;
+  pg.segueCDCM = pg.tipo === 'studente' ? (document.getElementById('pgSegueCDCM').value !== 'no') : null;
+  pg.votoSelezionato = pg.tipo === 'studente' ? document.getElementById('pgVoto').value : null;
+  pg.voto = pg.tipo === 'studente' ? (pg.segueCDCM ? pg.votoSelezionato : 'T') : null;
   pg.empatiaBase = bonusValore('empatia');
   pg.empatia = pg.empatiaBase + mzGeneralBonus('empatia');
   pg.sapienzaMagizoologica = pg.tipo === 'adulto' ? mzProfiloSapienza() : 0;
