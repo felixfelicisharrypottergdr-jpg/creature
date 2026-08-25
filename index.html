@@ -1081,6 +1081,21 @@ body{color:#211008!important;}
   border-color:#9b542c!important;
 }
 .flow-page-btn:hover:not(:disabled),.flow-action-btn:hover:not(:disabled),.copy-btn:hover,.session-btn:hover{background:#874526!important;}
+/* ===== v25: colori distinti per i tasti Incontro I / II / III ===== */
+.flow-page-btn[data-rm-page="enc1"]{background:linear-gradient(180deg,#587433 0%,#35511c 100%)!important;border-color:#8fb260!important;color:#f4ffe8!important;}
+.flow-page-btn[data-rm-page="enc1"]:hover:not(:disabled){background:linear-gradient(180deg,#6e8c46 0%,#416626 100%)!important;}
+.flow-page-btn[data-rm-page="enc1"].active{background:linear-gradient(180deg,#7da253 0%,#456c29 100%)!important;border-color:#c7e7a0!important;color:#ffffff!important;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 14px rgba(151,194,105,.28)!important;}
+
+.flow-page-btn[data-rm-page="enc2"]{background:linear-gradient(180deg,#a87918 0%,#77510d 100%)!important;border-color:#d8b155!important;color:#fff9e8!important;}
+.flow-page-btn[data-rm-page="enc2"]:hover:not(:disabled){background:linear-gradient(180deg,#bf8d21 0%,#896114 100%)!important;}
+.flow-page-btn[data-rm-page="enc2"].active{background:linear-gradient(180deg,#d2a13a 0%,#946718 100%)!important;border-color:#f3d78d!important;color:#fffdf4!important;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 14px rgba(233,193,98,.26)!important;}
+
+.flow-page-btn[data-rm-page="enc3"]{background:linear-gradient(180deg,#8b3228 0%,#5e1d16 100%)!important;border-color:#bf6c61!important;color:#fff0ee!important;}
+.flow-page-btn[data-rm-page="enc3"]:hover:not(:disabled){background:linear-gradient(180deg,#a83e32 0%,#70251d 100%)!important;}
+.flow-page-btn[data-rm-page="enc3"].active{background:linear-gradient(180deg,#c65446 0%,#812a20 100%)!important;border-color:#f0a09a!important;color:#fff8f7!important;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 14px rgba(207,92,80,.25)!important;}
+
+.flow-page-btn[data-rm-page="enc1"].locked,.flow-page-btn[data-rm-page="enc2"].locked,.flow-page-btn[data-rm-page="enc3"].locked{opacity:.55!important;filter:saturate(.85)!important;}
+
 .summary-box{background:#1a0f0a!important;border-color:#804624!important;color:#f8e8da!important;}
 .summary-box b{color:#ffbc7a!important;}
 .research-bbcode{font-size:13px!important;line-height:1.45!important;}
