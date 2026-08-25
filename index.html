@@ -1084,20 +1084,20 @@ body{color:#211008!important;}
   .rm-search-bonus-row .rm-search-bonus-remove{margin-top:0!important;width:100%!important;height:40px!important;}
 }
 
-/* ===== BOLCINO D'ORO — stile dorato/metallizzato ===== */
+/* ===== BOLCINO D'ORO — oro caldo/metallizzato ===== */
 .rm-bolcino-incontro{
   position:relative;
   overflow:hidden!important;
   margin-top:22px!important;
   padding:16px!important;
-  border:1px solid #b88719!important;
-  border-left:5px solid #f0c64d!important;
+  border:1px solid #a8792d!important;
+  border-left:5px solid #c99c4a!important;
   background:
-    linear-gradient(135deg,rgba(255,245,183,.12),rgba(91,57,7,.14) 36%,rgba(255,220,96,.10) 55%,rgba(50,31,6,.18)),
-    linear-gradient(180deg,#4a320d 0%,#2e1d07 100%)!important;
+    linear-gradient(120deg,rgba(238,205,137,.08),transparent 30%,rgba(215,174,91,.09) 52%,transparent 72%),
+    linear-gradient(180deg,#4a3217 0%,#2d1d0d 100%)!important;
   box-shadow:
-    inset 0 1px 0 rgba(255,244,184,.35),
-    inset 0 -1px 0 rgba(104,69,7,.8),
+    inset 0 1px 0 rgba(244,220,166,.24),
+    inset 0 -1px 0 rgba(86,55,18,.82),
     0 5px 14px rgba(0,0,0,.22)!important;
 }
 .rm-bolcino-incontro:before{
@@ -1105,36 +1105,48 @@ body{color:#211008!important;}
   position:absolute;
   inset:0;
   pointer-events:none;
-  background:linear-gradient(115deg,transparent 0 34%,rgba(255,246,185,.18) 45%,transparent 56% 100%);
-  transform:translateX(-30%);
+  background:linear-gradient(112deg,transparent 0 36%,rgba(237,207,146,.12) 46%,transparent 57% 100%);
+  transform:translateX(-24%);
 }
 .rm-bolcino-incontro h3{
-  color:#ffe49a!important;
-  text-shadow:0 1px 0 #513500,0 0 8px rgba(255,208,73,.24);
+  color:#e8c77f!important;
+  text-shadow:0 1px 0 #3d270d,0 0 8px rgba(201,156,74,.18);
 }
 .rm-bolcino-incontro .nota-regole{
-  color:#f8e9bd!important;
+  color:#ead8b4!important;
 }
 .rm-bolcino-incontro .out-tag{
-  background:linear-gradient(180deg,#d6a52c,#8b630e)!important;
-  border-color:#f1ce64!important;
-  color:#fff9df!important;
-  text-shadow:0 1px 0 #563800;
+  background:linear-gradient(180deg,#b4873d,#76541f)!important;
+  border-color:#d2ad67!important;
+  color:#fff3d6!important;
+  text-shadow:0 1px 0 #49300f;
+}
+.rm-bolcino-incontro .out-tag.out-ok{
+  background:linear-gradient(180deg,#3f8a50,#255c33)!important;
+  border-color:#78bd87!important;
+  color:#f3fff5!important;
+  text-shadow:0 1px 0 #173c21;
+}
+.rm-bolcino-incontro .out-tag.out-fail{
+  background:linear-gradient(180deg,#a53a31,#6c211c)!important;
+  border-color:#d4776f!important;
+  color:#fff5f3!important;
+  text-shadow:0 1px 0 #481612;
 }
 .rm-bolcino-incontro .dice-code{
-  background:#171006!important;
-  border-color:#ae7b17!important;
-  color:#ffd66f!important;
+  background:#171008!important;
+  border-color:#9a702b!important;
+  color:#dfbd74!important;
 }
 .rm-bolcino-incontro .copy-btn{
-  background:linear-gradient(180deg,#bd8a1c,#7f570b)!important;
-  border-color:#e4bb43!important;
-  color:#fff6d2!important;
+  background:linear-gradient(180deg,#ad7f34,#71501c)!important;
+  border-color:#c99d50!important;
+  color:#fff0cf!important;
 }
 .rm-bolcino-incontro input[type=number]{
-  background:#3a270b!important;
-  border-color:#aa791a!important;
-  color:#fff3c8!important;
+  background:#3a2814!important;
+  border-color:#946b2b!important;
+  color:#f8e6c2!important;
 }
 
 </style>
@@ -1750,7 +1762,9 @@ body{color:#211008!important;}
         <div class="result-line"><span>Risultato (1-15):</span><input type="number" id="risultatoSalute1" data-key="risultatoSalute1" min="1" max="15"><span class="out-tag out-neutral" id="tagSalute1">in attesa</span></div>
         <div class="nota-regole" id="noteSalute1"></div>
 
-    
+        <div class="check-riga"><input type="checkbox" id="catturato1" data-key="catturato1"><label for="catturato1">Ho catturato questa Creatura</label></div>
+      </div>
+
       <div class="rm-special rm-bolcino-incontro">
         <h3 style="margin-top:0">Bolcino d'Oro <span class="out-tag out-neutral">facoltativo · solo in Europa · un tiro per ogni post</span></h3>
         <div class="nota-regole">Se nello stesso post stai facendo anche il tiro del Bolcino, trovi qui sotto il dado già pronto da copiare.</div>
@@ -3891,7 +3905,7 @@ function rmRecomputeBolcino(n){
   rmSetCode('codiceBolcino'+n,'Il PG trova un Bolcino d’Oro in questo post?','1-99. Nessun Bolcino d’Oro\n100. Bolcino d’Oro: +1 Popolarità e 1000 Galeoni','[dice=1d100]Ricerca del Bolcino d’Oro[/dice]');
   var inp=rmEl('risultatoBolcino'+n),v=rmNumber('risultatoBolcino'+n,1,100),tag=rmEl('tagBolcino'+n);if(!tag||!inp)return;
   if(v===null){tag.textContent=inp.value===''?'in attesa':'Risultato impossibile';tag.className='out-tag '+(inp.value===''?'out-neutral':'out-fail');return;}
-  tag.textContent=v===100?'Bolcino trovato!':'Niente Bolcino';tag.className='out-tag '+(v===100?'out-ok':'out-neutral');
+  tag.textContent=v===100?'Bolcino trovato!':'Niente Bolcino';tag.className='out-tag '+(v===100?'out-ok':'out-fail');
 }
 
 function rmClasseCorrente(n){var max=n===1?16:18,v=rmNumber('risultatoClasse'+n,1,max),tab=n===1?rmClasseTab1:(n===2?rmClasseTab2:rmClasseTab3);return v===null?'':rmLookup(tab,v);}
@@ -4113,7 +4127,7 @@ function rmEncounterSummary(n){
     var salute=rmLookup(rmHealthTableForPhase(fase),rmNumber('risultatoSalute1',1,15));
     return {
       html:'<b>'+rmEsc((rmEl('specieCreatura1')||{}).value||'Creatura')+'</b> · Classificazione '+rmEsc(cls)+' · '+rmEsc(fase)+' · '+rmEsc(salute),
-      bb:'Creatura '+(((rmEl('specieCreatura1')||{}).value||'Creatura'))+'; Classificazione '+cls+'; Sesso/Fase '+fase+'; Salute '+salute+(rmEl('catturato1').checked?'; catturata':'')
+      bb:'Creatura '+(((rmEl('specieCreatura1')||{}).value||'Creatura'))+'; Classificazione '+cls+'; Sesso/Fase '+fase+'; Salute '+salute+(rmEl('catturato1')&&rmEl('catturato1').checked?'; catturata':'')
     };
   }
   var max=n===2?5:10,count=rmNumber('risultatoEsemplari'+n,1,max),parts=[];
@@ -4124,7 +4138,7 @@ function rmEncounterSummary(n){
   }
   return {
     html:'<b>'+rmEsc((rmEl('specieCreatura'+n)||{}).value||'Creatura')+'</b> · Classificazione '+rmEsc(cls)+' · '+count+' esemplari<br>'+parts.map(rmEsc).join('<br>'),
-    bb:'Creatura '+(((rmEl('specieCreatura'+n)||{}).value||'Creatura'))+'; Classificazione '+cls+'; '+count+' esemplari; '+parts.join('; ')+(rmEl('catturato'+n).checked?'; almeno una Creatura catturata':'')
+    bb:'Creatura '+(((rmEl('specieCreatura'+n)||{}).value||'Creatura'))+'; Classificazione '+cls+'; '+count+' esemplari; '+parts.join('; ')+(rmEl('catturato'+n)&&rmEl('catturato'+n).checked?'; almeno una Creatura catturata':'')
   };
 }
 
