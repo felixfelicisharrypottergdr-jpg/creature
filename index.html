@@ -1626,6 +1626,284 @@ body{color:#211008!important;}
   #modoMagizoologia .tab-riepilogo{margin-left:0;}
 }
 
+
+/* ===== v28 — CONTRASTO FINALE + BONUS ARANCIONI ===== */
+
+/* Dati facoltativi: mai più testo marrone su fondo marrone */
+.mz-transfer-meta{
+  background:#2a160f!important;
+  border-color:#a85b31!important;
+}
+.mz-transfer-meta summary{
+  background:#4b2417!important;
+  color:#ffe2ca!important;
+  border-bottom-color:#8e4b2b!important;
+}
+.mz-transfer-meta .nota-regole{
+  color:#f7dfcf!important;
+  font-weight:600!important;
+}
+.mz-transfer-meta .campo label{
+  color:#ffae70!important;
+  font-weight:800!important;
+}
+.mz-transfer-meta input[type=text],
+.mz-transfer-meta select{
+  background:#542817!important;
+  color:#fff4e9!important;
+  border:1px solid #a35a34!important;
+}
+.mz-transfer-meta select option{
+  background:#25130d!important;
+  color:#fff4e9!important;
+}
+
+/* Riepilogo: titoli e testi esplicitamente leggibili */
+#pannelloRiepilogo,
+#pannelloRiepilogo .mz-summary-section{
+  color:#f8e7dc!important;
+}
+#pannelloRiepilogo h2{
+  color:#ffc496!important;
+}
+#pannelloRiepilogo h3{
+  color:#ffbd88!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.45);
+}
+#pannelloRiepilogo .mz-guide-summary-card,
+#pannelloRiepilogo .mz-guide-summary-card span,
+#pannelloRiepilogo li,
+#pannelloRiepilogo p,
+#pannelloRiepilogo .nota-regole{
+  color:#f6dfd2!important;
+}
+#pannelloRiepilogo .mz-guide-summary-card b,
+#pannelloRiepilogo .mz-phase-summary-list b,
+#pannelloRiepilogo .mz-malus-list b{
+  color:#ffc08c!important;
+}
+#pannelloRiepilogo .mz-summary-ok{color:#a9dc8a!important;}
+#pannelloRiepilogo .mz-summary-warn{color:#ffd27b!important;}
+#pannelloRiepilogo .mz-summary-bad{color:#ff9e98!important;}
+
+/* Oggetti/Conoscenze: pannelli arancioni distinguibili dal resto */
+#modoMagizoologia .mz-bonus-manager{
+  margin:18px 0!important;
+  padding:14px!important;
+  border:2px solid #b85d2d!important;
+  border-radius:9px!important;
+  background:
+    linear-gradient(180deg,rgba(157,72,31,.92) 0%,rgba(99,43,23,.96) 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,196,139,.14),
+    0 5px 12px rgba(0,0,0,.16)!important;
+}
+#modoMagizoologia .mz-bonus-manager > h3{
+  color:#fff0df!important;
+  padding-bottom:7px;
+  margin-bottom:8px!important;
+  border-bottom:1px solid rgba(255,194,139,.38);
+}
+#modoMagizoologia .mz-bonus-manager .mz-bonus-help{
+  color:#ffe0ca!important;
+  font-weight:600;
+}
+#modoMagizoologia .mz-bonus-row{
+  background:#2a150e!important;
+  border:1px solid #cf753d!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+#modoMagizoologia .mz-bonus-field label{
+  color:#ff9e58!important;
+  font-weight:800!important;
+}
+#modoMagizoologia .mz-bonus-field input,
+#modoMagizoologia .mz-bonus-field select{
+  background:#4b2416!important;
+  color:#fff1e6!important;
+  border-color:#9e5632!important;
+}
+#modoMagizoologia .mz-bonus-field select option{
+  background:#24120d!important;
+  color:#fff1e6!important;
+}
+#modoMagizoologia .mz-bonus-remaining,
+#modoMagizoologia .mz-bonus-preset-note,
+#modoMagizoologia .mz-bonus-share-status,
+#modoMagizoologia .mz-effective-line{
+  color:#f5d4bf!important;
+}
+#modoMagizoologia .mz-bonus-action-row{
+  margin-top:2px;
+  padding:9px 10px;
+  border:1px solid #824529;
+  border-radius:6px;
+  background:#3b1c12!important;
+}
+#modoMagizoologia .mz-bonus-add{
+  background:#7b391d!important;
+  border-color:#d17a42!important;
+  color:#fff1e7!important;
+}
+#modoMagizoologia .mz-bonus-add:hover{
+  background:#964923!important;
+}
+
+/* Contatore tentativi dopo il dado */
+.mz-attempts-row{
+  margin:18px 0 6px!important;
+  padding:12px 13px!important;
+  border:1px solid #a75b32!important;
+  border-left:5px solid #d3793e!important;
+  border-radius:7px;
+  background:#3b1e14!important;
+}
+.mz-attempts-row .campo label{
+  color:#ffb274!important;
+}
+.mz-attempts-row input[type=number]{
+  max-width:180px;
+  background:#512718!important;
+  color:#fff3e8!important;
+  border-color:#a85a33!important;
+}
+.mz-attempts-row .numeric-note{
+  color:#e8c8b5!important;
+  max-width:760px;
+}
+
+/* Promemoria Bagaglio */
+.mz-bagaglio-update{
+  display:none;
+  margin-top:12px;
+  padding:11px 13px;
+  border:1px solid #b76b32;
+  border-left:5px solid #e09042;
+  border-radius:7px;
+  background:#432315;
+  color:#ffe5cf;
+  line-height:1.5;
+}
+.mz-bagaglio-update.show{display:block;}
+.mz-bagaglio-update b{color:#ffc083;}
+.mz-bagaglio-update .mz-remove-item{
+  color:#ffaca4!important;
+  font-weight:800;
+}
+.mz-bagaglio-update .mz-update-item{
+  color:#ffd27c!important;
+  font-weight:700;
+}
+
+
+/* ===== v29 — navigazione di fase + retry Fiducia ===== */
+.mz-phase-footer-nav{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  align-items:center;
+  margin-top:22px;
+  padding-top:14px;
+  border-top:1px solid #70402a;
+}
+.mz-phase-footer-nav .mz-nav-prev{justify-self:start;}
+.mz-phase-footer-nav .mz-nav-next{justify-self:end;}
+.mz-phase-footer-nav .bottone-azione{
+  min-width:170px;
+  background:#6e351d!important;
+  border-color:#a95d35!important;
+  color:#fff3e8!important;
+}
+.mz-phase-footer-nav .bottone-azione:hover{
+  background:#874321!important;
+}
+.mz-phase-footer-nav .mz-nav-summary{
+  background:#81551c!important;
+  border-color:#c28b36!important;
+  color:#fff0c5!important;
+}
+.mz-phase-footer-nav .mz-nav-summary:hover{
+  background:#9b6821!important;
+}
+.mz-summary-footer{
+  margin-top:16px;
+}
+.mz-consequence-description{
+  display:none;
+  margin-top:10px;
+  padding:10px 12px;
+  border-left:5px solid #d27a40;
+  border-radius:6px;
+  background:#2c1710;
+  color:#ffe5d3;
+  line-height:1.5;
+  font-weight:700;
+}
+.mz-consequence-description.show{display:block;}
+.mz-consequence-description.is-hostile{
+  border-left-color:#c74d55;
+  background:#351518;
+  color:#ffd7d5;
+}
+.mz-consequence-description.is-positive{
+  border-left-color:#6e9b4c;
+  background:#1d2916;
+  color:#dff3ce;
+}
+.mz-consequence-description a{
+  color:#ffb4ad!important;
+  font-weight:800;
+  text-decoration:underline;
+}
+.mz-retry-fiducia{
+  margin-top:14px;
+  padding:12px;
+  border:1px solid #99532f;
+  border-radius:7px;
+  background:#321b12;
+}
+.mz-retry-copy{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  margin-bottom:10px;
+  color:#f4ddd0;
+  line-height:1.45;
+}
+.mz-retry-copy b{color:#ffc08b;}
+#mzRiprovaFiducia{
+  background:#7a3c20!important;
+  border-color:#bb693b!important;
+  color:#fff1e7!important;
+}
+#mzRiprovaFiducia:disabled{
+  opacity:.52;
+  cursor:not-allowed;
+}
+.mz-fiducia-history{
+  margin-top:13px;
+  padding:11px 12px;
+  border:1px solid #69402c;
+  border-radius:7px;
+  background:#1b0f0b;
+  color:#ead3c5;
+}
+.mz-fiducia-history b{color:#ffbd89;}
+.mz-fiducia-history ul{
+  margin:7px 0 0;
+  padding-left:20px;
+}
+.mz-fiducia-history li{
+  margin:5px 0;
+  line-height:1.45;
+}
+@media(max-width:620px){
+  .mz-phase-footer-nav{grid-template-columns:1fr;}
+  .mz-phase-footer-nav .mz-nav-prev,
+  .mz-phase-footer-nav .mz-nav-next{justify-self:stretch;width:100%;}
+  .mz-phase-footer-nav span:empty{display:none;}
+}
+
 </style>
 
 </head>
@@ -1885,12 +2163,15 @@ body{color:#211008!important;}
   <label for="creaturaRiconosciuta">Il PG riconosce questa Creatura</label>
 </div>
 <div class="esito" id="esitoRiconoscimento"></div>
+<div class="mz-phase-footer-nav" data-current-phase="Riconoscimento">
+  <span></span>
+  <button type="button" class="bottone-azione mz-nav-next" data-mz-go="Fiducia">Vai a Fiducia →</button>
+</div>
 </div>
 
 <div class="pannello" id="pannelloFiducia">
 <h2>Fiducia (1d30)</h2>
 <div class="nota-regole">Costo: -1 Fatica per ogni tentativo effettivamente eseguito. <b>Con Sapienza Magizoologica 25 il costo è 0 Fatica.</b></div>
-<div class="riga"><div class="campo"><label>Tentativi di Fiducia eseguiti</label><input type="number" id="tentativiFiducia" data-key="tentativiFiducia" value="0" min="0" step="1"><div class="numeric-note">Passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo per i ritentativi.</div></div></div>
 <div class="mz-bonus-manager">
   <h3>Oggetti / Conoscenze — Fiducia</h3>
   <p class="mz-bonus-help">Seleziona qui ciò che usi in Fiducia. Se l’effetto richiede dadi, il tool li prepara e calcola da solo il valore finale. Se un effetto del catalogo è valido anche in altre fasi, puoi renderlo disponibile lì con un solo clic: <b>gli usi resteranno condivisi</b>.</p>
@@ -1927,6 +2208,14 @@ body{color:#211008!important;}
 </div>
 <div class="nota-regole" id="noteFiducia"></div>
 
+<div class="riga mz-attempts-row">
+  <div class="campo">
+    <label>Tentativi di Fiducia eseguiti</label>
+    <input type="number" id="tentativiFiducia" data-key="tentativiFiducia" value="0" min="0" step="1">
+    <div class="numeric-note">Questo conteggio serve alla Fatica: passa automaticamente ad almeno 1 quando inserisci un esito valido; aumentalo soltanto se hai effettuato altri tentativi.</div>
+  </div>
+</div>
+
 <div class="blocco-conseguenza" id="conseguenzaFiducia" style="display:none">
   <h3>Conseguenze del fallimento (in base alla Fase Vitale)</h3>
   <div class="result-line">
@@ -1938,6 +2227,20 @@ body{color:#211008!important;}
     <input type="number" id="risultatoConseguenzaFiducia" data-key="risultatoConseguenzaFiducia" min="1">
     <span class="out-tag out-neutral" id="tagConseguenzaFiducia">in attesa</span>
   </div>
+  <div class="mz-consequence-description" id="descrizioneConseguenzaFiducia"></div>
+
+  <div class="mz-retry-fiducia" id="mzRetryFiduciaBox" style="display:none">
+    <div class="mz-retry-copy">
+      <b>Vuoi tentare di nuovo la Fiducia?</b>
+      <span>Il nuovo tentativo mantiene automaticamente tutti i dati già inseriti del PG e della Creatura. Verranno azzerati soltanto il risultato della Fiducia e il dado della conseguenza.</span>
+    </div>
+    <button type="button" class="bottone-azione" id="mzRiprovaFiducia">Riprova Fiducia</button>
+  </div>
+  <div class="mz-fiducia-history" id="mzFiduciaHistory" style="display:none"></div>
+</div>
+<div class="mz-phase-footer-nav" data-current-phase="Fiducia">
+  <button type="button" class="bottone-azione mz-nav-prev" data-mz-go="Riconoscimento">← Riconoscimento</button>
+  <button type="button" class="bottone-azione mz-nav-next" data-mz-go="Cura">Vai a Cura →</button>
 </div>
 </div>
 
@@ -2052,6 +2355,10 @@ body{color:#211008!important;}
     <span class="out-tag out-neutral" id="tagIllegaleCura">in attesa</span>
   </div>
 </div>
+<div class="mz-phase-footer-nav" data-current-phase="Cura">
+  <button type="button" class="bottone-azione mz-nav-prev" data-mz-go="Fiducia">← Fiducia</button>
+  <button type="button" class="bottone-azione mz-nav-next" data-mz-go="Domesticazione">Vai a Domesticazione →</button>
+</div>
 </div>
 
 <div class="pannello" id="pannelloDomesticazione">
@@ -2098,6 +2405,10 @@ body{color:#211008!important;}
     <span class="out-tag out-neutral" id="tagConseguenzaDomesticazione">in attesa</span>
   </div>
 </div>
+<div class="mz-phase-footer-nav" data-current-phase="Domesticazione">
+  <button type="button" class="bottone-azione mz-nav-prev" data-mz-go="Cura">← Cura</button>
+  <button type="button" class="bottone-azione mz-nav-next" data-mz-go="Allevamento">Vai ad Allevamento →</button>
+</div>
 </div>
 
 <div class="pannello" id="pannelloAllevamento">
@@ -2143,10 +2454,10 @@ body{color:#211008!important;}
     <span class="out-tag out-neutral" id="tagIllegaleAllevamento">in attesa</span>
   </div>
 </div>
-</div>
 
-<div class="mz-guide-actions">
-  <button type="button" class="bottone-azione" id="mzVaiRiepilogo">Vai al Riepilogo →</button>
+<div class="mz-phase-footer-nav" data-current-phase="Allevamento">
+  <button type="button" class="bottone-azione mz-nav-prev" data-mz-go="Domesticazione">← Domesticazione</button>
+  <button type="button" class="bottone-azione mz-nav-next mz-nav-summary" id="mzVaiRiepilogo" data-mz-go="Riepilogo">Fase successiva: Riepilogo →</button>
 </div>
 </div>
 
@@ -2174,6 +2485,7 @@ body{color:#211008!important;}
     <div class="nota-regole">Sono mostrati soltanto effetti realmente applicati o con usi già consumati. Gli Incantesimi di protezione della Riserva vengono separati dalla Fatica della sessione perché devono essere stati evocati in post precedenti.</div>
     <div class="mz-effects-summary" id="mzEffectsSummary"></div>
     <div class="mz-fatigue-total" id="mzFaticaSummary"><strong>Fatica consumata:</strong> 0</div>
+    <div class="mz-bagaglio-update" id="mzBagaglioUpdateSummary"></div>
   </div>
 
   <div class="mz-summary-section mz-elfo-transfer">
@@ -2185,6 +2497,10 @@ body{color:#211008!important;}
     </div>
   </div>
 
+  <div class="mz-phase-footer-nav mz-summary-footer">
+    <button type="button" class="bottone-azione mz-nav-prev" data-mz-go="Allevamento">← Torna ad Allevamento</button>
+    <span></span>
+  </div>
   <div class="piede-nota">
     <button class="bottone-azione bottone-pericolo" id="bottoneReset">Azzera i dati della Guida</button>
   </div>
@@ -3071,6 +3387,56 @@ function mzEffectValueText(e){
   if(e.type==='malusPossibilita'||e.type==='malusEmpatia')return '-'+e.value+' ';
   return '+'+e.value+' ';
 }
+
+function mzIsBagaglioConsumablePreset(key){
+  key=String(key||'');
+  return /^(?:amuleto_|animus_|talismano_|cibi_|sonaglio_|fieno_|feromagici_)/.test(key);
+}
+function mzBagaglioStatus(){
+  var out=[],seen={};
+  document.querySelectorAll('.mz-bonus-row.mz-phase').forEach(function(row){
+    var key=row.dataset.presetKey||'';
+    if(!mzIsBagaglioConsumablePreset(key))return;
+    var p=MZ_PHASE_BONUS_PRESETS[key]||{};
+    if(p.unlimited)return;
+
+    var shared=row.dataset.linkId?mzSharedState(row,true):null;
+    var total=shared?shared.total:Math.max(1,Math.floor(mzNum((row.querySelector('[data-role="total"]')||{}).value,1)));
+    var used=shared?shared.used:Math.max(0,Math.min(total,Math.floor(mzNum((row.querySelector('[data-role="used"]')||{}).value,0))));
+    if(used<=0)return;
+
+    var identity=row.dataset.linkId||((p.source||p.label||key)+'|'+total+'|'+key);
+    if(seen[identity])return;
+    seen[identity]=1;
+    out.push({
+      source:p.source||p.label||'Oggetto',
+      used:used,
+      total:total,
+      remaining:Math.max(0,total-used),
+      exhausted:used>=total
+    });
+  });
+  return out;
+}
+function mzRenderBagaglioUpdate(){
+  var host=document.getElementById('mzBagaglioUpdateSummary');
+  if(!host)return;
+  var rows=mzBagaglioStatus();
+  if(!rows.length){
+    host.classList.remove('show');
+    host.innerHTML='';
+    return;
+  }
+  host.classList.add('show');
+  host.innerHTML='<b>Bagaglio da aggiornare</b><br>'+
+    rows.map(function(x){
+      if(x.exhausted){
+        return '<span class="mz-remove-item">'+mzHtml(x.source)+': '+x.used+'/'+x.total+' usi — UTILIZZI TERMINATI, rimuovi l’Oggetto dal Bagaglio.</span>';
+      }
+      return '<span class="mz-update-item">'+mzHtml(x.source)+': '+x.used+'/'+x.total+' usi — '+x.remaining+' rimasti; aggiorna il contatore nel Bagaglio.</span>';
+    }).join('<br>');
+}
+
 function mzUpdateBonusSummary(){
   var host=document.getElementById('mzEffectsSummary');if(!host)return;
   host.innerHTML='';var effects=[],fatigue=0;
@@ -3102,6 +3468,7 @@ function mzUpdateBonusSummary(){
       '<br><span style="font-size:.9em">Questa Fatica non viene sottratta una seconda volta dalla sessione corrente: gli Incantesimi devono essere stati evocati nei post precedenti.</span>';
     host.appendChild(d);
   }
+  mzRenderBagaglioUpdate();
 }
 
 function mzGuideEl(id){
@@ -3390,6 +3757,117 @@ function mzConseguenzaFiduciaAnswers(fase){
   return '';
 }
 
+
+function mzConseguenzaFiduciaDescription(fase,val){
+  val=Number(val);
+  if(fase==='infante'){
+    if(val>=1&&val<=3)return {text:'La Creatura resta sul posto e ignora i PG.',hostile:false,positive:false};
+    if(val===4)return {text:'La Creatura si allontana.',hostile:false,positive:false};
+  }
+  if(fase==='adolescente'){
+    if(val>=1&&val<=2)return {text:'La Creatura resta sul posto e ignora i PG.',hostile:false,positive:false};
+    if(val===3)return {text:'La Creatura si allontana.',hostile:false,positive:false};
+    if(val===4)return {text:'La Creatura diventa ostile.',hostile:true,positive:false};
+  }
+  if(fase==='adulta'){
+    if(val>=1&&val<=2)return {text:'La Creatura si allontana.',hostile:false,positive:false};
+    if(val>=3&&val<=4)return {text:'La Creatura diventa ostile.',hostile:true,positive:false};
+  }
+  if(fase==='anziana'){
+    if(val>=1&&val<=3)return {text:'La Creatura si allontana.',hostile:false,positive:false};
+    if(val===4)return {text:'La Creatura ci ripensa: l’interazione diventa positiva e la Fiducia è considerata riuscita.',hostile:false,positive:true};
+  }
+  return null;
+}
+function mzRenderFiduciaConsequenceDescription(fase,val){
+  var box=document.getElementById('descrizioneConseguenzaFiducia');
+  var retry=document.getElementById('mzRetryFiduciaBox');
+  var btn=document.getElementById('mzRiprovaFiducia');
+  if(!box)return null;
+  var d=mzConseguenzaFiduciaDescription(fase,val);
+  box.className='mz-consequence-description';
+  if(!d){
+    box.innerHTML='';
+    if(retry)retry.style.display='none';
+    if(btn)btn.disabled=true;
+    return null;
+  }
+  box.classList.add('show');
+  if(d.hostile)box.classList.add('is-hostile');
+  if(d.positive)box.classList.add('is-positive');
+
+  var html='<b>Esito del dado:</b> '+mzHtml(d.text);
+  if(d.hostile){
+    html+='<br><span class="rm-narratore-call">ATTENZIONE</span> la Creatura è ostile: <a href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">contatta il Narratore</a>. Dopo aver scongiurato il pericolo puoi tentare di placarla di nuovo con <b>-3 possibilità</b>.';
+  }else if(!d.positive){
+    html+='<br>La Fiducia può essere tentata di nuovo: usa il pulsante qui sotto quando vuoi avviare il nuovo tentativo.';
+  }
+  box.innerHTML=html;
+
+  if(retry){
+    retry.style.display=d.positive?'none':'block';
+  }
+  if(btn){
+    btn.disabled=!!d.positive;
+    btn.dataset.hostile=d.hostile?'1':'0';
+  }
+  return d;
+}
+var MZ_FIDUCIA_HISTORY=[];
+function mzRenderFiduciaHistory(){
+  var host=document.getElementById('mzFiduciaHistory');
+  if(!host)return;
+  if(!MZ_FIDUCIA_HISTORY.length){
+    host.style.display='none';
+    host.innerHTML='';
+    return;
+  }
+  host.style.display='block';
+  host.innerHTML='<b>Tentativi precedenti di Fiducia</b><ul>'+
+    MZ_FIDUCIA_HISTORY.map(function(x){
+      return '<li>Tentativo '+x.n+': 1d30 = <b>'+mzHtml(String(x.roll))+'</b> · fallimento'+
+        (x.consequence?(' · conseguenza '+mzHtml(String(x.consequenceRoll))+': '+mzHtml(x.consequence)):'')+
+        (x.hostile?' · <span class="mz-summary-bad">Creatura ostile</span>':'')+
+        '</li>';
+    }).join('')+'</ul>';
+}
+function mzStartFiduciaRetry(){
+  var pg=leggiPG();
+  var roll=Number((document.getElementById('risultatoFiducia')||{}).value||0);
+  var cEl=document.getElementById('risultatoConseguenzaFiducia');
+  var cRoll=Number((cEl||{}).value||0);
+  var d=mzConseguenzaFiduciaDescription(pg.faseVitale,cRoll);
+  if(!roll || !d || d.positive)return;
+
+  var attempts=document.getElementById('tentativiFiducia');
+  var current=Math.max(1,Math.floor(Number((attempts||{}).value||1)));
+  MZ_FIDUCIA_HISTORY.push({
+    n:current,
+    roll:roll,
+    consequenceRoll:cRoll,
+    consequence:d.text,
+    hostile:!!d.hostile
+  });
+  mzRenderFiduciaHistory();
+
+  if(attempts)attempts.value=String(current+1);
+  var ostile=document.getElementById('ritentativoOstile');
+  if(ostile && d.hostile)ostile.checked=true;
+
+  var main=document.getElementById('risultatoFiducia');
+  if(main)main.value='';
+  if(cEl)cEl.value='';
+  clearDependentResult('risultatoConseguenzaFiducia','tagConseguenzaFiducia');
+
+  var desc=document.getElementById('descrizioneConseguenzaFiducia');
+  if(desc){desc.className='mz-consequence-description';desc.innerHTML='';}
+  var box=document.getElementById('mzRetryFiduciaBox');
+  if(box)box.style.display='none';
+
+  ricalcolaMagizoologia();
+  if(main&&!main.disabled){main.focus();}
+}
+
 function mzConseguenzaDomesticazioneAnswers(fase){
   if(fase === 'infante'){ return '1-6. Non si verifica l’esito speciale\n7. La Creatura diventa ostile'; }
   if(fase === 'adolescente'){ return '1-4. Non si verifica l’esito speciale\n5. La Creatura diventa ostile'; }
@@ -3502,7 +3980,7 @@ function resetGuidaMagizoologia(){
     el.disabled=false;
   });
   document.querySelectorAll('#mzBonusFiducia,#mzBonusScoperta,#mzBonusCura,#mzBonusDomesticazione,#mzBonusAllevamento').forEach(function(x){x.innerHTML='';});
-  formulaSignatures={};curaEbbeUnFallimento=false;MZ_SCOPERTA_FALLITA=false;MZ_CURA_FALLITA=false;MZ_CURA_MALUS_ALLEVAMENTO=0;MZ_LAST_CURA_BONUS_DOM=0;MZ_IMPOSIUM_SUCCESS=false;MZ_IMPOSIUM_DOM_MALUS=0;MZ_IMPOSIUM_POST_MALUS=0;MZ_BONUS_UID=0;MZ_SHARED_BONUSES={};MZ_SHARED_UID=0;MZ_ILLEGAL_SIGNATURES={cura:null,allevamento:null};
+  formulaSignatures={};curaEbbeUnFallimento=false;MZ_SCOPERTA_FALLITA=false;MZ_CURA_FALLITA=false;MZ_CURA_MALUS_ALLEVAMENTO=0;MZ_LAST_CURA_BONUS_DOM=0;MZ_IMPOSIUM_SUCCESS=false;MZ_IMPOSIUM_DOM_MALUS=0;MZ_IMPOSIUM_POST_MALUS=0;MZ_BONUS_UID=0;MZ_SHARED_BONUSES={};MZ_SHARED_UID=0;MZ_ILLEGAL_SIGNATURES={cura:null,allevamento:null};MZ_FIDUCIA_HISTORY=[];mzRenderFiduciaHistory();
   ricalcolaMagizoologia();
 }
 
@@ -3576,9 +4054,13 @@ function recomputeFiducia(){
   var tagEl = document.getElementById('tagFiducia');
   var noteEl = document.getElementById('noteFiducia');
   var blocco = document.getElementById('conseguenzaFiducia');
+  var descConseguenza=document.getElementById('descrizioneConseguenzaFiducia');
+  var retryBox=document.getElementById('mzRetryFiduciaBox');
 
   var pg = leggiPG();
   blocco.style.display = 'none';
+  if(descConseguenza){descConseguenza.className='mz-consequence-description';descConseguenza.innerHTML='';}
+  if(retryBox)retryBox.style.display='none';
   var imposiumOk = recomputeImposium(pg);
 
   if(pg.ostilita === 'sempre'){
@@ -3711,9 +4193,16 @@ function recomputeFiducia(){
     } else if(intInRange(vc, 1, conseguenza.dado)){
       tagC.textContent = 'Esito: ' + vc;
       tagC.className = 'out-tag out-neutral';
+      var desc=mzRenderFiduciaConsequenceDescription(pg.faseVitale,vc);
+      if(desc&&desc.positive){
+        tagEl.textContent='Successo dopo la conseguenza';
+        tagEl.className='out-tag out-ok';
+        noteEl.textContent='La Creatura anziana ci ha ripensato: la fase di Fiducia è considerata riuscita.';
+      }
     } else {
       tagC.textContent = 'Risultato impossibile';
       tagC.className = 'out-tag out-fail';
+      mzRenderFiduciaConsequenceDescription(pg.faseVitale,null);
     }
   }
 }
@@ -4432,7 +4921,16 @@ document.getElementById('tabCura').addEventListener(evtClick, function(){ mostra
 document.getElementById('tabDomesticazione').addEventListener(evtClick, function(){ mostraPannello('Domesticazione'); });
 document.getElementById('tabAllevamento').addEventListener(evtClick, function(){ mostraPannello('Allevamento'); });
 document.getElementById('tabRiepilogo').addEventListener(evtClick, function(){ mzRenderGuideSummary(); mostraPannello('Riepilogo'); });
-document.getElementById('mzVaiRiepilogo').addEventListener(evtClick, function(){ mzRenderGuideSummary(); mostraPannello('Riepilogo'); });
+document.getElementById('mzRiprovaFiducia').addEventListener(evtClick, function(){ mzStartFiduciaRetry(); });
+document.querySelectorAll('[data-mz-go]').forEach(function(btn){
+  btn.addEventListener(evtClick,function(){
+    var target=btn.getAttribute('data-mz-go');
+    if(target==='Riepilogo')mzRenderGuideSummary();
+    mostraPannello(target);
+    var panel=document.getElementById('pannello'+target);
+    if(panel&&panel.scrollIntoView){panel.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+});
 
 
 /* ==================== RICERCA CREATURE MAGICHE — STANDARD RICERCHE ==================== */
