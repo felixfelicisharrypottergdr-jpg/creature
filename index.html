@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
-<!-- v67: Dati facoltativi Elfo evidenziati in azzurro/blu -->
+<!-- v68: Importa nella Guida spostato nella pagina Esito -->
 <!-- v53: apertura Ricerca immediata + aggancio Firebase del PG durante la compilazione -->
 <!-- v52: sessione Firebase agganciata dal profilo PG + allineamento flusso Ricerca con Erbologia -->
 <!-- Revisione standardizzata v3: preservazione storico usi/Fatica + tentativo minimo automatico sugli esiti validi -->
@@ -2857,6 +2857,26 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 }
 </style>
 
+
+<style id="v68-outcome-import-style">
+#rm-outcome-content .outcome-import-row{
+  margin-top:10px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+#rm-outcome-content .outcome-import-btn{
+  border:1px solid #73acd0!important;
+  background:#235a7f!important;
+  color:#f1f9ff!important;
+  font-weight:800!important;
+}
+#rm-outcome-content .outcome-import-btn:hover{
+  background:#2d6f99!important;
+}
+</style>
+
 </head>
 <body>
 <div class="contenitore">
@@ -3786,7 +3806,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
       <option value="S">S (Scarso)</option>
       <option value="A">A (Accettabile)</option>
       <option value="O">O (Oltre le Aspettative)</option>
-      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus1"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide1" style="display:none">Importa nella Guida</button></div>
+      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus1"></div></div>
         </div>
 
         <h3>Sesso e Fase Vitale (1d40)</h3>
@@ -3839,7 +3859,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
       <option value="S">S (Scarso)</option>
       <option value="A">A (Accettabile)</option>
       <option value="O">O (Oltre le Aspettative)</option>
-      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus2"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide2" style="display:none">Importa nella Guida</button></div>
+      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus2"></div></div>
           </div>
 
           <h3>Numero di esemplari (1d5)</h3>
@@ -3888,7 +3908,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
       <option value="S">S (Scarso)</option>
       <option value="A">A (Accettabile)</option>
       <option value="O">O (Oltre le Aspettative)</option>
-      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus3"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide3" style="display:none">Importa nella Guida</button></div>
+      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus3"></div></div>
           </div>
 
           <h3>Numero di esemplari (1d10)</h3>
@@ -7151,7 +7171,7 @@ function rmRenderOutcome(){
     if(n===3 && !rmPageUnlocked('enc3'))break;
     var s=rmEncounterSummary(n);
     if(!s)break;
-    items.push('<li><b>Incontro '+(['','I','II','III'][n])+':</b> '+s.html+'</li>');
+    items.push('<li><b>Incontro '+(['','I','II','III'][n])+':</b> '+s.html+'<div class="outcome-import-row"><button type="button" class="bottone-azione bottone-secondario outcome-import-btn" data-rm-import-guide="'+n+'">Importa nella Guida</button></div></li>');
   }
   if(!items.length){
     host.innerHTML='<div class="nota-regole">Completa almeno il Primo Incontro per ottenere il riepilogo finale.</div>';
@@ -8137,9 +8157,9 @@ function transfer(n){
   lastSpec=sp;[spec,nome,cl,fase,sesso].forEach(function(x){if(x)fire(x,'change');});if(student()&&gv&&vote){gv.value=vote.value;fire(gv,'change');}window.ricalcolaMagizoologia();var syncBox=E('rmGuideBridge'+n);if(syncBox)syncBox.setAttribute('data-v58-synced',sp+'|'+(student()&&vote&&vote.value?vote.value:'senza-voto'));return true;
 }
 function updateBridge(n){
-  var box=E('rmGuideBridge'+n),sp=species(n),choice=E('rmInteragisciSubito'+n),vote=E('rmVotoRicerca'+n),wrap=E('rmResearchVoteWrap'+n),status=E('rmGuideBridgeStatus'+n),open=E('rmOpenGuide'+n),label=E('rmGuideSpeciesLabel'+n),vlabel=E('rmResearchVoteLabel'+n);
+  var box=E('rmGuideBridge'+n),sp=species(n),choice=E('rmInteragisciSubito'+n),vote=E('rmVotoRicerca'+n),wrap=E('rmResearchVoteWrap'+n),status=E('rmGuideBridgeStatus'+n),label=E('rmGuideSpeciesLabel'+n),vlabel=E('rmResearchVoteLabel'+n);
   if(!box)return;
-  if(!sp){box.classList.remove('show');if(open)open.style.display='none';return;}
+  if(!sp){box.classList.remove('show');return;}
   box.classList.add('show');
   if(label)label.textContent=sp;
   if(vlabel)vlabel.textContent='Voto nella Conoscenza di '+sp;
@@ -8151,12 +8171,6 @@ function updateBridge(n){
     box.removeAttribute('data-v58-synced');
   }
   box.setAttribute('data-v58-species',sp);
-
-  if(open){
-    open.style.display='inline-flex';
-    open.textContent='Importa nella Guida';
-    open.title='Importa o reimporta questa Creatura nella Guida in qualsiasi momento.';
-  }
 
   if(student()){
     if(choice&&choice.value==='si') {
@@ -8172,32 +8186,40 @@ function updateBridge(n){
   if(status){
     status.className='research-guide-bridge-status'+(synced?' ok':'');
     if(synced){
-      status.textContent='Questa Creatura è stata importata nella Guida ✓ Puoi reimportarla in qualsiasi momento.';
+      status.textContent='Questa Creatura è già stata importata nella Guida ✓ Puoi reimportarla dalla pagina Esito.';
     }else if(choice&&choice.value==='si'&&student()&&(!vote||!vote.value)){
-      status.textContent='Puoi importare subito la Creatura; il voto specifico dello Studente potrà essere indicato direttamente nella Guida.';
+      status.textContent='Il voto specifico può essere indicato qui oppure direttamente nella Guida dopo l’importazione dalla pagina Esito.';
     }else if(choice&&choice.value==='no'){
-      status.textContent='Continua pure la Ricerca. Se cambi idea, “Importa nella Guida” resterà disponibile anche quando riprenderai questa sessione.';
+      status.textContent='Continua pure la Ricerca. Se cambi idea, potrai importare questo ritrovamento dalla pagina Esito.';
     }else{
-      status.textContent='Puoi continuare la Ricerca oppure importare questo ritrovamento nella Guida adesso o più tardi.';
+      status.textContent='Completa l’Incontro: il comando per importare questo ritrovamento sarà disponibile nella pagina Esito.';
     }
   }
 }
 var oldResearch=window.ricalcolaRicerca;
 window.ricalcolaRicerca=function(){var r=oldResearch?oldResearch.apply(this,arguments):undefined;for(var n=1;n<=3;n++)updateBridge(n);return r;};
 for(var n=1;n<=3;n++)(function(i){
-  var b=E('rmOpenGuide'+i),choice=E('rmInteragisciSubito'+i),vote=E('rmVotoRicerca'+i);
+  var choice=E('rmInteragisciSubito'+i),vote=E('rmVotoRicerca'+i);
   if(choice)choice.addEventListener('change',function(){updateBridge(i);});
   if(vote)vote.addEventListener('change',function(){updateBridge(i);});
-  if(b)b.addEventListener('click',function(){
-    if(transfer(i)){
-      updateBridge(i);
-      if(typeof mostraModo==='function')mostraModo('Magizoologia');
-      if(typeof mostraPannello==='function')mostraPannello('Riconoscimento');
-      var p=E('modoMagizoologia');
-      if(p&&p.scrollIntoView)p.scrollIntoView({behavior:'smooth',block:'start'});
-    }
-  });
 })(n);
+
+/* Importazione centralizzata nell'Esito: un comando per ogni Incontro
+   effettivamente presente nella Ricerca. */
+var outcomeHost=E('rm-outcome-content');
+if(outcomeHost)outcomeHost.addEventListener('click',function(ev){
+  var btn=ev.target&&ev.target.closest?ev.target.closest('[data-rm-import-guide]'):null;
+  if(!btn)return;
+  var i=parseInt(btn.getAttribute('data-rm-import-guide'),10);
+  if(!(i>=1&&i<=3))return;
+  if(transfer(i)){
+    updateBridge(i);
+    if(typeof mostraModo==='function')mostraModo('Magizoologia');
+    if(typeof mostraPannello==='function')mostraPannello('Riconoscimento');
+    var p=E('modoMagizoologia');
+    if(p&&p.scrollIntoView)p.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+});
 var specGuide=E('specieCreaturaGuida'),lastSpec=specGuide?specGuide.value:'';if(specGuide){specGuide.addEventListener('change',function(){var now=specGuide.value.trim();if(now!==lastSpec){lastSpec=now;var v=E('pgVoto');if(student()&&v)v.value='';clearGuideResults();window.ricalcolaMagizoologia();}});}
 var pgVote=E('pgVoto');if(pgVote)pgVote.addEventListener('change',function(){window.ricalcolaMagizoologia();});if(student()&&pgVote&&!E('specieCreaturaGuida').value)pgVote.value='';
 window.ricalcolaMagizoologia();window.ricalcolaRicerca();
