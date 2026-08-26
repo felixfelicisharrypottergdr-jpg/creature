@@ -5984,12 +5984,8 @@ function rmSincronizzaEmpatiaDaProfilo(){
   if(RM_CURRENT_ID&&!RM_READONLY&&rmSessionCanEdit(RM_CURRENT_DATA)){rmUpdateToolbar();rmScheduleSave();}
 }
 function rmCaricaEmpatiaSessioneNelProfilo(){
-  if(RM_READONLY)return;
-  var src=rmEl('empatiaRicerca'),dst=rmEl('empatia');
-  if(!src||!dst)return;
-  dst.value=src.value;
-  if(typeof dst.setCustomValidity==='function')dst.setCustomValidity('');
-  ricalcolaMagizoologia();
+  /* v50: la Ricerca mantiene la propria Empatia salvata senza sovrascrivere il profilo personale. */
+  return;
 }
 function rmAggiornaSapienzaCondivisa(){var box=rmEl('rmSapienzaCondivisa'),v=rmNumber('sapienza',0,25);if(box)box.textContent=v===null?'—':String(v);}
 function rmSincronizzaSapienzaDaProfilo(){
@@ -5997,8 +5993,8 @@ function rmSincronizzaSapienzaDaProfilo(){
   if(RM_CURRENT_ID&&!RM_READONLY&&rmSessionCanEdit(RM_CURRENT_DATA)){rmUpdateToolbar();rmScheduleSave();}
 }
 function rmCaricaSapienzaSessioneNelProfilo(){
-  if(RM_READONLY)return;var src=rmEl('sapienza'),dst=rmEl('sapienzaProfilo');if(!src||!dst)return;
-  dst.value=src.value;if(typeof dst.setCustomValidity==='function')dst.setCustomValidity('');ricalcolaMagizoologia();
+  /* v50: la Ricerca mantiene la propria Sapienza salvata senza sovrascrivere il profilo personale. */
+  return;
 }
 function rmSapienza(){var v=rmNumber('sapienza',0,25);return v===null?0:v;}
 function rmBonusSapienza(){return rmLookup(rmSapienzaTiers,rmSapienza());}
@@ -6859,6 +6855,11 @@ function mostraModo(nome){
 document.getElementById('modoPersonaggioBtn').addEventListener(evtClick, function(){ mostraModo('Personaggio'); });
 document.getElementById('modoMagizoologiaBtn').addEventListener(evtClick, function(){ mostraModo('Magizoologia'); });
 document.getElementById('modoRicercaBtn').addEventListener(evtClick, function(){
+  MZ_GUIDE_DIRTY_BEFORE_READY=true;
+  if(MZ_GUIDE_READY&&RM_FB.user){
+    MZ_GUIDE_DIRTY_BEFORE_READY=false;
+    mzGuideSaveNow();
+  }
   if(!RM_CURRENT_ID && String(window.location.hash || '') !== '#ricerca'){
     try{ history.replaceState(null, '', window.location.pathname + window.location.search + '#ricerca'); }catch(e){}
   }
@@ -7111,7 +7112,7 @@ if(typeof window.rmApplyFlow==='function'){var mz44OldApplyFlow=window.rmApplyFl
 if(typeof window.rmResumeFlow==='function'){window.rmResumeFlow=function(){var page='config';if(!rmConfigReady())page='config';else if(!rmEncounterComplete(1))page='enc1';else if(RM_FLOW.outcomeVisited)page='outcome';else if(rmTipo()==='attiva'&&rmPageUnlocked('enc2')&&!rmEncounterComplete(2))page='enc2';else if(rmTipo()==='attiva'&&rmPageUnlocked('enc3')&&!rmEncounterComplete(3))page='enc3';else page='outcome';RM_FLOW.summaryVisited=rmConfigReady();RM_FLOW.page=page;rmApplyFlow();var p=document.querySelector('#creature-workspace [data-rm-page-panel="'+page+'"]');if(p)setTimeout(function(){try{p.scrollIntoView({behavior:'auto',block:'start'});}catch(e){}},80);};}
 
 /* ---------- Firebase: una Guida attiva per browser/account anonimo ---------- */
-var MZ_GUIDE_RESTORING=false,MZ_GUIDE_SAVE_TIMER=null,MZ_GUIDE_SAVE_CHAIN=Promise.resolve(),MZ_GUIDE_READY=false;
+var MZ_GUIDE_RESTORING=false,MZ_GUIDE_SAVE_TIMER=null,MZ_GUIDE_SAVE_CHAIN=Promise.resolve(),MZ_GUIDE_READY=false,MZ_GUIDE_DIRTY_BEFORE_READY=false,MZ_GUIDE_LOADING=false;
 function mzGuideStatus(msg,kind){var e=document.getElementById('mz-guide-save-status');if(!e)return;e.textContent=msg;e.className='guide-firebase-bar'+(kind?' '+kind:'');}
 function mzGuideDoc(){if(!RM_FB||!RM_FB.db||!RM_FB.user)return null;return RM_FB.db.collection(RM_COLLECTION).doc('guide_'+RM_FB.user.uid);}
 function mzGuideActivePanel(){var names=['Riconoscimento','Fiducia','Cura','Domesticazione','Allevamento','Riepilogo'];for(var i=0;i<names.length;i++){var p=document.getElementById('pannello'+names[i]);if(p&&p.classList.contains('visibile'))return names[i];}return 'Riconoscimento';}
@@ -7146,10 +7147,49 @@ function mzGuideCollectState(){
 }
 function mzGuideSetFields(fields,restoreProfile){fields=fields||{};document.querySelectorAll((restoreProfile?'#modoPersonaggio [data-key],':'')+'#modoMagizoologia [data-key]').forEach(function(f){var k=f.getAttribute('data-key');if(fields[k]===undefined)return;if(f.type==='checkbox'||f.type==='radio')f.checked=!!fields[k];else f.value=fields[k];});}
 function mzGuideRestoreRows(rows,globals){['fiducia','scoperta','cura','domesticazione','allevamento'].forEach(function(ph){var box=mzPhaseBox(ph);if(box)box.innerHTML='';});MZ_SHARED_BONUSES=mzGuideClone((globals&&globals.shared)||{});MZ_SHARED_UID=Number((globals&&globals.sharedUid)||0);MZ_BONUS_UID=0;(rows||[]).forEach(function(d){if(!d.phase)return;var row=mzCreatePhaseBonusRow(d.phase,{preset:d.preset,source:d.source,condition:d.condition,type:d.type,value:d.value,fatica:d.fatica,total:d.total,used:d.used,linkId:d.linkId,localUsed:d.localUsed,sharedUsed:d.linkId&&MZ_SHARED_BONUSES[d.linkId]?MZ_SHARED_BONUSES[d.linkId].used:0,resolverState:d.resolverState,silent:true});if(!row)return;var used=row.querySelector('[data-role="used"]');if(used&&d.used!==undefined)used.value=d.used;var apply=row.querySelector('[data-role="apply"]');if(apply){apply.checked=!!d.apply;apply.disabled=false;}row.dataset.autoApplied=d.autoApplied||'';if(d.linkId)row.dataset.linkId=d.linkId;});Object.keys(MZ_SHARED_BONUSES||{}).forEach(function(id){if(typeof mzSyncSharedRows==='function')mzSyncSharedRows(id);});}
-function mzGuideApplyState(st){if(!st)return;MZ_GUIDE_RESTORING=true;try{var restoreProfile=!RM_CURRENT_ID&&!rmSessionIdFromHash();mzGuideSetFields(st.fields,restoreProfile);if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();var g=st.globals||{};mzGuideRestoreRows(st.bonusRows||[],g);MZ_FIDUCIA_HISTORY=mzGuideClone(g.fiduciaHistory||[]);MZ_SCOPERTA_HISTORY=mzGuideClone(g.scopertaHistory||[]);MZ_SCOPERTA_FAILURES=Number(g.scopertaFailures||0);MZ_CURA_HISTORY=mzGuideClone(g.curaHistory||[]);MZ_CURA_FAILURES=Number(g.curaFailures||0);MZ_DOMESTICAZIONE_HISTORY=mzGuideClone(g.domHistory||[]);MZ_SCOPERTA_FALLITA=!!g.scopertaFallita;MZ_CURA_FALLITA=!!g.curaFallita;MZ_CURA_MALUS_ALLEVAMENTO=Number(g.curaMalus||0);MZ_LAST_CURA_BONUS_DOM=Number(g.lastCuraBonus||0);MZ_IMPOSIUM_SUCCESS=!!g.imposiumSuccess;MZ_IMPOSIUM_DOM_MALUS=Number(g.imposiumDom||0);MZ_IMPOSIUM_POST_MALUS=Number(g.imposiumPost||0);MZ_ILLEGAL_SIGNATURES=mzGuideClone(g.illegalSignatures||{cura:null,allevamento:null});curaEbbeUnFallimento=!!g.curaEbbe;if(typeof mzRenderFiduciaHistory==='function')mzRenderFiduciaHistory();if(typeof mzRenderScopertaHistory==='function')mzRenderScopertaHistory();if(typeof mzRenderCuraHistory==='function')mzRenderCuraHistory();if(typeof mzRenderDomesticazioneHistory==='function')mzRenderDomesticazioneHistory();if(typeof mzSyncAllAttemptDisplays==='function')mzSyncAllAttemptDisplays();if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();if(st.activePanel&&document.getElementById('pannello'+st.activePanel))mostraPannello(st.activePanel);}finally{MZ_GUIDE_RESTORING=false;}}
+function mzGuideApplyState(st){if(!st)return;MZ_GUIDE_RESTORING=true;try{var restoreProfile=true;mzGuideSetFields(st.fields,restoreProfile);if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();var g=st.globals||{};mzGuideRestoreRows(st.bonusRows||[],g);MZ_FIDUCIA_HISTORY=mzGuideClone(g.fiduciaHistory||[]);MZ_SCOPERTA_HISTORY=mzGuideClone(g.scopertaHistory||[]);MZ_SCOPERTA_FAILURES=Number(g.scopertaFailures||0);MZ_CURA_HISTORY=mzGuideClone(g.curaHistory||[]);MZ_CURA_FAILURES=Number(g.curaFailures||0);MZ_DOMESTICAZIONE_HISTORY=mzGuideClone(g.domHistory||[]);MZ_SCOPERTA_FALLITA=!!g.scopertaFallita;MZ_CURA_FALLITA=!!g.curaFallita;MZ_CURA_MALUS_ALLEVAMENTO=Number(g.curaMalus||0);MZ_LAST_CURA_BONUS_DOM=Number(g.lastCuraBonus||0);MZ_IMPOSIUM_SUCCESS=!!g.imposiumSuccess;MZ_IMPOSIUM_DOM_MALUS=Number(g.imposiumDom||0);MZ_IMPOSIUM_POST_MALUS=Number(g.imposiumPost||0);MZ_ILLEGAL_SIGNATURES=mzGuideClone(g.illegalSignatures||{cura:null,allevamento:null});curaEbbeUnFallimento=!!g.curaEbbe;if(typeof mzRenderFiduciaHistory==='function')mzRenderFiduciaHistory();if(typeof mzRenderScopertaHistory==='function')mzRenderScopertaHistory();if(typeof mzRenderCuraHistory==='function')mzRenderCuraHistory();if(typeof mzRenderDomesticazioneHistory==='function')mzRenderDomesticazioneHistory();if(typeof mzSyncAllAttemptDisplays==='function')mzSyncAllAttemptDisplays();if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();if(st.activePanel&&document.getElementById('pannello'+st.activePanel))mostraPannello(st.activePanel);}finally{MZ_GUIDE_RESTORING=false;}}
 function mzGuideSaveNow(){var ref=mzGuideDoc();if(!ref||MZ_GUIDE_RESTORING)return Promise.resolve();if(MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}var payload={recordType:'guide',ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-guide-v45',state:mzGuideCollectState()};mzGuideStatus('Guida: salvataggio automatico su Firebase…','saving');var task=MZ_GUIDE_SAVE_CHAIN.catch(function(){}).then(function(){return ref.set(payload,{merge:true});}).then(function(){mzGuideStatus('Guida salvata automaticamente su Firebase ✓','ok');}).catch(function(err){console.error(err);mzGuideStatus('Guida: errore di salvataggio Firebase — '+(err.message||err),'bad');});MZ_GUIDE_SAVE_CHAIN=task;return task;}
-function mzGuideScheduleSave(){if(MZ_GUIDE_RESTORING||!MZ_GUIDE_READY||!RM_FB.user)return;if(MZ_GUIDE_SAVE_TIMER)clearTimeout(MZ_GUIDE_SAVE_TIMER);mzGuideStatus('Guida: modifiche da salvare…','saving');MZ_GUIDE_SAVE_TIMER=setTimeout(mzGuideSaveNow,700);}
-window.mzGuideFirebaseReady=function(user){if(!user||!RM_FB.db)return;MZ_GUIDE_READY=true;var ref=mzGuideDoc();mzGuideStatus('Guida: caricamento del salvataggio Firebase…','saving');ref.get().then(function(doc){if(doc.exists&&doc.data()&&doc.data().state){mzGuideApplyState(doc.data().state);mzGuideStatus('Guida ripristinata da Firebase · autosalvataggio attivo ✓','ok');}else{mzGuideStatus('Guida pronta · autosalvataggio Firebase attivo ✓','ok');}}).catch(function(err){console.error(err);mzGuideStatus('Guida: impossibile leggere il salvataggio Firebase — '+(err.message||err),'bad');});};
+function mzGuideScheduleSave(){
+  if(MZ_GUIDE_RESTORING)return;
+  if(!MZ_GUIDE_READY||!RM_FB.user){
+    MZ_GUIDE_DIRTY_BEFORE_READY=true;
+    mzGuideStatus('Guida: modifiche locali in attesa di Firebase…','saving');
+    return;
+  }
+  if(MZ_GUIDE_SAVE_TIMER)clearTimeout(MZ_GUIDE_SAVE_TIMER);
+  mzGuideStatus('Guida: modifiche da salvare…','saving');
+  MZ_GUIDE_SAVE_TIMER=setTimeout(mzGuideSaveNow,350);
+}
+window.mzGuideFirebaseReady=function(user){
+  if(!user||!RM_FB.db||MZ_GUIDE_LOADING)return;
+  MZ_GUIDE_LOADING=true;
+  MZ_GUIDE_READY=false;
+  var ref=mzGuideDoc();
+  mzGuideStatus('Guida: caricamento del salvataggio Firebase…','saving');
+  ref.get().then(function(doc){
+    var localWins=MZ_GUIDE_DIRTY_BEFORE_READY;
+    if(!localWins && doc.exists && doc.data() && doc.data().state){
+      mzGuideApplyState(doc.data().state);
+    }
+    MZ_GUIDE_READY=true;
+    MZ_GUIDE_LOADING=false;
+    if(localWins){
+      MZ_GUIDE_DIRTY_BEFORE_READY=false;
+      mzGuideStatus('Guida: salvo le modifiche inserite durante il collegamento…','saving');
+      return mzGuideSaveNow();
+    }
+    mzGuideStatus(doc.exists?'Guida ripristinata da Firebase · autosalvataggio attivo ✓':'Guida pronta · autosalvataggio Firebase attivo ✓','ok');
+  }).catch(function(err){
+    console.error(err);
+    MZ_GUIDE_LOADING=false;
+    MZ_GUIDE_READY=true;
+    mzGuideStatus('Guida: impossibile leggere il salvataggio Firebase — '+(err.message||err),'bad');
+    if(MZ_GUIDE_DIRTY_BEFORE_READY){
+      MZ_GUIDE_DIRTY_BEFORE_READY=false;
+      mzGuideSaveNow();
+    }
+  });
+};
 function mz44InsideGuideOrProfile(t){var g=document.getElementById('modoMagizoologia'),p=document.getElementById('modoPersonaggio');return !!(t&&((g&&g.contains(t))||(p&&p.contains(t))));}
 document.addEventListener('input',function(e){if(mz44InsideGuideOrProfile(e.target))mzGuideScheduleSave();},true);document.addEventListener('change',function(e){if(mz44InsideGuideOrProfile(e.target))mzGuideScheduleSave();},true);document.addEventListener('click',function(e){if(mz44InsideGuideOrProfile(e.target)&&e.target.closest&&e.target.closest('button'))setTimeout(mzGuideScheduleSave,80);},true);document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&MZ_GUIDE_READY)mzGuideSaveNow();});window.addEventListener('pagehide',function(){if(MZ_GUIDE_READY)mzGuideSaveNow();});
 
