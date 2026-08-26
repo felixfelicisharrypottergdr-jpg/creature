@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v58: voto della singola Creatura richiesto solo dopo il ritrovamento / nella Guida -->
+<!-- v59: allineamento UX con Erbologia v66 — reset PG, iframe stabile, ostilità guidata dalla specie -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -2675,6 +2675,107 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 @media(max-width:620px){.research-guide-bridge .campo{flex-basis:100%!important}}
 </style>
 
+
+<style id="magizoologia-v59-alignment-style">
+/* v59 — allineamento delle ultime migliorie UX di Erbologia, senza cambiare le formule. */
+.mz-reset-profile-wrap{
+  margin-top:16px;
+  padding-top:13px;
+  border-top:1px solid rgba(232,154,96,.28);
+  display:flex;
+  align-items:center;
+  gap:10px 14px;
+  flex-wrap:wrap;
+}
+.mz-reset-profile-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:40px;
+  padding:9px 13px;
+  border:1px solid #b65d34;
+  border-radius:8px;
+  background:#3b1d13;
+  color:#ffe7d4;
+  font-family:inherit;
+  font-weight:800;
+  cursor:pointer;
+}
+.mz-reset-profile-btn:hover:not(:disabled){background:#552818;border-color:#dc8452;}
+.mz-reset-profile-btn:disabled{opacity:.48;cursor:not-allowed;}
+.mz-reset-profile-help{flex:1 1 340px;color:#d9bfad;font-size:.86em;line-height:1.45;}
+
+.mz-auto-trait{
+  margin:5px 0 8px;
+  padding:10px 12px;
+  border:1px solid #a96038;
+  border-left-width:4px;
+  border-radius:8px;
+  background:#f3dfcf;
+  color:#382117;
+  line-height:1.45;
+}
+.mz-auto-trait.auto-ok{background:#e6efd9;color:#29401d;border-color:#8cac71;}
+.mz-auto-trait.auto-warn{background:#f4d7ce;color:#66241f;border-color:#c56b57;font-weight:700;}
+.mz-auto-trait.auto-special{background:#f4e8ce;color:#5b431c;border-color:#c29a4b;}
+.mz-hostility-override{
+  margin:8px 0 0!important;
+  border:1px solid #865038!important;
+  border-radius:8px!important;
+  overflow:hidden!important;
+}
+.mz-hostility-override>summary{
+  padding:9px 11px!important;
+  background:#3c2117!important;
+  color:#f3d6c2!important;
+  font-size:.88em!important;
+  font-weight:700!important;
+}
+.mz-hostility-override .mz-hostility-body{
+  padding:10px 12px;
+  background:#28150f;
+}
+.mz-hostility-override .numeric-note{color:#d6bca9!important;}
+.mz-hostility-override select{max-width:360px;}
+
+#rmBonusRicercaBox{
+  color:#fff0e4!important;
+}
+#rmBonusRicercaBox .mz-bonus-help,
+#rmBonusRicercaBox .mz-effective-line,
+#rmBonusRicercaBox .rm-search-bonus-note{
+  color:#f7dfce!important;
+}
+#rmBonusRicercaBox a{color:#fff0d8!important;font-weight:800;}
+
+.mz-knowledge-tool .mz-bridge-status,
+[data-mz-bridge-status]{
+  background:#f4e5d7!important;
+  color:#3c2418!important;
+  border:1px solid #b9825e!important;
+  border-left:4px solid #b66d3f!important;
+  opacity:1!important;
+}
+.mz-knowledge-tool .mz-bridge-status.ok,
+[data-mz-bridge-status].ok{
+  background:#e6efd9!important;
+  color:#29401d!important;
+  border-left-color:#79975f!important;
+}
+.mz-knowledge-tool .mz-bridge-status.warn,
+[data-mz-bridge-status].warn{
+  background:#f5e8c9!important;
+  color:#5b431c!important;
+  border-left-color:#b88c39!important;
+}
+
+@media(max-width:720px){
+  .mz-reset-profile-wrap{align-items:stretch}
+  .mz-reset-profile-btn{width:100%}
+}
+</style>
+
 </head>
 <body>
 <div class="contenitore">
@@ -2792,6 +2893,10 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
   <input type="checkbox" id="pgMagizoologoMestiere" data-key="pgMagizoologoMestiere">
   <label for="pgMagizoologoMestiere"><b>Magizoologo di mestiere</b> — per i controlli di scoperta durante Cura e Allevamento di Creature illegali nella propria Riserva</label>
 </div>
+<div class="mz-reset-profile-wrap">
+  <button type="button" id="mzResetAllBtn" class="mz-reset-profile-btn" disabled><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Azzera tutto / Cambia PG</button>
+  <div class="mz-reset-profile-help">Azzera il profilo e la Guida salvati per questo browser. <b>Le Ricerche già create restano salvate</b> e potranno essere riprese dall’archivio.</div>
+</div>
 </div>
 
 </div>
@@ -2824,13 +2929,20 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
       <option value="anziana">Anziana</option>
     </select>
   </div>
-  <div class="campo">
-    <label>Ostilita della Creatura</label>
-    <select id="ostilita" data-key="ostilita">
-      <option value="normale">Normale</option>
-      <option value="sempre">Sempre ostile</option>
-      <option value="mai">Mai ostile</option>
-    </select>
+  <div class="campo" id="mzHostilityField">
+    <label>Ostilità della Creatura</label>
+    <div id="mzAutoHostility" class="mz-auto-trait">Inserisci la specie: quando il regolamento stabilisce già l’ostilità iniziale, il tool la imposta automaticamente.</div>
+    <details class="mz-hostility-override" id="mzHostilityOverride">
+      <summary>La situazione ONGame è diversa? Modifica manualmente</summary>
+      <div class="mz-hostility-body">
+        <select id="ostilita" data-key="ostilita">
+          <option value="normale">Normale</option>
+          <option value="sempre">Sempre ostile</option>
+          <option value="mai">Mai ostile / Fiducia autoconclusiva</option>
+        </select>
+        <div class="numeric-note">Usa questa modifica solo se gli eventi della role hanno cambiato la situazione prevista dalla scheda della Creatura.</div>
+      </div>
+    </details>
   </div>
 </div>
 <div class="riga">
@@ -7338,11 +7450,16 @@ document.getElementById('modoRicercaBtn').addEventListener(evtClick, rmEnterRese
 document.addEventListener('input', function(e){
   var profilo=document.getElementById('modoPersonaggio');
   var guida=document.getElementById('modoMagizoologia');
-  if((profilo&&profilo.contains(e.target))||(guida&&guida.contains(e.target))){ ricalcolaMagizoologia(); }
-  if(e.target&&e.target.id==='pgNomeSessione'){
+  var isName=!!(e.target&&e.target.id==='pgNomeSessione');
+  /* Il nome del PG non modifica alcuna formula: evita il ricalcolo completo a ogni carattere. */
+  if(!isName&&((profilo&&profilo.contains(e.target))||(guida&&guida.contains(e.target)))){ ricalcolaMagizoologia(); }
+  if(isName){
     if(RM_PROFILE_NAME_TIMER)clearTimeout(RM_PROFILE_NAME_TIMER);
     var typed=rmProfileName();
-    RM_PROFILE_NAME_TIMER=setTimeout(function(){RM_PROFILE_NAME_TIMER=null;if(typed&&rmNormName(typed)===rmNormName(rmProfileName()))rmProfileNameCommitted(true).catch(function(){});},700);
+    RM_PROFILE_NAME_TIMER=setTimeout(function(){
+      RM_PROFILE_NAME_TIMER=null;
+      if(typed&&rmNormName(typed)===rmNormName(rmProfileName()))rmProfileNameCommitted(true).catch(function(){});
+    },900);
   }
   if(e.target&&e.target.id==='empatia'){ rmSincronizzaEmpatiaDaProfilo(); }
   if(e.target&&e.target.id==='sapienzaProfilo'){ rmSincronizzaSapienzaDaProfilo(); }
@@ -7350,8 +7467,9 @@ document.addEventListener('input', function(e){
 document.addEventListener('change', function(e){
   var profilo=document.getElementById('modoPersonaggio');
   var guida=document.getElementById('modoMagizoologia');
-  if((profilo&&profilo.contains(e.target))||(guida&&guida.contains(e.target))){ ricalcolaMagizoologia(); }
-  if(e.target&&e.target.id==='pgNomeSessione'){ if(RM_PROFILE_NAME_TIMER){clearTimeout(RM_PROFILE_NAME_TIMER);RM_PROFILE_NAME_TIMER=null;} rmProfileNameCommitted(true).catch(function(){}); }
+  var isName=!!(e.target&&e.target.id==='pgNomeSessione');
+  if(!isName&&((profilo&&profilo.contains(e.target))||(guida&&guida.contains(e.target)))){ ricalcolaMagizoologia(); }
+  if(isName){ if(RM_PROFILE_NAME_TIMER){clearTimeout(RM_PROFILE_NAME_TIMER);RM_PROFILE_NAME_TIMER=null;} rmProfileNameCommitted(true).catch(function(){}); }
   if(e.target&&e.target.id==='empatia'){ rmSincronizzaEmpatiaDaProfilo(); }
   if(e.target&&(e.target.id==='sapienzaProfilo'||e.target.id==='pgTipo')){ rmSincronizzaSapienzaDaProfilo(); }
 }, true);
@@ -7470,71 +7588,53 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
 })();
 
 
-/* ===== ALTEZZA DINAMICA IFRAME — Magizoologia v54 ===== */
+/* ===== ALTEZZA DINAMICA IFRAME — Magizoologia v59 stabile ===== */
 (function(){
-  var lastSent=0;
-  var timers=[];
+  'use strict';
+  var lastSent=0, timer=null;
 
   function contentHeight(){
-    var de=document.documentElement;
-    var b=document.body;
-    var c=document.querySelector('.contenitore');
-    var sc=document.scrollingElement||de||b;
-    var vals=[
-      sc?sc.scrollHeight:0,
-      de?de.scrollHeight:0, de?de.offsetHeight:0,
-      b?b.scrollHeight:0, b?b.offsetHeight:0
-    ];
+    var de=document.documentElement,b=document.body,c=document.querySelector('.contenitore');
+    var vals=[de?de.scrollHeight:0,de?de.offsetHeight:0,b?b.scrollHeight:0,b?b.offsetHeight:0];
     if(c){
       var r=c.getBoundingClientRect();
       vals.push(Math.ceil(r.bottom+(window.pageYOffset||0)));
       vals.push(Math.ceil((c.offsetTop||0)+(c.scrollHeight||0)));
     }
-    return Math.ceil(Math.max.apply(Math,vals)+110);
+    return Math.ceil(Math.max.apply(Math,vals)+90);
   }
 
   function send(force){
     var h=contentHeight();
     if(!isFinite(h)||h<300)return;
-    if(!force&&Math.abs(h-lastSent)<2)return;
+    if(!force&&Math.abs(h-lastSent)<4)return;
     lastSent=h;
     try{window.parent.postMessage({tipo:'altezzaMagizoologia',altezza:h},'*');}catch(e){}
-    try{window.parent.postMessage({tipo:'altezzaTool',tool:'magizoologia',altezza:h},'*');}catch(e){}
+    try{window.parent.postMessage({type:'ffgdr:iframe-height',tool:'magizoologia',height:h},'*');}catch(e){}
   }
 
-  function schedule(force){
-    timers.forEach(clearTimeout);
-    timers=[];
-    send(!!force);
-    [30,100,220,450,900,1600].forEach(function(ms){
-      timers.push(setTimeout(function(){send(true);},ms));
-    });
+  function schedule(force,delay){
+    if(timer)clearTimeout(timer);
+    timer=setTimeout(function(){timer=null;send(!!force);},Math.max(0,Number(delay)||35));
   }
 
-  window.mzNotifyHeight=function(){schedule(true);};
-  window.addEventListener('load',function(){schedule(true);});
-  window.addEventListener('resize',function(){schedule(true);});
-  window.addEventListener('hashchange',function(){schedule(true);});
-  document.addEventListener('click',function(){schedule(false);},true);
-  document.addEventListener('input',function(){schedule(false);},true);
-  document.addEventListener('change',function(){schedule(false);},true);
-  document.addEventListener('toggle',function(e){
-    if(e.target&&e.target.tagName==='DETAILS')schedule(true);
+  window.mzNotifyHeight=function(){schedule(false,35);};
+  window.addEventListener('load',function(){send(true);schedule(true,260);});
+  window.addEventListener('resize',function(){schedule(true,80);});
+  window.addEventListener('hashchange',function(){schedule(true,40);});
+  document.addEventListener('click',function(e){
+    if(e.target&&e.target.closest&&e.target.closest('button,summary,.flow-page-btn,.modo-bottone'))schedule(false,45);
   },true);
+  document.addEventListener('change',function(){schedule(false,55);},true);
+  document.addEventListener('toggle',function(e){if(e.target&&e.target.tagName==='DETAILS')schedule(true,45);},true);
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){schedule(true,20);}).catch(function(){});}
 
-  if(window.ResizeObserver){
-    try{
-      var ro=new ResizeObserver(function(){schedule(false);});
-      var c=document.querySelector('.contenitore');
-      if(c)ro.observe(c);
-      else ro.observe(document.documentElement);
-    }catch(e){}
-  }
-  if(window.MutationObserver){
-    try{new MutationObserver(function(){schedule(false);}).observe(document.body,{subtree:true,childList:true,attributes:true,characterData:true});}catch(e){}
-  }
-  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){schedule(true);});}
-  schedule(true);
+  window.addEventListener('message',function(e){
+    var d=e.data||{};
+    if(d.type==='ffgdr:request-height'||d.tipo==='richiediAltezzaMagizoologia')send(true);
+  });
+
+  send(true);
 })();
 </script>
 
@@ -7542,11 +7642,7 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
 <script id="magizoologia-v19-script">
 (function(){
   function notify(){
-    if(typeof window.mzNotifyHeight==='function'){
-      setTimeout(window.mzNotifyHeight,30);
-      setTimeout(window.mzNotifyHeight,180);
-      setTimeout(window.mzNotifyHeight,450);
-    }
+    if(typeof window.mzNotifyHeight==='function')window.mzNotifyHeight();
   }
 
   if(typeof window.rmRenderSummary==='function'){
@@ -7599,7 +7695,6 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
     if(!t)return;
     if(t.matches('.rm-search-bonus-preset,.rm-search-bonus-scope,[data-resolver-eff],[data-resolver-bonus],select,input'))notify();
   },true);
-  document.addEventListener('input',function(){notify();},true);
   document.addEventListener('toggle',function(){notify();},true);
   window.addEventListener('load',notify);
   setTimeout(notify,350);
@@ -7624,7 +7719,7 @@ if(typeof window.rmApplyFlow==='function'){var mz44OldApplyFlow=window.rmApplyFl
 if(typeof window.rmResumeFlow==='function'){window.rmResumeFlow=function(){var page='config';if(!rmConfigReady())page='config';else if(!rmEncounterComplete(1))page='enc1';else if(RM_FLOW.outcomeVisited)page='outcome';else if(rmTipo()==='attiva'&&rmPageUnlocked('enc2')&&!rmEncounterComplete(2))page='enc2';else if(rmTipo()==='attiva'&&rmPageUnlocked('enc3')&&!rmEncounterComplete(3))page='enc3';else page='outcome';RM_FLOW.summaryVisited=rmConfigReady();RM_FLOW.page=page;rmApplyFlow();var p=document.querySelector('#creature-workspace [data-rm-page-panel="'+page+'"]');if(p)setTimeout(function(){try{p.scrollIntoView({behavior:'auto',block:'start'});}catch(e){}},80);};}
 
 /* ---------- Firebase: una Guida attiva per browser/account anonimo ---------- */
-var MZ_GUIDE_RESTORING=false,MZ_GUIDE_SAVE_TIMER=null,MZ_GUIDE_SAVE_CHAIN=Promise.resolve(),MZ_GUIDE_READY=false,MZ_GUIDE_DIRTY_BEFORE_READY=false,MZ_GUIDE_LOADING=false;
+var MZ_GUIDE_RESTORING=false,MZ_GUIDE_SAVE_TIMER=null,MZ_GUIDE_NAME_SAVE_TIMER=null,MZ_GUIDE_SAVE_CHAIN=Promise.resolve(),MZ_GUIDE_READY=false,MZ_GUIDE_DIRTY_BEFORE_READY=false,MZ_GUIDE_LOADING=false;
 function mzGuideStatus(msg,kind){var e=document.getElementById('mz-guide-save-status');if(!e)return;e.textContent=msg;e.className='guide-firebase-bar'+(kind?' '+kind:'');}
 function mzGuideDoc(){if(!RM_FB||!RM_FB.db||!RM_FB.user)return null;return RM_FB.db.collection(RM_COLLECTION).doc('guide_'+RM_FB.user.uid);}
 function mzGuideActivePanel(){var names=['Riconoscimento','Fiducia','Cura','Domesticazione','Allevamento','Riepilogo'];for(var i=0;i<names.length;i++){var p=document.getElementById('pannello'+names[i]);if(p&&p.classList.contains('visibile'))return names[i];}return 'Riconoscimento';}
@@ -7686,6 +7781,7 @@ window.mzGuideFirebaseReady=function(user){
     }
     MZ_GUIDE_READY=true;
     MZ_GUIDE_LOADING=false;
+    var resetBtnReady=document.getElementById('mzResetAllBtn');if(resetBtnReady)resetBtnReady.disabled=false;
     if(localWins){
       MZ_GUIDE_DIRTY_BEFORE_READY=false;
       mzGuideStatus('Guida: salvo le modifiche inserite durante il collegamento…','saving');
@@ -7696,6 +7792,7 @@ window.mzGuideFirebaseReady=function(user){
     console.error(err);
     MZ_GUIDE_LOADING=false;
     MZ_GUIDE_READY=true;
+    var resetBtnReady=document.getElementById('mzResetAllBtn');if(resetBtnReady)resetBtnReady.disabled=false;
     mzGuideStatus('Guida: impossibile leggere il salvataggio Firebase — '+(err.message||err),'bad');
     if(MZ_GUIDE_DIRTY_BEFORE_READY){
       MZ_GUIDE_DIRTY_BEFORE_READY=false;
@@ -7704,7 +7801,62 @@ window.mzGuideFirebaseReady=function(user){
   });
 };
 function mz44InsideGuideOrProfile(t){var g=document.getElementById('modoMagizoologia'),p=document.getElementById('modoPersonaggio');return !!(t&&((g&&g.contains(t))||(p&&p.contains(t))));}
-document.addEventListener('input',function(e){if(mz44InsideGuideOrProfile(e.target))mzGuideScheduleSave();},true);document.addEventListener('change',function(e){if(mz44InsideGuideOrProfile(e.target))mzGuideScheduleSave();},true);document.addEventListener('click',function(e){if(mz44InsideGuideOrProfile(e.target)&&e.target.closest&&e.target.closest('button'))setTimeout(mzGuideScheduleSave,80);},true);document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&MZ_GUIDE_READY)mzGuideSaveNow();});window.addEventListener('pagehide',function(){if(MZ_GUIDE_READY)mzGuideSaveNow();});
+document.addEventListener('input',function(e){
+  if(!mz44InsideGuideOrProfile(e.target))return;
+  if(e.target&&e.target.id==='pgNomeSessione'){
+    if(MZ_GUIDE_NAME_SAVE_TIMER)clearTimeout(MZ_GUIDE_NAME_SAVE_TIMER);
+    MZ_GUIDE_NAME_SAVE_TIMER=setTimeout(function(){MZ_GUIDE_NAME_SAVE_TIMER=null;mzGuideScheduleSave();},1100);
+    return;
+  }
+  mzGuideScheduleSave();
+},true);
+document.addEventListener('change',function(e){
+  if(!mz44InsideGuideOrProfile(e.target))return;
+  if(e.target&&e.target.id==='pgNomeSessione'&&MZ_GUIDE_NAME_SAVE_TIMER){clearTimeout(MZ_GUIDE_NAME_SAVE_TIMER);MZ_GUIDE_NAME_SAVE_TIMER=null;}
+  mzGuideScheduleSave();
+},true);
+document.addEventListener('click',function(e){
+  if(mz44InsideGuideOrProfile(e.target)&&e.target.closest&&e.target.closest('button')&&e.target.id!=='mzResetAllBtn')setTimeout(mzGuideScheduleSave,80);
+},true);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&MZ_GUIDE_READY)mzGuideSaveNow();});
+window.addEventListener('pagehide',function(){if(MZ_GUIDE_READY)mzGuideSaveNow();});
+
+
+window.mzResetPersistentGuideForNewPg=function(btn){
+  if(!RM_FB||!RM_FB.user||!RM_FB.db){rmProfileStatus('Attendi il collegamento a Firebase e riprova.','bad');return;}
+  if(!window.confirm('Vuoi azzerare il profilo e la Guida salvati per questo browser? Le Ricerche già create NON verranno eliminate.'))return;
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Azzeramento…';}
+  if(RM_PROFILE_NAME_TIMER){clearTimeout(RM_PROFILE_NAME_TIMER);RM_PROFILE_NAME_TIMER=null;}
+  if(MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}
+  if(MZ_GUIDE_NAME_SAVE_TIMER){clearTimeout(MZ_GUIDE_NAME_SAVE_TIMER);MZ_GUIDE_NAME_SAVE_TIMER=null;}
+  RM_PROFILE_OPEN_PENDING=false;MZ_GUIDE_RESTORING=true;
+  try{
+    function setVal(id,val){var e=document.getElementById(id);if(!e)return;if(e.type==='checkbox'||e.type==='radio')e.checked=!!val;else e.value=val;}
+    setVal('pgNomeSessione','');setVal('pgTipo','studente');setVal('pgSegueCDCM','si');setVal('pgAdultoCDCM','si');
+    setVal('empatia','10');setVal('sapienzaProfilo','0');
+    setVal('livAmico','0');setVal('livCustode','0');setVal('livAddestratore','0');setVal('livAllevatore','0');setVal('pgMagizoologoMestiere',false);
+    if(typeof resetGuidaMagizoologia==='function')resetGuidaMagizoologia();
+    if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();
+    RM_PROFILE_SESSION_ID='';RM_PROFILE_SESSION_DATA=null;RM_PROFILE_SESSION_NAME='';RM_PROFILE_PENDING_CREATE=false;
+    var ps=document.getElementById('rm-profile-session-status');if(ps){ps.textContent='Profilo azzerato. Salvataggio dei valori vuoti…';ps.className='session-status';}
+  }finally{MZ_GUIDE_RESTORING=false;}
+  var ref=mzGuideDoc();
+  var payload={recordType:'guide',ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-guide-v59',state:mzGuideCollectState()};
+  ref.set(payload,{merge:true}).then(function(){
+    try{
+      for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i)||'';if(k.indexOf('ffgdr_mz_knowledge_')===0)localStorage.removeItem(k);}
+      localStorage.removeItem('ffgdr_knowledge_return_v1');
+    }catch(e){}
+    try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){window.location.hash='';}
+    window.location.reload();
+  }).catch(function(err){
+    console.error(err);
+    if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Azzera tutto / Cambia PG';}
+    rmProfileStatus('Impossibile azzerare i dati salvati: '+(err.message||err),'bad');
+  });
+};
+var mzResetAllBtn=document.getElementById('mzResetAllBtn');
+if(mzResetAllBtn)mzResetAllBtn.addEventListener('click',function(){window.mzResetPersistentGuideForNewPg(mzResetAllBtn);});
 
 /* Vecchie sessioni: niente voce criptica; si chiede semplicemente di riselezionare la Zona. */
 var mz44OldApplyState=window.rmApplyState;window.rmApplyState=function(state){state=state||{};var oldZone=(state.zonaRicerca===undefined||state.zonaRicerca==='storica');if(oldZone){state=Object.assign({},state,{zonaRicerca:'',_legacyZoneNeedsSelection:true,flowPage:state.flowPage==='summary'?'config':state.flowPage});}var r=mz44OldApplyState(state);var n=document.getElementById('rmLegacyZoneNotice');if(n)n.classList.toggle('show',!!state._legacyZoneNeedsSelection);return r;};
@@ -7731,7 +7883,7 @@ if(typeof ricalcolaRicerca==='function')ricalcolaRicerca();
   function init(){wire(document);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
   document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href*="?pag=riuscitaconoscenze"]'):null;if(a){rememberReturn();a.href=a.hasAttribute('data-mz-bridge-open')?(BASE+'&from=magizoologia&bridge=magizoologia#riuscitaFrame'):targetUrl();}},true);
-  if(window.MutationObserver){try{new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1)wire(n);});});}).observe(document.documentElement,{subtree:true,childList:true});}catch(e){}}
+  /* Nessun observer permanente: i link dinamici vengono normalizzati al click. */
 })();
 </script>
 
@@ -7752,6 +7904,7 @@ if(typeof ricalcolaRicerca==='function')ricalcolaRicerca();
   window.addEventListener('hashchange',openToolAnchor);
 })();
 </script>
+
 
 <script id="magizoologia-specific-vote-v58">
 (function(){
@@ -7824,6 +7977,88 @@ var pgVote=E('pgVoto');if(pgVote)pgVote.addEventListener('change',function(){win
 window.ricalcolaMagizoologia();window.ricalcolaRicerca();
 })();
 </script>
+
+<script id="magizoologia-v59-auto-hostility">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function norm(v){
+  v=String(v||'');
+  try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}
+  return v.toLowerCase().replace(/\+/g,'').replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
+}
+/* Stato esplicitamente stabilito dalle schede del regolamento.
+   Dugbog è sempre ostile. Sfinge, Thestral e Banshee non sono ostili al primo incontro,
+   ma possono diventarlo se minacciati: per questo il tool applica "mai" come stato iniziale,
+   lasciando un override manuale visibile. Sblorb resta speciale perché il PG può conoscere
+   la sua innocuità soltanto con la Conoscenza Extra Creature Esotiche. */
+var ALWAYS={'dugbog':true};
+var INITIAL_NEVER={'sfinge':true,'thestral':true,'banshee':true};
+var SPECIAL={'sblorb':true};
+
+function currentName(){var s=E('specieCreaturaGuida');return s?s.value.trim():'';}
+function select(){return E('ostilita');}
+function host(){return E('mzAutoHostility');}
+
+function render(manual){
+  var h=host(),sel=select(),name=currentName();if(!h||!sel)return;
+  var n=norm(name),v=sel.value||'normale';
+  h.className='mz-auto-trait';
+  if(!name){
+    h.innerHTML='Inserisci la specie: quando il regolamento stabilisce già l’ostilità iniziale, il tool la imposta automaticamente.';
+    return;
+  }
+  if(manual){
+    h.classList.add(v==='sempre'?'auto-warn':(v==='mai'?'auto-ok':'auto-special'));
+    h.innerHTML='<strong>Impostazione manuale:</strong> '+(v==='sempre'?'sempre ostile':(v==='mai'?'mai ostile / Fiducia autoconclusiva':'procedura normale'))+'.';
+    return;
+  }
+  if(ALWAYS[n]){
+    h.classList.add('auto-warn');
+    h.innerHTML='<strong>'+name+': sempre ostile.</strong> La Fiducia standard non è disponibile; applica le regole specifiche della Creatura o Imposium quando consentito.';
+  }else if(INITIAL_NEVER[n]){
+    h.classList.add('auto-ok');
+    h.innerHTML='<strong>'+name+': non ostile al primo incontro.</strong> La Fiducia è autoconclusiva finché la Creatura non viene resa ostile dagli eventi della role. Se è già successo, usa “La situazione ONGame è diversa?”.';
+  }else if(SPECIAL[n]){
+    h.classList.add('auto-special');
+    h.innerHTML='<strong>Sblorb:</strong> il regolamento lo considera innocuo, ma soltanto un PG con <b>Creature Magiche esotiche</b> può saperlo. Il tool non presume che il PG possieda questa Conoscenza Extra: imposta manualmente “Mai ostile” solo se ne ha diritto.';
+  }else{
+    h.innerHTML='<strong>'+name+':</strong> non ha uno stato “sempre/mai ostile” automatico applicabile dal tool; si usa la procedura normale salvo diversa situazione ONGame.';
+  }
+}
+function applyFromSpecies(){
+  var sel=select(),name=currentName();if(!sel)return;
+  var n=norm(name);
+  sel.dataset.mzManualHostility='';
+  if(ALWAYS[n])sel.value='sempre';
+  else if(INITIAL_NEVER[n])sel.value='mai';
+  else sel.value='normale';
+  render(false);
+  try{sel.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}
+}
+window.mzSyncAutoHostility=function(){render(!!(select()&&select().dataset.mzManualHostility==='1'));};
+
+var sp=E('specieCreaturaGuida'),sel=select();
+if(sp)sp.addEventListener('change',applyFromSpecies);
+if(sel)sel.addEventListener('change',function(e){
+  /* Un change generato da applyFromSpecies non deve trasformarsi in override manuale. */
+  if(e&&e.isTrusted)sel.dataset.mzManualHostility='1';
+  render(sel.dataset.mzManualHostility==='1');
+});
+var oldCalc=window.ricalcolaMagizoologia;
+if(oldCalc&&!oldCalc.__v59Hostility){
+  var wrapped=function(){
+    var r=oldCalc.apply(this,arguments);
+    render(!!(select()&&select().dataset.mzManualHostility==='1'));
+    return r;
+  };
+  wrapped.__v59Hostility=true;
+  window.ricalcolaMagizoologia=wrapped;
+}
+render(false);
+})();
+</script>
+
 
 </body>
 </html>
