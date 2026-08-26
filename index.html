@@ -3765,7 +3765,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
     <div class="scheda">
       <h2>Esito della Ricerca</h2>
       <div id="rm-outcome-content"></div>
-      <div class="result-line"><div class="research-bbcode" id="rm-outcome-bbcode"></div><button class="copy-btn" type="button" data-copy-source="rm-outcome-bbcode" data-copy-control="1">Copia riepilogo</button></div>
+      
     </div>
     <div class="flow-actions"><button type="button" class="flow-action-btn" data-rm-goto="enc1" data-session-control="1">← Torna agli Incontri</button><span class="nota-regole">Per chiudere definitivamente la Ricerca usa «Concludi ed elimina Ricerca» nella barra in alto.</span></div>
   </section>
@@ -6990,8 +6990,8 @@ function rmEncounterSummary(n){
 }
 
 function rmRenderOutcome(){
-  var host=rmEl('rm-outcome-content'),bb=rmEl('rm-outcome-bbcode');if(!host||!bb)return;
-  var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'PG',zona=rmZonaLabel(),items=[],bbs=[];
+  var host=rmEl('rm-outcome-content');if(!host)return;
+  var zona=rmZonaLabel(),items=[];
   for(var n=1;n<=3;n++){
     /* Dati rimasti da una configurazione precedente non devono comparire
        nell'Esito se l'Incontro non è più raggiungibile con la configurazione
@@ -7002,16 +7002,17 @@ function rmRenderOutcome(){
     var s=rmEncounterSummary(n);
     if(!s)break;
     items.push('<li><b>Incontro '+(['','I','II','III'][n])+':</b> '+s.html+'</li>');
-    bbs.push('Incontro '+(['','I','II','III'][n])+': '+s.bb);
   }
-  if(!items.length){host.innerHTML='<div class="nota-regole">Completa almeno il Primo Incontro per ottenere il riepilogo finale.</div>';bb.textContent='';return;}
+  if(!items.length){
+    host.innerHTML='<div class="nota-regole">Completa almeno il Primo Incontro per ottenere il riepilogo finale.</div>';
+    return;
+  }
   var stop='';
   if(rmTipo()==='passiva')stop='Ricerca Passiva conclusa dopo il Primo Incontro.';
   else if(rmBlockedAfter(1))stop='Ricerca interrotta dopo il Primo Incontro: Valigia Magica necessaria per proseguire dopo la cattura.';
   else if(items.length>=2 && rmBlockedAfter(2))stop='Ricerca interrotta dopo il Secondo Incontro: Valigia Magica necessaria per proseguire dopo la cattura.';
   else stop='Ricerca conclusa dopo '+items.length+' Incontro'+(items.length===1?'':'i')+'.';
   host.innerHTML='<div class="nota-regole"><b>Zona di Ricerca:</b> '+rmEsc(zona||'—')+'</div><ul class="outcome-list">'+items.join('')+'</ul><div class="nota-regole" style="margin-top:12px">'+rmEsc(stop)+'</div>';
-  bb.textContent='<b>Esito Ricerca Creature Magiche — '+name+'</b>\n[quote]Zona di Ricerca: '+(zona||'—')+'\n'+bbs.join('\n')+'\n'+stop+'[/quote]';
 }
 
 function rmApplyFlow(){
