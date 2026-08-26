@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- v58: voto della singola Creatura richiesto solo dopo il ritrovamento / nella Guida -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -2655,6 +2656,25 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 }
 
 </style>
+
+<style id="specific-vote-v58">
+/* ===== v58 — voto specifico solo dopo l'identificazione della specie ===== */
+.specific-knowledge-note{margin:10px 0 0;padding:10px 12px;border:1px solid var(--ux-border,#8b6d37);border-left:4px solid var(--ux-accent,#c79d44);border-radius:7px;background:rgba(255,255,255,.04);line-height:1.45}
+.specific-knowledge-note.ok{border-left-color:#6f9b55;background:rgba(95,137,73,.10)}
+.specific-knowledge-note.warn{border-left-color:#c58b42;background:rgba(181,119,47,.10)}
+.research-guide-bridge{display:none;margin:13px 0 2px;padding:13px 14px;border:1px solid var(--ux-border,#8b6d37);border-left:5px solid var(--ux-accent,#c79d44);border-radius:8px;background:rgba(255,255,255,.045)}
+.research-guide-bridge.show{display:block}
+.research-guide-bridge-title{margin-bottom:9px;font-weight:800;line-height:1.45}
+.research-guide-bridge .riga{margin:8px 0!important}
+.research-guide-bridge-status{margin-top:8px;font-size:.9em;line-height:1.45;opacity:.92}
+.research-guide-bridge-status.ok{font-weight:700}
+.research-guide-open{margin-top:10px!important}
+.research-guide-vote-wrap{display:none}
+.research-guide-vote-wrap.show{display:block}
+#campoVotoStudente .numeric-note{margin-top:5px}
+@media(max-width:620px){.research-guide-bridge .campo{flex-basis:100%!important}}
+</style>
+
 </head>
 <body>
 <div class="contenitore">
@@ -2671,7 +2691,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div id="modoPersonaggio" class="modo-sezione visibile">
 <div class="scheda">
 <h2>Il tuo Personaggio</h2>
-<div class="profilo-condiviso-note">Compila il PG una volta: <b>nome, Empatia e Sapienza Magizoologica</b> vengono riutilizzati automaticamente. Gli <b>Studenti</b> usano il voto nella singola Creatura e possono applicare il <b>+2</b> del Livello I; per gli <b>Adulti</b> il tool considera automaticamente anche la precedente frequenza di CDCM quando serve.</div>
+<div class="profilo-condiviso-note">Compila qui soltanto i <b>dati generici del PG</b>: nome, tipo, Empatia, Sapienza Magizoologica, Conoscenze Avanzate e, per gli Adulti, l’eventuale frequenza pregressa di CDCM. Per gli <b>Studenti</b> il voto della singola Creatura viene richiesto soltanto dopo che la Ricerca ha identificato quale Creatura è stata trovata oppure direttamente nella Guida.</div>
 <div class="profile-section-label">Dati del Personaggio</div>
 <div class="riga">
   <div class="campo" style="flex:1 1 100%">
@@ -2704,18 +2724,6 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
       <option value="no">No</option>
     </select>
     <div class="numeric-note">Serve soltanto quando l'Adulto non possiede la Conoscenza Avanzata associata alla fase.</div>
-  </div>
-  <div class="campo" id="campoVotoStudente">
-    <label>Voto nella Conoscenza della Creatura</label>
-    <select id="pgVoto" data-key="pgVoto">
-      <option value="T">T (Troll)</option>
-      <option value="D">D (Deludente)</option>
-      <option value="S">S (Scarso)</option>
-      <option value="A">A (Accettabile)</option>
-      <option value="O">O (Oltre le Aspettative)</option>
-      <option value="E">E (Eccezionale)</option>
-    </select>
-    <div class="mz-effective-line" id="mzVotoEffettivo"></div>
   </div>
   <div class="campo">
     <label>Empatia</label>
@@ -2825,6 +2833,29 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
     </select>
   </div>
 </div>
+<div class="riga">
+  <div class="campo" style="flex:2 1 320px">
+    <label>Creatura che stai gestendo</label>
+    <input type="text" id="specieCreaturaGuida" data-key="specieCreaturaGuida" maxlength="120" placeholder="Es. Ippogrifo">
+    <div class="numeric-note">Se arrivi dalla Ricerca, viene compilata automaticamente. Se la Creatura era già conosciuta o acquistata, inseriscila manualmente.</div>
+  </div>
+  <div class="campo" id="campoVotoStudente">
+    <label>Voto nella singola Creatura</label>
+    <select id="pgVoto" data-key="pgVoto">
+      <option value="">— Seleziona il voto —</option>
+      <option value="T">T (Troll)</option>
+      <option value="D">D (Deludente)</option>
+      <option value="S">S (Scarso)</option>
+      <option value="A">A (Accettabile)</option>
+      <option value="O">O (Oltre le Aspettative)</option>
+      <option value="E">E (Eccezionale)</option>
+    </select>
+    <div class="numeric-note">È il voto relativo proprio alla Creatura indicata qui accanto.</div>
+    <div class="mz-effective-line" id="mzVotoEffettivo"></div>
+  </div>
+</div>
+<div id="mzSpecificVoteHint" class="specific-knowledge-note"></div>
+</div>
 <div class="check-riga">
   <input type="checkbox" id="nataInRiserva" data-key="nataInRiserva">
   <label for="nataInRiserva">La Creatura è nata nella propria Riserva</label>
@@ -2869,10 +2900,6 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
     <div class="campo">
       <label>Nome della Creatura</label>
       <input type="text" id="nomeCreaturaGuida" data-key="nomeCreaturaGuida" maxlength="120">
-    </div>
-    <div class="campo">
-      <label>Specie</label>
-      <input type="text" id="specieCreaturaGuida" data-key="specieCreaturaGuida" maxlength="120">
     </div>
     <div class="campo">
       <label>Sesso</label>
@@ -3469,7 +3496,13 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
           <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie1" data-key="dadoSpecie1" min="1" max="999"></div></div>
           <div class="result-line"><div class="dice-code" id="codiceSpecie1"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie1" data-copy-control="1">Copia</button></div>
           <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie1" data-key="risultatoSpecie1" min="1"><span class="out-tag out-neutral" id="tagSpecie1">in attesa</span></div>
-          <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura1">Creatura specifica trovata</label><input type="text" id="specieCreatura1" data-key="specieCreatura1" maxlength="100" placeholder=""></div></div><div class="spec-sheet-link empty" id="rmSpecieLink1"></div>
+          <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura1">Creatura specifica trovata</label><input type="text" id="specieCreatura1" data-key="specieCreatura1" maxlength="100" placeholder=""></div></div><div class="spec-sheet-link empty" id="rmSpecieLink1"></div><div class="research-guide-bridge" id="rmGuideBridge1" data-v58-species=""><div class="research-guide-bridge-title">Hai trovato <b id="rmGuideSpeciesLabel1">questa Creatura</b>. Vuoi gestirla subito nella Guida alla Magizoologia?</div><div class="riga"><div class="campo"><label>Continuare subito nella Guida?</label><select id="rmInteragisciSubito1" data-key="interagisciSubito1"><option value="">— Scegli —</option><option value="si">Sì</option><option value="no">No, continuo la Ricerca</option></select></div><div class="campo research-guide-vote-wrap" id="rmResearchVoteWrap1"><label id="rmResearchVoteLabel1">Voto nella Creatura</label><select id="rmVotoRicerca1" data-key="votoRicerca1"><option value="">— Seleziona il voto —</option>
+      <option value="T">T (Troll)</option>
+      <option value="D">D (Deludente)</option>
+      <option value="S">S (Scarso)</option>
+      <option value="A">A (Accettabile)</option>
+      <option value="O">O (Oltre le Aspettative)</option>
+      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus1"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide1" style="display:none">Apri questa Creatura nella Guida</button></div>
         </div>
 
         <h3>Sesso e Fase Vitale (1d40)</h3>
@@ -3516,7 +3549,13 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
             <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie2" data-key="dadoSpecie2" min="1" max="999"></div></div>
             <div class="result-line"><div class="dice-code" id="codiceSpecie2"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie2" data-copy-control="1">Copia</button></div>
             <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie2" data-key="risultatoSpecie2" min="1"><span class="out-tag out-neutral" id="tagSpecie2">in attesa</span></div>
-            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura2">Creatura specifica trovata</label><input type="text" id="specieCreatura2" data-key="specieCreatura2" maxlength="100" placeholder=""></div></div><div class="spec-sheet-link empty" id="rmSpecieLink2"></div>
+            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura2">Creatura specifica trovata</label><input type="text" id="specieCreatura2" data-key="specieCreatura2" maxlength="100" placeholder=""></div></div><div class="spec-sheet-link empty" id="rmSpecieLink2"></div><div class="research-guide-bridge" id="rmGuideBridge2" data-v58-species=""><div class="research-guide-bridge-title">Hai trovato <b id="rmGuideSpeciesLabel2">questa Creatura</b>. Vuoi gestirla subito nella Guida alla Magizoologia?</div><div class="riga"><div class="campo"><label>Continuare subito nella Guida?</label><select id="rmInteragisciSubito2" data-key="interagisciSubito2"><option value="">— Scegli —</option><option value="si">Sì</option><option value="no">No, continuo la Ricerca</option></select></div><div class="campo research-guide-vote-wrap" id="rmResearchVoteWrap2"><label id="rmResearchVoteLabel2">Voto nella Creatura</label><select id="rmVotoRicerca2" data-key="votoRicerca2"><option value="">— Seleziona il voto —</option>
+      <option value="T">T (Troll)</option>
+      <option value="D">D (Deludente)</option>
+      <option value="S">S (Scarso)</option>
+      <option value="A">A (Accettabile)</option>
+      <option value="O">O (Oltre le Aspettative)</option>
+      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus2"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide2" style="display:none">Apri questa Creatura nella Guida</button></div>
           </div>
 
           <h3>Numero di esemplari (1d5)</h3>
@@ -3559,7 +3598,13 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
             <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie3" data-key="dadoSpecie3" min="1" max="999"></div></div>
             <div class="result-line"><div class="dice-code" id="codiceSpecie3"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie3" data-copy-control="1">Copia</button></div>
             <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie3" data-key="risultatoSpecie3" min="1"><span class="out-tag out-neutral" id="tagSpecie3">in attesa</span></div>
-            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura3">Creatura specifica trovata</label><input type="text" id="specieCreatura3" data-key="specieCreatura3" maxlength="100" placeholder=""></div></div><div class="spec-sheet-link empty" id="rmSpecieLink3"></div>
+            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura3">Creatura specifica trovata</label><input type="text" id="specieCreatura3" data-key="specieCreatura3" maxlength="100" placeholder=""></div></div><div class="spec-sheet-link empty" id="rmSpecieLink3"></div><div class="research-guide-bridge" id="rmGuideBridge3" data-v58-species=""><div class="research-guide-bridge-title">Hai trovato <b id="rmGuideSpeciesLabel3">questa Creatura</b>. Vuoi gestirla subito nella Guida alla Magizoologia?</div><div class="riga"><div class="campo"><label>Continuare subito nella Guida?</label><select id="rmInteragisciSubito3" data-key="interagisciSubito3"><option value="">— Scegli —</option><option value="si">Sì</option><option value="no">No, continuo la Ricerca</option></select></div><div class="campo research-guide-vote-wrap" id="rmResearchVoteWrap3"><label id="rmResearchVoteLabel3">Voto nella Creatura</label><select id="rmVotoRicerca3" data-key="votoRicerca3"><option value="">— Seleziona il voto —</option>
+      <option value="T">T (Troll)</option>
+      <option value="D">D (Deludente)</option>
+      <option value="S">S (Scarso)</option>
+      <option value="A">A (Accettabile)</option>
+      <option value="O">O (Oltre le Aspettative)</option>
+      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus3"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide3" style="display:none">Apri questa Creatura nella Guida</button></div>
           </div>
 
           <h3>Numero di esemplari (1d10)</h3>
@@ -3971,7 +4016,7 @@ function mzBridgeId(){return 'mz_'+Date.now().toString(36)+'_'+Math.random().toS
 function mzBridgeProfile(){
   var type=(document.getElementById('pgTipo')||{}).value||'studente',vote='',sap=0;
   if(type==='studente'){
-    vote=((document.getElementById('pgVoto')||{}).value||'T');
+    vote=((document.getElementById('pgVoto')||{}).value||'');
   }else{
     try{sap=mzProfiloSapienza();}catch(e){sap=0;}
   }
@@ -7588,6 +7633,7 @@ function mzGuideBonusRows(){var arr=[];document.querySelectorAll('#modoMagizoolo
 function mzGuideClone(v){try{return JSON.parse(JSON.stringify(v));}catch(e){return v;}}
 function mzGuideCollectState(){
   return {
+    specificVoteV58:1,
     fields:mzGuidePlainFields(),
     activePanel:mzGuideActivePanel(),
     bonusRows:mzGuideBonusRows(),
@@ -7614,7 +7660,7 @@ function mzGuideCollectState(){
 }
 function mzGuideSetFields(fields,restoreProfile){fields=fields||{};document.querySelectorAll((restoreProfile?'#modoPersonaggio [data-key],':'')+'#modoMagizoologia [data-key]').forEach(function(f){var k=f.getAttribute('data-key');if(fields[k]===undefined)return;if(f.type==='checkbox'||f.type==='radio')f.checked=!!fields[k];else f.value=fields[k];});}
 function mzGuideRestoreRows(rows,globals){['fiducia','scoperta','cura','domesticazione','allevamento'].forEach(function(ph){var box=mzPhaseBox(ph);if(box)box.innerHTML='';});MZ_SHARED_BONUSES=mzGuideClone((globals&&globals.shared)||{});MZ_SHARED_UID=Number((globals&&globals.sharedUid)||0);MZ_BONUS_UID=0;(rows||[]).forEach(function(d){if(!d.phase)return;var row=mzCreatePhaseBonusRow(d.phase,{preset:d.preset,source:d.source,condition:d.condition,type:d.type,value:d.value,fatica:d.fatica,total:d.total,used:d.used,linkId:d.linkId,localUsed:d.localUsed,sharedUsed:d.linkId&&MZ_SHARED_BONUSES[d.linkId]?MZ_SHARED_BONUSES[d.linkId].used:0,resolverState:d.resolverState,silent:true});if(!row)return;var used=row.querySelector('[data-role="used"]');if(used&&d.used!==undefined)used.value=d.used;var apply=row.querySelector('[data-role="apply"]');if(apply){apply.checked=!!d.apply;apply.disabled=false;}row.dataset.autoApplied=d.autoApplied||'';if(d.linkId)row.dataset.linkId=d.linkId;});Object.keys(MZ_SHARED_BONUSES||{}).forEach(function(id){if(typeof mzSyncSharedRows==='function')mzSyncSharedRows(id);});}
-function mzGuideApplyState(st){if(!st)return;MZ_GUIDE_RESTORING=true;try{var restoreProfile=true;mzGuideSetFields(st.fields,restoreProfile);if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();var g=st.globals||{};mzGuideRestoreRows(st.bonusRows||[],g);MZ_FIDUCIA_HISTORY=mzGuideClone(g.fiduciaHistory||[]);MZ_SCOPERTA_HISTORY=mzGuideClone(g.scopertaHistory||[]);MZ_SCOPERTA_FAILURES=Number(g.scopertaFailures||0);MZ_CURA_HISTORY=mzGuideClone(g.curaHistory||[]);MZ_CURA_FAILURES=Number(g.curaFailures||0);MZ_DOMESTICAZIONE_HISTORY=mzGuideClone(g.domHistory||[]);MZ_SCOPERTA_FALLITA=!!g.scopertaFallita;MZ_CURA_FALLITA=!!g.curaFallita;MZ_CURA_MALUS_ALLEVAMENTO=Number(g.curaMalus||0);MZ_LAST_CURA_BONUS_DOM=Number(g.lastCuraBonus||0);MZ_IMPOSIUM_SUCCESS=!!g.imposiumSuccess;MZ_IMPOSIUM_DOM_MALUS=Number(g.imposiumDom||0);MZ_IMPOSIUM_POST_MALUS=Number(g.imposiumPost||0);MZ_ILLEGAL_SIGNATURES=mzGuideClone(g.illegalSignatures||{cura:null,allevamento:null});curaEbbeUnFallimento=!!g.curaEbbe;if(typeof mzRenderFiduciaHistory==='function')mzRenderFiduciaHistory();if(typeof mzRenderScopertaHistory==='function')mzRenderScopertaHistory();if(typeof mzRenderCuraHistory==='function')mzRenderCuraHistory();if(typeof mzRenderDomesticazioneHistory==='function')mzRenderDomesticazioneHistory();if(typeof mzSyncAllAttemptDisplays==='function')mzSyncAllAttemptDisplays();if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();if(st.activePanel&&document.getElementById('pannello'+st.activePanel))mostraPannello(st.activePanel);}finally{MZ_GUIDE_RESTORING=false;}if(typeof rmEnsureProfileSession==='function'&&RM_FB&&RM_FB.user&&rmProfileName())setTimeout(function(){rmEnsureProfileSession(RM_PROFILE_PENDING_CREATE).catch(function(){});},0);}
+function mzGuideApplyState(st){if(!st)return;if(!st.specificVoteV58&&st.fields){st=mzGuideClone(st);st.fields=st.fields||{};st.fields.pgVoto='';}MZ_GUIDE_RESTORING=true;try{var restoreProfile=true;mzGuideSetFields(st.fields,restoreProfile);if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();var g=st.globals||{};mzGuideRestoreRows(st.bonusRows||[],g);MZ_FIDUCIA_HISTORY=mzGuideClone(g.fiduciaHistory||[]);MZ_SCOPERTA_HISTORY=mzGuideClone(g.scopertaHistory||[]);MZ_SCOPERTA_FAILURES=Number(g.scopertaFailures||0);MZ_CURA_HISTORY=mzGuideClone(g.curaHistory||[]);MZ_CURA_FAILURES=Number(g.curaFailures||0);MZ_DOMESTICAZIONE_HISTORY=mzGuideClone(g.domHistory||[]);MZ_SCOPERTA_FALLITA=!!g.scopertaFallita;MZ_CURA_FALLITA=!!g.curaFallita;MZ_CURA_MALUS_ALLEVAMENTO=Number(g.curaMalus||0);MZ_LAST_CURA_BONUS_DOM=Number(g.lastCuraBonus||0);MZ_IMPOSIUM_SUCCESS=!!g.imposiumSuccess;MZ_IMPOSIUM_DOM_MALUS=Number(g.imposiumDom||0);MZ_IMPOSIUM_POST_MALUS=Number(g.imposiumPost||0);MZ_ILLEGAL_SIGNATURES=mzGuideClone(g.illegalSignatures||{cura:null,allevamento:null});curaEbbeUnFallimento=!!g.curaEbbe;if(typeof mzRenderFiduciaHistory==='function')mzRenderFiduciaHistory();if(typeof mzRenderScopertaHistory==='function')mzRenderScopertaHistory();if(typeof mzRenderCuraHistory==='function')mzRenderCuraHistory();if(typeof mzRenderDomesticazioneHistory==='function')mzRenderDomesticazioneHistory();if(typeof mzSyncAllAttemptDisplays==='function')mzSyncAllAttemptDisplays();if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();if(st.activePanel&&document.getElementById('pannello'+st.activePanel))mostraPannello(st.activePanel);}finally{MZ_GUIDE_RESTORING=false;}if(typeof rmEnsureProfileSession==='function'&&RM_FB&&RM_FB.user&&rmProfileName())setTimeout(function(){rmEnsureProfileSession(RM_PROFILE_PENDING_CREATE).catch(function(){});},0);}
 function mzGuideSaveNow(){var ref=mzGuideDoc();if(!ref||MZ_GUIDE_RESTORING)return Promise.resolve();if(MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}var payload={recordType:'guide',ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-guide-v45',state:mzGuideCollectState()};mzGuideStatus('Guida: salvataggio automatico su Firebase…','saving');var task=MZ_GUIDE_SAVE_CHAIN.catch(function(){}).then(function(){return ref.set(payload,{merge:true});}).then(function(){mzGuideStatus('Guida salvata automaticamente su Firebase ✓','ok');}).catch(function(err){console.error(err);mzGuideStatus('Guida: errore di salvataggio Firebase — '+(err.message||err),'bad');});MZ_GUIDE_SAVE_CHAIN=task;return task;}
 function mzGuideScheduleSave(){
   if(MZ_GUIDE_RESTORING)return;
@@ -7706,5 +7752,78 @@ if(typeof ricalcolaRicerca==='function')ricalcolaRicerca();
   window.addEventListener('hashchange',openToolAnchor);
 })();
 </script>
+
+<script id="magizoologia-specific-vote-v58">
+(function(){
+'use strict';
+var VOTES={T:'T (Troll)',D:'D (Deludente)',S:'S (Scarso)',A:'A (Accettabile)',O:'O (Oltre le Aspettative)',E:'E (Eccezionale)'};
+function E(id){return document.getElementById(id);}
+function student(){return !!(E('pgTipo')&&E('pgTipo').value==='studente');}
+function species(n){var e=E('specieCreatura'+n);return e?e.value.trim():'';}
+function cls(n){try{return typeof rmClasseCorrente==='function'?rmClasseCorrente(n):'';}catch(e){return '';}}
+function fire(el,type){if(!el)return;try{el.dispatchEvent(new Event(type||'change',{bubbles:true}));}catch(e){}}
+function clearGuideResults(){
+  document.querySelectorAll('#modoMagizoologia input[id^="risultato"]').forEach(function(x){if(x.type!=='checkbox'&&x.type!=='radio')x.value='';});
+  if(typeof formulaSignatures!=='undefined')formulaSignatures={};
+  if(typeof MZ_FIDUCIA_HISTORY!=='undefined')MZ_FIDUCIA_HISTORY=[];
+  if(typeof MZ_SCOPERTA_HISTORY!=='undefined')MZ_SCOPERTA_HISTORY=[];
+  if(typeof MZ_CURA_HISTORY!=='undefined')MZ_CURA_HISTORY=[];
+  if(typeof MZ_DOMESTICAZIONE_HISTORY!=='undefined')MZ_DOMESTICAZIONE_HISTORY=[];
+  if(typeof MZ_SCOPERTA_FAILURES!=='undefined')MZ_SCOPERTA_FAILURES=0;
+  if(typeof MZ_CURA_FAILURES!=='undefined')MZ_CURA_FAILURES=0;
+  if(typeof mzRenderFiduciaHistory==='function')mzRenderFiduciaHistory();if(typeof mzRenderScopertaHistory==='function')mzRenderScopertaHistory();if(typeof mzRenderCuraHistory==='function')mzRenderCuraHistory();if(typeof mzRenderDomesticazioneHistory==='function')mzRenderDomesticazioneHistory();
+}
+function renderVoteGate(){
+  var hint=E('mzSpecificVoteHint'),vote=E('pgVoto'),sp=E('specieCreaturaGuida');if(!hint)return;
+  if(!student()){hint.style.display='none';return;}
+  hint.style.display='block';
+  if(vote&&vote.value){hint.className='specific-knowledge-note ok';hint.innerHTML='<b>Voto specifico impostato:</b> '+(VOTES[vote.value]||vote.value)+(sp&&sp.value?' per <b>'+sp.value.replace(/[<>&]/g,'')+'</b>.':'')+' Il tool lo usa nelle fasi previste.';return;}
+  hint.className='specific-knowledge-note warn';hint.innerHTML='<b>Prima di calcolare Fiducia, Cura, Domesticazione o Allevamento:</b> seleziona il voto dello Studente nella singola Creatura'+(sp&&sp.value?' <b>'+sp.value.replace(/[<>&]/g,'')+'</b>':'')+'. Se arrivi dalla Ricerca, il voto scelto lì viene compilato automaticamente.';
+  ['risultatoFiducia','risultatoScoperta','risultatoCura','risultatoDomesticazione','risultatoAllevamento'].forEach(function(id){var x=E(id);if(x){x.value='';x.disabled=true;}});
+  ['copiaFiducia','copiaScoperta','copiaCura','copiaDomesticazione','copiaAllevamento'].forEach(function(id){var x=E(id);if(x)x.disabled=true;});
+  [['formulaFiducia','codiceFiducia'],['formulaScoperta','codiceScoperta'],['formulaCura','codiceCura'],['formulaDomesticazione','codiceDomesticazione'],['formulaAllevamento','codiceAllevamento']].forEach(function(p){var a=E(p[0]),b=E(p[1]);if(a)a.textContent='Seleziona prima il voto nella singola Creatura.';if(b)b.textContent='Il dado verrà generato dopo aver indicato il voto specifico.';});
+}
+var oldCalc=window.ricalcolaMagizoologia;
+window.ricalcolaMagizoologia=function(){
+  if(student()&&E('pgVoto')&&!E('pgVoto').value){
+    if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();
+    if(typeof recomputeRiconoscimento==='function')recomputeRiconoscimento();
+    renderVoteGate();
+    return;
+  }
+  var r=oldCalc?oldCalc.apply(this,arguments):undefined;renderVoteGate();return r;
+};
+function phaseData(n){
+  if(typeof rmNumber!=='function'||typeof rmLookup!=='function'||typeof rmSessoFaseTab==='undefined')return null;
+  var id=n===1?'risultatoFase1':'risultatoFase'+n+'_1',v=rmNumber(id,1,40);if(v===null)return null;var txt=rmLookup(rmSessoFaseTab,v)||'',phase='';
+  if(/Uovo/.test(txt))phase='uovo';else if(/Infante/.test(txt))phase='infante';else if(/Adolescente/.test(txt))phase='adolescente';else if(/Adulta/.test(txt))phase='adulta';else if(/Anziana/.test(txt))phase='anziana';
+  var sex=/Maschio/.test(txt)?'Maschio':(/Femmina/.test(txt)?'Femmina':'');return {phase:phase,sex:sex};
+}
+function transfer(n){
+  var sp=species(n),c=cls(n);if(!sp)return false;var vote=E('rmVotoRicerca'+n),current=E('specieCreaturaGuida');
+  if(current&&current.value.trim()!==sp&&typeof resetGuidaMagizoologia==='function')resetGuidaMagizoologia();
+  var spec=E('specieCreaturaGuida'),nome=E('nomeCreaturaGuida'),cl=E('classificazione'),gv=E('pgVoto'),fase=E('faseVitale'),sesso=E('sessoCreaturaGuida');
+  if(spec)spec.value=sp;if(nome&&!nome.value)nome.value=sp;if(cl&&/^(X|XX|XXX|XXXX|XXXXX)$/.test(c))cl.value=c;
+  var pd=phaseData(n);if(pd){if(fase&&pd.phase)fase.value=pd.phase;if(sesso&&pd.sex)sesso.value=pd.sex;}
+  lastSpec=sp;[spec,nome,cl,fase,sesso].forEach(function(x){if(x)fire(x,'change');});if(student()&&gv&&vote){gv.value=vote.value;fire(gv,'change');}window.ricalcolaMagizoologia();var syncBox=E('rmGuideBridge'+n);if(syncBox)syncBox.setAttribute('data-v58-synced',sp+'|'+(student()&&vote?vote.value:'adult'));return true;
+}
+function updateBridge(n){
+  var box=E('rmGuideBridge'+n),sp=species(n),choice=E('rmInteragisciSubito'+n),vote=E('rmVotoRicerca'+n),wrap=E('rmResearchVoteWrap'+n),status=E('rmGuideBridgeStatus'+n),open=E('rmOpenGuide'+n),label=E('rmGuideSpeciesLabel'+n),vlabel=E('rmResearchVoteLabel'+n);if(!box)return;
+  if(!sp){box.classList.remove('show');return;}box.classList.add('show');if(label)label.textContent=sp;if(vlabel)vlabel.textContent='Voto nella Conoscenza di '+sp;
+  var old=box.getAttribute('data-v58-species')||'';if(old&&old!==sp&&!(typeof RM_RESTORING!=='undefined'&&RM_RESTORING)){if(choice)choice.value='';if(vote)vote.value='';box.removeAttribute('data-v58-synced');}box.setAttribute('data-v58-species',sp);
+  if(!choice||choice.value===''){if(wrap)wrap.classList.remove('show');if(open)open.style.display='none';if(status){status.className='research-guide-bridge-status';status.textContent='Scegli se vuoi passare subito alla Guida oppure continuare la Ricerca.';}return;}
+  if(choice.value==='no'){if(wrap)wrap.classList.remove('show');if(open)open.style.display='none';if(status){status.className='research-guide-bridge-status';status.textContent='Nessun dato della Guida viene modificato: puoi continuare la Ricerca.';}return;}
+  if(student()){if(wrap)wrap.classList.add('show');if(!vote||!vote.value){if(open)open.style.display='none';if(status){status.className='research-guide-bridge-status';status.textContent='Indica il voto dello Studente in '+sp+'; verrà riportato automaticamente nella Guida.';}return;}}else if(wrap)wrap.classList.remove('show');
+  var sig=sp+'|'+(student()&&vote?vote.value:'adult'),synced=box.getAttribute('data-v58-synced')===sig;if(open)open.style.display='inline-flex';if(status){status.className='research-guide-bridge-status'+(synced?' ok':'');status.textContent=synced?('Dati trasferiti nella Guida ✓'+(student()?' Voto compreso.':'')):'Dati pronti: verranno trasferiti automaticamente nella Guida.';}
+}
+var oldResearch=window.ricalcolaRicerca;
+window.ricalcolaRicerca=function(){var r=oldResearch?oldResearch.apply(this,arguments):undefined;for(var n=1;n<=3;n++)updateBridge(n);return r;};
+for(var n=1;n<=3;n++)(function(i){var b=E('rmOpenGuide'+i),choice=E('rmInteragisciSubito'+i),vote=E('rmVotoRicerca'+i);if(choice)choice.addEventListener('change',function(){if(choice.value==='si'&&(!student()||(vote&&vote.value))){transfer(i);}updateBridge(i);});if(vote)vote.addEventListener('change',function(){if(choice&&choice.value==='si'&&vote.value){transfer(i);}updateBridge(i);});if(b)b.addEventListener('click',function(){if(transfer(i)){updateBridge(i);if(typeof mostraModo==='function')mostraModo('Magizoologia');if(typeof mostraPannello==='function')mostraPannello('Riconoscimento');var p=E('modoMagizoologia');if(p&&p.scrollIntoView)p.scrollIntoView({behavior:'smooth',block:'start'});}});})(n);
+var specGuide=E('specieCreaturaGuida'),lastSpec=specGuide?specGuide.value:'';if(specGuide){specGuide.addEventListener('change',function(){var now=specGuide.value.trim();if(now!==lastSpec){lastSpec=now;var v=E('pgVoto');if(student()&&v)v.value='';clearGuideResults();window.ricalcolaMagizoologia();}});}
+var pgVote=E('pgVoto');if(pgVote)pgVote.addEventListener('change',function(){window.ricalcolaMagizoologia();});if(student()&&pgVote&&!E('specieCreaturaGuida').value)pgVote.value='';
+window.ricalcolaMagizoologia();window.ricalcolaRicerca();
+})();
+</script>
+
 </body>
 </html>
