@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
+<!-- v53: apertura Ricerca immediata + aggancio Firebase del PG durante la compilazione -->
 <!-- v52: sessione Firebase agganciata dal profilo PG + allineamento flusso Ricerca con Erbologia -->
 <!-- Revisione standardizzata v3: preservazione storico usi/Fatica + tentativo minimo automatico sugli esiti validi -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -6517,7 +6518,7 @@ var RM_COLLECTION='ricerca_creature_magiche';
 var RM_NARRATOR_UID='TFgqfVrFLjW5SwqRFXmEi8tDhtM2';
 var RM_FB={auth:null,db:null,user:null};
 var RM_CURRENT_ID='',RM_CURRENT_DATA=null,RM_READONLY=false,RM_SAVE_TIMER=null,RM_SAVE_BUSY=false,RM_SAVE_CHAIN=Promise.resolve(),RM_DELETING=false,RM_CREATING=false;
-var RM_PROFILE_SESSION_ID='',RM_PROFILE_SESSION_DATA=null,RM_PROFILE_SESSION_NAME='',RM_PROFILE_SESSION_PROMISE=null,RM_PROFILE_PENDING_CREATE=false;
+var RM_PROFILE_SESSION_ID='',RM_PROFILE_SESSION_DATA=null,RM_PROFILE_SESSION_NAME='',RM_PROFILE_SESSION_PROMISE=null,RM_PROFILE_PENDING_CREATE=false,RM_PROFILE_OPEN_PENDING=false,RM_PROFILE_NAME_TIMER=null;
 
 function rmStatus(id,msg,kind){var n=rmEl(id);if(!n)return;n.textContent=msg||'';n.className='session-status'+(kind?' '+kind:'');}
 function rmFormatTs(ts){if(!ts)return '';try{var d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleString('it-IT');}catch(e){return '';}}
@@ -6538,7 +6539,7 @@ function rmCreateProfileSessionRecord(name){if(RM_CREATING)return RM_PROFILE_SES
 function rmEnsureProfileSession(createIfMissing){var name=rmProfileName();if(!name){rmProfileStatus('Inserisci il nome del PG per collegare la sessione Firebase.','bad');return Promise.reject(new Error('Nome del PG mancante.'));}if(!RM_FB.user||!RM_FB.db){rmProfileStatus('Collegamento a Firebase in corso…','');return Promise.reject(new Error('Firebase non è ancora pronto.'));}if(RM_CURRENT_ID&&rmSessionCanEdit(RM_CURRENT_DATA)&&rmNormName(rmCurrentName())===rmNormName(name)){rmRememberProfileSession(RM_CURRENT_ID,RM_CURRENT_DATA,name);rmProfileStatus('Sessione Firebase pronta ✓','ok');return Promise.resolve({id:RM_CURRENT_ID,data:RM_CURRENT_DATA});}if(RM_PROFILE_SESSION_ID&&rmNormName(RM_PROFILE_SESSION_NAME)===rmNormName(name)){rmProfileStatus('Sessione Firebase pronta ✓','ok');return Promise.resolve({id:RM_PROFILE_SESSION_ID,data:RM_PROFILE_SESSION_DATA});}if(RM_PROFILE_SESSION_PROMISE)return RM_PROFILE_SESSION_PROMISE;rmProfileStatus('Collegamento del PG a Firebase…','');RM_PROFILE_SESSION_PROMISE=rmFindOwnSessionForProfile(name).then(function(found){if(found){RM_PROFILE_PENDING_CREATE=false;rmRememberProfileSession(found.id,found.data,name);rmProfileStatus('Sessione Firebase pronta ✓','ok');return found;}if(!createIfMissing){rmProfileStatus('PG salvato su Firebase · nessuna Ricerca in corso.','ok');return null;}rmProfileStatus('Creo la sessione Firebase del PG…','');return rmCreateProfileSessionRecord(name).then(function(created){RM_PROFILE_PENDING_CREATE=false;rmProfileStatus('Sessione Firebase creata ✓','ok');return created;});}).catch(function(err){console.error(err);rmProfileStatus('Errore Firebase: '+(err.message||err),'bad');throw err;}).finally(function(){RM_PROFILE_SESSION_PROMISE=null;});return RM_PROFILE_SESSION_PROMISE;}
 function rmReleaseCurrentForProfile(name){if(!RM_CURRENT_ID)return Promise.resolve();if(rmNormName(rmCurrentName())===rmNormName(name))return Promise.resolve();var p=(!RM_READONLY&&rmSessionCanEdit(RM_CURRENT_DATA))?rmSaveNow():Promise.resolve(true);return p.then(function(){RM_CURRENT_ID='';RM_CURRENT_DATA=null;RM_READONLY=false;rmWorkspace().style.display='none';rmEl('creature-session-home').style.display='block';if(/^#session=/.test(String(window.location.hash||''))){try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){}}});}
 function rmProfileNameCommitted(createIfMissing){var name=rmProfileName();RM_PROFILE_SESSION_ID='';RM_PROFILE_SESSION_DATA=null;RM_PROFILE_SESSION_NAME='';RM_PROFILE_PENDING_CREATE=!!(createIfMissing!==false);if(!name){RM_PROFILE_PENDING_CREATE=false;rmProfileStatus('Inserisci il nome del PG.','');return Promise.resolve(null);}return rmReleaseCurrentForProfile(name).then(function(){return rmEnsureProfileSession(createIfMissing!==false);}).then(function(found){RM_PROFILE_PENDING_CREATE=false;return found;});}
-function rmEnterResearchFromProfile(){var name=rmProfileName();if(!name){mostraModo('Personaggio');rmProfileStatus('Inserisci prima il nome del PG.','bad');var f=rmEl('pgNomeSessione');if(f)f.focus();return;}MZ_GUIDE_DIRTY_BEFORE_READY=true;if(MZ_GUIDE_READY&&RM_FB.user){MZ_GUIDE_DIRTY_BEFORE_READY=false;mzGuideSaveNow();}rmProfileStatus('Apro la Ricerca del PG…','');rmReleaseCurrentForProfile(name).then(function(){return rmEnsureProfileSession(true);}).then(function(found){if(!found||!found.id)return;try{history.replaceState(null,'',window.location.pathname+window.location.search+'#session='+encodeURIComponent(found.id));}catch(e){}mostraModo('Ricerca');if(RM_CURRENT_ID===found.id&&RM_CURRENT_DATA){rmEl('creature-session-home').style.display='none';rmWorkspace().style.display='block';rmApplyFlow();rmUpdateToolbar();return;}return rmLoadSession(found.id);}).catch(function(err){rmProfileStatus('Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');});}
+function rmEnterResearchFromProfile(){var name=rmProfileName();if(!name){mostraModo('Personaggio');rmProfileStatus('Inserisci prima il nome del PG.','bad');var f=rmEl('pgNomeSessione');if(f)f.focus();return;}/* La scheda Ricerca deve essere cliccabile subito: Firebase può terminare il collegamento dopo. */mostraModo('Ricerca');rmEl('creature-session-home').style.display='block';rmWorkspace().style.display='none';rmStatus('rm-session-home-msg','Apro la Ricerca di '+name+'…','');MZ_GUIDE_DIRTY_BEFORE_READY=true;if(MZ_GUIDE_READY&&RM_FB.user){MZ_GUIDE_DIRTY_BEFORE_READY=false;mzGuideSaveNow();}if(!RM_FB.user||!RM_FB.db){RM_PROFILE_OPEN_PENDING=true;rmProfileStatus('Collegamento del PG a Firebase in corso…','');rmStatus('rm-session-home-msg','Collegamento a Firebase in corso… la Ricerca si aprirà automaticamente.','');return;}RM_PROFILE_OPEN_PENDING=false;rmProfileStatus('Apro la Ricerca del PG…','');rmReleaseCurrentForProfile(name).then(function(){return rmEnsureProfileSession(true);}).then(function(found){if(!found||!found.id)return;try{history.replaceState(null,'',window.location.pathname+window.location.search+'#session='+encodeURIComponent(found.id));}catch(e){}if(RM_CURRENT_ID===found.id&&RM_CURRENT_DATA){rmEl('creature-session-home').style.display='none';rmWorkspace().style.display='block';rmStatus('rm-session-home-msg','','');rmApplyFlow();rmUpdateToolbar();return;}return rmLoadSession(found.id);}).catch(function(err){rmStatus('rm-session-home-msg','Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');rmProfileStatus('Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');});}
 function rmUpdateToolbar(){
   if(!RM_CURRENT_DATA)return;
   var mine=RM_FB.user&&RM_CURRENT_DATA.ownerUid===RM_FB.user.uid,narr=RM_FB.user&&RM_FB.user.uid===RM_NARRATOR_UID,parts=[];
@@ -6770,7 +6771,7 @@ function rmSetupFirebase(){
     RM_FB.auth=firebase.auth();RM_FB.db=firebase.firestore();
     RM_FB.auth.onAuthStateChanged(function(user){
       if(user){
-        RM_FB.user=user;st.textContent=user.uid===RM_NARRATOR_UID?'Firebase connesso · modalità Narratore':'Firebase connesso · sessione anonima attiva';st.className='session-status ok';if(typeof mzGuideFirebaseReady==='function')mzGuideFirebaseReady(user);setTimeout(function(){if(rmProfileName())rmEnsureProfileSession(RM_PROFILE_PENDING_CREATE).catch(function(){});},450);
+        RM_FB.user=user;st.textContent=user.uid===RM_NARRATOR_UID?'Firebase connesso · modalità Narratore':'Firebase connesso · sessione anonima attiva';st.className='session-status ok';if(typeof mzGuideFirebaseReady==='function')mzGuideFirebaseReady(user);setTimeout(function(){if(RM_PROFILE_OPEN_PENDING&&rmProfileName()){rmEnterResearchFromProfile();return;}if(rmProfileName())rmEnsureProfileSession(RM_PROFILE_PENDING_CREATE).catch(function(){});},450);
         var sid=rmSessionIdFromHash();
         if(sid){mostraModo('Ricerca');rmLoadSession(sid);}
         else{
@@ -6903,6 +6904,11 @@ document.addEventListener('input', function(e){
   var profilo=document.getElementById('modoPersonaggio');
   var guida=document.getElementById('modoMagizoologia');
   if((profilo&&profilo.contains(e.target))||(guida&&guida.contains(e.target))){ ricalcolaMagizoologia(); }
+  if(e.target&&e.target.id==='pgNomeSessione'){
+    if(RM_PROFILE_NAME_TIMER)clearTimeout(RM_PROFILE_NAME_TIMER);
+    var typed=rmProfileName();
+    RM_PROFILE_NAME_TIMER=setTimeout(function(){RM_PROFILE_NAME_TIMER=null;if(typed&&rmNormName(typed)===rmNormName(rmProfileName()))rmProfileNameCommitted(true).catch(function(){});},700);
+  }
   if(e.target&&e.target.id==='empatia'){ rmSincronizzaEmpatiaDaProfilo(); }
   if(e.target&&e.target.id==='sapienzaProfilo'){ rmSincronizzaSapienzaDaProfilo(); }
 }, true);
@@ -6910,7 +6916,7 @@ document.addEventListener('change', function(e){
   var profilo=document.getElementById('modoPersonaggio');
   var guida=document.getElementById('modoMagizoologia');
   if((profilo&&profilo.contains(e.target))||(guida&&guida.contains(e.target))){ ricalcolaMagizoologia(); }
-  if(e.target&&e.target.id==='pgNomeSessione'){ rmProfileNameCommitted(true).catch(function(){}); }
+  if(e.target&&e.target.id==='pgNomeSessione'){ if(RM_PROFILE_NAME_TIMER){clearTimeout(RM_PROFILE_NAME_TIMER);RM_PROFILE_NAME_TIMER=null;} rmProfileNameCommitted(true).catch(function(){}); }
   if(e.target&&e.target.id==='empatia'){ rmSincronizzaEmpatiaDaProfilo(); }
   if(e.target&&(e.target.id==='sapienzaProfilo'||e.target.id==='pgTipo')){ rmSincronizzaSapienzaDaProfilo(); }
 }, true);
