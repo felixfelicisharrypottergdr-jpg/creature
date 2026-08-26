@@ -2310,7 +2310,7 @@ body{color:#211008!important;}
 .contenitore a,
 .contenitore a:visited{color:#fff2dc!important;}
 .contenitore a:hover{color:#ffffff!important;}
-.contenitore{overflow:visible!important;padding-bottom:55px!important;}
+.contenitore{overflow:visible!important;padding-bottom:90px!important;}
 </style>
 
 </head>
@@ -7035,33 +7035,71 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
 })();
 
 
-/* ===== ALTEZZA DINAMICA IFRAME — Magizoologia v19 ===== */
+/* ===== ALTEZZA DINAMICA IFRAME — Magizoologia v54 ===== */
 (function(){
-  var scheduled=false,last=0;
-  function measure(){
-    scheduled=false;
-    var box=document.querySelector('.contenitore');
-    var h=0;
-    if(box){
-      var rect=box.getBoundingClientRect();
-      h=Math.ceil(rect.bottom + (window.pageYOffset||0) + 28);
-    }else{
-      h=Math.ceil((document.body ? document.body.getBoundingClientRect().bottom : 0) + (window.pageYOffset||0) + 28);
+  var lastSent=0;
+  var timers=[];
+
+  function contentHeight(){
+    var de=document.documentElement;
+    var b=document.body;
+    var c=document.querySelector('.contenitore');
+    var sc=document.scrollingElement||de||b;
+    var vals=[
+      sc?sc.scrollHeight:0,
+      de?de.scrollHeight:0, de?de.offsetHeight:0,
+      b?b.scrollHeight:0, b?b.offsetHeight:0
+    ];
+    if(c){
+      var r=c.getBoundingClientRect();
+      vals.push(Math.ceil(r.bottom+(window.pageYOffset||0)));
+      vals.push(Math.ceil((c.offsetTop||0)+(c.scrollHeight||0)));
     }
-    if(!Number.isFinite(h)||h<300)return;
-    if(Math.abs(h-last)<2)return;last=h;
+    return Math.ceil(Math.max.apply(Math,vals)+110);
+  }
+
+  function send(force){
+    var h=contentHeight();
+    if(!isFinite(h)||h<300)return;
+    if(!force&&Math.abs(h-lastSent)<2)return;
+    lastSent=h;
     try{window.parent.postMessage({tipo:'altezzaMagizoologia',altezza:h},'*');}catch(e){}
     try{window.parent.postMessage({tipo:'altezzaTool',tool:'magizoologia',altezza:h},'*');}catch(e){}
   }
-  function schedule(){if(scheduled)return;scheduled=true;(window.requestAnimationFrame||function(f){setTimeout(f,30);})(measure);}
-  window.mzNotifyHeight=schedule;
-  window.addEventListener('load',function(){schedule();setTimeout(schedule,120);setTimeout(schedule,600);});
-  window.addEventListener('resize',schedule);
-  if(window.ResizeObserver){try{new ResizeObserver(schedule).observe(document.documentElement);}catch(e){}}
-  if(window.MutationObserver){try{new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,attributes:true});}catch(e){}}
-  document.addEventListener('click',function(){setTimeout(schedule,30);setTimeout(schedule,250);},true);
-  document.addEventListener('input',function(){setTimeout(schedule,30);},true);
-  window.addEventListener('transitionend',schedule,true);
+
+  function schedule(force){
+    timers.forEach(clearTimeout);
+    timers=[];
+    send(!!force);
+    [30,100,220,450,900,1600].forEach(function(ms){
+      timers.push(setTimeout(function(){send(true);},ms));
+    });
+  }
+
+  window.mzNotifyHeight=function(){schedule(true);};
+  window.addEventListener('load',function(){schedule(true);});
+  window.addEventListener('resize',function(){schedule(true);});
+  window.addEventListener('hashchange',function(){schedule(true);});
+  document.addEventListener('click',function(){schedule(false);},true);
+  document.addEventListener('input',function(){schedule(false);},true);
+  document.addEventListener('change',function(){schedule(false);},true);
+  document.addEventListener('toggle',function(e){
+    if(e.target&&e.target.tagName==='DETAILS')schedule(true);
+  },true);
+
+  if(window.ResizeObserver){
+    try{
+      var ro=new ResizeObserver(function(){schedule(false);});
+      var c=document.querySelector('.contenitore');
+      if(c)ro.observe(c);
+      else ro.observe(document.documentElement);
+    }catch(e){}
+  }
+  if(window.MutationObserver){
+    try{new MutationObserver(function(){schedule(false);}).observe(document.body,{subtree:true,childList:true,attributes:true,characterData:true});}catch(e){}
+  }
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){schedule(true);});}
+  schedule(true);
 })();
 </script>
 
