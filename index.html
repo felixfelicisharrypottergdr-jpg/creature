@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
-<!-- v64: selettore/autocompletamento specie + aggiornamento immediato dati deducibili -->
+<!-- v67: Dati facoltativi Elfo evidenziati in azzurro/blu -->
 <!-- v53: apertura Ricerca immediata + aggancio Firebase del PG durante la compilazione -->
 <!-- v52: sessione Firebase agganciata dal profilo PG + allineamento flusso Ricerca con Erbologia -->
 <!-- Revisione standardizzata v3: preservazione storico usi/Fatica + tentativo minimo automatico sugli esiti validi -->
@@ -2817,6 +2817,46 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 .species-class-sync.bad{background:#f3d4cc;border-color:#c16451;color:#6a271e!important;font-weight:700}
 </style>
 
+
+
+<style id="v67-elfo-optional-highlight">
+/* Dati facoltativi per Il Mio Elfo Domestico: blocco azzurro/blu ben distinto */
+#modoMagizoologia .mz-transfer-meta{
+  margin:16px 0 18px!important;
+  border:1px solid #6ea6c8!important;
+  border-left:6px solid #78b9e2!important;
+  border-radius:9px!important;
+  background:#17374d!important;
+  box-shadow:0 4px 12px rgba(0,0,0,.20)!important;
+}
+#modoMagizoologia .mz-transfer-meta>summary{
+  padding:12px 14px!important;
+  background:#215579!important;
+  color:#eef8ff!important;
+  font-weight:800!important;
+}
+#modoMagizoologia .mz-transfer-meta>summary::marker{
+  color:#9ed7ff!important;
+}
+#modoMagizoologia .mz-transfer-meta .nota-regole{
+  background:#dceef8!important;
+  border-color:#8ebbd5!important;
+  color:#18384d!important;
+}
+#modoMagizoologia .mz-transfer-meta .nota-regole b{
+  color:#16364d!important;
+}
+#modoMagizoologia .mz-transfer-meta .campo label{
+  color:#d9f1ff!important;
+}
+#modoMagizoologia .mz-transfer-meta input,
+#modoMagizoologia .mz-transfer-meta select{
+  background:#f4fbff!important;
+  color:#18384d!important;
+  border-color:#73a9c8!important;
+}
+</style>
+
 </head>
 <body>
 <div class="contenitore">
@@ -3138,7 +3178,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </div>
 
 <details class="mz-transfer-meta">
-  <summary>Dati facoltativi per il Riepilogo / Il Mio Elfo Domestico</summary>
+  <summary>Dati facoltativi per Il Mio Elfo Domestico</summary>
   <div class="nota-regole">Questi dati non modificano i dadi: servono soltanto a preparare, alla fine della Guida, una scheda già ordinata come i campi del <b>Recinto/Riserva</b>.</div>
   <div class="riga">
     <div class="campo">
@@ -3746,7 +3786,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
       <option value="S">S (Scarso)</option>
       <option value="A">A (Accettabile)</option>
       <option value="O">O (Oltre le Aspettative)</option>
-      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus1"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide1" style="display:none">Apri questa Creatura nella Guida</button></div>
+      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus1"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide1" style="display:none">Importa nella Guida</button></div>
         </div>
 
         <h3>Sesso e Fase Vitale (1d40)</h3>
@@ -3799,7 +3839,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
       <option value="S">S (Scarso)</option>
       <option value="A">A (Accettabile)</option>
       <option value="O">O (Oltre le Aspettative)</option>
-      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus2"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide2" style="display:none">Apri questa Creatura nella Guida</button></div>
+      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus2"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide2" style="display:none">Importa nella Guida</button></div>
           </div>
 
           <h3>Numero di esemplari (1d5)</h3>
@@ -3848,7 +3888,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
       <option value="S">S (Scarso)</option>
       <option value="A">A (Accettabile)</option>
       <option value="O">O (Oltre le Aspettative)</option>
-      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus3"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide3" style="display:none">Apri questa Creatura nella Guida</button></div>
+      <option value="E">E (Eccezionale)</option></select><div class="numeric-note">Il voto viene riportato automaticamente nella Guida.</div></div></div><div class="research-guide-bridge-status" id="rmGuideBridgeStatus3"></div><button type="button" class="bottone-azione bottone-secondario research-guide-open" id="rmOpenGuide3" style="display:none">Importa nella Guida</button></div>
           </div>
 
           <h3>Numero di esemplari (1d10)</h3>
@@ -8094,20 +8134,70 @@ function transfer(n){
   if(nome&&!nome.value){nome.value=sp;nome.dataset.autoSpeciesName='1';}
   if(cl&&/^(X|XX|XXX|XXXX|XXXXX)$/.test(c))cl.value=c;
   var pd=phaseData(n);if(pd){if(fase&&pd.phase)fase.value=pd.phase;if(sesso&&pd.sex)sesso.value=pd.sex;}
-  lastSpec=sp;[spec,nome,cl,fase,sesso].forEach(function(x){if(x)fire(x,'change');});if(student()&&gv&&vote){gv.value=vote.value;fire(gv,'change');}window.ricalcolaMagizoologia();var syncBox=E('rmGuideBridge'+n);if(syncBox)syncBox.setAttribute('data-v58-synced',sp+'|'+(student()&&vote?vote.value:'adult'));return true;
+  lastSpec=sp;[spec,nome,cl,fase,sesso].forEach(function(x){if(x)fire(x,'change');});if(student()&&gv&&vote){gv.value=vote.value;fire(gv,'change');}window.ricalcolaMagizoologia();var syncBox=E('rmGuideBridge'+n);if(syncBox)syncBox.setAttribute('data-v58-synced',sp+'|'+(student()&&vote&&vote.value?vote.value:'senza-voto'));return true;
 }
 function updateBridge(n){
-  var box=E('rmGuideBridge'+n),sp=species(n),choice=E('rmInteragisciSubito'+n),vote=E('rmVotoRicerca'+n),wrap=E('rmResearchVoteWrap'+n),status=E('rmGuideBridgeStatus'+n),open=E('rmOpenGuide'+n),label=E('rmGuideSpeciesLabel'+n),vlabel=E('rmResearchVoteLabel'+n);if(!box)return;
-  if(!sp){box.classList.remove('show');return;}box.classList.add('show');if(label)label.textContent=sp;if(vlabel)vlabel.textContent='Voto nella Conoscenza di '+sp;
-  var old=box.getAttribute('data-v58-species')||'';if(old&&old!==sp&&!(typeof RM_RESTORING!=='undefined'&&RM_RESTORING)){if(choice)choice.value='';if(vote)vote.value='';box.removeAttribute('data-v58-synced');}box.setAttribute('data-v58-species',sp);
-  if(!choice||choice.value===''){if(wrap)wrap.classList.remove('show');if(open)open.style.display='none';if(status){status.className='research-guide-bridge-status';status.textContent='Scegli se vuoi passare subito alla Guida oppure continuare la Ricerca.';}return;}
-  if(choice.value==='no'){if(wrap)wrap.classList.remove('show');if(open)open.style.display='none';if(status){status.className='research-guide-bridge-status';status.textContent='Nessun dato della Guida viene modificato: puoi continuare la Ricerca.';}return;}
-  if(student()){if(wrap)wrap.classList.add('show');if(!vote||!vote.value){if(open)open.style.display='none';if(status){status.className='research-guide-bridge-status';status.textContent='Indica il voto dello Studente in '+sp+'; verrà riportato automaticamente nella Guida.';}return;}}else if(wrap)wrap.classList.remove('show');
-  var sig=sp+'|'+(student()&&vote?vote.value:'adult'),synced=box.getAttribute('data-v58-synced')===sig;if(open)open.style.display='inline-flex';if(status){status.className='research-guide-bridge-status'+(synced?' ok':'');status.textContent=synced?('Dati trasferiti nella Guida ✓'+(student()?' Voto compreso.':'')):'Dati pronti: verranno trasferiti automaticamente nella Guida.';}
+  var box=E('rmGuideBridge'+n),sp=species(n),choice=E('rmInteragisciSubito'+n),vote=E('rmVotoRicerca'+n),wrap=E('rmResearchVoteWrap'+n),status=E('rmGuideBridgeStatus'+n),open=E('rmOpenGuide'+n),label=E('rmGuideSpeciesLabel'+n),vlabel=E('rmResearchVoteLabel'+n);
+  if(!box)return;
+  if(!sp){box.classList.remove('show');if(open)open.style.display='none';return;}
+  box.classList.add('show');
+  if(label)label.textContent=sp;
+  if(vlabel)vlabel.textContent='Voto nella Conoscenza di '+sp;
+
+  var old=box.getAttribute('data-v58-species')||'';
+  if(old&&old!==sp&&!(typeof RM_RESTORING!=='undefined'&&RM_RESTORING)){
+    if(choice)choice.value='';
+    if(vote)vote.value='';
+    box.removeAttribute('data-v58-synced');
+  }
+  box.setAttribute('data-v58-species',sp);
+
+  if(open){
+    open.style.display='inline-flex';
+    open.textContent='Importa nella Guida';
+    open.title='Importa o reimporta questa Creatura nella Guida in qualsiasi momento.';
+  }
+
+  if(student()){
+    if(choice&&choice.value==='si') {
+      if(wrap)wrap.classList.add('show');
+    } else {
+      if(wrap)wrap.classList.remove('show');
+    }
+  } else if(wrap) wrap.classList.remove('show');
+
+  var sig=sp+'|'+(student()&&vote&&vote.value?vote.value:'senza-voto'),
+      synced=box.getAttribute('data-v58-synced')===sig;
+
+  if(status){
+    status.className='research-guide-bridge-status'+(synced?' ok':'');
+    if(synced){
+      status.textContent='Questa Creatura è stata importata nella Guida ✓ Puoi reimportarla in qualsiasi momento.';
+    }else if(choice&&choice.value==='si'&&student()&&(!vote||!vote.value)){
+      status.textContent='Puoi importare subito la Creatura; il voto specifico dello Studente potrà essere indicato direttamente nella Guida.';
+    }else if(choice&&choice.value==='no'){
+      status.textContent='Continua pure la Ricerca. Se cambi idea, “Importa nella Guida” resterà disponibile anche quando riprenderai questa sessione.';
+    }else{
+      status.textContent='Puoi continuare la Ricerca oppure importare questo ritrovamento nella Guida adesso o più tardi.';
+    }
+  }
 }
 var oldResearch=window.ricalcolaRicerca;
 window.ricalcolaRicerca=function(){var r=oldResearch?oldResearch.apply(this,arguments):undefined;for(var n=1;n<=3;n++)updateBridge(n);return r;};
-for(var n=1;n<=3;n++)(function(i){var b=E('rmOpenGuide'+i),choice=E('rmInteragisciSubito'+i),vote=E('rmVotoRicerca'+i);if(choice)choice.addEventListener('change',function(){if(choice.value==='si'&&(!student()||(vote&&vote.value))){transfer(i);}updateBridge(i);});if(vote)vote.addEventListener('change',function(){if(choice&&choice.value==='si'&&vote.value){transfer(i);}updateBridge(i);});if(b)b.addEventListener('click',function(){if(transfer(i)){updateBridge(i);if(typeof mostraModo==='function')mostraModo('Magizoologia');if(typeof mostraPannello==='function')mostraPannello('Riconoscimento');var p=E('modoMagizoologia');if(p&&p.scrollIntoView)p.scrollIntoView({behavior:'smooth',block:'start'});}});})(n);
+for(var n=1;n<=3;n++)(function(i){
+  var b=E('rmOpenGuide'+i),choice=E('rmInteragisciSubito'+i),vote=E('rmVotoRicerca'+i);
+  if(choice)choice.addEventListener('change',function(){updateBridge(i);});
+  if(vote)vote.addEventListener('change',function(){updateBridge(i);});
+  if(b)b.addEventListener('click',function(){
+    if(transfer(i)){
+      updateBridge(i);
+      if(typeof mostraModo==='function')mostraModo('Magizoologia');
+      if(typeof mostraPannello==='function')mostraPannello('Riconoscimento');
+      var p=E('modoMagizoologia');
+      if(p&&p.scrollIntoView)p.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+})(n);
 var specGuide=E('specieCreaturaGuida'),lastSpec=specGuide?specGuide.value:'';if(specGuide){specGuide.addEventListener('change',function(){var now=specGuide.value.trim();if(now!==lastSpec){lastSpec=now;var v=E('pgVoto');if(student()&&v)v.value='';clearGuideResults();window.ricalcolaMagizoologia();}});}
 var pgVote=E('pgVoto');if(pgVote)pgVote.addEventListener('change',function(){window.ricalcolaMagizoologia();});if(student()&&pgVote&&!E('specieCreaturaGuida').value)pgVote.value='';
 window.ricalcolaMagizoologia();window.ricalcolaRicerca();
