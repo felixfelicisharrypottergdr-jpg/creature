@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
-<!-- Revisione standardizzata v6: validità numerica centrale + malus Scoperta autoconclusiva coerente + invalidazione 1d4 Domesticazione non necessaria -->
+<!-- v52: sessione Firebase agganciata dal profilo PG + allineamento flusso Ricerca con Erbologia -->
 <!-- Revisione standardizzata v3: preservazione storico usi/Fatica + tentativo minimo automatico sugli esiti validi -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <style>
@@ -2284,6 +2284,19 @@ body{color:#211008!important;}
 
 </style>
 
+<style id="profilo-session-firebase-v52">
+.profilo-session-hint{margin-top:5px;color:#56301f;font-size:.78em;line-height:1.35}
+#modoPersonaggio .session-status{margin-top:6px}
+#modoPersonaggio .session-status.ok{color:#315f24;font-weight:700}
+#modoPersonaggio .session-status.bad{color:#8b281d;font-weight:700}
+#nomePgRicerca[readonly]{cursor:default;opacity:.9}
+.session-item-buttons{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.session-list-conclude{padding:8px 12px}
+@media(max-width:640px){
+  .session-item-buttons{width:100%;justify-content:flex-start}
+  .session-item-buttons .session-btn,.session-item-buttons .session-danger-btn{flex:1 1 180px}
+}
+</style>
 
 <style id="mz-advanced-bridge-v46">
 .mz-bridge-status{margin-top:7px;padding:7px 9px;border-radius:5px;background:rgba(255,255,255,.035);color:#ead2c0;font-size:.78em;line-height:1.4}.mz-bridge-status.ok{border-left:3px solid #8fb260;color:#e7f4d8}.mz-bridge-status.warn{border-left:3px solid #d79a55;color:#ffe2bf}.mz-knowledge-tool a[data-mz-bridge-open]{display:inline-flex;align-items:center;gap:6px}
@@ -2316,6 +2329,14 @@ body{color:#211008!important;}
 <div class="scheda">
 <h2>Il tuo Personaggio</h2>
 <div class="profilo-condiviso-note">Compila questo profilo una sola volta: ogni funzione usa automaticamente i dati del Personaggio che le servono. <b>Empatia</b> e <b>Sapienza Magizoologica</b> vengono condivise anche con la Ricerca Creature Magiche. Per i PG Studenti la Sapienza utile viene considerata al massimo al livello I. I <b>PG Studenti che non seguono CDCM</b> utilizzano automaticamente i valori del voto <b>Troll</b>.</div>
+<div class="riga">
+  <div class="campo" style="flex:1 1 100%">
+    <label>Nome del PG</label>
+    <input type="text" id="pgNomeSessione" data-key="pgNomeSessione" maxlength="80" placeholder="Nome del Personaggio">
+    <div class="profilo-session-hint">Collega automaticamente il PG a Firebase e alla sua Ricerca.</div>
+    <div id="rm-profile-session-status" class="session-status"></div>
+  </div>
+</div>
 <div class="riga">
   <div class="campo">
     <label>Tipo di PG</label>
@@ -2965,12 +2986,11 @@ body{color:#211008!important;}
   <div class="session-card">
     <div class="session-card-head"><h2>Ricerche Creature Magiche in corso</h2></div>
     <div class="session-card-body">
-      <p>Crea una sessione per la tua Ricerca Creature Magiche oppure riaprine una già iniziata. Ogni Ricerca viene salvata automaticamente mentre la compili.</p>
+      <p>La Ricerca usa automaticamente il PG compilato in «Il tuo Personaggio» e viene salvata mentre la compili.</p>
       <div class="session-warning"><b>Le sessioni in corso sono personali.</b> Non serve registrarsi o inserire credenziali: il collegamento tecnico è anonimo. Le sessioni possono essere consultate dagli altri giocatori, ma soltanto chi le ha create e il Narratore possono modificarle o eliminarle.</div>
       <div id="rm-firebase-auth-status" class="session-status">Connessione a Firebase…</div>
       <div class="session-new-row">
-        <input id="rm-new-session-pg" type="text" maxlength="80" placeholder="Nome del PG principale">
-        <button class="session-btn" id="rm-btn-new-session" type="button" data-session-control="1">+ Nuova Ricerca</button>
+        <button class="session-btn" id="rm-btn-new-session" type="button" data-session-control="1">+ Nuova Ricerca per questo PG</button>
         <button class="session-btn ghost" id="rm-btn-refresh-sessions" type="button" data-session-control="1">Aggiorna elenco</button>
       </div>
       <div id="rm-session-home-msg" class="session-status"></div>
@@ -3032,7 +3052,7 @@ body{color:#211008!important;}
         <div id="rmNuotoLagoDettagli" style="display:none"><div class="result-line"><div class="dice-code" id="codiceScrofungulus"></div><button type="button" class="copy-btn" id="copiaScrofungulus">Copia</button></div><div class="result-line"><span>Risultato 1d20:</span><input type="number" id="risultatoScrofungulus" data-key="risultatoScrofungulus" min="1" max="20"><span class="out-tag out-neutral" id="tagScrofungulus">in attesa</span></div></div>
       </div>
       <div class="riga">
-        <div class="campo"><label>PG che lancia i dadi</label><input type="text" id="nomePgRicerca" data-key="nomePgRicerca" maxlength="80"></div>
+        <div class="campo"><label>PG che lancia i dadi</label><input type="text" id="nomePgRicerca" data-key="nomePgRicerca" maxlength="80" readonly aria-readonly="true"><div class="profilo-session-hint">Preso automaticamente da «Il tuo Personaggio».</div></div>
       </div>
       <input type="hidden" id="sapienza" data-key="sapienza" value="0">
       <div class="profilo-riferimento"><strong>Dati del Personaggio usati dalla Ricerca:</strong> <span>Empatia <b class="profilo-valore" id="rmEmpatiaCondivisa">10</b></span> <span>· Sapienza Magizoologica <b class="profilo-valore" id="rmSapienzaCondivisa">0</b></span> <span>· si modificano nella sezione «Il tuo Personaggio».</span></div>
@@ -6497,6 +6517,7 @@ var RM_COLLECTION='ricerca_creature_magiche';
 var RM_NARRATOR_UID='TFgqfVrFLjW5SwqRFXmEi8tDhtM2';
 var RM_FB={auth:null,db:null,user:null};
 var RM_CURRENT_ID='',RM_CURRENT_DATA=null,RM_READONLY=false,RM_SAVE_TIMER=null,RM_SAVE_BUSY=false,RM_SAVE_CHAIN=Promise.resolve(),RM_DELETING=false,RM_CREATING=false;
+var RM_PROFILE_SESSION_ID='',RM_PROFILE_SESSION_DATA=null,RM_PROFILE_SESSION_NAME='',RM_PROFILE_SESSION_PROMISE=null,RM_PROFILE_PENDING_CREATE=false;
 
 function rmStatus(id,msg,kind){var n=rmEl(id);if(!n)return;n.textContent=msg||'';n.className='session-status'+(kind?' '+kind:'');}
 function rmFormatTs(ts){if(!ts)return '';try{var d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleString('it-IT');}catch(e){return '';}}
@@ -6505,6 +6526,19 @@ function rmSessionIdFromHash(){var h=String(window.location.hash||'');var m=h.ma
 function rmNavigateSession(id){window.location.hash='session='+encodeURIComponent(id);window.location.reload();}
 function rmNavigateDashboard(){window.location.hash='ricerca';window.location.reload();}
 function rmCurrentName(){var n=rmEl('nomePgRicerca'),v=n?n.value.trim():'';return v||(RM_CURRENT_DATA&&(RM_CURRENT_DATA.pgName||RM_CURRENT_DATA.initialPgName))||'PG';}
+function rmProfileName(){var e=rmEl('pgNomeSessione');return e?e.value.trim():'';}
+function rmNormName(v){return String(v||'').trim().replace(/\s+/g,' ').toLocaleLowerCase('it-IT');}
+function rmProfileStatus(txt,kind){rmStatus('rm-profile-session-status',txt,kind);}
+function rmSessionTime(data){var t=data&&data.updatedAt;if(t&&typeof t.toMillis==='function')return t.toMillis();if(t&&typeof t.seconds==='number')return t.seconds*1000;if(t instanceof Date)return t.getTime();return 0;}
+function rmNewSessionState(name){var ep=rmProfiloEmpatia();if(ep===null)throw new Error('Inserisci un valore valido di Empatia.');return {nomePgRicerca:name,empatiaRicerca:String(ep),sapienza:String(rmProfiloSapienza()),tipoRicerca:'attiva',valigiaMagica:'no',zonaRicerca:'',bonusRicercaJson:'[]',summaryVisited:false,outcomeVisited:false,flowPage:'config'};}
+function rmNewSessionData(name){return {ownerUid:RM_FB.user.uid,initialPgName:name,pgName:name,tipoRicerca:'attiva',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'standard-ricerca-v2-profile',state:rmNewSessionState(name)};}
+function rmRememberProfileSession(id,data,name){RM_PROFILE_SESSION_ID=id||'';RM_PROFILE_SESSION_DATA=data||null;RM_PROFILE_SESSION_NAME=name||((data&&(data.pgName||data.initialPgName))||'');}
+function rmFindOwnSessionForProfile(name){if(!RM_FB.db||!RM_FB.user)return Promise.resolve(null);var wanted=rmNormName(name);return RM_FB.db.collection(RM_COLLECTION).get().then(function(snap){var best=null;snap.forEach(function(doc){var d=doc.data();if(!d||d.recordType==='guide'||d.ownerUid!==RM_FB.user.uid)return;if(rmNormName(d.pgName||d.initialPgName)!==wanted)return;if(!best||rmSessionTime(d)>rmSessionTime(best.data))best={id:doc.id,data:d};});return best;});}
+function rmCreateProfileSessionRecord(name){if(RM_CREATING)return RM_PROFILE_SESSION_PROMISE||Promise.reject(new Error('Creazione già in corso.'));RM_CREATING=true;var data;try{data=rmNewSessionData(name);}catch(err){RM_CREATING=false;return Promise.reject(err);}return RM_FB.db.collection(RM_COLLECTION).add(data).then(function(ref){return ref.get().then(function(doc){if(!doc.exists)throw new Error('La nuova Ricerca non è stata riletta correttamente.');var dd=doc.data();rmRememberProfileSession(doc.id,dd,name);RM_CREATING=false;rmLoadSessions();return {id:doc.id,data:dd,created:true};});}).catch(function(err){RM_CREATING=false;throw err;});}
+function rmEnsureProfileSession(createIfMissing){var name=rmProfileName();if(!name){rmProfileStatus('Inserisci il nome del PG per collegare la sessione Firebase.','bad');return Promise.reject(new Error('Nome del PG mancante.'));}if(!RM_FB.user||!RM_FB.db){rmProfileStatus('Collegamento a Firebase in corso…','');return Promise.reject(new Error('Firebase non è ancora pronto.'));}if(RM_CURRENT_ID&&rmSessionCanEdit(RM_CURRENT_DATA)&&rmNormName(rmCurrentName())===rmNormName(name)){rmRememberProfileSession(RM_CURRENT_ID,RM_CURRENT_DATA,name);rmProfileStatus('Sessione Firebase pronta ✓','ok');return Promise.resolve({id:RM_CURRENT_ID,data:RM_CURRENT_DATA});}if(RM_PROFILE_SESSION_ID&&rmNormName(RM_PROFILE_SESSION_NAME)===rmNormName(name)){rmProfileStatus('Sessione Firebase pronta ✓','ok');return Promise.resolve({id:RM_PROFILE_SESSION_ID,data:RM_PROFILE_SESSION_DATA});}if(RM_PROFILE_SESSION_PROMISE)return RM_PROFILE_SESSION_PROMISE;rmProfileStatus('Collegamento del PG a Firebase…','');RM_PROFILE_SESSION_PROMISE=rmFindOwnSessionForProfile(name).then(function(found){if(found){RM_PROFILE_PENDING_CREATE=false;rmRememberProfileSession(found.id,found.data,name);rmProfileStatus('Sessione Firebase pronta ✓','ok');return found;}if(!createIfMissing){rmProfileStatus('PG salvato su Firebase · nessuna Ricerca in corso.','ok');return null;}rmProfileStatus('Creo la sessione Firebase del PG…','');return rmCreateProfileSessionRecord(name).then(function(created){RM_PROFILE_PENDING_CREATE=false;rmProfileStatus('Sessione Firebase creata ✓','ok');return created;});}).catch(function(err){console.error(err);rmProfileStatus('Errore Firebase: '+(err.message||err),'bad');throw err;}).finally(function(){RM_PROFILE_SESSION_PROMISE=null;});return RM_PROFILE_SESSION_PROMISE;}
+function rmReleaseCurrentForProfile(name){if(!RM_CURRENT_ID)return Promise.resolve();if(rmNormName(rmCurrentName())===rmNormName(name))return Promise.resolve();var p=(!RM_READONLY&&rmSessionCanEdit(RM_CURRENT_DATA))?rmSaveNow():Promise.resolve(true);return p.then(function(){RM_CURRENT_ID='';RM_CURRENT_DATA=null;RM_READONLY=false;rmWorkspace().style.display='none';rmEl('creature-session-home').style.display='block';if(/^#session=/.test(String(window.location.hash||''))){try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){}}});}
+function rmProfileNameCommitted(createIfMissing){var name=rmProfileName();RM_PROFILE_SESSION_ID='';RM_PROFILE_SESSION_DATA=null;RM_PROFILE_SESSION_NAME='';RM_PROFILE_PENDING_CREATE=!!(createIfMissing!==false);if(!name){RM_PROFILE_PENDING_CREATE=false;rmProfileStatus('Inserisci il nome del PG.','');return Promise.resolve(null);}return rmReleaseCurrentForProfile(name).then(function(){return rmEnsureProfileSession(createIfMissing!==false);}).then(function(found){RM_PROFILE_PENDING_CREATE=false;return found;});}
+function rmEnterResearchFromProfile(){var name=rmProfileName();if(!name){mostraModo('Personaggio');rmProfileStatus('Inserisci prima il nome del PG.','bad');var f=rmEl('pgNomeSessione');if(f)f.focus();return;}MZ_GUIDE_DIRTY_BEFORE_READY=true;if(MZ_GUIDE_READY&&RM_FB.user){MZ_GUIDE_DIRTY_BEFORE_READY=false;mzGuideSaveNow();}rmProfileStatus('Apro la Ricerca del PG…','');rmReleaseCurrentForProfile(name).then(function(){return rmEnsureProfileSession(true);}).then(function(found){if(!found||!found.id)return;try{history.replaceState(null,'',window.location.pathname+window.location.search+'#session='+encodeURIComponent(found.id));}catch(e){}mostraModo('Ricerca');if(RM_CURRENT_ID===found.id&&RM_CURRENT_DATA){rmEl('creature-session-home').style.display='none';rmWorkspace().style.display='block';rmApplyFlow();rmUpdateToolbar();return;}return rmLoadSession(found.id);}).catch(function(err){rmProfileStatus('Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');});}
 function rmUpdateToolbar(){
   if(!RM_CURRENT_DATA)return;
   var mine=RM_FB.user&&RM_CURRENT_DATA.ownerUid===RM_FB.user.uid,narr=RM_FB.user&&RM_FB.user.uid===RM_NARRATOR_UID,parts=[];
@@ -6573,7 +6607,9 @@ function rmOpenSession(id,data){
   RM_CURRENT_ID=id;RM_CURRENT_DATA=data;RM_READONLY=!rmSessionCanEdit(data);
   rmEl('creature-session-home').style.display='none';rmWorkspace().style.display='block';
   var state=data.state||{};if(state.nomePgRicerca===undefined)state.nomePgRicerca=data.pgName||data.initialPgName||'';
-  rmApplyState(state);rmSetReadonly(RM_READONLY);rmCaricaEmpatiaSessioneNelProfilo();rmCaricaSapienzaSessioneNelProfilo();rmAggiornaEmpatiaCondivisa();rmAggiornaSapienzaCondivisa();rmUpdateToolbar();
+  rmApplyState(state);rmSetReadonly(RM_READONLY);rmCaricaEmpatiaSessioneNelProfilo();rmCaricaSapienzaSessioneNelProfilo();
+  if(!RM_READONLY&&rmNormName(data.pgName||data.initialPgName)===rmNormName(rmProfileName())){rmRememberProfileSession(id,data,rmProfileName());rmSincronizzaEmpatiaDaProfilo();rmSincronizzaSapienzaDaProfilo();rmProfileStatus('Sessione Firebase pronta ✓','ok');}else{rmAggiornaEmpatiaCondivisa();rmAggiornaSapienzaCondivisa();}
+  rmUpdateToolbar();
   rmStatus('rm-save-status',RM_READONLY?'Modalità sola lettura.':'Ricerca caricata · autosalvataggio attivo',RM_READONLY?'':'ok');
   rmResumeFlow();
 }
@@ -6601,30 +6637,36 @@ function rmLoadSessions(){
       title.className='session-title';title.textContent=(d.pgName||d.initialPgName||'PG')+' — '+(d.tipoRicerca==='passiva'?'Ricerca Passiva':'Ricerca Attiva');left.appendChild(title);
       var meta=document.createElement('div');meta.className='session-meta';var dt=rmFormatTs(d.updatedAt);meta.textContent=dt?'Aggiornata '+dt:'';left.appendChild(meta);
       var own=document.createElement('span');own.className='session-owner'+(mine?' mine':'');own.textContent=mine?'Tua Ricerca':(narr?'Gestibile dal Narratore':'Altro giocatore');left.appendChild(own);
-      var b=document.createElement('button');b.type='button';b.className='session-btn'+((mine||narr)?'':' ghost');b.textContent=(mine||narr)?'Riprendi':'Visualizza';b.addEventListener(evtClick,function(){rmNavigateSession(r.id);});
-      row.appendChild(left);row.appendChild(b);box.appendChild(row);host.appendChild(box);
+      var actions=document.createElement('div');actions.className='session-item-buttons';
+      var b=document.createElement('button');b.type='button';b.className='session-btn'+((mine||narr)?'':' ghost');b.textContent=(mine||narr)?'Riprendi':'Visualizza';b.addEventListener(evtClick,function(){rmNavigateSession(r.id);});actions.appendChild(b);
+      if(mine||narr){var end=document.createElement('button');end.type='button';end.className='session-danger-btn session-list-conclude';end.textContent='Concludi Ricerca';end.addEventListener(evtClick,function(){rmConcludeFromList(r.id,d,end);});actions.appendChild(end);}
+      row.appendChild(left);row.appendChild(actions);box.appendChild(row);host.appendChild(box);
     });
   }).catch(function(err){console.error(err);host.innerHTML='<div class="session-status bad">Non riesco a leggere le Ricerche in corso: '+rmEsc(err.message||err)+'</div>';});
 }
+function rmConcludeFromList(id,data,btn){
+  if(!id||!data||!rmSessionCanEdit(data)||!RM_FB.db||!RM_FB.user)return;
+  var name=(data.pgName||data.initialPgName||'PG');
+  var ok=window.confirm('Concludere ed eliminare definitivamente la Ricerca di '+name+'? Questa operazione non può essere annullata.');
+  if(!ok)return;
+  if(btn)btn.disabled=true;
+  rmStatus('rm-session-home-msg','Conclusione della Ricerca di '+name+'…','');
+  RM_FB.db.collection(RM_COLLECTION).doc(id).delete().then(function(){
+    if(RM_PROFILE_SESSION_ID===id)rmRememberProfileSession('','','');
+    rmStatus('rm-session-home-msg','Ricerca di '+name+' conclusa ed eliminata.','ok');
+    rmLoadSessions();
+  }).catch(function(err){console.error(err);if(btn)btn.disabled=false;rmStatus('rm-session-home-msg','Non riesco a concludere la Ricerca: '+(err.message||err),'bad');});
+}
+
 function rmCreateSession(){
   if(RM_CREATING)return;
-  var inp=rmEl('rm-new-session-pg'),btn=rmEl('rm-btn-new-session'),name=inp?inp.value.trim():'';
-  if(!name){rmStatus('rm-session-home-msg','Inserisci prima il nome del PG principale.','bad');return;}
-  if(!RM_FB.user){rmStatus('rm-session-home-msg','Firebase non è ancora pronto. Riprova tra un momento.','bad');return;}
-  RM_CREATING=true;
-  if(btn)btn.disabled=true;
-  var ep=rmProfiloEmpatia();if(ep===null){rmStatus('rm-session-home-msg','Inserisci un valore valido di Empatia nella sezione «Il tuo Personaggio».','bad');RM_CREATING=false;if(btn)btn.disabled=false;return;}
-  var state={nomePgRicerca:name,empatiaRicerca:String(ep),sapienza:String(rmProfiloSapienza()),tipoRicerca:'attiva',valigiaMagica:'no',zonaRicerca:'',bonusRicercaJson:'[]',summaryVisited:false,outcomeVisited:false,flowPage:'config'};
-  var data={ownerUid:RM_FB.user.uid,initialPgName:name,pgName:name,tipoRicerca:'attiva',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'standard-ricerca-v1',state:state};
-  rmStatus('rm-session-home-msg','Creazione della Ricerca…','');
-  RM_FB.db.collection(RM_COLLECTION).add(data).then(function(ref){
-    rmNavigateSession(ref.id);
-  }).catch(function(err){
-    console.error(err);
-    RM_CREATING=false;
-    if(btn)btn.disabled=false;
-    rmStatus('rm-session-home-msg','Impossibile creare la Ricerca: '+err.message,'bad');
-  });
+  var btn=rmEl('rm-btn-new-session'),name=rmProfileName();
+  if(!name){rmStatus('rm-session-home-msg','Compila prima il Nome del PG nella sezione «Il tuo Personaggio».','bad');return;}
+  if(!RM_FB.user){rmStatus('rm-session-home-msg','Firebase non è ancora pronto.','bad');return;}
+  RM_CREATING=true;if(btn)btn.disabled=true;var data;
+  try{data=rmNewSessionData(name);}catch(err){RM_CREATING=false;if(btn)btn.disabled=false;rmStatus('rm-session-home-msg',err.message||String(err),'bad');return;}
+  rmStatus('rm-session-home-msg','Creazione della nuova Ricerca…','');
+  RM_FB.db.collection(RM_COLLECTION).add(data).then(function(ref){return ref.get().then(function(doc){if(!doc.exists)throw new Error('La nuova Ricerca non è stata riletta correttamente.');RM_CREATING=false;if(btn)btn.disabled=false;rmRememberProfileSession(doc.id,doc.data(),name);try{history.replaceState(null,'',window.location.pathname+window.location.search+'#session='+encodeURIComponent(ref.id));}catch(e){}rmOpenSession(doc.id,doc.data());});}).catch(function(err){console.error(err);RM_CREATING=false;if(btn)btn.disabled=false;rmStatus('rm-session-home-msg','Impossibile creare la Ricerca: '+err.message,'bad');});
 }
 function rmPositionDelete(ev){
   var modal=rmEl('rm-delete-session-modal'),box=modal?modal.querySelector('.session-modal-box'):null;if(!box)return;
@@ -6665,6 +6707,7 @@ function rmDelete(){
   RM_SAVE_CHAIN.catch(function(){}).then(function(){
     return RM_FB.db.collection(RM_COLLECTION).doc(sessionId).delete();
   }).then(function(){
+    if(RM_PROFILE_SESSION_ID===sessionId)rmRememberProfileSession('','','');
     RM_CURRENT_ID='';
     RM_CURRENT_DATA=null;
     RM_DELETING=false;
@@ -6705,7 +6748,6 @@ function rmSetupSearchBonusUI(){
 
 function rmSetupControls(){
   rmEl('rm-btn-new-session').addEventListener(evtClick,rmCreateSession);
-  rmEl('rm-new-session-pg').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();rmCreateSession();}});
   rmEl('rm-btn-refresh-sessions').addEventListener(evtClick,rmLoadSessions);
   rmEl('rm-btn-back-sessions').addEventListener(evtClick,rmBack);
   rmEl('rm-btn-delete-session').addEventListener(evtClick,rmOpenDelete);
@@ -6728,7 +6770,7 @@ function rmSetupFirebase(){
     RM_FB.auth=firebase.auth();RM_FB.db=firebase.firestore();
     RM_FB.auth.onAuthStateChanged(function(user){
       if(user){
-        RM_FB.user=user;st.textContent=user.uid===RM_NARRATOR_UID?'Firebase connesso · modalità Narratore':'Firebase connesso · sessione anonima attiva';st.className='session-status ok';if(typeof mzGuideFirebaseReady==='function')mzGuideFirebaseReady(user);
+        RM_FB.user=user;st.textContent=user.uid===RM_NARRATOR_UID?'Firebase connesso · modalità Narratore':'Firebase connesso · sessione anonima attiva';st.className='session-status ok';if(typeof mzGuideFirebaseReady==='function')mzGuideFirebaseReady(user);setTimeout(function(){if(rmProfileName())rmEnsureProfileSession(RM_PROFILE_PENDING_CREATE).catch(function(){});},450);
         var sid=rmSessionIdFromHash();
         if(sid){mostraModo('Ricerca');rmLoadSession(sid);}
         else{
@@ -6854,17 +6896,7 @@ function mostraModo(nome){
 
 document.getElementById('modoPersonaggioBtn').addEventListener(evtClick, function(){ mostraModo('Personaggio'); });
 document.getElementById('modoMagizoologiaBtn').addEventListener(evtClick, function(){ mostraModo('Magizoologia'); });
-document.getElementById('modoRicercaBtn').addEventListener(evtClick, function(){
-  MZ_GUIDE_DIRTY_BEFORE_READY=true;
-  if(MZ_GUIDE_READY&&RM_FB.user){
-    MZ_GUIDE_DIRTY_BEFORE_READY=false;
-    mzGuideSaveNow();
-  }
-  if(!RM_CURRENT_ID && String(window.location.hash || '') !== '#ricerca'){
-    try{ history.replaceState(null, '', window.location.pathname + window.location.search + '#ricerca'); }catch(e){}
-  }
-  mostraModo('Ricerca');
-});
+document.getElementById('modoRicercaBtn').addEventListener(evtClick, rmEnterResearchFromProfile);
 
 /* ---------- AVVIO ---------- */
 document.addEventListener('input', function(e){
@@ -6878,6 +6910,7 @@ document.addEventListener('change', function(e){
   var profilo=document.getElementById('modoPersonaggio');
   var guida=document.getElementById('modoMagizoologia');
   if((profilo&&profilo.contains(e.target))||(guida&&guida.contains(e.target))){ ricalcolaMagizoologia(); }
+  if(e.target&&e.target.id==='pgNomeSessione'){ rmProfileNameCommitted(true).catch(function(){}); }
   if(e.target&&e.target.id==='empatia'){ rmSincronizzaEmpatiaDaProfilo(); }
   if(e.target&&(e.target.id==='sapienzaProfilo'||e.target.id==='pgTipo')){ rmSincronizzaSapienzaDaProfilo(); }
 }, true);
@@ -7147,7 +7180,7 @@ function mzGuideCollectState(){
 }
 function mzGuideSetFields(fields,restoreProfile){fields=fields||{};document.querySelectorAll((restoreProfile?'#modoPersonaggio [data-key],':'')+'#modoMagizoologia [data-key]').forEach(function(f){var k=f.getAttribute('data-key');if(fields[k]===undefined)return;if(f.type==='checkbox'||f.type==='radio')f.checked=!!fields[k];else f.value=fields[k];});}
 function mzGuideRestoreRows(rows,globals){['fiducia','scoperta','cura','domesticazione','allevamento'].forEach(function(ph){var box=mzPhaseBox(ph);if(box)box.innerHTML='';});MZ_SHARED_BONUSES=mzGuideClone((globals&&globals.shared)||{});MZ_SHARED_UID=Number((globals&&globals.sharedUid)||0);MZ_BONUS_UID=0;(rows||[]).forEach(function(d){if(!d.phase)return;var row=mzCreatePhaseBonusRow(d.phase,{preset:d.preset,source:d.source,condition:d.condition,type:d.type,value:d.value,fatica:d.fatica,total:d.total,used:d.used,linkId:d.linkId,localUsed:d.localUsed,sharedUsed:d.linkId&&MZ_SHARED_BONUSES[d.linkId]?MZ_SHARED_BONUSES[d.linkId].used:0,resolverState:d.resolverState,silent:true});if(!row)return;var used=row.querySelector('[data-role="used"]');if(used&&d.used!==undefined)used.value=d.used;var apply=row.querySelector('[data-role="apply"]');if(apply){apply.checked=!!d.apply;apply.disabled=false;}row.dataset.autoApplied=d.autoApplied||'';if(d.linkId)row.dataset.linkId=d.linkId;});Object.keys(MZ_SHARED_BONUSES||{}).forEach(function(id){if(typeof mzSyncSharedRows==='function')mzSyncSharedRows(id);});}
-function mzGuideApplyState(st){if(!st)return;MZ_GUIDE_RESTORING=true;try{var restoreProfile=true;mzGuideSetFields(st.fields,restoreProfile);if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();var g=st.globals||{};mzGuideRestoreRows(st.bonusRows||[],g);MZ_FIDUCIA_HISTORY=mzGuideClone(g.fiduciaHistory||[]);MZ_SCOPERTA_HISTORY=mzGuideClone(g.scopertaHistory||[]);MZ_SCOPERTA_FAILURES=Number(g.scopertaFailures||0);MZ_CURA_HISTORY=mzGuideClone(g.curaHistory||[]);MZ_CURA_FAILURES=Number(g.curaFailures||0);MZ_DOMESTICAZIONE_HISTORY=mzGuideClone(g.domHistory||[]);MZ_SCOPERTA_FALLITA=!!g.scopertaFallita;MZ_CURA_FALLITA=!!g.curaFallita;MZ_CURA_MALUS_ALLEVAMENTO=Number(g.curaMalus||0);MZ_LAST_CURA_BONUS_DOM=Number(g.lastCuraBonus||0);MZ_IMPOSIUM_SUCCESS=!!g.imposiumSuccess;MZ_IMPOSIUM_DOM_MALUS=Number(g.imposiumDom||0);MZ_IMPOSIUM_POST_MALUS=Number(g.imposiumPost||0);MZ_ILLEGAL_SIGNATURES=mzGuideClone(g.illegalSignatures||{cura:null,allevamento:null});curaEbbeUnFallimento=!!g.curaEbbe;if(typeof mzRenderFiduciaHistory==='function')mzRenderFiduciaHistory();if(typeof mzRenderScopertaHistory==='function')mzRenderScopertaHistory();if(typeof mzRenderCuraHistory==='function')mzRenderCuraHistory();if(typeof mzRenderDomesticazioneHistory==='function')mzRenderDomesticazioneHistory();if(typeof mzSyncAllAttemptDisplays==='function')mzSyncAllAttemptDisplays();if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();if(st.activePanel&&document.getElementById('pannello'+st.activePanel))mostraPannello(st.activePanel);}finally{MZ_GUIDE_RESTORING=false;}}
+function mzGuideApplyState(st){if(!st)return;MZ_GUIDE_RESTORING=true;try{var restoreProfile=true;mzGuideSetFields(st.fields,restoreProfile);if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();var g=st.globals||{};mzGuideRestoreRows(st.bonusRows||[],g);MZ_FIDUCIA_HISTORY=mzGuideClone(g.fiduciaHistory||[]);MZ_SCOPERTA_HISTORY=mzGuideClone(g.scopertaHistory||[]);MZ_SCOPERTA_FAILURES=Number(g.scopertaFailures||0);MZ_CURA_HISTORY=mzGuideClone(g.curaHistory||[]);MZ_CURA_FAILURES=Number(g.curaFailures||0);MZ_DOMESTICAZIONE_HISTORY=mzGuideClone(g.domHistory||[]);MZ_SCOPERTA_FALLITA=!!g.scopertaFallita;MZ_CURA_FALLITA=!!g.curaFallita;MZ_CURA_MALUS_ALLEVAMENTO=Number(g.curaMalus||0);MZ_LAST_CURA_BONUS_DOM=Number(g.lastCuraBonus||0);MZ_IMPOSIUM_SUCCESS=!!g.imposiumSuccess;MZ_IMPOSIUM_DOM_MALUS=Number(g.imposiumDom||0);MZ_IMPOSIUM_POST_MALUS=Number(g.imposiumPost||0);MZ_ILLEGAL_SIGNATURES=mzGuideClone(g.illegalSignatures||{cura:null,allevamento:null});curaEbbeUnFallimento=!!g.curaEbbe;if(typeof mzRenderFiduciaHistory==='function')mzRenderFiduciaHistory();if(typeof mzRenderScopertaHistory==='function')mzRenderScopertaHistory();if(typeof mzRenderCuraHistory==='function')mzRenderCuraHistory();if(typeof mzRenderDomesticazioneHistory==='function')mzRenderDomesticazioneHistory();if(typeof mzSyncAllAttemptDisplays==='function')mzSyncAllAttemptDisplays();if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();if(st.activePanel&&document.getElementById('pannello'+st.activePanel))mostraPannello(st.activePanel);}finally{MZ_GUIDE_RESTORING=false;}if(typeof rmEnsureProfileSession==='function'&&RM_FB&&RM_FB.user&&rmProfileName())setTimeout(function(){rmEnsureProfileSession(RM_PROFILE_PENDING_CREATE).catch(function(){});},0);}
 function mzGuideSaveNow(){var ref=mzGuideDoc();if(!ref||MZ_GUIDE_RESTORING)return Promise.resolve();if(MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}var payload={recordType:'guide',ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-guide-v45',state:mzGuideCollectState()};mzGuideStatus('Guida: salvataggio automatico su Firebase…','saving');var task=MZ_GUIDE_SAVE_CHAIN.catch(function(){}).then(function(){return ref.set(payload,{merge:true});}).then(function(){mzGuideStatus('Guida salvata automaticamente su Firebase ✓','ok');}).catch(function(err){console.error(err);mzGuideStatus('Guida: errore di salvataggio Firebase — '+(err.message||err),'bad');});MZ_GUIDE_SAVE_CHAIN=task;return task;}
 function mzGuideScheduleSave(){
   if(MZ_GUIDE_RESTORING)return;
