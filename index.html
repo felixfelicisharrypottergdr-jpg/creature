@@ -2313,23 +2313,366 @@ body{color:#211008!important;}
 .contenitore{overflow:visible!important;padding-bottom:90px!important;}
 </style>
 
+<style id="uxui-v57">
+
+/* ===== UX/UI v57 — gerarchia, leggibilità e flusso coerente ===== */
+:root{
+--ux-accent:#db7c3a;
+  --ux-accent-strong:#9a431f;
+  --ux-accent-deep:#642812;
+  --ux-surface:#1d0f09;
+  --ux-surface-2:#2a160e;
+  --ux-border:#7f452a;
+  --ux-soft:#e5a276;
+  --ux-text:#f8e9dc;
+  --ux-muted:#d2b19a;
+  --ux-ink:#35170a;
+  --ux-ink-muted:#62351f;
+  --ux-card:#e0a06c;
+  --ux-card-2:#cb8050;
+  --ux-link:#fff1e5;
+  --ux-radius:12px;
+  --ux-shadow:0 10px 28px rgba(0,0,0,.18);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{padding:14px;line-height:1.46}
+.contenitore{
+  max-width:1040px;
+  padding:24px 28px 30px;
+  border-radius:16px;
+  box-shadow:0 18px 55px rgba(0,0,0,.34);
+}
+
+h1{margin-bottom:7px!important;line-height:1.05}
+.sottotitolo{
+  max-width:760px;
+  margin:0 auto 24px!important;
+  font-size:.94em;
+  line-height:1.4;
+  letter-spacing:.01em;
+}
+
+/* Navigazione principale: tre scelte subito leggibili. */
+.barra-modo{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:7px!important;
+  margin:0 0 24px!important;
+  padding:6px;
+  border:1px solid var(--ux-border);
+  border-radius:13px;
+  background:rgba(0,0,0,.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.modo-bottone{
+  min-width:0;
+  min-height:52px;
+  margin:0!important;
+  padding:9px 12px!important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  border:1px solid transparent!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:var(--ux-muted)!important;
+  font-size:.91em!important;
+  font-weight:700;
+  letter-spacing:.01em!important;
+  text-align:center;
+  transition:background .16s ease,border-color .16s ease,color .16s ease,transform .16s ease;
+}
+.modo-bottone i{font-size:1.05em;opacity:.9}
+.modo-bottone:hover{background:rgba(255,255,255,.055)!important;color:var(--ux-text)!important}
+.modo-bottone.attivo{
+  background:var(--ux-accent-strong)!important;
+  color:#fff!important;
+  border-color:var(--ux-accent)!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.modo-sezione.visibile{animation:uxFade .16s ease-out}
+@keyframes uxFade{from{opacity:.45;transform:translateY(2px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.modo-sezione.visibile{animation:none}.modo-bottone,.session-btn,.flow-page-btn,.flow-action-btn,.copy-btn{transition:none!important}}
+
+/* Card e spaziatura. */
+.scheda,.blocco-incontro,.session-card,.session-toolbar-card{
+  border-radius:var(--ux-radius)!important;
+  box-shadow:var(--ux-shadow);
+}
+.scheda,.blocco-incontro{padding:18px 20px!important}
+.scheda>h2:first-child,.blocco-incontro>h2:first-child{margin-top:0}
+.riga{gap:16px!important;margin-bottom:14px!important}
+.campo{gap:5px;min-width:170px}
+#modoPersonaggio .campo label{min-height:auto!important;display:block!important;line-height:1.25!important}
+.campo label{margin-bottom:1px!important;font-size:.79em!important;line-height:1.25;font-weight:700;letter-spacing:.012em}
+
+select,input[type=number],input[type=text],textarea{
+  min-height:42px;
+  border-radius:8px!important;
+  padding:8px 10px!important;
+  font-size:.94em;
+  line-height:1.25;
+  transition:border-color .15s ease,box-shadow .15s ease,background .15s ease;
+}
+select:hover,input[type=number]:hover,input[type=text]:hover,textarea:hover{border-color:var(--ux-accent)!important}
+select:focus-visible,input:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:2px solid var(--ux-accent)!important;
+  outline-offset:2px!important;
+}
+input[readonly]{opacity:1!important;cursor:default!important}
+.numeric-note,.profilo-session-hint{margin-top:4px!important;font-size:.72em!important;line-height:1.35!important}
+
+/* Profilo: testo più breve e campi divisi per funzione. */
+.profilo-condiviso-note{
+  margin:0 0 18px!important;
+  padding:11px 13px!important;
+  border:1px solid rgba(0,0,0,.18)!important;
+  border-left:4px solid var(--ux-accent-deep)!important;
+  border-radius:8px!important;
+  background:rgba(255,255,255,.16)!important;
+  color:var(--ux-ink)!important;
+  font-size:.86em!important;
+  line-height:1.5!important;
+}
+.profile-section-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:18px 0 10px;
+  color:var(--ux-ink)!important;
+  font-size:.76em;
+  font-weight:800;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+.profile-section-label:after{content:"";height:1px;flex:1;background:rgba(0,0,0,.22)}
+#modoPersonaggio .session-status{
+  display:inline-flex;
+  width:auto;
+  min-height:25px;
+  align-items:center;
+  margin-top:7px!important;
+  padding:4px 8px;
+  border-radius:999px;
+  background:rgba(0,0,0,.10);
+  font-size:.72em!important;
+}
+#modoPersonaggio .check-riga{
+  padding:10px 12px;
+  border:1px solid rgba(0,0,0,.18);
+  border-radius:8px;
+  background:rgba(255,255,255,.12);
+}
+#modoPersonaggio .check-riga label{line-height:1.4}
+#notaConoscenzeAvanzatePG,#notaLivelliStudente{
+  margin:7px 0 12px!important;
+  padding:9px 11px;
+  border-radius:7px;
+  background:rgba(255,255,255,.11);
+  color:var(--ux-ink-muted)!important;
+}
+
+/* Pulsanti: stessa logica visiva ovunque. */
+.bottone-azione,.session-btn,.flow-page-btn,.flow-action-btn,.session-danger-btn,button.copy-btn,.mz-bonus-add,.erb-bonus-add{
+  min-height:40px;
+  border-radius:8px!important;
+  font-weight:700;
+  transition:transform .14s ease,filter .14s ease,background .14s ease,border-color .14s ease;
+}
+.bottone-azione:hover:not(:disabled),.session-btn:hover:not(:disabled),.flow-page-btn:hover:not(:disabled),.flow-action-btn:hover:not(:disabled),.session-danger-btn:hover:not(:disabled),button.copy-btn:hover:not(:disabled){filter:brightness(1.08)}
+.bottone-azione:active:not(:disabled),.session-btn:active:not(:disabled),.flow-page-btn:active:not(:disabled),.flow-action-btn:active:not(:disabled),button.copy-btn:active:not(:disabled){transform:translateY(1px)}
+.session-btn.ghost{background:rgba(255,255,255,.035)!important}
+.session-danger-btn{padding:8px 12px!important}
+button.copy-btn{
+  min-height:40px!important;
+  padding:0 12px!important;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+button.copy-btn:before{content:"⧉";font-size:14px;line-height:1}
+
+/* Home delle sessioni. */
+.research-session-home,.research-workspace{max-width:1040px!important}
+.session-card-head{padding:14px 17px!important}
+.session-card-head h2{font-size:1.15em!important}
+.session-card-body{padding:16px 17px!important}
+.session-lead{margin:0 0 10px;font-size:.93em;line-height:1.45;color:var(--ux-text)}
+.session-warning,.readonly-banner{
+  padding:10px 12px!important;
+  border-radius:8px!important;
+  line-height:1.42;
+}
+.session-warning:before{content:"i";display:inline-grid;place-items:center;width:18px;height:18px;margin-right:7px;border:1px solid currentColor;border-radius:50%;font-size:11px;font-weight:800;vertical-align:1px}
+.session-new-row{margin-top:12px}
+.session-item{padding:12px 13px!important;border-radius:9px!important}
+.session-title{font-size:.98em}
+.session-meta{margin-top:4px!important;line-height:1.35}
+.session-owner{margin-top:7px!important}
+.session-toolbar-card{position:relative;overflow:visible!important}
+
+/* Navigazione della Ricerca: stepper numerato. */
+.research-flow-nav{
+  counter-reset:uxStep;
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:7px!important;
+  margin:0 0 18px!important;
+}
+.flow-page-btn{
+  counter-increment:uxStep;
+  position:relative;
+  min-height:54px!important;
+  padding:8px 9px 8px 40px!important;
+  text-align:left;
+  line-height:1.2;
+  font-size:.82em;
+}
+.flow-page-btn:before{
+  content:counter(uxStep);
+  position:absolute;
+  left:9px;
+  top:50%;
+  transform:translateY(-50%);
+  width:23px;
+  height:23px;
+  display:grid;
+  place-items:center;
+  border:1px solid currentColor;
+  border-radius:50%;
+  font-size:10px;
+  font-weight:800;
+  opacity:.78;
+}
+.flow-page-btn.active{box-shadow:0 5px 16px rgba(0,0,0,.18)}
+.flow-page-btn.active:before{background:rgba(255,255,255,.16);opacity:1}
+.flow-page-btn.locked{filter:saturate(.55)}
+
+.flow-actions{
+  margin-top:20px!important;
+  padding-top:14px!important;
+  gap:10px!important;
+}
+.flow-actions>div{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Risultati/dadi più scansionabili. */
+.result-line{gap:9px!important;margin:9px 0!important}
+.result-line>span:first-child{font-weight:700}
+.result-line input[type=number]{width:104px!important;flex:0 0 104px}
+.dice-code{
+  min-height:40px!important;
+  display:flex;
+  align-items:center;
+  padding:8px 10px!important;
+  border-radius:8px!important;
+  line-height:1.35;
+}
+.formula-tag{border-radius:7px!important;line-height:1.4}
+.out-tag{font-weight:800;white-space:nowrap}
+.profilo-riferimento{
+  gap:9px!important;
+  padding:10px 12px!important;
+  border-radius:8px!important;
+  line-height:1.4;
+}
+
+/* Checkbox e radio: l'intera riga sembra un controllo, non testo disperso. */
+.check-riga{gap:9px!important;line-height:1.4}
+.check-riga input[type=checkbox],.check-riga input[type=radio]{width:17px;height:17px;flex:0 0 auto}
+
+/* Details: testata evidente, contenuto leggibile e nessun muro indistinto. */
+details{margin:12px 0;border:1px solid rgba(0,0,0,.20);border-radius:9px;overflow:hidden}
+details>summary{
+  list-style:none;
+  cursor:pointer;
+  position:relative;
+  padding:11px 42px 11px 13px;
+  background:var(--ux-surface-2)!important;
+  color:var(--ux-text)!important;
+  font-weight:800;
+  line-height:1.35;
+}
+details>summary::-webkit-details-marker{display:none}
+details>summary:after{
+  content:"+";
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  width:22px;height:22px;
+  display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.32);
+  border-radius:50%;
+  font-size:16px;font-weight:400;
+}
+details[open]>summary{background:var(--ux-accent-deep)!important}
+details[open]>summary:after{content:"−"}
+details[open]>.nota-regole{padding:12px 13px!important;margin:0!important;line-height:1.55!important}
+.research-rules .nota-regole{background:var(--ux-surface)!important;color:var(--ux-text)!important}
+.research-rules .nota-regole b{color:#fff!important}
+
+/* Guide: tab più compatti e titoli meno dispersivi. */
+.barra-tab{gap:7px!important;margin-bottom:18px!important}
+.tab-bottone{min-height:40px;border-radius:8px!important;padding:8px 12px!important;font-weight:700}
+.tab-bottone.attivo{box-shadow:0 4px 12px rgba(0,0,0,.16)}
+.guide-firebase-bar{border-radius:999px!important;padding:6px 10px!important;width:max-content;max-width:100%;margin:0 0 12px!important;font-size:.72em!important}
+
+/* Link: mai blu; chiari sui fondi scuri, scuri sulle schede luminose. */
+.contenitore a{color:var(--ux-link);text-decoration-color:rgba(255,255,255,.45);text-underline-offset:2px}
+.scheda a,.blocco-incontro a{color:var(--ux-ink)!important;text-decoration-color:rgba(0,0,0,.35)!important}
+.research-rules a,.session-card a,.session-toolbar-card a{color:var(--ux-link)!important}
+
+/* Tabelle: bordi e testo più netti. */
+table.fasce{border-radius:8px;overflow:hidden}
+table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
+
+@media(max-width:760px){
+  body{padding:8px}
+  .contenitore{padding:17px 13px 22px;border-radius:12px}
+  h1{font-size:34px!important}
+  .sottotitolo{font-size:.86em;margin-bottom:17px!important}
+  .barra-modo{grid-template-columns:1fr;padding:5px;gap:4px!important}
+  .modo-bottone{min-height:43px;justify-content:flex-start;padding-left:14px!important}
+  .scheda,.blocco-incontro{padding:15px 13px!important}
+  .research-flow-nav{grid-template-columns:1fr 1fr}
+  .research-flow-nav .flow-page-btn:last-child{grid-column:1 / -1}
+  .flow-actions{align-items:stretch!important}
+  .flow-actions>button,.flow-actions>div,.flow-actions>div>button{width:100%}
+  .flow-actions>div{display:grid;grid-template-columns:1fr}
+  .result-line{align-items:stretch!important}
+  .result-line .dice-code{flex:1 1 100%!important}
+  .result-line input[type=number]{width:100%!important;flex:1 1 120px}
+  button.copy-btn{flex:1 1 100px!important}
+  .session-item-buttons{justify-content:stretch!important}
+  .session-item-buttons .session-btn,.session-item-buttons .session-danger-btn{flex:1 1 100%!important}
+}
+
+</style>
 </head>
 <body>
 <div class="contenitore">
 
 <div class="sigillo-magizoologia" aria-hidden="true"><i class="fa-solid fa-dragon"></i></div>
 <h1>• La Magizoologia •</h1>
-<div class="sottotitolo">Strumenti interattivi per il Ritrovamento, la Fiducia, Cura, Domesticazione e Allevamento delle Creature Magiche</div>
+<div class="sottotitolo">Profilo PG · Ricerca Creature Magiche · Guida alla Magizoologia</div>
 
 <div class="barra-modo">
-  <button class="modo-bottone attivo" id="modoPersonaggioBtn">Il tuo Personaggio</button>
-  <button class="modo-bottone" id="modoRicercaBtn">Ricerca Creature Magiche</button>
-  <button class="modo-bottone" id="modoMagizoologiaBtn">Guida alla Magizoologia</button>
+  <button type="button" class="modo-bottone attivo" id="modoPersonaggioBtn" aria-controls="modoPersonaggio"><i class="fa-solid fa-user" aria-hidden="true"></i><span>Il tuo Personaggio</span></button>
+  <button type="button" class="modo-bottone" id="modoRicercaBtn" aria-controls="modoRicerca"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span>Ricerca Creature Magiche</span></button>
+  <button type="button" class="modo-bottone" id="modoMagizoologiaBtn" aria-controls="modoMagizoologia"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>Guida alla Magizoologia</span></button>
 </div>
 <div id="modoPersonaggio" class="modo-sezione visibile">
 <div class="scheda">
 <h2>Il tuo Personaggio</h2>
-<div class="profilo-condiviso-note">Compila questo profilo una sola volta: ogni funzione usa automaticamente i dati del Personaggio che le servono. <b>Empatia</b> e <b>Sapienza Magizoologica</b> vengono condivise anche con la Ricerca Creature Magiche. Per i PG Studenti la Sapienza utile viene considerata al massimo al livello I. I <b>PG Studenti che non seguono CDCM</b> utilizzano automaticamente i valori del voto <b>Troll</b>.</div>
+<div class="profilo-condiviso-note">Compila il PG una volta: <b>nome, Empatia e Sapienza Magizoologica</b> vengono riutilizzati automaticamente. Gli <b>Studenti</b> usano il voto nella singola Creatura e possono applicare il <b>+2</b> del Livello I; per gli <b>Adulti</b> il tool considera automaticamente anche la precedente frequenza di CDCM quando serve.</div>
+<div class="profile-section-label">Dati del Personaggio</div>
 <div class="riga">
   <div class="campo" style="flex:1 1 100%">
     <label>Nome del PG</label>
@@ -2346,13 +2689,21 @@ body{color:#211008!important;}
       <option value="adulto">Adulto</option>
     </select>
   </div>
-  <div class="campo" id="campoSegueCDCM">
+  <div class="campo" id="campoSegueCDCM" style="display:none">
     <label>Segue Cura delle Creature Magiche (CDCM)?</label>
     <select id="pgSegueCDCM" data-key="pgSegueCDCM">
       <option value="si" selected>Sì</option>
       <option value="no">No — usa i valori del voto Troll</option>
     </select>
     <div class="numeric-note">Se non segue CDCM, il voto effettivo usato dal tool è sempre T (Troll).</div>
+  </div>
+  <div class="campo" id="campoCDCMAdulto" style="display:none">
+    <label>Da Studente ha frequentato Cura delle Creature Magiche (CDCM)?</label>
+    <select id="pgAdultoCDCM" data-key="pgAdultoCDCM">
+      <option value="si" selected>Sì</option>
+      <option value="no">No</option>
+    </select>
+    <div class="numeric-note">Serve soltanto quando l'Adulto non possiede la Conoscenza Avanzata associata alla fase.</div>
   </div>
   <div class="campo" id="campoVotoStudente">
     <label>Voto nella Conoscenza della Creatura</label>
@@ -2379,6 +2730,8 @@ body{color:#211008!important;}
   </div>
 </div>
 <div id="campiAdultoPG">
+<div class="profile-section-label">Conoscenze Avanzate</div>
+<div class="nota-regole" id="notaConoscenzeAvanzatePG"><b>Conoscenze Avanzate:</b> gli Studenti possono selezionare soltanto Nessuno o Livello I; gli Adulti possono usare i livelli I-V.</div>
 <div class="riga">
   <div class="campo">
     <label>Livello Amico delle Creature Magiche</label>
@@ -2809,10 +3162,10 @@ body{color:#211008!important;}
   <h3>Modificatore preliminare della fase</h3>
   <div class="nota-regole" id="baseAddestratoreInfo"></div>
   <div class="result-line" id="rigaAddestratoreD4" style="display:none">
-    <div class="dice-code" id="codiceAddestratoreD4">&lt;b&gt;Qual è il Bonus Domesticazione dell’Adulto senza Addestratore?&lt;/b&gt;
+    <div class="dice-code" id="codiceAddestratoreD4">&lt;b&gt;Qual è il Bonus Domesticazione dell’Adulto senza Addestratore che ha frequentato CDCM?&lt;/b&gt;
 [quote]Il risultato del dado corrisponde direttamente al Bonus ottenuto.[/quote]
 
-[dice=1d4]Bonus Domesticazione — Adulto senza Addestratore di Creature Magiche[/dice]</div>
+[dice=1d4]Bonus Domesticazione — Adulto senza Addestratore · ha frequentato CDCM[/dice]</div>
     <button class="copy-btn" id="copiaAddestratoreD4">Copia</button>
     <input type="number" id="risultatoAddestratoreD4" data-key="risultatoAddestratoreD4" min="1" max="4" placeholder="1-4">
   </div>
@@ -2987,12 +3340,12 @@ body{color:#211008!important;}
   <div class="session-card">
     <div class="session-card-head"><h2>Ricerche Creature Magiche in corso</h2></div>
     <div class="session-card-body">
-      <p>La Ricerca usa automaticamente il PG compilato in «Il tuo Personaggio» e viene salvata mentre la compili.</p>
-      <div class="session-warning"><b>Le sessioni in corso sono personali.</b> Non serve registrarsi o inserire credenziali: il collegamento tecnico è anonimo. Le sessioni possono essere consultate dagli altri giocatori, ma soltanto chi le ha create e il Narratore possono modificarle o eliminarle.</div>
+      <p class="session-lead">Apri o riprendi la Ricerca del PG compilato in «Il tuo Personaggio». Il salvataggio è automatico.</p>
+      <div class="session-warning"><b>Sessioni condivise in sola lettura.</b> Gli altri giocatori possono consultarle; solo il creatore e il Narratore possono modificarle o concluderle.</div>
       <div id="rm-firebase-auth-status" class="session-status">Connessione a Firebase…</div>
       <div class="session-new-row">
-        <button class="session-btn" id="rm-btn-new-session" type="button" data-session-control="1">+ Nuova Ricerca per questo PG</button>
-        <button class="session-btn ghost" id="rm-btn-refresh-sessions" type="button" data-session-control="1">Aggiorna elenco</button>
+        <button class="session-btn" id="rm-btn-new-session" type="button" data-session-control="1">+ Nuova Ricerca</button>
+        <button class="session-btn ghost" id="rm-btn-refresh-sessions" type="button" data-session-control="1">↻ Aggiorna</button>
       </div>
       <div id="rm-session-home-msg" class="session-status"></div>
       <div id="rm-session-list"></div>
@@ -3010,7 +3363,7 @@ body{color:#211008!important;}
           <div id="rm-save-status" class="session-status"></div>
         </div>
         <div class="session-actions">
-          <button class="session-btn ghost" id="rm-btn-back-sessions" type="button" data-session-control="1">← Torna alle Ricerche</button>
+          <button class="session-btn ghost" id="rm-btn-back-sessions" type="button" data-session-control="1">← Elenco Ricerche</button>
           <button class="session-danger-btn" id="rm-btn-delete-session" type="button" data-session-control="1">Concludi ed elimina Ricerca</button>
         </div>
       </div>
@@ -3053,7 +3406,7 @@ body{color:#211008!important;}
         <div id="rmNuotoLagoDettagli" style="display:none"><div class="result-line"><div class="dice-code" id="codiceScrofungulus"></div><button type="button" class="copy-btn" id="copiaScrofungulus">Copia</button></div><div class="result-line"><span>Risultato 1d20:</span><input type="number" id="risultatoScrofungulus" data-key="risultatoScrofungulus" min="1" max="20"><span class="out-tag out-neutral" id="tagScrofungulus">in attesa</span></div></div>
       </div>
       <div class="riga">
-        <div class="campo"><label>PG che lancia i dadi</label><input type="text" id="nomePgRicerca" data-key="nomePgRicerca" maxlength="80" readonly aria-readonly="true"><div class="profilo-session-hint">Preso automaticamente da «Il tuo Personaggio».</div></div>
+        <div class="campo"><label>PG lanciatore</label><input type="text" id="nomePgRicerca" data-key="nomePgRicerca" maxlength="80" readonly aria-readonly="true"><div class="profilo-session-hint">Preso automaticamente da «Il tuo Personaggio».</div></div>
       </div>
       <input type="hidden" id="sapienza" data-key="sapienza" value="0">
       <div class="profilo-riferimento"><strong>Dati del Personaggio usati dalla Ricerca:</strong> <span>Empatia <b class="profilo-valore" id="rmEmpatiaCondivisa">10</b></span> <span>· Sapienza Magizoologica <b class="profilo-valore" id="rmSapienzaCondivisa">0</b></span> <span>· si modificano nella sezione «Il tuo Personaggio».</span></div>
@@ -3618,8 +3971,7 @@ function mzBridgeId(){return 'mz_'+Date.now().toString(36)+'_'+Math.random().toS
 function mzBridgeProfile(){
   var type=(document.getElementById('pgTipo')||{}).value||'studente',vote='',sap=0;
   if(type==='studente'){
-    var follows=(document.getElementById('pgSegueCDCM')||{}).value||'si';
-    vote=follows==='no'?'T':((document.getElementById('pgVoto')||{}).value||'T');
+    vote=((document.getElementById('pgVoto')||{}).value||'T');
   }else{
     try{sap=mzProfiloSapienza();}catch(e){sap=0;}
   }
@@ -4335,46 +4687,63 @@ function mzProfiloSapienza(){
   return Math.max(0,Math.min(25,bonusValore('sapienzaProfilo')));
 }
 
+function mzConfiguraLivelloConoscenza(id,studente){
+  var sel=document.getElementById(id);if(!sel)return;
+  Array.prototype.forEach.call(sel.options,function(opt){
+    var n=Number(opt.value||0);
+    opt.disabled=!!studente&&n>1;
+    opt.hidden=!!studente&&n>1;
+  });
+  if(studente&&Number(sel.value)>1)sel.value='1';
+}
+function mzLeggiLivelloConoscenza(id,studente){
+  var sel=document.getElementById(id),v=sel?parseInt(sel.value,10):0;
+  if(!Number.isInteger(v)||v<0)v=0;
+  return studente?Math.min(1,v):Math.min(5,v);
+}
 function aggiornaCampiTipoPG(){
   var tipoEl = document.getElementById('pgTipo');
   if(!tipoEl){ return; }
   var studente = tipoEl.value === 'studente';
   var campoCDCM = document.getElementById('campoSegueCDCM');
+  var campoCDCMAdulto = document.getElementById('campoCDCMAdulto');
   var campoVoto = document.getElementById('campoVotoStudente');
   var campiAdulto = document.getElementById('campiAdultoPG');
   var segueCDCM = document.getElementById('pgSegueCDCM');
   var votoEl = document.getElementById('pgVoto');
   var votoInfo = document.getElementById('mzVotoEffettivo');
 
-  if(campoCDCM){ campoCDCM.style.display = studente ? '' : 'none'; }
+  /* Il nuovo regolamento usa direttamente il voto nella singola Creatura per gli Studenti. Il vecchio selettore di frequenza corrente resta nascosto solo per compatibilità con i profili salvati. */
+  if(campoCDCM){ campoCDCM.style.display = 'none'; }
+  if(segueCDCM){ segueCDCM.value = 'si'; }
+  if(campoCDCMAdulto){ campoCDCMAdulto.style.display = studente ? 'none' : ''; }
   if(campoVoto){ campoVoto.style.display = studente ? '' : 'none'; }
-  if(campiAdulto){ campiAdulto.style.display = studente ? 'none' : ''; }
+  /* Le Conoscenze Avanzate servono ora anche agli Studenti, limitate al Livello I. */
+  if(campiAdulto){ campiAdulto.style.display = ''; }
+  ['livAmico','livCustode','livAddestratore','livAllevatore'].forEach(function(id){mzConfiguraLivelloConoscenza(id,studente);});
 
-  var usaTroll = studente && segueCDCM && segueCDCM.value === 'no';
-  if(votoEl){ votoEl.disabled = !!usaTroll; }
-  if(votoInfo){
-    votoInfo.textContent = usaTroll
-      ? 'Voto effettivo: T (Troll) — il voto selezionato non entra nei calcoli.'
-      : '';
-  }
+  if(votoEl){ votoEl.disabled = false; }
+  if(votoInfo){ votoInfo.textContent = ''; }
 }
 
 function leggiPG(){
   var pg = {};
   pg.tipo = document.getElementById('pgTipo').value;
-  pg.segueCDCM = pg.tipo === 'studente' ? (document.getElementById('pgSegueCDCM').value !== 'no') : null;
-  pg.votoSelezionato = pg.tipo === 'studente' ? document.getElementById('pgVoto').value : null;
-  pg.voto = pg.tipo === 'studente' ? (pg.segueCDCM ? pg.votoSelezionato : 'T') : null;
+  var studente=pg.tipo==='studente';
+  pg.segueCDCM = studente ? true : null;
+  pg.frequentatoCDCM = pg.tipo==='adulto' ? ((document.getElementById('pgAdultoCDCM')||{}).value!=='no') : null;
+  pg.votoSelezionato = studente ? document.getElementById('pgVoto').value : null;
+  pg.voto = studente ? pg.votoSelezionato : null;
   pg.empatiaBase = bonusValore('empatia');
   pg.empatia = pg.empatiaBase + mzGeneralBonus('empatia');
   pg.sapienzaMagizoologica = pg.tipo === 'adulto' ? mzProfiloSapienza() : 0;
   var specSap=document.getElementById('mzSapienzaSpeciale');if(specSap){var rawSap=bonusValore('sapienzaProfilo');specSap.textContent=pg.sapienzaMagizoologica>=25?'Sapienza 25: attivi i bonus speciali (0 Fatica nelle fasi previste e +20% Produzione).':(pg.tipo==='studente'&&rawSap>1?'Per il PG Studente la Ricerca considera Sapienza I.':'');}
   var effEmp=document.getElementById('mzEmpatiaEffettiva');
   if(effEmp){effEmp.textContent=pg.empatia!==pg.empatiaBase?'Empatia effettiva: '+pg.empatia+' ('+pg.empatiaBase+' + '+(pg.empatia-pg.empatiaBase)+' bonus)':'';}
-  pg.livAmico = pg.tipo === 'adulto' ? parseInt(document.getElementById('livAmico').value, 10) : 0;
-  pg.livCustode = pg.tipo === 'adulto' ? parseInt(document.getElementById('livCustode').value, 10) : 0;
-  pg.livAddestratore = pg.tipo === 'adulto' ? parseInt(document.getElementById('livAddestratore').value, 10) : 0;
-  pg.livAllevatore = pg.tipo === 'adulto' ? parseInt(document.getElementById('livAllevatore').value, 10) : 0;
+  pg.livAmico = mzLeggiLivelloConoscenza('livAmico',studente);
+  pg.livCustode = mzLeggiLivelloConoscenza('livCustode',studente);
+  pg.livAddestratore = mzLeggiLivelloConoscenza('livAddestratore',studente);
+  pg.livAllevatore = mzLeggiLivelloConoscenza('livAllevatore',studente);
   pg.classificazione = document.getElementById('classificazione').value;
   pg.faseVitale = document.getElementById('faseVitale').value;
   pg.ostilita = document.getElementById('ostilita').value;
@@ -4727,8 +5096,14 @@ var tabAmicoFiducia = {1:12, 2:13, 3:14, 4:15, 5:16};
 var classFiducia = {X:3, XX:2, XXX:0, XXXX:-2, XXXXX:-3};
 
 function baseFiducia(pg){
-  var base;if(pg.livAmico >= 1){base=tabAmicoFiducia[pg.livAmico];}
-  else if(pg.tipo === 'adulto'){base=11;}else{base=tabellaVoto[pg.voto];}
+  var base;
+  if(pg.tipo==='studente'){
+    base=tabellaVoto[pg.voto]+(pg.livAmico>=1?2:0);
+  }else if(pg.livAmico>=1){
+    base=tabAmicoFiducia[pg.livAmico];
+  }else{
+    base=pg.frequentatoCDCM?11:7;
+  }
   return base + mzGeneralBonus('fiduciaBase');
 }
 
@@ -4914,8 +5289,14 @@ var curaEbbeUnFallimento = false;
 var MZ_SCOPERTA_FALLITA=false, MZ_CURA_FALLITA=false, MZ_CURA_MALUS_ALLEVAMENTO=0;
 
 function baseCustode(pg){
-  var base;if(pg.livCustode >= 1){base=tabCustodeLiv[pg.livCustode];}
-  else if(pg.tipo === 'adulto'){base=6;}else{base=tabCustodeVoto[pg.voto];}
+  var base;
+  if(pg.tipo==='studente'){
+    base=tabCustodeVoto[pg.voto]+(pg.livCustode>=1?2:0);
+  }else if(pg.livCustode>=1){
+    base=tabCustodeLiv[pg.livCustode];
+  }else{
+    base=pg.frequentatoCDCM?6:2;
+  }
   return base + mzGeneralBonus('curaBase');
 }
 
@@ -5404,24 +5785,27 @@ function recomputeDomesticazione(){
 
   var bonusAddestratore;
   var necessitaD4 = false;
-  if(pg.livAddestratore >= 1){
+  if(pg.tipo==='studente'){
+    bonusAddestratore = tabAddestratoreVoto[pg.voto] + (pg.livAddestratore>=1?2:0);
+    infoAddestratore.textContent = pg.livAddestratore>=1?'Studente con Addestratore di Creature Magiche I: +2 al valore del voto per questa fase.':'';
+  } else if(pg.livAddestratore >= 1){
     bonusAddestratore = tabAddestratoreLiv[pg.livAddestratore];
     infoAddestratore.textContent = '';
-  } else if(pg.tipo === 'adulto'){
+  } else if(pg.frequentatoCDCM){
     necessitaD4 = true;
     var vd4 = document.getElementById('risultatoAddestratoreD4').value;
     if(intInRange(vd4, 1, 4)){
       bonusAddestratore = Number(vd4);
-      infoAddestratore.textContent = 'Adulto senza Addestratore di Creature Magiche: bonus da 1d4.';
+      infoAddestratore.textContent = 'Adulto senza Addestratore che ha frequentato CDCM: bonus da 1d4.';
     } else {
       bonusAddestratore = null;
       infoAddestratore.textContent = vd4 === ''
-        ? 'Adulto senza Addestratore di Creature Magiche: tira il 1d4 qui sotto per proseguire.'
+        ? 'Adulto senza Addestratore che ha frequentato CDCM: tira il 1d4 qui sotto per proseguire.'
         : 'Risultato 1d4 impossibile: inserisci un intero compreso fra 1 e 4.';
     }
   } else {
-    bonusAddestratore = tabAddestratoreVoto[pg.voto];
-    infoAddestratore.textContent = '';
+    bonusAddestratore = 1;
+    infoAddestratore.textContent = 'Adulto senza Addestratore che non ha frequentato CDCM: +1 possibilità.';
   }
 
   if(necessitaD4){
@@ -5548,7 +5932,7 @@ var fasceAllevamento = [
   {min:31, etichetta:'31+', z:'1', tt:'2', ss:'3-4', cc:'5-6-7-8-9-10'},
   {min:27, etichetta:'27-30', z:'1', tt:'2', ss:'3-4-5', cc:'6-7-8-9-10'},
   {min:21, etichetta:'21-26', z:'1-2', tt:'3-4', ss:'5-6-7', cc:'8-9-10'},
-  {min:14, etichetta:'14-20', z:'1-2-3', tt:'4-5-6', ss:'6-7', cc:'8-9-10'},
+  {min:14, etichetta:'14-20', z:'1-2-3', tt:'4-5', ss:'6-7', cc:'8-9-10'},
   {min:7, etichetta:'7-13', z:'1-2-3', tt:'4-5-6', ss:'7-8', cc:'9-10'},
   {min:0, etichetta:'0-6', z:'1-2-3-4', tt:'5-6-7', ss:'8-9', cc:'10'}
 ];
@@ -5597,8 +5981,14 @@ function percentualeDaFasciaAllevamento(fascia, valore){
 }
 
 function baseAllevatore(pg){
-  var base;if(pg.livAllevatore >= 1){base=tabAllevatoreLiv[pg.livAllevatore];}
-  else if(pg.tipo === 'adulto'){base=7;}else{base=tabAllevatoreVoto[pg.voto];}
+  var base;
+  if(pg.tipo==='studente'){
+    base=tabAllevatoreVoto[pg.voto]+(pg.livAllevatore>=1?2:0);
+  }else if(pg.livAllevatore>=1){
+    base=tabAllevatoreLiv[pg.livAllevatore];
+  }else{
+    base=pg.frequentatoCDCM?7:3;
+  }
   return base + mzGeneralBonus('allevamentoBase');
 }
 
@@ -5625,7 +6015,7 @@ function mzPostGroupAllevamento(pg){
 }
 function mzPostGroupLabelAllevamento(pg){
   var g=mzPostGroupAllevamento(pg);
-  return g==='studente'?'Studente':(g==='adulto_con'?'Adulto con Allevatore di Creature':'Adulto senza Allevatore di Creature');
+  return g==='studente'?'Studente':(g==='adulto_con'?'Adulto con Allevatore di Creature':('Adulto senza Allevatore di Creature · '+(pg.frequentatoCDCM?'ha frequentato CDCM':'non ha frequentato CDCM')));
 }
 function mzPostBaseAllevamento(pg,percentuale){
   if(percentuale===0)return null;
