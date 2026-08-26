@@ -2274,6 +2274,14 @@ body{color:#211008!important;}
 #sintesiPostAllevamento b{color:#ffd2aa!important;}
 .mz-post-rounding{font-size:.88em;color:#ffe0c6;}
 
+
+/* ===== v45 — Guida Firebase, riepilogo inline, link Bestiario ===== */
+.guide-firebase-bar{margin:0 0 12px;padding:9px 12px;border:1px solid #8e4e2b;border-left:5px solid #d17a42;border-radius:7px;background:#2b1710;color:#f7dfcf;line-height:1.4}
+.guide-firebase-bar.ok{border-color:#64884a;background:#1d2918;color:#e3f3d9}.guide-firebase-bar.bad{border-color:#a54b4b;background:#361819;color:#ffd8d5}.guide-firebase-bar.saving{border-color:#bd773f;background:#3b2015;color:#ffe1c6}
+.rm-inline-summary{margin-top:18px;padding:14px;border:1px solid #c5743e;border-left:5px solid #ef9d59;border-radius:8px;background:#643520;color:#fff0e5}.rm-inline-summary h2{margin-top:0!important;color:#ffd1aa!important}.rm-inline-summary .summary-box{background:#351c13!important;border-color:#a65b34!important}.rm-inline-summary .summary-box b{color:#ffc08b!important}
+.rm-legacy-zone-notice{display:none;margin:9px 0;padding:9px 11px;border:1px solid #bd7040;border-left:5px solid #e99a5b;border-radius:6px;background:#4a281a;color:#ffe6d2}.rm-legacy-zone-notice.show{display:block}
+.spec-sheet-link{margin-top:8px;padding:8px 10px;border:1px solid #a65e36;border-radius:6px;background:#3d2116;color:#f8e5d6;line-height:1.45}.spec-sheet-link a{color:#ffc07f!important;font-weight:800;text-decoration:underline}.spec-sheet-link.empty{display:none}
+
 </style>
 
 </head>
@@ -2289,6 +2297,7 @@ body{color:#211008!important;}
   <button class="modo-bottone" id="modoRicercaBtn">Ricerca Creature Magiche</button>
   <button class="modo-bottone" id="modoMagizoologiaBtn">Guida alla Magizoologia</button>
 </div>
+<div class="nota-regole tool-crosslink"><b>Riuscita delle Conoscenze:</b> per Incantesimi e Tecniche che richiedono un esito, apri il <a href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener">Generatore di Riuscita delle Conoscenze ↗</a>.</div>
 
 <div id="modoPersonaggio" class="modo-sezione visibile">
 <div class="scheda">
@@ -2393,6 +2402,8 @@ body{color:#211008!important;}
 </div>
 
 <div id="modoMagizoologia" class="modo-sezione">
+
+<div id="mz-guide-save-status" class="guide-firebase-bar">Guida: collegamento a Firebase in corso…</div>
 
 <div class="scheda">
 <h2>La Creatura Magica</h2>
@@ -2975,7 +2986,6 @@ body{color:#211008!important;}
 
   <nav class="research-flow-nav" id="rm-flow-nav">
     <button type="button" class="flow-page-btn" data-rm-page="config" data-session-control="1">Configurazione</button>
-    <button type="button" class="flow-page-btn" data-rm-page="summary" data-session-control="1">Riepilogo</button>
     <button type="button" class="flow-page-btn" data-rm-page="enc1" data-session-control="1">Incontro I</button>
     <button type="button" class="flow-page-btn" data-rm-page="enc2" data-session-control="1">Incontro II</button>
     <button type="button" class="flow-page-btn" data-rm-page="enc3" data-session-control="1">Incontro III</button>
@@ -3000,10 +3010,9 @@ body{color:#211008!important;}
           <option value="Foreste Oscure">Foreste Oscure</option>
           <option value="Coste Magiche Inglesi">Coste Magiche Inglesi</option>
           <option value="Fuori dal Regno Unito — Coste/Foreste del Mondo Magico">Fuori dal Regno Unito — Coste/Foreste del Mondo Magico</option>
-          <option value="storica" disabled>Zona non registrata (vecchia sessione)</option>
         </select></div>
       </div>
-      <div class="nota-regole"><b>Prima scegli dove si svolge la role.</b> Per tutte le Zone per cui mi hai fornito la lista, dopo l’estrazione della Classificazione il tool costruisce automaticamente il dado corretto e ricava la Creatura specifica dal risultato. Il metodo manuale resta solo dove manca davvero una lista associata alla Zona scelta.</div>
+      <div class="nota-regole"><b>Prima scegli dove si svolge la role.</b> Per tutte le Zone con un elenco disponibile nel tool, dopo l’estrazione della Classificazione il tool costruisce automaticamente il dado corretto e ricava la Creatura specifica dal risultato. L’inserimento manuale resta soltanto per <b>Fuori dal Regno Unito — Coste/Foreste del Mondo Magico</b>, dove la Zona scelta non identifica un elenco unico.</div><div id="rmLegacyZoneNotice" class="rm-legacy-zone-notice"><b>Ricerca creata con una versione precedente del tool:</b> in questa sessione la Zona non veniva ancora salvata. Seleziona ora la Zona corretta per continuare; tutti gli altri dati e risultati già presenti restano invariati.</div>
       <div class="rm-special" id="rmLagoNeroBox" style="display:none">
         <h3>Lago Nero — controllo Scrofungulus</h3>
         <label class="check-riga"><input type="checkbox" id="rmNuotoLago" data-key="rmNuotoLago"> Il PG sta nuotando nel Lago Nero</label>
@@ -3042,27 +3051,24 @@ body{color:#211008!important;}
         <button type="button" class="mz-bonus-add" id="rmAddBonusRicerca">+ Aggiungi Oggetto / Incantesimo / Conoscenza</button>
         <div class="mz-effective-line" id="rmBonusRicercaSummary"></div>
       </div>
+
+      <div class="rm-inline-summary">
+        <h2>Riepilogo prima degli Incontri</h2>
+        <div class="nota-regole"><b>Solo promemoria del tool:</b> non serve copiarlo nel forum. Si aggiorna automaticamente mentre compili la Configurazione e ti permette di controllare i dati prima di iniziare i dadi degli Incontri.</div>
+        <div id="rm-summary-content"></div>
+        <div id="rm-summary-bbcode" style="display:none"></div>
+      </div>
     </div>
 
-    <div class="flow-actions"><span></span><button type="button" class="flow-action-btn" data-rm-goto="summary" data-session-control="1">Vai al Riepilogo →</button></div>
-  </section>
-
-  <section class="research-flow-page" data-rm-page-panel="summary">
-    <div class="scheda">
-      <h2>Riepilogo prima della Ricerca</h2>
-      <div class="nota-regole"><b>Consigliato:</b> copia questo riepilogo nel primo post della Ricerca. Ti lascia subito visibili i dati davvero utili: PG lanciatore, tipo di Ricerca, Empatia, Sapienza, Valigia Magica ed eventuali bonus attivi.</div>
-      <div id="rm-summary-content"></div>
-      <div class="result-line"><div class="research-bbcode" id="rm-summary-bbcode"></div><button class="copy-btn" type="button" data-copy-source="rm-summary-bbcode" data-copy-control="1">Copia per il forum</button></div>
-    </div>
-    <div class="flow-actions"><button type="button" class="flow-action-btn" data-rm-goto="config" data-session-control="1">← Configurazione</button><button type="button" class="flow-action-btn" data-rm-goto="enc1" data-session-control="1">Inizia il Primo Incontro →</button></div>
+    <div class="flow-actions"><span></span><button type="button" class="flow-action-btn" data-rm-goto="enc1" data-session-control="1">Inizia il Primo Incontro →</button></div>
   </section>
 
   <section class="research-flow-page" data-rm-page-panel="enc1">
     <div class="blocco-incontro" id="blocco1">
       <h2>Primo Incontro</h2>
             <h3>Trovo qualcosa? (1d30)</h3>
-      <div class="formula-tag" id="formulaTrova1"></div>
       <div class="result-line"><div class="dice-code" id="codiceTrova1"></div><button class="copy-btn" type="button" data-copy-source="codiceTrova1" data-copy-control="1">Copia</button></div>
+      <div class="formula-tag" id="formulaTrova1"></div>
       <div class="result-line"><span>Risultato ottenuto sul forum (1-30):</span><input type="number" id="risultatoTrova1" data-key="risultatoTrova1" min="1" max="30"><span class="out-tag out-neutral" id="tagTrova1">in attesa</span></div>
       <div class="nota-regole">Se non trovi nulla puoi ritentare in un post successivo senza limiti, sostituendo qui il risultato precedente.</div>
 
@@ -3076,7 +3082,7 @@ body{color:#211008!important;}
           <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie1" data-key="dadoSpecie1" min="1" max="999"></div></div>
           <div class="result-line"><div class="dice-code" id="codiceSpecie1"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie1" data-copy-control="1">Copia</button></div>
           <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie1" data-key="risultatoSpecie1" min="1"><span class="out-tag out-neutral" id="tagSpecie1">in attesa</span></div>
-          <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura1">Creatura specifica trovata</label><input type="text" id="specieCreatura1" data-key="specieCreatura1" maxlength="100" placeholder=""></div></div>
+          <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura1">Creatura specifica trovata</label><input type="text" id="specieCreatura1" data-key="specieCreatura1" maxlength="100" placeholder=""></div></div><div class="spec-sheet-link empty" id="rmSpecieLink1"></div>
         </div>
 
         <h3>Sesso e Fase Vitale (1d40)</h3>
@@ -3099,7 +3105,7 @@ body{color:#211008!important;}
         <div class="result-line"><span>Risultato ottenuto (1-100):</span><input type="number" id="risultatoBolcino1" data-key="risultatoBolcino1" min="1" max="100"><span class="out-tag out-neutral" id="tagBolcino1">in attesa</span></div>
       </div>
     </div>
-    <div class="flow-actions"><button type="button" class="flow-action-btn" data-rm-goto="summary" data-session-control="1">← Riepilogo</button><div><button type="button" class="flow-action-btn" data-rm-goto="outcome" data-session-control="1">Concludi qui</button> <button type="button" class="flow-action-btn" data-rm-goto="enc2" data-session-control="1">Secondo Incontro →</button></div></div>
+    <div class="flow-actions"><button type="button" class="flow-action-btn" data-rm-goto="config" data-session-control="1">← Configurazione</button><div><button type="button" class="flow-action-btn" data-rm-goto="outcome" data-session-control="1">Concludi qui</button> <button type="button" class="flow-action-btn" data-rm-goto="enc2" data-session-control="1">Secondo Incontro →</button></div></div>
   </section>
 
   <section class="research-flow-page" data-rm-page-panel="enc2">
@@ -3108,8 +3114,8 @@ body{color:#211008!important;}
       <div class="blocco-avviso" id="avviso2" style="display:none"></div>
       <div id="corpo2">
                 <h3>Trovo qualcosa? (1d30)</h3>
-        <div class="formula-tag" id="formulaTrova2"></div>
         <div class="result-line"><div class="dice-code" id="codiceTrova2"></div><button class="copy-btn" type="button" data-copy-source="codiceTrova2" data-copy-control="1">Copia</button></div>
+        <div class="formula-tag" id="formulaTrova2"></div>
         <div class="result-line"><span>Risultato ottenuto sul forum (1-30):</span><input type="number" id="risultatoTrova2" data-key="risultatoTrova2" min="1" max="30"><span class="out-tag out-neutral" id="tagTrova2">in attesa</span></div>
         <div class="nota-regole">Se non trovi nulla puoi ritentare in un post successivo senza limiti, sostituendo qui il risultato precedente.</div>
 
@@ -3123,7 +3129,7 @@ body{color:#211008!important;}
             <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie2" data-key="dadoSpecie2" min="1" max="999"></div></div>
             <div class="result-line"><div class="dice-code" id="codiceSpecie2"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie2" data-copy-control="1">Copia</button></div>
             <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie2" data-key="risultatoSpecie2" min="1"><span class="out-tag out-neutral" id="tagSpecie2">in attesa</span></div>
-            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura2">Creatura specifica trovata</label><input type="text" id="specieCreatura2" data-key="specieCreatura2" maxlength="100" placeholder=""></div></div>
+            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura2">Creatura specifica trovata</label><input type="text" id="specieCreatura2" data-key="specieCreatura2" maxlength="100" placeholder=""></div></div><div class="spec-sheet-link empty" id="rmSpecieLink2"></div>
           </div>
 
           <h3>Numero di esemplari (1d5)</h3>
@@ -3151,8 +3157,8 @@ body{color:#211008!important;}
       <div class="blocco-avviso" id="avviso3" style="display:none"></div>
       <div id="corpo3">
                 <h3>Trovo qualcosa? (1d30)</h3>
-        <div class="formula-tag" id="formulaTrova3"></div>
         <div class="result-line"><div class="dice-code" id="codiceTrova3"></div><button class="copy-btn" type="button" data-copy-source="codiceTrova3" data-copy-control="1">Copia</button></div>
+        <div class="formula-tag" id="formulaTrova3"></div>
         <div class="result-line"><span>Risultato ottenuto sul forum (1-30):</span><input type="number" id="risultatoTrova3" data-key="risultatoTrova3" min="1" max="30"><span class="out-tag out-neutral" id="tagTrova3">in attesa</span></div>
         <div class="nota-regole">Se non trovi nulla puoi ritentare in un post successivo senza limiti, sostituendo qui il risultato precedente.</div>
 
@@ -3166,7 +3172,7 @@ body{color:#211008!important;}
             <div class="riga"><div class="campo"><label>Facce del dado specie</label><input type="number" id="dadoSpecie3" data-key="dadoSpecie3" min="1" max="999"></div></div>
             <div class="result-line"><div class="dice-code" id="codiceSpecie3"></div><button class="copy-btn" type="button" data-copy-source="codiceSpecie3" data-copy-control="1">Copia</button></div>
             <div class="result-line"><span>Risultato del dado specie:</span><input type="number" id="risultatoSpecie3" data-key="risultatoSpecie3" min="1"><span class="out-tag out-neutral" id="tagSpecie3">in attesa</span></div>
-            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura3">Creatura specifica trovata</label><input type="text" id="specieCreatura3" data-key="specieCreatura3" maxlength="100" placeholder=""></div></div>
+            <div class="riga"><div class="campo" style="flex:1 1 100%"><label for="specieCreatura3">Creatura specifica trovata</label><input type="text" id="specieCreatura3" data-key="specieCreatura3" maxlength="100" placeholder=""></div></div><div class="spec-sheet-link empty" id="rmSpecieLink3"></div>
           </div>
 
           <h3>Numero di esemplari (1d10)</h3>
@@ -5889,7 +5895,7 @@ function rmBonusSapienza(){return rmLookup(rmSapienzaTiers,rmSapienza());}
 function rmTipo(){return rmEl('tipoRicerca')?rmEl('tipoRicerca').value:'attiva';}
 function rmValigia(){return rmEl('valigiaMagica')?rmEl('valigiaMagica').value:'no';}
 function rmZona(){var e=rmEl('zonaRicerca');return e?e.value:'';}
-function rmZonaLabel(){var z=rmZona();return z==='storica'?'Non registrata (vecchia sessione)':z;}
+function rmZonaLabel(){var z=rmZona();return z==='storica'?'':z;}
 
 var RM_SEARCH_BONUS_PRESETS={
   flauto_standard:{label:'Flauto magico per Creature — standard (+2)',groupLabel:'Ricerca diretta',source:'Flauto magico per Creature',kind:'possibilita',value:2,uses:3,note:'Versione standard · +2 possibilità alla Ricerca Casuale · 3 usi.'},
@@ -6227,8 +6233,8 @@ function rmBlockedAfter(n){return !!(rmEl('catturato'+n)&&rmEl('catturato'+n).ch
 function rmConfigReady(){var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'';return !!name&&!!rmZona()&&rmNumber('empatiaRicerca',0,999)!==null&&rmNumber('sapienza',0,25)!==null;}
 function rmPageUnlocked(page){
   if(page==='config')return true;
-  if(page==='summary')return rmConfigReady();
-  if(page==='enc1')return rmConfigReady()&&RM_FLOW.summaryVisited;
+  if(page==='summary')return false;
+  if(page==='enc1')return rmConfigReady();
   if(page==='enc2')return rmTipo()==='attiva'&&rmEncounterComplete(1)&&!rmBlockedAfter(1);
   if(page==='enc3')return rmTipo()==='attiva'&&rmEncounterComplete(2)&&!rmBlockedAfter(2);
   if(page==='outcome')return rmEncounterComplete(1);
@@ -6320,7 +6326,8 @@ function rmApplyFlow(){
   for(var k=0;k<gotos.length;k++){var g=gotos[k],pg=g.getAttribute('data-rm-goto');g.disabled=!rmPageUnlocked(pg);}
 }
 function rmGoto(page,scroll){
-  if(page==='summary'&&rmConfigReady())RM_FLOW.summaryVisited=true;
+  if(page==='summary')page='config';
+  if(rmConfigReady())RM_FLOW.summaryVisited=true;
   if(page==='outcome'&&rmPageUnlocked('outcome'))RM_FLOW.outcomeVisited=true;
   if(page==='enc2'||page==='enc3')RM_FLOW.outcomeVisited=false;
   if(!rmPageUnlocked(page))return;
@@ -6330,7 +6337,6 @@ function rmGoto(page,scroll){
 function rmResumeFlow(){
   var page='config';
   if(!rmConfigReady())page='config';
-  else if(!RM_FLOW.summaryVisited)page='summary';
   else if(!rmEncounterComplete(1))page='enc1';
   else if(RM_FLOW.outcomeVisited)page='outcome';
   else if(rmTipo()==='attiva'&&rmPageUnlocked('enc2')&&!rmEncounterComplete(2))page='enc2';
@@ -6342,6 +6348,7 @@ function rmResumeFlow(){
 
 function ricalcolaRicerca(){
   if(!rmEl('creature-workspace'))return;
+  if(rmConfigReady())RM_FLOW.summaryVisited=true;
   rmAggiornaEmpatiaCondivisa();
   rmRenderSearchBonusesFromHidden(false);rmUpdateSearchBonusSummary();
   rmRecomputeBolcino(1);rmRecomputeBolcino(2);rmRecomputeBolcino(3);rmSetStaticSemanticCodes();
@@ -6359,10 +6366,11 @@ function rmCollectState(){
 }
 function rmApplyState(state){
   state=state||{};
+  var legacyNotice=rmEl('rmLegacyZoneNotice');if(legacyNotice){legacyNotice.classList.toggle('show',!!state._legacyZoneNeedsSelection);}
   /* Retrocompatibilità: il vecchio Bolcino unico viene mantenuto come Bolcino del Primo Incontro. */
   if(state.risultatoBolcino1===undefined&&state.risultatoBolcino!==undefined)state.risultatoBolcino1=state.risultatoBolcino;
   if(state.bonusRicercaJson===undefined)state.bonusRicercaJson='[]';
-  if(state.zonaRicerca===undefined){var legacyStarted=!!state.summaryVisited||!!state.outcomeVisited||['risultatoTrova1','risultatoClasse1','risultatoTrova2','risultatoClasse2','risultatoTrova3','risultatoClasse3'].some(function(k){return state[k]!==undefined&&String(state[k])!=='';});state.zonaRicerca=legacyStarted?'storica':'';}
+  if(state.zonaRicerca===undefined){var legacyStarted=!!state.summaryVisited||!!state.outcomeVisited||['risultatoTrova1','risultatoClasse1','risultatoTrova2','risultatoClasse2','risultatoTrova3','risultatoClasse3'].some(function(k){return state[k]!==undefined&&String(state[k])!=='';});state.zonaRicerca='';state._legacyZoneNeedsSelection=legacyStarted;}if(state.zonaRicerca==='storica'){state.zonaRicerca='';state._legacyZoneNeedsSelection=true;}if(state.flowPage==='summary')state.flowPage='config';
   RM_RESTORING=true;
   try{
     RM_FLOW.summaryVisited=!!state.summaryVisited;RM_FLOW.outcomeVisited=!!state.outcomeVisited;RM_FLOW.page=state.flowPage||'config';
@@ -6466,7 +6474,8 @@ function rmLoadSession(id){
   rmStatus('rm-session-home-msg','Caricamento Ricerca…','');
   return RM_FB.db.collection(RM_COLLECTION).doc(id).get().then(function(doc){
     if(!doc.exists)throw new Error('La Ricerca non esiste più.');
-    rmOpenSession(doc.id,doc.data());rmStatus('rm-session-home-msg','','');
+    var dd=doc.data();if(dd&&dd.recordType==='guide')throw new Error('Questo documento appartiene alla Guida, non a una Ricerca.');
+    rmOpenSession(doc.id,dd);rmStatus('rm-session-home-msg','','');
   }).catch(function(err){
     console.error(err);rmStatus('rm-session-home-msg','Impossibile aprire la Ricerca: '+err.message,'bad');rmEl('creature-session-home').style.display='block';rmWorkspace().style.display='none';
   });
@@ -6475,7 +6484,7 @@ function rmLoadSessions(){
   var host=rmEl('rm-session-list');if(!host||!RM_FB.db||!RM_FB.user)return;
   host.innerHTML='<div class="session-status">Caricamento sessioni…</div>';
   RM_FB.db.collection(RM_COLLECTION).get().then(function(snap){
-    var rows=[];snap.forEach(function(doc){rows.push({id:doc.id,data:doc.data()});});
+    var rows=[];snap.forEach(function(doc){var dd=doc.data();if(dd&&dd.recordType==='guide')return;rows.push({id:doc.id,data:dd});});
     rows.sort(function(a,b){var at=a.data.updatedAt&&a.data.updatedAt.seconds?a.data.updatedAt.seconds:0,bt=b.data.updatedAt&&b.data.updatedAt.seconds?b.data.updatedAt.seconds:0;return bt-at;});
     host.innerHTML='';
     if(!rows.length){host.innerHTML='<div class="session-status">Non ci sono Ricerche Creature Magiche in corso.</div>';return;}
@@ -6612,7 +6621,7 @@ function rmSetupFirebase(){
     RM_FB.auth=firebase.auth();RM_FB.db=firebase.firestore();
     RM_FB.auth.onAuthStateChanged(function(user){
       if(user){
-        RM_FB.user=user;st.textContent=user.uid===RM_NARRATOR_UID?'Firebase connesso · modalità Narratore':'Firebase connesso · sessione anonima attiva';st.className='session-status ok';
+        RM_FB.user=user;st.textContent=user.uid===RM_NARRATOR_UID?'Firebase connesso · modalità Narratore':'Firebase connesso · sessione anonima attiva';st.className='session-status ok';if(typeof mzGuideFirebaseReady==='function')mzGuideFirebaseReady(user);
         var sid=rmSessionIdFromHash();
         if(sid){mostraModo('Ricerca');rmLoadSession(sid);}
         else{
@@ -6713,7 +6722,7 @@ attachCopy('copiaIllegaleAllevamento', 'codiceIllegaleAllevamento');
 attachCopy('copiaImposium', 'codiceImposium');
 
 document.getElementById('bottoneReset').addEventListener(evtClick, function(){
-  if(window.confirm('Vuoi davvero azzerare tutti i dati della Guida alla Magizoologia? Le sessioni Firebase della Ricerca non verranno toccate.')){resetGuidaMagizoologia();}
+  if(window.confirm('Vuoi davvero azzerare tutti i dati della Guida alla Magizoologia? Anche lo stato della Guida salvato su Firebase verrà sostituito dai valori iniziali; le sessioni della Ricerca non verranno toccate.')){resetGuidaMagizoologia();}
 });
 
 
@@ -6791,7 +6800,7 @@ if(document.readyState === 'loading'){
 var RM_ZONE_CREATURES={"Lago Nero":{"X":["Glowbug","Marmite","Rospo"],"XX":["Avvincino","Bundimun","Chizpurfle","Clabbert","Horklump","Imp","Ippocampo","Jobberknoll"],"XXX":["Lobalug","Malacaw Maculato","Moke","Pogrebin","Plimpi","Purvincolo","Sblorb","Streeler"],"XXXX":["Kappa","Kelpie","Maride","Thestral","Unicorno"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Gytrash","Marciotto","Molliccio"]},"Foresta Proibita":{"X":["Rospo","Vermicolo","Gufo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Fata","Gnomo","Horklump","Imp","Jobberknoll","Lumaca Carnivora","Mooncalf"],"XXX":["Berretto Rosso","Billywig","Doxy","Dugbog","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Centauro","Kappa","Schiopodo Sparacoda","Thestral","Troll","Unicorno"],"XXXXX":["Acromantula"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Gytrash","Marciotto","Molliccio"]},"Valli di Hogwarts":{"X":["Rospo","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Diricawl","Fata","Gnomo","Horklump","Imp","Jobberknoll","Mooncalf","Porlock"],"XXX":["Billywig","Doxy","Dugbog","Fiammagranchio","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Bicorno","Centauro","Grifone","Schiopodo Sparacoda","Thestral"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Lepricani","Megera","Nano","Ninfa dei Boschi","Orco","Vampiro","Veela","Ammuntadore","Gytrash","Marciotto"]},"Diagon Alley":{"X":["Gatto","Gufo","Puffola Pigmea"],"XX":["Bundimun","Chizpurfle","Clabbert","Ghoul","Horklump","Jobberknoll","Porlock"],"XXX":["Crup","Doxy","Fwooper","Jarvey","Knarl","Kneazle","Moke","Puffskein","Snaso"],"XXXX":["Matagot"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Elfo Domestico","Goblin","Megera","Vampiro","Veela","Fantasma","Marciotto","Molliccio","Ammuntadore"]},"Vicoli di Notturn Alley":{"X":["Gatto","Gufo","Rospo","Vermicolo"],"XX":["Augurey","Bundimun","Chizpurfle","Clabbert","Ghoul","Horklump","Imp","Lumaca Carnivora"],"XXX":["Ashwinder","Crup","Fwooper","Kneazle","Moke","Nogtail","Streeler"],"XXXX":["Matagot"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Goblin","Megera","Vampiro","Veela","Ammuntadore","Banshee","Borges","Fantasma","Gytrash","Marciotto","Molliccio","Polterigeist"]},"Valli di Hogsmeade":{"X":["Rospo","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Clabbert","Diricawl","Fata","Gnomo","Horklump","Imp","Jobberknoll","Mooncalf","Porlock"],"XXX":["Billywig","Doxy","Dugbog","Fiammagranchio","Glumbumble","Ippogrifo","Jarvey","Knarl","Moke","Pogrebin","Pixie","Purvincolo","Salamandra","Sblorb","Streeler"],"XXXX":["Bicorno","Centauro","Grifone","Schiopodo Sparacoda","Thestral"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Lepricani","Megera","Nano","Ninfa dei Boschi","Orco","Vampiro","Veela","Ammuntadore","Gytrash","Marciotto"]},"Vie di Hogsmeade":{"X":["Glowbug","Gufo","Rospo","Vermicolo"],"XX":["Asticello","Augurey","Bundimun","Diricawl","Ghoul","Horklump","Jobberknoll","Lumaca Carnivora","Porlock"],"XXX":["Ashwinder","Billywig","Crup","Doxy","Glumbumble","Jarvey","Knarl","Kneazle","Moke","Nogtail","Purvincolo","Snaso","Streeler"],"XXXX":[],"XXXXX":[],"Essere/Spirito/Non-Essere":["Elfo Domestico","Goblin","Megera","Vampiro","Veela","Ammuntadore","Borges","Fantasma","Molliccio","Polterigeist"]},"Foreste Magiche Inglesi":{"X":["Glowbug","Vermicolo"],"XX":["Asticello","Augurey","Cavallo Alato","Chizpurfle","Clabbert","Diricawl","Fata","Gnomo","Horklump","Jobberknoll","Mooncalf","Porlock"],"XXX":["Ashwinder","Billywig","Doxy","Dugbog","Fiammagranchio","Fwooper","Glumbumble","Ippogrifo","Jarvey","Knarl","Kneazle","Moke","Pixie","Puffskein","Purvincolo","Salamandra","Sblorb","Snaso","Streeler"],"XXXX":["Bicorno","Centauro","Erkling","Grifone","Kelpie","Thestral","Unicorno","Velenottero"],"XXXXX":["Acromantula","Quintaped"],"Essere/Spirito/Non-Essere":["Elfo Domestico","Nano","Ninfa dei Boschi","Orco","Ammuntadore","Borges","Fantasma","Gytrash","Marciotto","Molliccio"]},"Foreste Oscure":{"X":["Rospo","Vermicolo"],"XX":["Augurey","Ghoul","Horklump","Imp","Lumaca Carnivora"],"XXX":["Ashwinder","Berretto Rosso","Fiammagranchio","Fwooper","Nogtail","Pogrebin","Salamandra"],"XXXX":["Erkling","Kappa","Kelpie","Lupo Mannaro","Schiopodo Sparacoda","Thestral","Troll","Velenottero"],"XXXXX":["Acromantula","Manticora","Quintaped"],"Essere/Spirito/Non-Essere":["Gigante","Megera","Vampiro","Veela","Ammuntadore","Banshee","Borges","Dissennatore","Gytrash","Inferius","Marciotto","Molliccio","Polterigeist"]},"Coste Magiche Inglesi":{"X":["Glowbug","Marmite","Rospo"],"XX":["Avvincino","Ippocampo"],"XXX":["Lobalug","Malacaw Maculato","Plimpi"],"XXXX":["Maride"],"XXXXX":[],"Essere/Spirito/Non-Essere":["Veela","Ammuntadore","Fantasma","Gytrash","Inferius","Marciotto","Molliccio","Polterigeist"]}};
 var RM_ZONE_ALIASES={'Valle di Hogwarts':'Valli di Hogwarts','Notturn Alley':'Vicoli di Notturn Alley','Foreste Magiche Oscure':'Foreste Oscure'};
 function rmV8Zone(){var z=rmZona();return RM_ZONE_ALIASES[z]||z;}
-rmZonaLabel=function(){var z=rmV8Zone();return z==='storica'?'Non registrata (vecchia sessione)':z;};
+rmZonaLabel=function(){var z=rmV8Zone();return z==='storica'?'':z;};
 
 var RM_V8_SPEC_CTX={1:null,2:null,3:null};
 rmRecomputeSpecie=function(n){
@@ -6845,7 +6854,7 @@ rmApplyState=function(state){
 rmRenderSummary=function(){
   var host=rmEl('rm-summary-content'),bb=rmEl('rm-summary-bbcode');if(!host||!bb)return;
   var name=rmEl('nomePgRicerca')?rmEl('nomePgRicerca').value.trim():'',zone=rmZonaLabel(),t1=rmTrovaThreshold(1),t2=rmTrovaThreshold(2),t3=rmTrovaThreshold(3),bonus=rmSearchBonusSummaryText();
-  host.innerHTML='<div class="summary-grid"><div class="summary-box"><b>Zona di Ricerca</b><br>'+rmEsc(zone||'—')+'</div><div class="summary-box"><b>PG lanciatore</b><br>'+rmEsc(name||'—')+'</div><div class="summary-box"><b>Tipo</b><br>'+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'</div><div class="summary-box"><b>Empatia base</b><br>'+rmEmpatia()+'</div><div class="summary-box"><b>Sapienza Magizoologica</b><br>'+rmSapienza()+' → bonus +'+rmBonusSapienza()+'</div><div class="summary-box"><b>Incontro I</b><br>'+t1+'/30</div><div class="summary-box"><b>Incontro II</b><br>'+(rmTipo()==='attiva'?(t2+'/30'):'non disponibile')+'</div><div class="summary-box"><b>Incontro III</b><br>'+(rmTipo()==='attiva'?(t3+'/30'):'non disponibile')+'</div><div class="summary-box"><b>Valigia Magica</b><br>'+(rmValigia()==='si'?'Sì':'No')+'</div></div>'+(bonus.length?'<div class="nota-regole"><b>Bonus selezionati:</b> '+bonus.map(rmEsc).join(' · ')+'</div>':'')+'<div class="nota-regole"><b>Consigliato:</b> copia il riepilogo nel primo post della Ricerca.<br><br><b>Role di gruppo:</b> tutti i dadi devono essere lanciati dallo stesso PG. Il ritrovamento è condiviso; la Fiducia resta personale. <b>Amico delle Creature</b> può estendere ai compagni soltanto la non-ostilità, non la Fiducia necessaria per portare la Creatura nella propria Riserva.<br><br><b>Creature Esotiche:</b> possono essere incontrate soltanto fuori dal Regno Unito.</div>';
+  host.innerHTML='<div class="summary-grid"><div class="summary-box"><b>Zona di Ricerca</b><br>'+rmEsc(zone||'—')+'</div><div class="summary-box"><b>PG lanciatore</b><br>'+rmEsc(name||'—')+'</div><div class="summary-box"><b>Tipo</b><br>'+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'</div><div class="summary-box"><b>Empatia base</b><br>'+rmEmpatia()+'</div><div class="summary-box"><b>Sapienza Magizoologica</b><br>'+rmSapienza()+' → bonus +'+rmBonusSapienza()+'</div><div class="summary-box"><b>Incontro I</b><br>'+t1+'/30</div><div class="summary-box"><b>Incontro II</b><br>'+(rmTipo()==='attiva'?(t2+'/30'):'non disponibile')+'</div><div class="summary-box"><b>Incontro III</b><br>'+(rmTipo()==='attiva'?(t3+'/30'):'non disponibile')+'</div><div class="summary-box"><b>Valigia Magica</b><br>'+(rmValigia()==='si'?'Sì':'No')+'</div></div>'+(bonus.length?'<div class="nota-regole"><b>Bonus selezionati:</b> '+bonus.map(rmEsc).join(' · ')+'</div>':'')+'<div class="nota-regole"><b>Role di gruppo:</b> tutti i dadi devono essere lanciati dallo stesso PG. Il ritrovamento è condiviso; la Fiducia resta personale. <b>Amico delle Creature</b> può estendere ai compagni soltanto la non-ostilità, non la Fiducia necessaria per portare la Creatura nella propria Riserva.<br><br><b>Creature Esotiche:</b> possono essere incontrate soltanto fuori dal Regno Unito.</div>';
   bb.textContent='<b>Riepilogo Ricerca Creature Magiche — '+(name||'PG')+'</b>\n[quote]Zona di Ricerca: '+(zone||'—')+'\nPG lanciatore: '+(name||'PG')+'\nTipo: '+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva')+'\nEmpatia base: '+rmEmpatia()+'\nSapienza Magizoologica: '+rmSapienza()+' (bonus +'+rmBonusSapienza()+')\nIncontro I: '+t1+'/30'+(rmTipo()==='attiva'?('\nIncontro II: '+t2+'/30\nIncontro III: '+t3+'/30'):'')+'\nValigia Magica: '+(rmValigia()==='si'?'Sì':'No')+(bonus.length?'\nBonus: '+bonus.join('; '):'')+'\nRole di gruppo: un solo PG lancia tutti i dadi; il ritrovamento è condiviso. Amico delle Creature può estendere ai compagni solo la non-ostilità, non la Fiducia personale.[/quote]';
 };
 
@@ -6945,9 +6954,9 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
         +'<div class="summary-box"><b>Valigia Magica</b><br>'+valigia+'</div>'
         +'</div>';
       var bonusBlock=bonus.length?'<div class="nota-regole"><b>Bonus selezionati</b><br>'+bonus.map(rmEsc).join(' · ')+'</div>':'';
-      var notes='<div class="nota-regole"><b>Promemoria rapido</b><br>• Tutti i dadi della Ricerca vanno lanciati dallo stesso PG.<br>• Il ritrovamento è condiviso.<br>• La Fiducia è normalmente personale; <b>Amico delle Creature</b> può estenderla ai compagni presenti nei limiti previsti dal regolamento.<br>• Le Creature Esotiche si cercano solo fuori dal Regno Unito.</div>';
+      var notes='<div class="nota-regole"><b>Promemoria rapido</b><br>• Tutti i dadi della Ricerca vanno lanciati dallo stesso PG.<br>• Il ritrovamento è condiviso.<br>• La Fiducia necessaria per ottenere personalmente la Creatura resta personale; <b>Amico delle Creature</b> può estendere ai compagni soltanto la <b>non-ostilità</b> della Creatura.<br>• Le Creature Esotiche si cercano solo fuori dal Regno Unito.</div>';
       host.innerHTML=cards+bonusBlock+notes;
-      bb.textContent='<b>Riepilogo Ricerca Creature Magiche — '+(name||'PG')+'</b>\n[quote]Zona di Ricerca: '+(zone||'—')+'\nPG lanciatore: '+(name||'PG')+'\nTipo: '+tipo+'\nEmpatia base: '+emp+'\nSapienza Magizoologica: '+sap+' (bonus +'+bs+')\nIncontro I: soglia '+t1+'/30'+(tipo==='Ricerca Attiva'?('\nIncontro II: soglia '+t2+'/30\nIncontro III: soglia '+t3+'/30'):'')+'\nValigia Magica: '+valigia+(bonus.length?'\nBonus: '+bonus.join('; '):'')+'\nRole di gruppo: tutti i dadi della Ricerca vanno lanciati dallo stesso PG. Il ritrovamento è condiviso. La Fiducia è normalmente personale; Amico delle Creature può estenderla ai compagni presenti nei limiti previsti dal regolamento.[/quote]';
+      bb.textContent='<b>Riepilogo Ricerca Creature Magiche — '+(name||'PG')+'</b>\n[quote]Zona di Ricerca: '+(zone||'—')+'\nPG lanciatore: '+(name||'PG')+'\nTipo: '+tipo+'\nEmpatia base: '+emp+'\nSapienza Magizoologica: '+sap+' (bonus +'+bs+')\nIncontro I: soglia '+t1+'/30'+(tipo==='Ricerca Attiva'?('\nIncontro II: soglia '+t2+'/30\nIncontro III: soglia '+t3+'/30'):'')+'\nValigia Magica: '+valigia+(bonus.length?'\nBonus: '+bonus.join('; '):'')+'\nRole di gruppo: tutti i dadi della Ricerca vanno lanciati dallo stesso PG. Il ritrovamento è condiviso. La Fiducia necessaria per ottenere personalmente la Creatura resta personale; Amico delle Creature può estendere ai compagni soltanto la non-ostilità della Creatura.[/quote]';
       notify();
     };
   }
@@ -6970,6 +6979,95 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
   document.addEventListener('toggle',function(){notify();},true);
   window.addEventListener('load',notify);
   setTimeout(notify,350);
+})();
+</script>
+
+<script>
+/* ===== MAGIZOOLOGIA v45 — persistenza Guida + link Bestiario + flusso Ricerca ===== */
+(function(){
+'use strict';
+var RM_SPEC_LINKS={"Acromantula":"acromantula","Ammuntadore":"ammuntadore","Ashwinder":"ashwinder","Asticello":"asticello","Augurey":"augurey","Avvincino":"avvincino","Banshee":"banshee","Berretto Rosso":"berretto","Bicorno":"bicorno","Billywig":"billywig","Borges":"borges","Bundimun":"bundimun","Cavallo Alato":"cavalloalato","Centauro":"centauro","Chizpurfle":"chizpurfle","Clabbert":"clabbert","Crup":"crup","Diricawl":"diricawl","Dissennatore":"dissennatore","Doxy":"doxy","Dugbog":"dugbog","Elfo Domestico":"elfo","Erkling":"erkling","Fantasma":"fantasma","Fata":"fata","Fiammagranchio":"fiammagranchio","Fwooper":"fwooper","Gatto":"gatto","Ghoul":"ghoul","Gigante":"gigante","Glowbug":"glowbug","Glumbumble":"glumbumble","Gnomo":"gnomo","Goblin":"goblin","Grifone":"grifone","Gufo":"gufo","Gytrash":"gytrash","Horklump":"horklump2","Imp":"imp","Inferius":"inferius","Ippocampo":"ippocampo","Ippogrifo":"ippogrifo","Jarvey":"jarvey","Jobberknoll":"jobberknoll","Kappa":"kappa","Kelpie":"kelpie","Knarl":"knarl","Kneazle":"kneazle","Lepricani":"lepricano","Lobalug":"lobalug","Lumaca Carnivora":"lumacacarnivora","Lupo Mannaro":"lupom","Malacaw Maculato":"malacaw","Manticora":"manticora","Marciotto":"marciotto","Maride":"maride","Marmite":"marmite","Matagot":"matagot","Megera":"megera","Moke":"moke","Molliccio":"molliccio","Mooncalf":"mooncalf","Nano":"nano","Ninfa dei Boschi":"ninfa","Nogtail":"nogtail","Orco":"orco","Pixie":"pixie","Plimpi":"plimpi","Pogrebin":"pogrebin","Polterigeist":"poltergeist","Porlock":"porlock","Puffola Pigmea":"puffola","Puffskein":"puffskein","Purvincolo":"purvincolo","Quintaped":"quintaped","Rospo":"rospo","Salamandra":"salamandra","Sblorb":"sblorb","Schiopodo Sparacoda":"schiopodo","Snaso":"snaso","Streeler":"streeler","Thestral":"thestral","Troll":"troll","Unicorno":"unicorno","Vampiro":"vampiro","Veela":"veela","Velenottero":"velenottero","Vermicolo":"vermicolo"};
+var RM_SPEC_BASE='https://felixfelicisharrypottergdr.forumfree.it/?t=80408054#';
+function mz44Esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function mz44LinksForName(name){var v=RM_SPEC_LINKS[String(name||'').trim()];if(!v)return [];if(Array.isArray(v))return v.map(function(x){return {label:x.label,anchor:x.anchor};});return [{label:String(name||'').trim(),anchor:v}];}
+function mz44SpecLinkHtml(name){var a=mz44LinksForName(name);if(!a.length)return '';return '<b>Specchietto:</b> '+a.map(function(x){return '<a href="'+RM_SPEC_BASE+encodeURIComponent(x.anchor).replace(/%2F/g,'/')+'" target="_blank" rel="noopener">'+mz44Esc(x.label)+' ↗</a>';}).join(' · ');}
+function mz44UpdateSpecLink(n){var h=document.getElementById('rmSpecieLink'+n),name=document.getElementById('specieCreatura'+n);if(!h||!name)return;var html=mz44SpecLinkHtml(name.value);h.innerHTML=html;h.classList.toggle('empty',!html);}
+if(typeof window.rmRecomputeSpecie==='function'){var mz44OldSpec=window.rmRecomputeSpecie;window.rmRecomputeSpecie=function(n){var r=mz44OldSpec.apply(this,arguments);mz44UpdateSpecLink(n);return r;};}
+if(typeof window.rmEncounterSummary==='function'){var mz44OldEncounterSummary=window.rmEncounterSummary;window.rmEncounterSummary=function(n){var o=mz44OldEncounterSummary.apply(this,arguments);if(!o)return o;var e=document.getElementById('specieCreatura'+n),html=e?mz44SpecLinkHtml(e.value):'';if(html)o.html+='<br><span class="spec-sheet-inline">'+html+'</span>';return o;};}
+
+/* La pagina Riepilogo separata non esiste più. Una sessione creata con una versione precedente che la ricorda viene riportata alla Configurazione. */
+if(typeof window.rmApplyFlow==='function'){var mz44OldApplyFlow=window.rmApplyFlow;window.rmApplyFlow=function(){if(RM_FLOW.page==='summary')RM_FLOW.page='config';return mz44OldApplyFlow.apply(this,arguments);};}
+if(typeof window.rmResumeFlow==='function'){window.rmResumeFlow=function(){var page='config';if(!rmConfigReady())page='config';else if(!rmEncounterComplete(1))page='enc1';else if(RM_FLOW.outcomeVisited)page='outcome';else if(rmTipo()==='attiva'&&rmPageUnlocked('enc2')&&!rmEncounterComplete(2))page='enc2';else if(rmTipo()==='attiva'&&rmPageUnlocked('enc3')&&!rmEncounterComplete(3))page='enc3';else page='outcome';RM_FLOW.summaryVisited=rmConfigReady();RM_FLOW.page=page;rmApplyFlow();var p=document.querySelector('#creature-workspace [data-rm-page-panel="'+page+'"]');if(p)setTimeout(function(){try{p.scrollIntoView({behavior:'auto',block:'start'});}catch(e){}},80);};}
+
+/* ---------- Firebase: una Guida attiva per browser/account anonimo ---------- */
+var MZ_GUIDE_RESTORING=false,MZ_GUIDE_SAVE_TIMER=null,MZ_GUIDE_SAVE_CHAIN=Promise.resolve(),MZ_GUIDE_READY=false;
+function mzGuideStatus(msg,kind){var e=document.getElementById('mz-guide-save-status');if(!e)return;e.textContent=msg;e.className='guide-firebase-bar'+(kind?' '+kind:'');}
+function mzGuideDoc(){if(!RM_FB||!RM_FB.db||!RM_FB.user)return null;return RM_FB.db.collection(RM_COLLECTION).doc('guide_'+RM_FB.user.uid);}
+function mzGuideActivePanel(){var names=['Riconoscimento','Fiducia','Cura','Domesticazione','Allevamento','Riepilogo'];for(var i=0;i<names.length;i++){var p=document.getElementById('pannello'+names[i]);if(p&&p.classList.contains('visibile'))return names[i];}return 'Riconoscimento';}
+function mzGuidePlainFields(){var o={};document.querySelectorAll('#modoPersonaggio [data-key],#modoMagizoologia [data-key]').forEach(function(f){var k=f.getAttribute('data-key');if(!k)return;o[k]=(f.type==='checkbox'||f.type==='radio')?!!f.checked:f.value;});return o;}
+function mzGuideBonusRows(){var arr=[];document.querySelectorAll('#modoMagizoologia .mz-bonus-row.mz-phase').forEach(function(row){function val(role){var e=row.querySelector('[data-role="'+role+'"]');return e?e.value:'';}var apply=row.querySelector('[data-role="apply"]');arr.push({phase:row.dataset.phase||'',preset:row.dataset.presetKey||val('preset'),source:val('source'),condition:val('condition'),type:val('type'),value:val('value'),fatica:val('fatica'),total:val('total'),used:val('used'),apply:!!(apply&&apply.checked),autoApplied:row.dataset.autoApplied||'',linkId:row.dataset.linkId||'',localUsed:row.dataset.localUsed||'0',resolverState:typeof mzResolverSnapshot==='function'?mzResolverSnapshot(row):null});});return arr;}
+function mzGuideClone(v){try{return JSON.parse(JSON.stringify(v));}catch(e){return v;}}
+function mzGuideCollectState(){
+  return {
+    fields:mzGuidePlainFields(),
+    activePanel:mzGuideActivePanel(),
+    bonusRows:mzGuideBonusRows(),
+    globals:{
+      shared:mzGuideClone(typeof MZ_SHARED_BONUSES!=='undefined'?MZ_SHARED_BONUSES:{}),
+      sharedUid:typeof MZ_SHARED_UID!=='undefined'?MZ_SHARED_UID:0,
+      fiduciaHistory:mzGuideClone(typeof MZ_FIDUCIA_HISTORY!=='undefined'?MZ_FIDUCIA_HISTORY:[]),
+      scopertaHistory:mzGuideClone(typeof MZ_SCOPERTA_HISTORY!=='undefined'?MZ_SCOPERTA_HISTORY:[]),
+      scopertaFailures:typeof MZ_SCOPERTA_FAILURES!=='undefined'?MZ_SCOPERTA_FAILURES:0,
+      curaHistory:mzGuideClone(typeof MZ_CURA_HISTORY!=='undefined'?MZ_CURA_HISTORY:[]),
+      curaFailures:typeof MZ_CURA_FAILURES!=='undefined'?MZ_CURA_FAILURES:0,
+      domHistory:mzGuideClone(typeof MZ_DOMESTICAZIONE_HISTORY!=='undefined'?MZ_DOMESTICAZIONE_HISTORY:[]),
+      scopertaFallita:!!(typeof MZ_SCOPERTA_FALLITA!=='undefined'&&MZ_SCOPERTA_FALLITA),
+      curaFallita:!!(typeof MZ_CURA_FALLITA!=='undefined'&&MZ_CURA_FALLITA),
+      curaMalus:typeof MZ_CURA_MALUS_ALLEVAMENTO!=='undefined'?MZ_CURA_MALUS_ALLEVAMENTO:0,
+      lastCuraBonus:typeof MZ_LAST_CURA_BONUS_DOM!=='undefined'?MZ_LAST_CURA_BONUS_DOM:0,
+      imposiumSuccess:!!(typeof MZ_IMPOSIUM_SUCCESS!=='undefined'&&MZ_IMPOSIUM_SUCCESS),
+      imposiumDom:typeof MZ_IMPOSIUM_DOM_MALUS!=='undefined'?MZ_IMPOSIUM_DOM_MALUS:0,
+      imposiumPost:typeof MZ_IMPOSIUM_POST_MALUS!=='undefined'?MZ_IMPOSIUM_POST_MALUS:0,
+      illegalSignatures:mzGuideClone(typeof MZ_ILLEGAL_SIGNATURES!=='undefined'?MZ_ILLEGAL_SIGNATURES:{cura:null,allevamento:null}),
+      curaEbbe:!!(typeof curaEbbeUnFallimento!=='undefined'&&curaEbbeUnFallimento)
+    }
+  };
+}
+function mzGuideSetFields(fields,restoreProfile){fields=fields||{};document.querySelectorAll((restoreProfile?'#modoPersonaggio [data-key],':'')+'#modoMagizoologia [data-key]').forEach(function(f){var k=f.getAttribute('data-key');if(fields[k]===undefined)return;if(f.type==='checkbox'||f.type==='radio')f.checked=!!fields[k];else f.value=fields[k];});}
+function mzGuideRestoreRows(rows,globals){['fiducia','scoperta','cura','domesticazione','allevamento'].forEach(function(ph){var box=mzPhaseBox(ph);if(box)box.innerHTML='';});MZ_SHARED_BONUSES=mzGuideClone((globals&&globals.shared)||{});MZ_SHARED_UID=Number((globals&&globals.sharedUid)||0);MZ_BONUS_UID=0;(rows||[]).forEach(function(d){if(!d.phase)return;var row=mzCreatePhaseBonusRow(d.phase,{preset:d.preset,source:d.source,condition:d.condition,type:d.type,value:d.value,fatica:d.fatica,total:d.total,used:d.used,linkId:d.linkId,localUsed:d.localUsed,sharedUsed:d.linkId&&MZ_SHARED_BONUSES[d.linkId]?MZ_SHARED_BONUSES[d.linkId].used:0,resolverState:d.resolverState,silent:true});if(!row)return;var used=row.querySelector('[data-role="used"]');if(used&&d.used!==undefined)used.value=d.used;var apply=row.querySelector('[data-role="apply"]');if(apply){apply.checked=!!d.apply;apply.disabled=false;}row.dataset.autoApplied=d.autoApplied||'';if(d.linkId)row.dataset.linkId=d.linkId;});Object.keys(MZ_SHARED_BONUSES||{}).forEach(function(id){if(typeof mzSyncSharedRows==='function')mzSyncSharedRows(id);});}
+function mzGuideApplyState(st){if(!st)return;MZ_GUIDE_RESTORING=true;try{var restoreProfile=!RM_CURRENT_ID&&!rmSessionIdFromHash();mzGuideSetFields(st.fields,restoreProfile);if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();var g=st.globals||{};mzGuideRestoreRows(st.bonusRows||[],g);MZ_FIDUCIA_HISTORY=mzGuideClone(g.fiduciaHistory||[]);MZ_SCOPERTA_HISTORY=mzGuideClone(g.scopertaHistory||[]);MZ_SCOPERTA_FAILURES=Number(g.scopertaFailures||0);MZ_CURA_HISTORY=mzGuideClone(g.curaHistory||[]);MZ_CURA_FAILURES=Number(g.curaFailures||0);MZ_DOMESTICAZIONE_HISTORY=mzGuideClone(g.domHistory||[]);MZ_SCOPERTA_FALLITA=!!g.scopertaFallita;MZ_CURA_FALLITA=!!g.curaFallita;MZ_CURA_MALUS_ALLEVAMENTO=Number(g.curaMalus||0);MZ_LAST_CURA_BONUS_DOM=Number(g.lastCuraBonus||0);MZ_IMPOSIUM_SUCCESS=!!g.imposiumSuccess;MZ_IMPOSIUM_DOM_MALUS=Number(g.imposiumDom||0);MZ_IMPOSIUM_POST_MALUS=Number(g.imposiumPost||0);MZ_ILLEGAL_SIGNATURES=mzGuideClone(g.illegalSignatures||{cura:null,allevamento:null});curaEbbeUnFallimento=!!g.curaEbbe;if(typeof mzRenderFiduciaHistory==='function')mzRenderFiduciaHistory();if(typeof mzRenderScopertaHistory==='function')mzRenderScopertaHistory();if(typeof mzRenderCuraHistory==='function')mzRenderCuraHistory();if(typeof mzRenderDomesticazioneHistory==='function')mzRenderDomesticazioneHistory();if(typeof mzSyncAllAttemptDisplays==='function')mzSyncAllAttemptDisplays();if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();if(st.activePanel&&document.getElementById('pannello'+st.activePanel))mostraPannello(st.activePanel);}finally{MZ_GUIDE_RESTORING=false;}}
+function mzGuideSaveNow(){var ref=mzGuideDoc();if(!ref||MZ_GUIDE_RESTORING)return Promise.resolve();if(MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}var payload={recordType:'guide',ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-guide-v45',state:mzGuideCollectState()};mzGuideStatus('Guida: salvataggio automatico su Firebase…','saving');var task=MZ_GUIDE_SAVE_CHAIN.catch(function(){}).then(function(){return ref.set(payload,{merge:true});}).then(function(){mzGuideStatus('Guida salvata automaticamente su Firebase ✓','ok');}).catch(function(err){console.error(err);mzGuideStatus('Guida: errore di salvataggio Firebase — '+(err.message||err),'bad');});MZ_GUIDE_SAVE_CHAIN=task;return task;}
+function mzGuideScheduleSave(){if(MZ_GUIDE_RESTORING||!MZ_GUIDE_READY||!RM_FB.user)return;if(MZ_GUIDE_SAVE_TIMER)clearTimeout(MZ_GUIDE_SAVE_TIMER);mzGuideStatus('Guida: modifiche da salvare…','saving');MZ_GUIDE_SAVE_TIMER=setTimeout(mzGuideSaveNow,700);}
+window.mzGuideFirebaseReady=function(user){if(!user||!RM_FB.db)return;MZ_GUIDE_READY=true;var ref=mzGuideDoc();mzGuideStatus('Guida: caricamento del salvataggio Firebase…','saving');ref.get().then(function(doc){if(doc.exists&&doc.data()&&doc.data().state){mzGuideApplyState(doc.data().state);mzGuideStatus('Guida ripristinata da Firebase · autosalvataggio attivo ✓','ok');}else{mzGuideStatus('Guida pronta · autosalvataggio Firebase attivo ✓','ok');}}).catch(function(err){console.error(err);mzGuideStatus('Guida: impossibile leggere il salvataggio Firebase — '+(err.message||err),'bad');});};
+function mz44InsideGuideOrProfile(t){var g=document.getElementById('modoMagizoologia'),p=document.getElementById('modoPersonaggio');return !!(t&&((g&&g.contains(t))||(p&&p.contains(t))));}
+document.addEventListener('input',function(e){if(mz44InsideGuideOrProfile(e.target))mzGuideScheduleSave();},true);document.addEventListener('change',function(e){if(mz44InsideGuideOrProfile(e.target))mzGuideScheduleSave();},true);document.addEventListener('click',function(e){if(mz44InsideGuideOrProfile(e.target)&&e.target.closest&&e.target.closest('button'))setTimeout(mzGuideScheduleSave,80);},true);document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&MZ_GUIDE_READY)mzGuideSaveNow();});window.addEventListener('pagehide',function(){if(MZ_GUIDE_READY)mzGuideSaveNow();});
+
+/* Vecchie sessioni: niente voce criptica; si chiede semplicemente di riselezionare la Zona. */
+var mz44OldApplyState=window.rmApplyState;window.rmApplyState=function(state){state=state||{};var oldZone=(state.zonaRicerca===undefined||state.zonaRicerca==='storica');if(oldZone){state=Object.assign({},state,{zonaRicerca:'',_legacyZoneNeedsSelection:true,flowPage:state.flowPage==='summary'?'config':state.flowPage});}var r=mz44OldApplyState(state);var n=document.getElementById('rmLegacyZoneNotice');if(n)n.classList.toggle('show',!!state._legacyZoneNeedsSelection);return r;};
+
+for(var i=1;i<=3;i++)mz44UpdateSpecLink(i);
+if(typeof ricalcolaRicerca==='function')ricalcolaRicerca();
+})();
+</script>
+
+
+<script>
+/* v45 — collegamento contestuale Magizoologia ↔ Riuscita delle Conoscenze. */
+(function(){
+  'use strict';
+  var BASE='https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze';
+  function returnContext(){return {from:'magizoologia',returnUrl:window.location.href,ts:Date.now()};}
+  function rememberReturn(){try{localStorage.setItem('ffgdr_knowledge_return_v1',JSON.stringify(returnContext()));}catch(e){}}
+  function targetUrl(){
+    return BASE+'&from=magizoologia';
+  }
+  function wire(root){
+    (root||document).querySelectorAll('a[href*="?pag=riuscitaconoscenze"]').forEach(function(a){a.href=targetUrl();});
+  }
+  function init(){wire(document);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+  document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href*="?pag=riuscitaconoscenze"]'):null;if(a){rememberReturn();a.href=targetUrl();}},true);
+  if(window.MutationObserver){try{new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1)wire(n);});});}).observe(document.documentElement,{subtree:true,childList:true});}catch(e){}}
 })();
 </script>
 
