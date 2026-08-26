@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
-<!-- v63: sincronizzazione completa Ricerca → Guida + controllo specie/classificazione -->
+<!-- v64: selettore/autocompletamento specie + aggiornamento immediato dati deducibili -->
 <!-- v53: apertura Ricerca immediata + aggancio Firebase del PG durante la compilazione -->
 <!-- v52: sessione Firebase agganciata dal profilo PG + allineamento flusso Ricerca con Erbologia -->
 <!-- Revisione standardizzata v3: preservazione storico usi/Fatica + tentativo minimo automatico sugli esiti validi -->
@@ -2989,8 +2989,98 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="riga">
   <div class="campo" style="flex:2 1 320px">
     <label>Creatura che stai gestendo</label>
-    <input type="text" id="specieCreaturaGuida" data-key="specieCreaturaGuida" maxlength="120" placeholder="Es. Ippogrifo">
-    <div class="numeric-note">Se arrivi dalla Ricerca, viene compilata automaticamente. Se la Creatura era già conosciuta o acquistata, inseriscila manualmente.</div>
+    <input type="text" id="specieCreaturaGuida" data-key="specieCreaturaGuida" maxlength="120" placeholder="Cerca o seleziona una Creatura" list="mzSpeciesCatalog" autocomplete="off">
+    <datalist id="mzSpeciesCatalog">
+      <option value="Acromantula"></option>
+      <option value="Ammuntadore"></option>
+      <option value="Ashwinder"></option>
+      <option value="Asticello"></option>
+      <option value="Augurey"></option>
+      <option value="Avvincino"></option>
+      <option value="Banshee"></option>
+      <option value="Berretto Rosso"></option>
+      <option value="Bicorno"></option>
+      <option value="Billywig"></option>
+      <option value="Borges"></option>
+      <option value="Bundimun"></option>
+      <option value="Cavallo Alato"></option>
+      <option value="Centauro"></option>
+      <option value="Chizpurfle"></option>
+      <option value="Clabbert"></option>
+      <option value="Crup"></option>
+      <option value="Diricawl"></option>
+      <option value="Dissennatore"></option>
+      <option value="Doxy"></option>
+      <option value="Dugbog"></option>
+      <option value="Elfo Domestico"></option>
+      <option value="Erkling"></option>
+      <option value="Fantasma"></option>
+      <option value="Fata"></option>
+      <option value="Fiammagranchio"></option>
+      <option value="Fwooper"></option>
+      <option value="Gatto"></option>
+      <option value="Ghoul"></option>
+      <option value="Gigante"></option>
+      <option value="Glowbug"></option>
+      <option value="Glumbumble"></option>
+      <option value="Gnomo"></option>
+      <option value="Goblin"></option>
+      <option value="Grifone"></option>
+      <option value="Gufo"></option>
+      <option value="Gytrash"></option>
+      <option value="Horklump"></option>
+      <option value="Imp"></option>
+      <option value="Inferius"></option>
+      <option value="Ippocampo"></option>
+      <option value="Ippogrifo"></option>
+      <option value="Jarvey"></option>
+      <option value="Jobberknoll"></option>
+      <option value="Kappa"></option>
+      <option value="Kelpie"></option>
+      <option value="Knarl"></option>
+      <option value="Kneazle"></option>
+      <option value="Lepricani"></option>
+      <option value="Lobalug"></option>
+      <option value="Lumaca Carnivora"></option>
+      <option value="Lupo Mannaro"></option>
+      <option value="Malacaw Maculato"></option>
+      <option value="Manticora"></option>
+      <option value="Marciotto"></option>
+      <option value="Maride"></option>
+      <option value="Marmite"></option>
+      <option value="Matagot"></option>
+      <option value="Megera"></option>
+      <option value="Moke"></option>
+      <option value="Molliccio"></option>
+      <option value="Mooncalf"></option>
+      <option value="Nano"></option>
+      <option value="Ninfa dei Boschi"></option>
+      <option value="Nogtail"></option>
+      <option value="Orco"></option>
+      <option value="Pixie"></option>
+      <option value="Plimpi"></option>
+      <option value="Pogrebin"></option>
+      <option value="Polterigeist"></option>
+      <option value="Porlock"></option>
+      <option value="Puffola Pigmea"></option>
+      <option value="Puffskein"></option>
+      <option value="Purvincolo"></option>
+      <option value="Quintaped"></option>
+      <option value="Rospo"></option>
+      <option value="Salamandra"></option>
+      <option value="Sblorb"></option>
+      <option value="Schiopodo Sparacoda"></option>
+      <option value="Snaso"></option>
+      <option value="Streeler"></option>
+      <option value="Thestral"></option>
+      <option value="Troll"></option>
+      <option value="Unicorno"></option>
+      <option value="Vampiro"></option>
+      <option value="Veela"></option>
+      <option value="Velenottero"></option>
+      <option value="Vermicolo"></option>
+    </datalist>
+    <div class="numeric-note">Se arrivi dalla Ricerca viene compilata automaticamente. Altrimenti cerca o seleziona una Creatura dall’elenco; puoi comunque digitare manualmente una specie non presente.</div>
   </div>
   <div class="campo" id="campoVotoStudente">
     <label>Voto nella singola Creatura</label>
@@ -8178,6 +8268,70 @@ for(var n=1;n<=3;n++)(function(i){
 })(n);
 window.mzSyncSpeciesClassification=sync;
 setTimeout(sync,0);
+})();
+</script>
+
+
+<script id="magizoologia-v64-species-picker">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function norm(v){
+  v=String(v||'');
+  try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}
+  return v.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
+}
+var input=E('specieCreaturaGuida'),nameField=E('nomeCreaturaGuida');
+if(!input)return;
+
+var canonical={};
+var list=E('mzSpeciesCatalog');
+if(list){
+  Array.prototype.forEach.call(list.options,function(o){canonical[norm(o.value)]=o.value;});
+}
+var lastCommitted=norm(input.value);
+
+function commitFromCatalog(){
+  var key=norm(input.value),canon=canonical[key];
+  if(!canon || key===lastCommitted)return;
+
+  var old=input.dataset.v64PreviousSpecies || '';
+  input.dataset.v64PreviousSpecies=canon;
+  lastCommitted=key;
+
+  input.dataset.researchEncounter='';
+  input.dataset.researchClass='';
+  input.value=canon;
+
+  if(nameField && (
+    nameField.dataset.autoSpeciesName==='1' ||
+    !nameField.value.trim() ||
+    norm(nameField.value)===norm(old)
+  )){
+    nameField.value=canon;
+    nameField.dataset.autoSpeciesName='1';
+    try{nameField.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}
+  }
+
+  try{input.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}
+
+  var status=E('mzSpeciesClassSync');
+  if(status){
+    setTimeout(function(){
+      var extra='<br><span style="font-weight:400">Aggiornati automaticamente i dati deducibili dalla specie; voto ed esiti della Creatura precedente sono stati azzerati. Sesso e fase vitale restano invariati perché appartengono al singolo esemplare.</span>';
+      if(status.innerHTML.indexOf('Aggiornati automaticamente')<0)status.innerHTML+=extra;
+    },0);
+  }
+}
+input.addEventListener('focus',function(){
+  input.dataset.v64PreviousSpecies=input.value.trim();
+});
+input.addEventListener('input',commitFromCatalog);
+input.addEventListener('change',function(){
+  var key=norm(input.value);
+  if(canonical[key])input.value=canonical[key];
+  lastCommitted=norm(input.value);
+});
 })();
 </script>
 
