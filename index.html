@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
+<!-- v63: sincronizzazione completa Ricerca → Guida + controllo specie/classificazione -->
 <!-- v53: apertura Ricerca immediata + aggancio Firebase del PG durante la compilazione -->
 <!-- v52: sessione Firebase agganciata dal profilo PG + allineamento flusso Ricerca con Erbologia -->
 <!-- Revisione standardizzata v3: preservazione storico usi/Fatica + tentativo minimo automatico sugli esiti validi -->
@@ -2798,6 +2799,24 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 #modoMagizoologia .pannello .scheda .copy-btn,
 #modoMagizoologia .pannello .blocco-incontro .copy-btn{background:#743a20!important;color:#fff8f2!important;border-color:#a75d36!important;}
 </style>
+
+<style id="v63-species-class-sync-style">
+.species-class-sync{
+  margin:10px 0 0;
+  padding:9px 11px;
+  border:1px solid #b88765;
+  border-left:4px solid #9d6746;
+  border-radius:7px;
+  background:#f1dfcf;
+  color:#3c2418!important;
+  line-height:1.45;
+}
+.species-class-sync b{color:inherit!important}
+.species-class-sync.ok{background:#e6efd9;border-color:#86a66d;color:#29401d!important}
+.species-class-sync.warn{background:#f5e8c9;border-color:#b88c39;color:#5b431c!important}
+.species-class-sync.bad{background:#f3d4cc;border-color:#c16451;color:#6a271e!important;font-weight:700}
+</style>
+
 </head>
 <body>
 <div class="contenitore">
@@ -2989,6 +3008,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
   </div>
 </div>
 <div id="mzSpecificVoteHint" class="specific-knowledge-note"></div>
+<div id="mzSpeciesClassSync" class="species-class-sync">Inserisci una Creatura: il tool controllerà automaticamente che specie e Classificazione siano coerenti.</div>
 </div>
 <div class="check-riga">
   <input type="checkbox" id="nataInRiserva" data-key="nataInRiserva">
@@ -7977,9 +7997,12 @@ function phaseData(n){
 }
 function transfer(n){
   var sp=species(n),c=cls(n);if(!sp)return false;var vote=E('rmVotoRicerca'+n),current=E('specieCreaturaGuida');
-  if(current&&current.value.trim()!==sp&&typeof resetGuidaMagizoologia==='function')resetGuidaMagizoologia();
+  var previousEncounter=current?(current.dataset.researchEncounter||''):'';
+  if(current&&(current.value.trim()!==sp||previousEncounter!==String(n))&&typeof resetGuidaMagizoologia==='function')resetGuidaMagizoologia();
   var spec=E('specieCreaturaGuida'),nome=E('nomeCreaturaGuida'),cl=E('classificazione'),gv=E('pgVoto'),fase=E('faseVitale'),sesso=E('sessoCreaturaGuida');
-  if(spec)spec.value=sp;if(nome&&!nome.value)nome.value=sp;if(cl&&/^(X|XX|XXX|XXXX|XXXXX)$/.test(c))cl.value=c;
+  if(spec){spec.value=sp;spec.dataset.researchEncounter=String(n);spec.dataset.researchClass=c||'';}
+  if(nome&&!nome.value){nome.value=sp;nome.dataset.autoSpeciesName='1';}
+  if(cl&&/^(X|XX|XXX|XXXX|XXXXX)$/.test(c))cl.value=c;
   var pd=phaseData(n);if(pd){if(fase&&pd.phase)fase.value=pd.phase;if(sesso&&pd.sex)sesso.value=pd.sex;}
   lastSpec=sp;[spec,nome,cl,fase,sesso].forEach(function(x){if(x)fire(x,'change');});if(student()&&gv&&vote){gv.value=vote.value;fire(gv,'change');}window.ricalcolaMagizoologia();var syncBox=E('rmGuideBridge'+n);if(syncBox)syncBox.setAttribute('data-v58-synced',sp+'|'+(student()&&vote?vote.value:'adult'));return true;
 }
@@ -8082,6 +8105,81 @@ render(false);
 })();
 </script>
 
+
+
+<script id="magizoologia-v63-species-class-sync">
+(function(){
+'use strict';
+var CLASS_BY_SPECIES={"Glowbug":"X","Marmite":"X","Rospo":"X","Avvincino":"XX","Bundimun":"XX","Chizpurfle":"XX","Clabbert":"XX","Horklump":"XX","Imp":"XX","Ippocampo":"XX","Jobberknoll":"XX","Lobalug":"XXX","Malacaw Maculato":"XXX","Moke":"XXX","Pogrebin":"XXX","Plimpi":"XXX","Purvincolo":"XXX","Sblorb":"XXX","Streeler":"XXX","Kappa":"XXXX","Kelpie":"XXXX","Maride":"XXXX","Thestral":"XXXX","Unicorno":"XXXX","Elfo Domestico":"Essere/Spirito/Non-Essere","Nano":"Essere/Spirito/Non-Essere","Ninfa dei Boschi":"Essere/Spirito/Non-Essere","Gytrash":"Essere/Spirito/Non-Essere","Marciotto":"Essere/Spirito/Non-Essere","Molliccio":"Essere/Spirito/Non-Essere","Vermicolo":"X","Gufo":"X","Asticello":"XX","Augurey":"XX","Cavallo Alato":"XX","Fata":"XX","Gnomo":"XX","Lumaca Carnivora":"XX","Mooncalf":"XX","Berretto Rosso":"XXX","Billywig":"XXX","Doxy":"XXX","Dugbog":"XXX","Glumbumble":"XXX","Ippogrifo":"XXX","Jarvey":"XXX","Knarl":"XXX","Pixie":"XXX","Salamandra":"XXX","Centauro":"XXXX","Schiopodo Sparacoda":"XXXX","Troll":"XXXX","Acromantula":"XXXXX","Diricawl":"XX","Porlock":"XX","Fiammagranchio":"XXX","Bicorno":"XXXX","Grifone":"XXXX","Quintaped":"XXXXX","Lepricani":"Essere/Spirito/Non-Essere","Megera":"Essere/Spirito/Non-Essere","Orco":"Essere/Spirito/Non-Essere","Vampiro":"Essere/Spirito/Non-Essere","Veela":"Essere/Spirito/Non-Essere","Ammuntadore":"Essere/Spirito/Non-Essere","Gatto":"X","Puffola Pigmea":"X","Ghoul":"XX","Crup":"XXX","Fwooper":"XXX","Kneazle":"XXX","Puffskein":"XXX","Snaso":"XXX","Matagot":"XXXX","Goblin":"Essere/Spirito/Non-Essere","Fantasma":"Essere/Spirito/Non-Essere","Ashwinder":"XXX","Nogtail":"XXX","Banshee":"Essere/Spirito/Non-Essere","Borges":"Essere/Spirito/Non-Essere","Polterigeist":"Essere/Spirito/Non-Essere","Erkling":"XXXX","Velenottero":"XXXX","Lupo Mannaro":"XXXX","Manticora":"XXXXX","Gigante":"Essere/Spirito/Non-Essere","Dissennatore":"Essere/Spirito/Non-Essere","Inferius":"Essere/Spirito/Non-Essere"};
+function E(id){return document.getElementById(id);}
+function norm(v){
+  v=String(v||'');
+  try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}
+  return v.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
+}
+var NORMALIZED={};
+Object.keys(CLASS_BY_SPECIES).forEach(function(k){NORMALIZED[norm(k)]={name:k,cls:CLASS_BY_SPECIES[k]};});
+function expected(name){return NORMALIZED[norm(name)]||null;}
+function fire(el){if(!el)return;try{el.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}}
+var syncing=false,lastSpecies=(E('specieCreaturaGuida')||{value:''}).value.trim();
+
+function phaseLabel(v){return {uovo:'Uovo/Cucciolo',infante:'Infante',adolescente:'Adolescente',adulta:'Adulta',anziana:'Anziana'}[v]||'';}
+function render(message,kind){
+  var h=E('mzSpeciesClassSync');if(!h)return;
+  h.className='species-class-sync'+(kind?' '+kind:'');
+  h.innerHTML=message;
+}
+function sync(source){
+  if(syncing)return;
+  var sp=E('specieCreaturaGuida'),cl=E('classificazione');if(!sp||!cl)return;
+  var name=sp.value.trim(),info=expected(name);
+  if(!name){render('Inserisci una Creatura: il tool controllerà automaticamente che specie e Classificazione siano coerenti.','');return;}
+  if(!info){
+    render('<b>'+name.replace(/[<>&]/g,'')+':</b> la specie non è presente negli elenchi incorporati della Ricerca, quindi la Classificazione non viene modificata automaticamente. Verificala nel Bestiario.','warn');
+    return;
+  }
+  if(info.cls==='Essere/Spirito/Non-Essere'){
+    render('<b>'+name.replace(/[<>&]/g,'')+':</b> la Ricerca la tratta come <b>Essere / Spirito / Non-Essere</b>, non con una Classificazione X–XXXXX. Il valore X–XXXXX della Guida non può essere ricavato automaticamente e non deve essere considerato una classificazione della Creatura.','warn');
+    return;
+  }
+  if(cl.value!==info.cls){
+    var old=cl.value;
+    syncing=true;cl.value=info.cls;fire(cl);syncing=false;
+    render('<b>Classificazione corretta automaticamente:</b> '+name.replace(/[<>&]/g,'')+' è <b>'+info.cls+'</b>, non '+(old||'—')+'.','bad');
+  }else{
+    var enc=sp.dataset.researchEncounter||'',extra='';
+    if(enc){
+      var ph=phaseLabel((E('faseVitale')||{}).value||''),sex=(E('sessoCreaturaGuida')||{}).value||'';
+      extra=' · importata dalla Ricerca, Incontro '+enc;
+      if(enc==='1'&&(ph||sex))extra+=' · '+[sex,ph].filter(Boolean).join(' · ');
+      if(enc!=='1')extra+=' · Sesso/Fase Vitale non vengono determinati negli Incontri II/III e vanno controllati nella Guida';
+    }
+    render('<b>Specie/Classificazione coerenti:</b> '+name.replace(/[<>&]/g,'')+' → <b>'+info.cls+'</b>'+extra+'.','ok');
+  }
+}
+var sp=E('specieCreaturaGuida'),cl=E('classificazione'),nome=E('nomeCreaturaGuida');
+if(sp)sp.addEventListener('change',function(e){
+  var now=sp.value.trim(),old=lastSpecies;lastSpecies=now;
+  if(e&&e.isTrusted){
+    sp.dataset.researchEncounter='';sp.dataset.researchClass='';
+    if(nome&&((nome.dataset.autoSpeciesName==='1')||nome.value.trim()===old)){
+      nome.value=now;nome.dataset.autoSpeciesName='1';fire(nome);
+    }
+  }
+  sync('species');
+});
+if(cl)cl.addEventListener('change',function(){sync('class');});
+if(nome)nome.addEventListener('input',function(e){if(e&&e.isTrusted)nome.dataset.autoSpeciesName='';});
+for(var n=1;n<=3;n++)(function(i){
+  ['rmInteragisciSubito'+i,'rmVotoRicerca'+i,'rmOpenGuide'+i].forEach(function(id){
+    var x=E(id);if(x)x.addEventListener('change',function(){setTimeout(sync,0);});
+    if(x&&x.tagName==='BUTTON')x.addEventListener('click',function(){setTimeout(sync,0);});
+  });
+})(n);
+window.mzSyncSpeciesClassification=sync;
+setTimeout(sync,0);
+})();
+</script>
 
 </body>
 </html>
