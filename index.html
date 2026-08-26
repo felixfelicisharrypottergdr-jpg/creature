@@ -2288,6 +2288,17 @@ body{color:#211008!important;}
 <style id="mz-advanced-bridge-v46">
 .mz-bridge-status{margin-top:7px;padding:7px 9px;border-radius:5px;background:rgba(255,255,255,.035);color:#ead2c0;font-size:.78em;line-height:1.4}.mz-bridge-status.ok{border-left:3px solid #8fb260;color:#e7f4d8}.mz-bridge-status.warn{border-left:3px solid #d79a55;color:#ffe2bf}.mz-knowledge-tool a[data-mz-bridge-open]{display:inline-flex;align-items:center;gap:6px}
 </style>
+
+<style id="magizoologia-v49-leggibilita">
+.mz-knowledge-tool{margin:12px 0 19px!important;}
+.mz-knowledge-tool + .riga,
+.mz-knowledge-tool + .mz-resolver-grid{margin-top:4px!important;}
+.contenitore a,
+.contenitore a:visited{color:#fff2dc!important;}
+.contenitore a:hover{color:#ffffff!important;}
+.contenitore{overflow:visible!important;padding-bottom:55px!important;}
+</style>
+
 </head>
 <body>
 <div class="contenitore">
@@ -2301,8 +2312,6 @@ body{color:#211008!important;}
   <button class="modo-bottone" id="modoRicercaBtn">Ricerca Creature Magiche</button>
   <button class="modo-bottone" id="modoMagizoologiaBtn">Guida alla Magizoologia</button>
 </div>
-<div class="nota-regole tool-crosslink"><b>Riuscita delle Conoscenze:</b> per Incantesimi e Tecniche che richiedono un esito, apri il <a href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener">Generatore di Riuscita delle Conoscenze ↗</a>.</div>
-
 <div id="modoPersonaggio" class="modo-sezione visibile">
 <div class="scheda">
 <h2>Il tuo Personaggio</h2>
@@ -7173,5 +7182,22 @@ if(typeof ricalcolaRicerca==='function')ricalcolaRicerca();
 })();
 </script>
 
+
+<script>
+/* v48 — quando si torna dal Generatore, apre direttamente la sezione del tool invece dell'inizio pagina. */
+(function(){
+  'use strict';
+  function openToolAnchor(){
+    if(String(window.location.hash||'')!=='#modoMagizoologia')return;
+    try{ if(typeof mostraModo==='function')mostraModo('Magizoologia'); }catch(e){}
+    setTimeout(function(){
+      var el=document.getElementById('modoMagizoologia');
+      if(el&&el.scrollIntoView)el.scrollIntoView({block:'start'});
+    },80);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',openToolAnchor);else openToolAnchor();
+  window.addEventListener('hashchange',openToolAnchor);
+})();
+</script>
 </body>
 </html>
