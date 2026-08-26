@@ -2284,6 +2284,10 @@ body{color:#211008!important;}
 
 </style>
 
+
+<style id="mz-advanced-bridge-v46">
+.mz-bridge-status{margin-top:7px;padding:7px 9px;border-radius:5px;background:rgba(255,255,255,.035);color:#ead2c0;font-size:.78em;line-height:1.4}.mz-bridge-status.ok{border-left:3px solid #8fb260;color:#e7f4d8}.mz-bridge-status.warn{border-left:3px solid #d79a55;color:#ffe2bf}.mz-knowledge-tool a[data-mz-bridge-open]{display:inline-flex;align-items:center;gap:6px}
+</style>
 </head>
 <body>
 <div class="contenitore">
@@ -3574,18 +3578,115 @@ function mzCopyResolverState(from,to){
   [['[data-resolver-eff]',a.eff],['[data-resolver-bonus]',a.bonus]].forEach(function(x){var e=r.querySelector(x[0]);if(e)e.value=x[1];});
   mzRefreshFamilyResolver(to,to.dataset.phase||'');
 }
+/* ===== PONTE MAGIZOOLOGIA ↔ RIUSCITA DELLE CONOSCENZE ===== */
+var MZ_KNOWLEDGE_BRIDGE_REQUEST_PREFIX='ffgdr_mz_knowledge_request_v2_';
+var MZ_KNOWLEDGE_BRIDGE_RESPONSE_PREFIX='ffgdr_mz_knowledge_response_v2_';
+var MZ_KNOWLEDGE_BRIDGE_LEGACY_REQUEST_KEY='ffgdr_mz_knowledge_request_v1';
+var MZ_KNOWLEDGE_BRIDGE_LEGACY_RESPONSE_KEY='ffgdr_mz_knowledge_response_v1';
+var MZ_KNOWLEDGE_TOOL_URL='https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze#riuscitaFrame';
+function mzBridgeId(){return 'mz_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);}
+function mzBridgeProfile(){
+  var type=(document.getElementById('pgTipo')||{}).value||'studente',vote='',sap=0;
+  if(type==='studente'){
+    var follows=(document.getElementById('pgSegueCDCM')||{}).value||'si';
+    vote=follows==='no'?'T':((document.getElementById('pgVoto')||{}).value||'T');
+  }else{
+    try{sap=mzProfiloSapienza();}catch(e){sap=0;}
+  }
+  return {pgType:type,studentVote:vote,sapienzaScore:sap,hasSapienza:type==='adulto'&&sap>0};
+}
+function mzBridgeStatus(row,message,kind){
+  if(!row)return;var el=row.querySelector('[data-mz-bridge-status]');if(!el)return;
+  el.className='mz-bridge-status'+(kind?' '+kind:'');el.textContent=message||'';
+}
+function mzBridgeCleanupStorage(){
+  var now=Date.now(),remove=[];
+  try{
+    for(var i=0;i<window.localStorage.length;i++){
+      var key=window.localStorage.key(i)||'';
+      if(key.indexOf(MZ_KNOWLEDGE_BRIDGE_REQUEST_PREFIX)!==0 && key.indexOf(MZ_KNOWLEDGE_BRIDGE_RESPONSE_PREFIX)!==0)continue;
+      var obj=null;try{obj=JSON.parse(window.localStorage.getItem(key)||'');}catch(e){obj=null;}
+      if(!obj || !obj.createdAt || now-Number(obj.createdAt)>2*60*60*1000)remove.push(key);
+    }
+    remove.forEach(function(key){window.localStorage.removeItem(key);});
+  }catch(e){}
+}
+function mzBridgeMakeRequest(row,phase,p,context){
+  if(!row||!p)return false;
+  var profile=mzBridgeProfile(),id=mzBridgeId();
+  row.dataset.mzBridgeRequestId=id;
+  var req={version:1,requestId:id,knowledge:p.source||p.label,label:p.label||p.source||'',phase:phase||'',context:context||'guida',pgType:profile.pgType,studentVote:profile.studentVote,sapienzaScore:profile.sapienzaScore,hasSapienza:profile.hasSapienza,returnUrl:window.location.href,createdAt:Date.now()};
+  try{
+    mzBridgeCleanupStorage();
+    window.localStorage.setItem(MZ_KNOWLEDGE_BRIDGE_REQUEST_PREFIX+id,JSON.stringify(req));
+    mzBridgeStatus(row,'Richiesta '+id+' preparata: il Generatore aprirà '+(p.source||p.label)+' già selezionata e riporterà l’esito soltanto in questa riga.','');
+    return true;
+  }catch(e){
+    mzBridgeStatus(row,'Collegamento automatico non disponibile: usa comunque il Generatore e riporta qui manualmente la riuscita ottenuta.','warn');
+    return false;
+  }
+}
+function mzBridgeBindLink(row,phase,p,context){
+  if(!row)return;var link=row.querySelector('[data-mz-bridge-open]');if(!link)return;
+  link.addEventListener('click',function(){mzBridgeMakeRequest(row,phase,p,context);});
+}
+function mzBridgeFindWaitingRow(requestId){
+  if(!requestId)return null;var found=null;
+  document.querySelectorAll('.mz-bonus-row.mz-phase,.rm-search-bonus-row').forEach(function(row){if(!found&&row.dataset.mzBridgeRequestId===requestId)found=row;});
+  return found;
+}
+function mzBridgeImportResponse(raw){
+  var resp=null;
+  try{resp=typeof raw==='string'?JSON.parse(raw):raw;}catch(e){resp=null;}
+  if(!resp||!resp.requestId||[0,33,66,100].indexOf(Number(resp.pct))<0)return false;
+  if(resp.createdAt&&Date.now()-Number(resp.createdAt)>2*60*60*1000)return false;
+  var row=mzBridgeFindWaitingRow(resp.requestId);if(!row)return false;
+  var eff=row.querySelector('[data-resolver-eff]');if(!eff)return false;
+  eff.value=String(Number(resp.pct));
+  try{eff.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){
+    if(row.classList.contains('mz-bonus-row')){mzRefreshFamilyResolver(row,row.dataset.phase||'');ricalcolaMagizoologia();}
+    else{rmRefreshSearchResolver(row);if(typeof ricalcolaRicerca==='function')ricalcolaRicerca();}
+  }
+  mzBridgeStatus(row,'Riuscita importata automaticamente dal Generatore: '+Number(resp.pct)+'%. '+(row.querySelector('[data-bonus-wrap]')&&row.querySelector('[data-bonus-wrap]').style.display!=='none'?'Completa ora l’eventuale dado bonus mostrato qui sotto.':'L’effetto è stato aggiornato nel tool.'),'ok');
+  row.dataset.mzBridgeImported='1';
+  try{window.localStorage.removeItem(MZ_KNOWLEDGE_BRIDGE_RESPONSE_PREFIX+resp.requestId);}catch(e){}
+  return true;
+}
+function mzBridgeCheckStoredResponse(){
+  mzBridgeCleanupStorage();
+  var rows=document.querySelectorAll('.mz-bonus-row.mz-phase,.rm-search-bonus-row');
+  for(var i=0;i<rows.length;i++){
+    var id=rows[i].dataset.mzBridgeRequestId;if(!id)continue;
+    var raw=null;try{raw=window.localStorage.getItem(MZ_KNOWLEDGE_BRIDGE_RESPONSE_PREFIX+id);}catch(e){raw=null;}
+    if(raw)mzBridgeImportResponse(raw);
+  }
+  /* Un solo fallback v1, usato soltanto durante la transizione. */
+  try{
+    var legacy=window.localStorage.getItem(MZ_KNOWLEDGE_BRIDGE_LEGACY_RESPONSE_KEY);
+    if(legacy && mzBridgeImportResponse(legacy))window.localStorage.removeItem(MZ_KNOWLEDGE_BRIDGE_LEGACY_RESPONSE_KEY);
+  }catch(e){}
+}
+window.addEventListener('storage',function(e){
+  if(e.key && e.key.indexOf(MZ_KNOWLEDGE_BRIDGE_RESPONSE_PREFIX)===0 && e.newValue)mzBridgeImportResponse(e.newValue);
+  else if(e.key===MZ_KNOWLEDGE_BRIDGE_LEGACY_RESPONSE_KEY && e.newValue)mzBridgeImportResponse(e.newValue);
+});
+window.addEventListener('focus',mzBridgeCheckStoredResponse);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)mzBridgeCheckStoredResponse();});
+
+
 function mzInitFamilyResolver(row,phase,p){
   var host=row.querySelector('[data-role="resolver"]');if(!host)return;
   row.classList.add('has-resolver');row.dataset.resolverFamily=p.resolver||'';
   var uid=row.dataset.uid||String(Date.now());
   host.innerHTML='<div class="mz-resolver-title">Riuscita e bonus — '+mzHtml(p.label)+'</div><div class="mz-resolver-grid">'+
-    '<div class="mz-knowledge-tool"><b>Prima determina la riuscita della Conoscenza.</b><br>Usa il generatore dedicato, poi torna qui e riporta l’esito ottenuto.'+
-    '<br><a href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener">Apri il Generatore di Riuscita delle Conoscenze ↗</a></div>'+
+    '<div class="mz-knowledge-tool"><b>Prima determina la riuscita della Conoscenza.</b><br>Apri il Generatore dedicato: Conoscenza e dati compatibili del PG verranno già preparati.'+
+    '<br><a data-mz-bridge-open="1" href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze&from=magizoologia&bridge=magizoologia#riuscitaFrame" target="_blank" rel="noopener">Apri il Generatore di Riuscita delle Conoscenze ↗</a><div class="mz-bridge-status" data-mz-bridge-status>In attesa di aprire il Generatore.</div></div>'+
     '<div class="mz-resolver-field" data-eff-wrap><label>Riuscita ottenuta</label><select data-resolver-eff><option value="">— Seleziona l’esito —</option><option value="0">0% · nessun effetto</option><option value="33">33%</option><option value="66">66%</option><option value="100">100%</option></select></div>'+
     '<div class="mz-resolver-roll" data-bonus-wrap style="display:none"><div class="result-line"><div class="dice-code" id="mzBonusCode_'+uid+'"></div><button type="button" class="copy-btn" data-copy-source="mzBonusCode_'+uid+'">Copia</button></div><div class="result-line"><span>Risultato del dado bonus:</span><input type="number" min="1" data-resolver-bonus></div></div>'+
     '<div class="mz-resolver-outcome mz-resolver-pending" data-resolver-outcome>Determina prima la riuscita della Conoscenza nel generatore dedicato.</div></div>';
   host.querySelectorAll('select,input').forEach(function(e){e.addEventListener('input',function(){mzRefreshFamilyResolver(row,phase);ricalcolaMagizoologia();});e.addEventListener('change',function(){mzRefreshFamilyResolver(row,phase);ricalcolaMagizoologia();});});
-  setupNumericInputs();mzRefreshFamilyResolver(row,phase);
+  mzBridgeBindLink(row,phase,p,'guida');
+  setupNumericInputs();mzRefreshFamilyResolver(row,phase);mzBridgeCheckStoredResponse();
 }
 function mzRefreshFamilyResolver(row,phase){
   var familyKey=row.dataset.presetKey||'',p=MZ_PHASE_BONUS_PRESETS[familyKey],host=row.querySelector('[data-role="resolver"]');
@@ -5990,14 +6091,15 @@ function rmInitSearchResolver(row,p,data){
   var host=row.querySelector('.rm-search-resolver');if(!host||!p||!p.resolver)return;row.classList.add('has-resolver');
   var uid='rmResolver_'+(++RM_SEARCH_BONUS_UID);
   host.innerHTML='<div class="mz-resolver-title">Riuscita e bonus — '+rmEsc(p.label)+'</div><div class="mz-resolver-grid">'+
-    '<div class="mz-knowledge-tool"><b>Prima determina la riuscita della Conoscenza.</b><br>Usa il generatore dedicato, poi torna qui e riporta l’esito ottenuto.'+
-    '<br><a href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener">Apri il Generatore di Riuscita delle Conoscenze ↗</a></div>'+
+    '<div class="mz-knowledge-tool"><b>Prima determina la riuscita della Conoscenza.</b><br>Apri il Generatore dedicato: Conoscenza e dati compatibili del PG verranno già preparati.'+
+    '<br><a data-mz-bridge-open="1" href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze&from=magizoologia&bridge=magizoologia#riuscitaFrame" target="_blank" rel="noopener">Apri il Generatore di Riuscita delle Conoscenze ↗</a><div class="mz-bridge-status" data-mz-bridge-status>In attesa di aprire il Generatore.</div></div>'+
     '<div class="mz-resolver-field" data-eff-wrap><label>Riuscita ottenuta</label><select data-resolver-eff><option value="">— Seleziona l’esito —</option><option value="0">0% · nessun effetto</option><option value="33">33%</option><option value="66">66%</option><option value="100">100%</option></select></div>'+
     '<div class="mz-resolver-roll" data-bonus-wrap style="display:none"><div class="result-line"><div class="dice-code" id="'+uid+'_bonus"></div><button type="button" class="copy-btn" data-copy-source="'+uid+'_bonus">Copia</button></div><div class="result-line"><span>Risultato del dado bonus:</span><input type="number" min="1" data-resolver-bonus></div></div>'+
     '<div class="mz-resolver-outcome mz-resolver-pending" data-resolver-outcome>Determina prima la riuscita della Conoscenza nel generatore dedicato.</div></div>';
   data=data||{};var e=host.querySelector('[data-resolver-eff]'),b=host.querySelector('[data-resolver-bonus]');if(e&&data.resolverEff)e.value=data.resolverEff;if(b&&data.resolverBonus)b.value=data.resolverBonus;
   host.querySelectorAll('select,input').forEach(function(el){el.addEventListener('input',function(){rmRefreshSearchResolver(row);ricalcolaRicerca();});el.addEventListener('change',function(){rmRefreshSearchResolver(row);ricalcolaRicerca();});});
-  setupNumericInputs();rmRefreshSearchResolver(row);
+  mzBridgeBindLink(row,'ricerca',p,'ricerca');
+  setupNumericInputs();rmRefreshSearchResolver(row);mzBridgeCheckStoredResponse();
 }
 function rmRefreshSearchResolver(row){
   var sel=row.querySelector('.rm-search-bonus-preset'),p=sel&&RM_SEARCH_BONUS_PRESETS[sel.value],host=row.querySelector('.rm-search-resolver');if(!p||!p.resolver||!host)return;
@@ -7062,11 +7164,11 @@ if(typeof ricalcolaRicerca==='function')ricalcolaRicerca();
     return BASE+'&from=magizoologia';
   }
   function wire(root){
-    (root||document).querySelectorAll('a[href*="?pag=riuscitaconoscenze"]').forEach(function(a){a.href=targetUrl();});
+    (root||document).querySelectorAll('a[href*="?pag=riuscitaconoscenze"]').forEach(function(a){a.href=a.hasAttribute('data-mz-bridge-open')?(BASE+'&from=magizoologia&bridge=magizoologia#riuscitaFrame'):targetUrl();});
   }
   function init(){wire(document);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-  document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href*="?pag=riuscitaconoscenze"]'):null;if(a){rememberReturn();a.href=targetUrl();}},true);
+  document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href*="?pag=riuscitaconoscenze"]'):null;if(a){rememberReturn();a.href=a.hasAttribute('data-mz-bridge-open')?(BASE+'&from=magizoologia&bridge=magizoologia#riuscitaFrame'):targetUrl();}},true);
   if(window.MutationObserver){try{new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1)wire(n);});});}).observe(document.documentElement,{subtree:true,childList:true});}catch(e){}}
 })();
 </script>
