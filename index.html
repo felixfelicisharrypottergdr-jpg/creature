@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
+<!-- v70: dati Elfo spostati nel Riepilogo finale + post Allevamento; riga verde specie/classificazione rimossa -->
 <!-- v69: vera tendina catalogo sempre apribile anche con specie già importata -->
 <!-- v53: apertura Ricerca immediata + aggancio Firebase del PG durante la compilazione -->
 <!-- v52: sessione Firebase agganciata dal profilo PG + allineamento flusso Ricerca con Erbologia -->
@@ -3182,7 +3183,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
   </div>
 </div>
 <div id="mzSpecificVoteHint" class="specific-knowledge-note"></div>
-<div id="mzSpeciesClassSync" class="species-class-sync">Inserisci una Creatura: il tool controllerà automaticamente che specie e Classificazione siano coerenti.</div>
+<div id="mzSpeciesClassSync" class="species-class-sync" style="display:none"></div>
 </div>
 <div class="check-riga">
   <input type="checkbox" id="nataInRiserva" data-key="nataInRiserva">
@@ -3221,53 +3222,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
   <div class="nota-regole"><b>Nota sul regolamento:</b> l'elenco assegna a Repello Babbanum <b>+1 faccia</b>, mentre l'esempio successivo lo conteggia come +2. Il tool segue il valore esplicito dell'elenco (+1).</div>
 </div>
 
-<details class="mz-transfer-meta">
-  <summary>Dati facoltativi per Il Mio Elfo Domestico</summary>
-  <div class="nota-regole">Questi dati non modificano i dadi: servono soltanto a preparare, alla fine della Guida, una scheda già ordinata come i campi del <b>Recinto/Riserva</b>.</div>
-  <div class="riga">
-    <div class="campo">
-      <label>Nome della Creatura</label>
-      <input type="text" id="nomeCreaturaGuida" data-key="nomeCreaturaGuida" maxlength="120">
-    </div>
-    <div class="campo">
-      <label>Sesso</label>
-      <select id="sessoCreaturaGuida" data-key="sessoCreaturaGuida">
-        <option value="">Non specificato</option>
-        <option value="Maschio">Maschio</option>
-        <option value="Femmina">Femmina</option>
-        <option value="Altro / non applicabile">Altro / non applicabile</option>
-      </select>
-    </div>
-  </div>
-  <div class="riga">
-    <div class="campo">
-      <label>Data / riferimento temporale</label>
-      <input type="text" id="dataCreaturaGuida" data-key="dataCreaturaGuida" maxlength="80">
-    </div>
-    <div class="campo">
-      <label>Link principale della role</label>
-      <input type="text" id="linkCreaturaGuida" data-key="linkCreaturaGuida" maxlength="500">
-    </div>
-    <div class="campo">
-      <label>Parenti</label>
-      <input type="text" id="parentiCreaturaGuida" data-key="parentiCreaturaGuida" value="//" maxlength="200">
-    </div>
-  </div>
-  <div class="riga">
-    <div class="campo">
-      <label>Link Classificazione</label>
-      <input type="text" id="linkClassificazioneGuida" data-key="linkClassificazioneGuida" maxlength="500">
-    </div>
-    <div class="campo">
-      <label>Link Specie</label>
-      <input type="text" id="linkSpecieGuida" data-key="linkSpecieGuida" maxlength="500">
-    </div>
-    <div class="campo">
-      <label>Link Fase Vitale</label>
-      <input type="text" id="linkFaseGuida" data-key="linkFaseGuida" maxlength="500">
-    </div>
-  </div>
-</details>
+
 </div>
 
 <div class="barra-tab">
@@ -3643,7 +3598,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 
 <div class="pannello" id="pannelloRiepilogo">
   <h2>Riepilogo della Guida</h2>
-  <div class="nota-regole mz-summary-intro">Qui trovi in un solo punto lo stato della Creatura, gli esiti già risolti, la Fatica consumata, gli eventuali malus ancora da ricordare e i dati da riportare nel Recinto/Riserva.</div>
+  <div class="nota-regole mz-summary-intro">Qui trovi in un solo punto lo stato della Creatura, gli esiti, la Fatica, i malus e i dati da riportare nel Recinto/Riserva. I campi facoltativi per Il Mio Elfo Domestico sono raccolti qui, alla fine della Guida.</div>
 
   <div class="mz-summary-section">
     <h3>Creatura</h3>
@@ -3667,6 +3622,60 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
     <div class="mz-fatigue-total" id="mzFaticaSummary"><strong>Fatica consumata:</strong> 0</div>
     <div class="mz-bagaglio-update" id="mzBagaglioUpdateSummary"></div>
   </div>
+
+  <details class="mz-transfer-meta">
+    <summary>Dati facoltativi per Il Mio Elfo Domestico</summary>
+    <div class="nota-regole">Questi dati non modificano i dadi: servono a preparare la scheda del <b>Recinto/Riserva</b>. Tipo di ciclo, esito e post finali vengono letti automaticamente dall’Allevamento appena concluso.</div>
+    <div class="riga">
+      <div class="campo">
+        <label>Nome della Creatura</label>
+        <input type="text" id="nomeCreaturaGuida" data-key="nomeCreaturaGuida" maxlength="120">
+      </div>
+      <div class="campo">
+        <label>Sesso</label>
+        <select id="sessoCreaturaGuida" data-key="sessoCreaturaGuida">
+          <option value="">Non specificato</option>
+          <option value="Maschio">Maschio</option>
+          <option value="Femmina">Femmina</option>
+          <option value="Altro / non applicabile">Altro / non applicabile</option>
+        </select>
+      </div>
+    </div>
+    <div class="riga">
+      <div class="campo">
+        <label>Data / riferimento temporale</label>
+        <input type="text" id="dataCreaturaGuida" data-key="dataCreaturaGuida" maxlength="80">
+      </div>
+      <div class="campo">
+        <label>Link principale della role</label>
+        <input type="text" id="linkCreaturaGuida" data-key="linkCreaturaGuida" maxlength="500">
+      </div>
+      <div class="campo">
+        <label>Parenti</label>
+        <input type="text" id="parentiCreaturaGuida" data-key="parentiCreaturaGuida" value="//" maxlength="200">
+      </div>
+    </div>
+    <div class="riga">
+      <div class="campo">
+        <label>Link Classificazione</label>
+        <input type="text" id="linkClassificazioneGuida" data-key="linkClassificazioneGuida" maxlength="500">
+      </div>
+      <div class="campo">
+        <label>Link Specie</label>
+        <input type="text" id="linkSpecieGuida" data-key="linkSpecieGuida" maxlength="500">
+      </div>
+      <div class="campo">
+        <label>Link Fase Vitale</label>
+        <input type="text" id="linkFaseGuida" data-key="linkFaseGuida" maxlength="500">
+      </div>
+    </div>
+  
+    <div class="riga">
+      <div class="campo"><label>Tipo di ciclo</label><input type="text" id="mzElfoTipoCiclo" readonly value="—"></div>
+      <div class="campo"><label>Esito Allevamento</label><input type="text" id="mzElfoEsitoCiclo" readonly value="—"></div>
+      <div class="campo"><label>Post necessari per il ciclo</label><input type="text" id="mzElfoPostCiclo" readonly value="—"></div>
+    </div>
+  </details>
 
   <div class="mz-summary-section mz-elfo-transfer">
     <h3>Dati pronti per Il Mio Elfo Domestico</h3>
@@ -4933,7 +4942,9 @@ function mzRenderGuideSummary(){
     ['Ostilità',pg.ostilita==='sempre'?'Sempre ostile':(pg.ostilita==='mai'?'Mai ostile':'Normale')],
     ['Origine',mzGuideEl('nataInRiserva')&&mzGuideEl('nataInRiserva').checked?'Nata nella propria Riserva':'Non indicata come nata nella propria Riserva'],
     ['Legalità',mzGuideEl('creaturaIllegaleRiserva')&&mzGuideEl('creaturaIllegaleRiserva').checked?'Creatura illegale nella propria Riserva':'Nessuna gestione illegale selezionata'],
-    ['Destinazione',destinazione]
+    ['Destinazione',destinazione],
+    ['Tipo ciclo',((mzGuideEl('tipoCicloAllevamento')||{}).value||'produzione')==='riproduzione'?'Riproduzione / Accoppiamento':'Produzione di Ingredienti'],
+    ['Post del ciclo',(function(){var t=mzGuideTxt('sintesiPostAllevamento'),m=t.match(/Post finali del ciclo:\s*(\d+)/i);return m?m[1]+' post':(mzGuideTxt('tagAllevamento')==='Riuscita 0%'?'Ciclo fallito':'In attesa');})()]
   ];
   creatureHost.innerHTML=cards.map(function(c){
     return '<div class="mz-guide-summary-card"><b>'+mzHtml(c[0])+'</b>'+mzHtml(c[1])+'</div>';
@@ -4990,6 +5001,14 @@ function mzRenderGuideSummary(){
   var specieLink=mzGuideVal('linkSpecieGuida');
   var faseLink=mzGuideVal('linkFaseGuida');
   var specieSesso=(specie||'—')+(sesso?' · '+sesso:'');
+  var cycleTypeValue=((mzGuideEl('tipoCicloAllevamento')||{}).value||'produzione');
+  var cycleTypeLabel=cycleTypeValue==='riproduzione'?'Riproduzione / Accoppiamento':'Produzione di Ingredienti';
+  var cycleOutcome=mzGuideTxt('tagAllevamento')||'—';
+  var cyclePostText=mzGuideTxt('sintesiPostAllevamento');
+  var cyclePostMatch=cyclePostText.match(/Post finali del ciclo:\s*(\d+)/i);
+  var cyclePosts=cyclePostMatch?cyclePostMatch[1]:(cycleOutcome==='Riuscita 0%'?'Ciclo fallito':'—');
+  var mc1=mzGuideEl('mzElfoTipoCiclo'),mc2=mzGuideEl('mzElfoEsitoCiclo'),mc3=mzGuideEl('mzElfoPostCiclo');
+  if(mc1)mc1.value=cycleTypeLabel;if(mc2)mc2.value=cycleOutcome;if(mc3)mc3.value=cyclePosts;
   var noteParts=[
     'Ostilità: '+(pg.ostilita==='sempre'?'Sempre ostile':(pg.ostilita==='mai'?'Mai ostile':'Normale')),
     'Fiducia: '+fid,
@@ -5011,6 +5030,9 @@ function mzRenderGuideSummary(){
     'Parenti: '+parenti,
     'Fase attuale: '+mzGuidePhaseLabel(pg.faseVitale),
     'Link Fase: '+(faseLink||'—'),
+    'Tipo ciclo: '+cycleTypeLabel,
+    'Esito Allevamento: '+cycleOutcome,
+    'Post richiesti ciclo: '+cyclePosts,
     'Note: '+noteParts.join(' · ')
   ].join('\n');
 
@@ -8352,6 +8374,15 @@ var syncing=false,lastSpecies=(E('specieCreaturaGuida')||{value:''}).value.trim(
 function phaseLabel(v){return {uovo:'Uovo/Cucciolo',infante:'Infante',adolescente:'Adolescente',adulta:'Adulta',anziana:'Anziana'}[v]||'';}
 function render(message,kind){
   var h=E('mzSpeciesClassSync');if(!h)return;
+  /* v70: niente riga verde ridondante quando specie e Classificazione sono già coerenti.
+     Restano visibili soltanto avvisi reali e correzioni automatiche. */
+  if(kind==='ok'||!message){
+    h.style.display='none';
+    h.className='species-class-sync';
+    h.innerHTML='';
+    return;
+  }
+  h.style.display='block';
   h.className='species-class-sync'+(kind?' '+kind:'');
   h.innerHTML=message;
 }
