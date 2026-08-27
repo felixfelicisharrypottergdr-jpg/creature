@@ -3796,7 +3796,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 
       <div class="mz-bonus-manager" id="rmBonusRicercaBox">
         <h3>Oggetti / Incantesimi / Conoscenze — Bonus alla Ricerca</h3>
-        <p class="mz-bonus-help">Seleziona ciò che stai usando. Quando una Conoscenza richiede prima di stabilirne la riuscita, usa il <a href="https://felixfelicisharrypottergdr.forumfree.it/?pag=riuscitaconoscenze" target="_blank" rel="noopener"><b>Generatore di Riuscita delle Conoscenze</b></a>; qui comparirà poi soltanto l’eventuale dado necessario a determinare il valore del bonus. Per gli Oggetti a usi limitati basta scegliere l’Incontro in cui li stai applicando.</p>
+        <p class="mz-bonus-help">Seleziona ciò che stai usando. Se una Conoscenza o un Incantesimo richiede prima di stabilirne la riuscita, il collegamento al Generatore comparirà direttamente nella relativa riga; se serve un dado aggiuntivo, il tool mostrerà soltanto quel dado e la casella per inserirne il risultato. Per gli Oggetti a usi limitati basta scegliere l’Incontro in cui li stai applicando.</p>
         <input type="hidden" id="rmBonusRicercaJson" data-key="bonusRicercaJson" value="[]">
         <div class="mz-bonus-list" id="rmBonusRicercaRows"></div>
         <button type="button" class="mz-bonus-add" id="rmAddBonusRicerca">+ Aggiungi Oggetto / Incantesimo / Conoscenza</button>
@@ -8551,6 +8551,99 @@ input.addEventListener('change',function(){
 });
 
 setTimeout(syncSelect,0);
+})();
+</script>
+
+
+
+<!-- v71: bonus compatti ripristinati sul modello precedente — dettagli tecnici nascosti, resolver solo quando serve, dado secondario copiabile + risultato -->
+<style id="magizoologia-v71-bonus-compatti">
+/* Catalogo davanti, meccanica dietro: i campi tecnici restano nel DOM ma non ingombrano l'interfaccia. */
+#modoMagizoologia .mz-bonus-row.mz-phase{padding:10px!important;gap:7px!important;}
+#modoMagizoologia .mz-bonus-row.mz-phase .mz-bonus-preset-wrap label{font-size:.72em!important;}
+#modoMagizoologia .mz-bonus-row.mz-phase .mz-bonus-preset-wrap select{height:36px!important;}
+#modoMagizoologia .mz-bonus-row.has-preset .mz-bonus-preset-note{display:none!important;}
+#modoMagizoologia .mz-bonus-row.has-preset .mz-bonus-compact-summary{
+  padding:7px 9px!important;line-height:1.35!important;font-size:.82em!important;margin:0!important;
+}
+#modoMagizoologia .mz-bonus-row.has-preset .mz-bonus-action-row{padding-top:0!important;gap:7px!important;align-items:center!important;}
+#modoMagizoologia .mz-bonus-row.has-preset .mz-used-field{display:none!important;}
+#modoMagizoologia .mz-bonus-row.has-preset .mz-bonus-remaining{display:none!important;}
+#modoMagizoologia .mz-bonus-row.has-preset .mz-auto-apply-badge{padding:5px 8px!important;font-size:.75em!important;margin:0!important;}
+#modoMagizoologia .mz-bonus-row.has-preset .mz-bonus-remove{margin-left:auto!important;width:38px!important;height:32px!important;}
+#modoMagizoologia .mz-bonus-share{padding-top:4px!important;margin-top:0!important;border-top:0!important;}
+#modoMagizoologia .mz-bonus-share-status{display:none!important;}
+#modoMagizoologia .mz-bonus-share button{padding:6px 9px!important;font-size:.76em!important;}
+
+/* Il resolver compare soltanto per Conoscenze/Tecniche/Incantesimi che dipendono dalla riuscita. */
+#modoMagizoologia .mz-bonus-resolver,
+#modoRicerca .rm-search-resolver{padding:9px 10px!important;margin:0!important;}
+#modoMagizoologia .mz-resolver-title,
+#modoRicerca .mz-resolver-title{margin-bottom:5px!important;font-size:.84em!important;}
+#modoMagizoologia .mz-knowledge-tool,
+#modoRicerca .mz-knowledge-tool{padding:8px 10px!important;margin:0 0 8px!important;line-height:1.35!important;font-size:.84em!important;}
+#modoMagizoologia .mz-knowledge-tool a,
+#modoRicerca .mz-knowledge-tool a{margin-top:4px!important;padding:5px 9px!important;}
+#modoMagizoologia .mz-resolver-roll,
+#modoRicerca .mz-resolver-roll{padding:8px!important;}
+#modoMagizoologia .mz-resolver-roll .result-line,
+#modoRicerca .mz-resolver-roll .result-line{margin:5px 0!important;}
+#modoMagizoologia .mz-resolver-outcome,
+#modoRicerca .mz-resolver-outcome{padding:7px 9px!important;font-size:.82em!important;}
+
+/* Ricerca: lascia visibili soltanto scelta, incontro, riepilogo ed eventuale resolver. */
+#modoRicerca .rm-search-bonus-row{padding:9px 0!important;gap:7px!important;}
+#modoRicerca .rm-search-bonus-note{font-size:.8em!important;line-height:1.35!important;}
+
+@media(max-width:650px){
+  #modoMagizoologia .mz-bonus-row.has-preset .mz-bonus-action-row{align-items:stretch!important;}
+  #modoMagizoologia .mz-bonus-row.has-preset .mz-bonus-remove{margin-left:0!important;width:100%!important;}
+}
+</style>
+<script id="magizoologia-v71-bonus-compatti-js">
+(function(){
+'use strict';
+function n(el,d){var x=Number(el&&el.value);return Number.isFinite(x)?x:(d||0);}
+function effectText(type,value){
+  if(type==='effetto')return 'Effetto speciale';
+  if(type==='postPercent')return '-'+value+'% post';
+  if(type==='malusPossibilita')return '-'+value+' possibilità';
+  if(type==='malusEmpatia')return '-'+value+' Empatia';
+  if(type==='empatia')return '+'+value+' Empatia';
+  if(type==='parametro')return '+'+value+' parametro';
+  return '+'+value+' possibilità';
+}
+function compactRow(row){
+  if(!row)return;
+  var key=row.dataset.presetKey||'',p=window.MZ_PHASE_BONUS_PRESETS&&MZ_PHASE_BONUS_PRESETS[key],summary=row.querySelector('.mz-bonus-compact-summary');
+  if(!p||key==='manual'||!summary)return;
+  var type=(row.querySelector('[data-role="type"]')||{}).value||p.type||'possibilita';
+  var val=n(row.querySelector('[data-role="value"]'),0),parts=[];
+  if(p.resolver&&row.dataset.resolverReady!=='1')parts.push('Effetto da determinare con la riuscita');else parts.push(effectText(type,val));
+  var fat=n(row.querySelector('[data-role="fatica"]'),0);if(fat)parts.push('Fatica -'+String(fat).replace('.',','));
+  var unlimited=row.dataset.unlimited==='1',total=Math.max(1,Math.floor(n(row.querySelector('[data-role="total"]'),1))),used=0;
+  if(row.dataset.linkId&&typeof window.mzSharedState==='function'){
+    var st=mzSharedState(row,true);if(st){used=Math.max(0,Math.floor(st.used||0));total=Math.max(1,Math.floor(st.total||total));unlimited=!!st.unlimited;}
+  }else used=Math.max(0,Math.floor(n(row.querySelector('[data-role="used"]'),0)));
+  if(unlimited)parts.push('non consumabile');else parts.push(used+'/'+total+' usi · '+Math.max(0,total-used)+' rimasti');
+  summary.textContent=parts.join(' · ');
+}
+function refresh(){document.querySelectorAll('#modoMagizoologia .mz-bonus-row.mz-phase').forEach(compactRow);}
+if(typeof window.mzRefreshPhaseRowDisplay==='function'){
+  var oldDisplay=window.mzRefreshPhaseRowDisplay;
+  window.mzRefreshPhaseRowDisplay=function(row,phase){var out=oldDisplay.apply(this,arguments);compactRow(row);return out;};
+}
+if(typeof window.ricalcolaMagizoologia==='function'){
+  var oldCalc=window.ricalcolaMagizoologia;
+  window.ricalcolaMagizoologia=function(){var out=oldCalc.apply(this,arguments);refresh();return out;};
+}
+function init(){
+  refresh();
+  document.addEventListener('input',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoMagizoologia .mz-bonus-row'))setTimeout(refresh,0);},true);
+  document.addEventListener('change',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoMagizoologia .mz-bonus-row'))setTimeout(refresh,0);},true);
+  document.addEventListener('click',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoMagizoologia .mz-bonus-row'))setTimeout(refresh,0);},true);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(init,0);});else setTimeout(init,0);
 })();
 </script>
 
