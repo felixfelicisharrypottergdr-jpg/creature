@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
-<!-- v68: Importa nella Guida spostato nella pagina Esito -->
+<!-- v69: vera tendina catalogo sempre apribile anche con specie già importata -->
 <!-- v53: apertura Ricerca immediata + aggancio Firebase del PG durante la compilazione -->
 <!-- v52: sessione Firebase agganciata dal profilo PG + allineamento flusso Ricerca con Erbologia -->
 <!-- Revisione standardizzata v3: preservazione storico usi/Fatica + tentativo minimo automatico sugli esiti validi -->
@@ -2877,6 +2877,27 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 }
 </style>
 
+
+<style id="v69-real-species-select">
+#modoMagizoologia .species-catalog-select{
+  width:100%!important;
+  min-height:40px!important;
+  margin-top:8px!important;
+  padding:8px 11px!important;
+  border:1px solid #73a9c8!important;
+  border-radius:7px!important;
+  background:#f3faff!important;
+  color:#18384d!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+}
+#modoMagizoologia .species-catalog-select:focus{
+  outline:none!important;
+  border-color:#5fa8d2!important;
+  box-shadow:0 0 0 2px rgba(95,168,210,.18)!important;
+}
+</style>
+
 </head>
 <body>
 <div class="contenitore">
@@ -3049,7 +3070,10 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="riga">
   <div class="campo" style="flex:2 1 320px">
     <label>Creatura che stai gestendo</label>
-    <input type="text" id="specieCreaturaGuida" data-key="specieCreaturaGuida" maxlength="120" placeholder="Cerca o seleziona una Creatura" list="mzSpeciesCatalog" autocomplete="off">
+    <input type="text" id="specieCreaturaGuida" data-key="specieCreaturaGuida" maxlength="120" placeholder="Scrivi una Creatura oppure usa la tendina qui sotto" autocomplete="off">
+    <select id="mzSpeciesCatalogSelect" class="species-catalog-select" aria-label="Cambia Creatura dal catalogo">
+      <option value="">▼ Cambia Creatura dal catalogo</option>
+    </select>
     <datalist id="mzSpeciesCatalog">
       <option value="Acromantula"></option>
       <option value="Ammuntadore"></option>
@@ -3140,7 +3164,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
       <option value="Velenottero"></option>
       <option value="Vermicolo"></option>
     </datalist>
-    <div class="numeric-note">Se arrivi dalla Ricerca viene compilata automaticamente. Altrimenti cerca o seleziona una Creatura dall’elenco; puoi comunque digitare manualmente una specie non presente.</div>
+    <div class="numeric-note">Se arrivi dalla Ricerca viene compilata automaticamente. Per cambiarla usa la tendina qui sopra: mostra sempre tutto il catalogo, senza dover cancellare la Creatura già scritta. Il campo di testo resta disponibile per specie non presenti.</div>
   </div>
   <div class="campo" id="campoVotoStudente">
     <label>Voto nella singola Creatura</label>
@@ -8384,7 +8408,7 @@ setTimeout(sync,0);
 </script>
 
 
-<script id="magizoologia-v64-species-picker">
+<script id="magizoologia-v69-species-picker">
 (function(){
 'use strict';
 function E(id){return document.getElementById(id);}
@@ -8393,27 +8417,57 @@ function norm(v){
   try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}
   return v.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
 }
-var input=E('specieCreaturaGuida'),nameField=E('nomeCreaturaGuida');
+var input=E('specieCreaturaGuida'),
+    nameField=E('nomeCreaturaGuida'),
+    list=E('mzSpeciesCatalog'),
+    select=E('mzSpeciesCatalogSelect');
 if(!input)return;
 
-var canonical={};
-var list=E('mzSpeciesCatalog');
+var canonical={}, ordered=[];
 if(list){
-  Array.prototype.forEach.call(list.options,function(o){canonical[norm(o.value)]=o.value;});
+  Array.prototype.forEach.call(list.options,function(o){
+    var v=String(o.value||'').trim();
+    if(!v)return;
+    var k=norm(v);
+    if(!canonical[k]){
+      canonical[k]=v;
+      ordered.push(v);
+    }
+  });
 }
+ordered.sort(function(a,b){return a.localeCompare(b,'it',{sensitivity:'base'});});
+
+if(select){
+  ordered.forEach(function(v){
+    var o=document.createElement('option');
+    o.value=v;
+    o.textContent=v;
+    select.appendChild(o);
+  });
+}
+
 var lastCommitted=norm(input.value);
 
-function commitFromCatalog(){
+function syncSelect(){
+  if(!select)return;
   var key=norm(input.value),canon=canonical[key];
-  if(!canon || key===lastCommitted)return;
+  select.value=canon||'';
+}
 
-  var old=input.dataset.v64PreviousSpecies || '';
-  input.dataset.v64PreviousSpecies=canon;
-  lastCommitted=key;
+function commitSpecies(canon,oldValue){
+  if(!canon)return;
+  var key=norm(canon);
+  if(key===norm(input.value) && key===lastCommitted){
+    syncSelect();
+    return;
+  }
 
+  var old=String(oldValue!=null?oldValue:input.value).trim();
+  input.dataset.v69PreviousSpecies=old;
   input.dataset.researchEncounter='';
   input.dataset.researchClass='';
   input.value=canon;
+  lastCommitted=key;
 
   if(nameField && (
     nameField.dataset.autoSpeciesName==='1' ||
@@ -8426,24 +8480,46 @@ function commitFromCatalog(){
   }
 
   try{input.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}
+  syncSelect();
 
   var status=E('mzSpeciesClassSync');
   if(status){
     setTimeout(function(){
-      var extra='<br><span style="font-weight:400">Aggiornati automaticamente i dati deducibili dalla specie; voto ed esiti della Creatura precedente sono stati azzerati. Sesso e fase vitale restano invariati perché appartengono al singolo esemplare.</span>';
-      if(status.innerHTML.indexOf('Aggiornati automaticamente')<0)status.innerHTML+=extra;
+      var extra='<br><span style="font-weight:400">Creatura cambiata dal catalogo: aggiornati i dati deducibili e azzerati voto/esiti della Creatura precedente. Fase vitale e sesso restano dati del singolo esemplare.</span>';
+      if(status.innerHTML.indexOf('Creatura cambiata dal catalogo')<0)status.innerHTML+=extra;
     },0);
   }
 }
+
+if(select){
+  select.addEventListener('change',function(){
+    if(!select.value)return;
+    var old=input.value;
+    commitSpecies(select.value,old);
+  });
+}
+
+input.addEventListener('input',function(){
+  var key=norm(input.value),canon=canonical[key];
+  if(canon && key!==lastCommitted){
+    commitSpecies(canon,input.dataset.v69PreviousSpecies||'');
+  }else{
+    syncSelect();
+  }
+});
+
 input.addEventListener('focus',function(){
-  input.dataset.v64PreviousSpecies=input.value.trim();
+  input.dataset.v69PreviousSpecies=input.value.trim();
 });
-input.addEventListener('input',commitFromCatalog);
+
 input.addEventListener('change',function(){
-  var key=norm(input.value);
-  if(canonical[key])input.value=canonical[key];
+  var key=norm(input.value),canon=canonical[key];
+  if(canon)input.value=canon;
   lastCommitted=norm(input.value);
+  syncSelect();
 });
+
+setTimeout(syncSelect,0);
 })();
 </script>
 
