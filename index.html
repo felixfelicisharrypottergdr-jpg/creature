@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
 <!-- v72: specie in un unico campo scrivibile con tendina catalogo; correzione automatica Classificazione senza falso avviso di errore -->
+<!-- v74: Guida ricomposta nel contenitore corretto; contrasto testi/link; esiti aggiornati; tab verdi/rossi; ostilità mostrata solo per Sempre/Mai -->
 <!-- v70: dati Elfo spostati nel Riepilogo finale + post Allevamento; riga verde specie/classificazione rimossa -->
 <!-- v69: vera tendina catalogo sempre apribile anche con specie già importata -->
 <!-- v53: apertura Ricerca immediata + aggancio Firebase del PG durante la compilazione -->
@@ -3184,7 +3185,6 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </div>
 <div id="mzSpecificVoteHint" class="specific-knowledge-note"></div>
 <div id="mzSpeciesClassSync" class="species-class-sync" style="display:none"></div>
-</div>
 <div class="check-riga">
   <input type="checkbox" id="nataInRiserva" data-key="nataInRiserva">
   <label for="nataInRiserva">La Creatura è nata nella propria Riserva</label>
@@ -6660,6 +6660,7 @@ function ricalcolaMagizoologia(){
   mzUpdateBonusSummary();
   mzRenderGuideSummary();
   mzSyncAllAttemptDisplays();
+  if(typeof mzPaintOutcomeButtons==='function')mzPaintOutcomeButtons();
 }
 
 /* ---------- TAB ---------- */
@@ -7270,6 +7271,7 @@ function ricalcolaRicerca(){
   var t2=rmRecomputeTrova(2);rmRecomputeCascataMultipla(2,t2);rmRecomputeSpecie(2);
   var t3=rmRecomputeTrova(3);rmRecomputeCascataMultipla(3,t3);rmRecomputeSpecie(3);
   rmGating();rmRenderSummary();rmRenderOutcome();rmApplyFlow();
+  if(typeof mzPaintOutcomeButtons==='function')mzPaintOutcomeButtons();
 }
 
 function rmCollectState(){
@@ -8298,26 +8300,26 @@ function render(manual){
   var h=host(),sel=select(),name=currentName();if(!h||!sel)return;
   var n=norm(name),v=sel.value||'normale';
   h.className='mz-auto-trait';
-  if(!name){
-    h.innerHTML='Inserisci la specie: quando il regolamento stabilisce già l’ostilità iniziale, il tool la imposta automaticamente.';
-    return;
-  }
+  h.style.display='none';
+  h.innerHTML='';
+  /* v74: niente spiegazione permanente per le Creature con procedura normale.
+     Il riquadro compare soltanto quando lo stato è davvero Sempre/Mai ostile. */
+  if(!name)return;
   if(manual){
-    h.classList.add(v==='sempre'?'auto-warn':(v==='mai'?'auto-ok':'auto-special'));
-    h.innerHTML='<strong>Impostazione manuale:</strong> '+(v==='sempre'?'sempre ostile':(v==='mai'?'mai ostile / Fiducia autoconclusiva':'procedura normale'))+'.';
+    if(v!=='sempre'&&v!=='mai')return;
+    h.style.display='block';
+    h.classList.add(v==='sempre'?'auto-warn':'auto-ok');
+    h.innerHTML='<strong>Impostazione manuale:</strong> '+(v==='sempre'?'sempre ostile.':'mai ostile / Fiducia autoconclusiva.');
     return;
   }
   if(ALWAYS[n]){
+    h.style.display='block';
     h.classList.add('auto-warn');
     h.innerHTML='<strong>'+name+': sempre ostile.</strong> La Fiducia standard non è disponibile; applica le regole specifiche della Creatura o Imposium quando consentito.';
   }else if(INITIAL_NEVER[n]){
+    h.style.display='block';
     h.classList.add('auto-ok');
-    h.innerHTML='<strong>'+name+': non ostile al primo incontro.</strong> La Fiducia è autoconclusiva finché la Creatura non viene resa ostile dagli eventi della role. Se è già successo, usa “La situazione ONGame è diversa?”.';
-  }else if(SPECIAL[n]){
-    h.classList.add('auto-special');
-    h.innerHTML='<strong>Sblorb:</strong> il regolamento lo considera innocuo, ma soltanto un PG con <b>Creature Magiche esotiche</b> può saperlo. Il tool non presume che il PG possieda questa Conoscenza Extra: imposta manualmente “Mai ostile” solo se ne ha diritto.';
-  }else{
-    h.innerHTML='<strong>'+name+':</strong> non ha uno stato “sempre/mai ostile” automatico applicabile dal tool; si usa la procedura normale salvo diversa situazione ONGame.';
+    h.innerHTML='<strong>'+name+': mai ostile all’inizio dell’interazione.</strong> La Fiducia è autoconclusiva finché gli eventi della role non la rendono ostile.';
   }
 }
 function applyFromSpecies(){
@@ -8687,5 +8689,128 @@ input.addEventListener('keydown',function(ev){if(ev.key==='ArrowDown'){ev.preven
 document.addEventListener('mousedown',function(ev){if(!wrap.contains(ev.target))close();});
 })();
 </script>
+
+
+<!-- v74: correzioni finali Guida/contrasto/esiti -->
+<style id="magizoologia-v74-guide-fixes">
+/* Il profilo è una scheda chiara: testo di reset scuro e allineato al pulsante. */
+#modoPersonaggio .mz-reset-profile-wrap{
+  display:grid!important;
+  grid-template-columns:max-content minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:12px 16px!important;
+}
+#modoPersonaggio .mz-reset-profile-help{
+  color:#3a2116!important;
+  font-weight:600!important;
+  line-height:1.45!important;
+  margin:0!important;
+}
+#modoPersonaggio .mz-reset-profile-help b{color:#24130c!important;}
+
+/* Le fasi della Guida sono scure: etichette, risultati e note devono essere chiare. */
+#modoMagizoologia .pannello .check-riga,
+#modoMagizoologia .pannello .check-riga label,
+#modoMagizoologia .pannello .result-line>span:not(.out-tag),
+#modoMagizoologia .pannello .nota-regole,
+#modoMagizoologia .pannello .nota-regole b{
+  color:#f8e8dc!important;
+}
+#modoMagizoologia .pannello .campo label{color:#ffc08d!important;}
+
+/* Queste due opzioni appartengono alla scheda chiara della Creatura. */
+#modoMagizoologia>.scheda>.check-riga,
+#modoMagizoologia>.scheda>.check-riga label{
+  color:#2f190f!important;
+  font-weight:700!important;
+}
+
+/* Riquadri scuri inseriti dentro schede arancio: mai testo scuro su scuro. */
+.rm-inline-summary .nota-regole,
+.rm-inline-summary .nota-regole b,
+.rm-special .result-line>span:not(.out-tag),
+.rm-specie-helper .result-line>span:not(.out-tag),
+.mz-bonus-manager .result-line>span:not(.out-tag){
+  color:#fff0e5!important;
+}
+
+/* I link delle schede specie (es. Kappa) restano chiari sul loro riquadro scuro. */
+.scheda .spec-sheet-link a,
+.blocco-incontro .spec-sheet-link a,
+.spec-sheet-link a{
+  color:#ffd09f!important;
+  text-decoration-color:#ffd09f!important;
+  font-weight:800!important;
+}
+
+/* Stato visivo delle fasi: verde = riuscita/trovata, rosso = fallimento. */
+.tab-bottone[data-result-state="ok"],
+.flow-page-btn[data-result-state="ok"]{
+  background:#3f6f36!important;
+  border-color:#79a866!important;
+  color:#f3f9ef!important;
+}
+.tab-bottone[data-result-state="ok"].attivo,
+.flow-page-btn[data-result-state="ok"].active{
+  background:#4f8144!important;
+  border-color:#9bc183!important;
+  color:#fff!important;
+}
+.tab-bottone[data-result-state="fail"],
+.flow-page-btn[data-result-state="fail"]{
+  background:#7a2d27!important;
+  border-color:#bd675d!important;
+  color:#fff1ed!important;
+}
+.tab-bottone[data-result-state="fail"].attivo,
+.flow-page-btn[data-result-state="fail"].active{
+  background:#91362f!important;
+  border-color:#d77b70!important;
+  color:#fff!important;
+}
+
+@media(max-width:680px){
+  #modoPersonaggio .mz-reset-profile-wrap{grid-template-columns:1fr!important;align-items:stretch!important;}
+  #modoPersonaggio .mz-reset-profile-btn{width:100%;}
+}
+</style>
+<script id="magizoologia-v74-outcome-buttons">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function tagState(id){
+  var e=E(id);if(!e)return '';
+  if(e.classList.contains('out-fail'))return 'fail';
+  if(e.classList.contains('out-ok'))return 'ok';
+  return '';
+}
+function setState(el,state){
+  if(!el)return;
+  if(state)el.setAttribute('data-result-state',state);
+  else el.removeAttribute('data-result-state');
+}
+function phaseState(primary,extras){
+  var p=tagState(primary),all=[p];
+  (extras||[]).forEach(function(id){all.push(tagState(id));});
+  if(all.indexOf('fail')>=0)return 'fail';
+  return p==='ok'?'ok':'';
+}
+window.mzPaintOutcomeButtons=function(){
+  setState(E('tabFiducia'),phaseState('tagFiducia',['tagConseguenzaFiducia']));
+  setState(E('tabCura'),phaseState('tagCura',['tagScoperta','tagConseguenzaCura','tagIllegaleCura']));
+  setState(E('tabDomesticazione'),phaseState('tagDomesticazione',['tagConseguenzaDomesticazione']));
+  setState(E('tabAllevamento'),phaseState('tagAllevamento',['tagIllegaleAllevamento']));
+  [1,2,3].forEach(function(n){
+    var b=document.querySelector('#rm-flow-nav [data-rm-page="enc'+n+'"]');
+    setState(b,tagState('tagTrova'+n));
+  });
+};
+function refresh(){if(window.mzPaintOutcomeButtons)window.mzPaintOutcomeButtons();}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(refresh,0);});else setTimeout(refresh,0);
+document.addEventListener('input',function(e){if(e.target&&e.target.matches&&e.target.matches('input[type="number"],input[type="checkbox"],select'))setTimeout(refresh,0);},true);
+document.addEventListener('change',function(){setTimeout(refresh,0);},true);
+})();
+</script>
+
 </body>
 </html>
