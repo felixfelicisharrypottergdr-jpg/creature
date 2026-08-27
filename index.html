@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Magizoologia - Strumenti Interattivi</title>
+<!-- v72: specie in un unico campo scrivibile con tendina catalogo; correzione automatica Classificazione senza falso avviso di errore -->
 <!-- v70: dati Elfo spostati nel Riepilogo finale + post Allevamento; riga verde specie/classificazione rimossa -->
 <!-- v69: vera tendina catalogo sempre apribile anche con specie già importata -->
 <!-- v53: apertura Ricerca immediata + aggancio Firebase del PG durante la compilazione -->
@@ -2879,23 +2880,25 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </style>
 
 
-<style id="v69-real-species-select">
-#modoMagizoologia .species-catalog-select{
+<style id="v72-editable-species-combobox">
+#modoMagizoologia #specieCreaturaGuida[list]{
   width:100%!important;
   min-height:40px!important;
-  margin-top:8px!important;
-  padding:8px 11px!important;
-  border:1px solid #73a9c8!important;
+  padding:8px 34px 8px 11px!important;
+  background:#4b281b!important;
+  color:#f8e4d0!important;
+  border:1px solid #6e3a24!important;
   border-radius:7px!important;
-  background:#f3faff!important;
-  color:#18384d!important;
-  font-weight:800!important;
-  cursor:pointer!important;
+  font-weight:700!important;
 }
-#modoMagizoologia .species-catalog-select:focus{
+#modoMagizoologia #specieCreaturaGuida[list]:focus{
   outline:none!important;
-  border-color:#5fa8d2!important;
-  box-shadow:0 0 0 2px rgba(95,168,210,.18)!important;
+  border-color:#d97932!important;
+  box-shadow:0 0 0 2px rgba(217,121,50,.18)!important;
+}
+#modoMagizoologia #specieCreaturaGuida[list]::-webkit-calendar-picker-indicator{
+  opacity:1!important;
+  cursor:pointer!important;
 }
 </style>
 
@@ -3071,10 +3074,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="riga">
   <div class="campo" style="flex:2 1 320px">
     <label>Creatura che stai gestendo</label>
-    <input type="text" id="specieCreaturaGuida" data-key="specieCreaturaGuida" maxlength="120" placeholder="Scrivi una Creatura oppure usa la tendina qui sotto" autocomplete="off">
-    <select id="mzSpeciesCatalogSelect" class="species-catalog-select" aria-label="Cambia Creatura dal catalogo">
-      <option value="">▼ Cambia Creatura dal catalogo</option>
-    </select>
+    <input type="text" id="specieCreaturaGuida" data-key="specieCreaturaGuida" list="mzSpeciesCatalog" maxlength="120" placeholder="Scrivi o scegli una Creatura" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="mzSpeciesCatalog">
     <datalist id="mzSpeciesCatalog">
       <option value="Acromantula"></option>
       <option value="Ammuntadore"></option>
@@ -3165,7 +3165,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
       <option value="Velenottero"></option>
       <option value="Vermicolo"></option>
     </datalist>
-    <div class="numeric-note">Se arrivi dalla Ricerca viene compilata automaticamente. Per cambiarla usa la tendina qui sopra: mostra sempre tutto il catalogo, senza dover cancellare la Creatura già scritta. Il campo di testo resta disponibile per specie non presenti.</div>
+    <div class="numeric-note">Puoi scrivere il nome oppure aprire la tendina dello stesso campo e scegliere dal catalogo. Le Creature non presenti nel catalogo possono essere inserite liberamente.</div>
   </div>
   <div class="campo" id="campoVotoStudente">
     <label>Voto nella singola Creatura</label>
@@ -8402,7 +8402,8 @@ function sync(source){
   if(cl.value!==info.cls){
     var old=cl.value;
     syncing=true;cl.value=info.cls;fire(cl);syncing=false;
-    render('<b>Classificazione corretta automaticamente:</b> '+name.replace(/[<>&]/g,'')+' è <b>'+info.cls+'</b>, non '+(old||'—')+'.','bad');
+    /* La correzione è già stata applicata: non mostrarla come errore. */
+    render('', 'ok');
   }else{
     var enc=sp.dataset.researchEncounter||'',extra='';
     if(enc){
@@ -8451,7 +8452,7 @@ function norm(v){
 var input=E('specieCreaturaGuida'),
     nameField=E('nomeCreaturaGuida'),
     list=E('mzSpeciesCatalog'),
-    select=E('mzSpeciesCatalogSelect');
+    select=null; /* v72: il catalogo è il datalist del campo scrivibile */
 if(!input)return;
 
 var canonical={}, ordered=[];
@@ -8513,13 +8514,7 @@ function commitSpecies(canon,oldValue){
   try{input.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}
   syncSelect();
 
-  var status=E('mzSpeciesClassSync');
-  if(status){
-    setTimeout(function(){
-      var extra='<br><span style="font-weight:400">Creatura cambiata dal catalogo: aggiornati i dati deducibili e azzerati voto/esiti della Creatura precedente. Fase vitale e sesso restano dati del singolo esemplare.</span>';
-      if(status.innerHTML.indexOf('Creatura cambiata dal catalogo')<0)status.innerHTML+=extra;
-    },0);
-  }
+  /* Nessun avviso persistente: il cambio catalogo aggiorna già automaticamente i dati dipendenti. */
 }
 
 if(select){
