@@ -8812,5 +8812,26 @@ document.addEventListener('change',function(){setTimeout(refresh,0);},true);
 })();
 </script>
 
+
+
+<!-- v75: allineamento robusto con Erbologia — ridipinge gli stati delle fasi anche dopo ricalcoli/ripristini programmati -->
+<script id="magizoologia-v75-outcome-refresh">
+(function(){
+'use strict';
+function refresh(){if(typeof window.mzPaintOutcomeButtons==='function')setTimeout(window.mzPaintOutcomeButtons,0);}
+var oldGuide=window.ricalcolaMagizoologia;
+if(typeof oldGuide==='function'&&!oldGuide.__v75OutcomePaint){
+  var wrappedGuide=function(){var out=oldGuide.apply(this,arguments);refresh();return out;};
+  wrappedGuide.__v75OutcomePaint=true;window.ricalcolaMagizoologia=wrappedGuide;
+}
+var oldResearch=window.ricalcolaRicerca;
+if(typeof oldResearch==='function'&&!oldResearch.__v75OutcomePaint){
+  var wrappedResearch=function(){var out=oldResearch.apply(this,arguments);refresh();return out;};
+  wrappedResearch.__v75OutcomePaint=true;window.ricalcolaRicerca=wrappedResearch;
+}
+refresh();
+})();
+</script>
+
 </body>
 </html>
