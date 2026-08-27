@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v59: allineamento UX con Erbologia v66 — reset PG, iframe stabile, ostilità guidata dalla specie -->
+<!-- v77: regressione completa Magizoologia — sessioni coerenti, riepiloghi corretti e pulsanti sicuri -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -3226,12 +3226,12 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </div>
 
 <div class="barra-tab">
-  <button class="tab-bottone attivo" id="tabRiconoscimento">Riconoscimento</button>
-  <button class="tab-bottone" id="tabFiducia">Fiducia</button>
-  <button class="tab-bottone" id="tabCura">Cura</button>
-  <button class="tab-bottone" id="tabDomesticazione">Domesticazione</button>
-  <button class="tab-bottone" id="tabAllevamento">Allevamento</button>
-  <button class="tab-bottone tab-riepilogo" id="tabRiepilogo">Riepilogo</button>
+  <button type="button" class="tab-bottone attivo" id="tabRiconoscimento">Riconoscimento</button>
+  <button type="button" class="tab-bottone" id="tabFiducia">Fiducia</button>
+  <button type="button" class="tab-bottone" id="tabCura">Cura</button>
+  <button type="button" class="tab-bottone" id="tabDomesticazione">Domesticazione</button>
+  <button type="button" class="tab-bottone" id="tabAllevamento">Allevamento</button>
+  <button type="button" class="tab-bottone tab-riepilogo" id="tabRiepilogo">Riepilogo</button>
 </div>
 
 <div class="pannello visibile" id="pannelloRiconoscimento">
@@ -3262,7 +3262,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
   <div class="nota-regole" id="noteImposiumRegola"></div>
   <div class="result-line">
     <div class="dice-code" id="codiceImposium"></div>
-    <button class="copy-btn" id="copiaImposium">Copia</button>
+    <button type="button" class="copy-btn" id="copiaImposium">Copia</button>
   </div>
   <div class="result-line">
     <span>Risultato Imposium sul forum (1-15):</span>
@@ -3278,7 +3278,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="formula-tag" id="formulaFiducia"></div>
 <div class="result-line">
   <div class="dice-code" id="codiceFiducia"></div>
-  <button class="copy-btn" id="copiaFiducia">Copia</button>
+  <button type="button" class="copy-btn" id="copiaFiducia">Copia</button>
 </div>
 <div class="result-line">
   <span>Risultato ottenuto sul forum (1-30):</span>
@@ -3291,7 +3291,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
   <h3>Conseguenze del fallimento (in base alla Fase Vitale)</h3>
   <div class="result-line">
     <div class="dice-code" id="codiceConseguenzaFiducia"></div>
-    <button class="copy-btn" id="copiaConseguenzaFiducia">Copia</button>
+    <button type="button" class="copy-btn" id="copiaConseguenzaFiducia">Copia</button>
   </div>
   <div class="result-line">
     <span>Risultato ottenuto:</span>
@@ -3339,7 +3339,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="formula-tag" id="formulaScoperta"></div>
 <div class="result-line">
   <div class="dice-code" id="codiceScoperta"></div>
-  <button class="copy-btn" id="copiaScoperta">Copia</button>
+  <button type="button" class="copy-btn" id="copiaScoperta">Copia</button>
 </div>
 <div class="result-line">
   <span>Risultato ottenuto sul forum (1-35):</span>
@@ -3389,7 +3389,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="formula-tag" id="formulaCura"></div>
 <div class="result-line">
   <div class="dice-code" id="codiceCura"></div>
-  <button class="copy-btn" id="copiaCura">Copia</button>
+  <button type="button" class="copy-btn" id="copiaCura">Copia</button>
 </div>
 <div class="result-line">
   <span>Risultato ottenuto sul forum (1-35):</span>
@@ -3405,7 +3405,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </div>
 <div class="result-line" id="rigaGravidanza" style="display:none">
   <div class="dice-code" id="codiceGravidanza"></div>
-  <button class="copy-btn" id="copiaGravidanza">Copia</button>
+  <button type="button" class="copy-btn" id="copiaGravidanza">Copia</button>
   <input type="number" id="risultatoGravidanza" data-key="risultatoGravidanza" min="1" max="10" placeholder="1-10">
   <span class="out-tag out-neutral" id="tagGravidanza">in attesa</span>
 </div>
@@ -3427,7 +3427,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 4-5. La Creatura diventa ostile e attacca prima di morire[/quote]
 
 [dice=1d5]Conseguenze di 3 fallimenti consecutivi nella Cura[/dice]</div>
-    <button class="copy-btn" id="copiaConseguenzaCura">Copia</button>
+    <button type="button" class="copy-btn" id="copiaConseguenzaCura">Copia</button>
   </div>
   <div class="result-line">
     <span>Risultato ottenuto:</span>
@@ -3450,7 +3450,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
   <div class="nota-regole" id="notaIllegaleCura"></div>
   <div class="result-line">
     <div class="dice-code" id="codiceIllegaleCura"></div>
-    <button class="copy-btn" id="copiaIllegaleCura">Copia</button>
+    <button type="button" class="copy-btn" id="copiaIllegaleCura">Copia</button>
   </div>
   <div class="result-line">
     <span>Risultato ottenuto sul forum:</span>
@@ -3476,7 +3476,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 [quote]Il risultato del dado corrisponde direttamente al Bonus ottenuto.[/quote]
 
 [dice=1d4]Bonus Domesticazione — Adulto senza Addestratore · ha frequentato CDCM[/dice]</div>
-    <button class="copy-btn" id="copiaAddestratoreD4">Copia</button>
+    <button type="button" class="copy-btn" id="copiaAddestratoreD4">Copia</button>
     <input type="number" id="risultatoAddestratoreD4" data-key="risultatoAddestratoreD4" min="1" max="4" placeholder="1-4">
   </div>
 </div>
@@ -3490,7 +3490,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="formula-tag" id="formulaDomesticazione"></div>
 <div class="result-line">
   <div class="dice-code" id="codiceDomesticazione"></div>
-  <button class="copy-btn" id="copiaDomesticazione">Copia</button>
+  <button type="button" class="copy-btn" id="copiaDomesticazione">Copia</button>
 </div>
 <div class="result-line">
   <span>Risultato ottenuto sul forum (1-35):</span>
@@ -3503,7 +3503,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
   <h3>Conseguenze del fallimento (in base alla Fase Vitale)</h3>
   <div class="result-line">
     <div class="dice-code" id="codiceConseguenzaDomesticazione"></div>
-    <button class="copy-btn" id="copiaConseguenzaDomesticazione">Copia</button>
+    <button type="button" class="copy-btn" id="copiaConseguenzaDomesticazione">Copia</button>
   </div>
   <div class="result-line">
     <span>Risultato ottenuto:</span>
@@ -3561,7 +3561,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="mz-flow-separator"><b>Lancio finale della fase</b><br>Copia il dado, lancialo sul forum e riporta qui il risultato. Sotto comparirà anche il promemoria della fascia post da usare.</div>
 <div class="result-line">
   <div class="dice-code" id="codiceAllevamento"></div>
-  <button class="copy-btn" id="copiaAllevamento">Copia</button>
+  <button type="button" class="copy-btn" id="copiaAllevamento">Copia</button>
 </div>
 <div class="result-line">
   <span>Risultato ottenuto sul forum (1-10):</span>
@@ -3581,7 +3581,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
   <div class="nota-regole" id="notaIllegaleAllevamento"></div>
   <div class="result-line">
     <div class="dice-code" id="codiceIllegaleAllevamento"></div>
-    <button class="copy-btn" id="copiaIllegaleAllevamento">Copia</button>
+    <button type="button" class="copy-btn" id="copiaIllegaleAllevamento">Copia</button>
   </div>
   <div class="result-line">
     <span>Risultato ottenuto sul forum:</span>
@@ -3691,7 +3691,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
     <span></span>
   </div>
   <div class="piede-nota">
-    <button class="bottone-azione bottone-pericolo" id="bottoneReset">Azzera i dati della Guida</button>
+    <button type="button" class="bottone-azione bottone-pericolo" id="bottoneReset">Azzera i dati della Guida</button>
   </div>
 </div>
 
@@ -7201,8 +7201,8 @@ function rmEncounterSummary(n){
     parts.push('Esemplare '+i+': '+faseI+' · '+saluteI);
   }
   return {
-    html:'<b>'+rmEsc((rmEl('specieCreatura'+n)||{}).value||'Creatura')+'</b> · Classificazione '+rmEsc(cls)+' · '+count+' esemplari<br>'+parts.map(rmEsc).join('<br>'),
-    bb:'Creatura '+(((rmEl('specieCreatura'+n)||{}).value||'Creatura'))+'; Classificazione '+cls+'; '+count+' esemplari; '+parts.join('; ')+(rmEl('catturato'+n)&&rmEl('catturato'+n).checked?'; almeno una Creatura catturata':'')
+    html:'<b>'+rmEsc((rmEl('specieCreatura'+n)||{}).value||'Creatura')+'</b> · Classificazione '+rmEsc(cls)+' · '+count+' '+(count===1?'esemplare':'esemplari')+'<br>'+parts.map(rmEsc).join('<br>'),
+    bb:'Creatura '+(((rmEl('specieCreatura'+n)||{}).value||'Creatura'))+'; Classificazione '+cls+'; '+count+' '+(count===1?'esemplare':'esemplari')+'; '+parts.join('; ')+(rmEl('catturato'+n)&&rmEl('catturato'+n).checked?'; almeno una Creatura catturata':'')
   };
 }
 
@@ -7228,7 +7228,7 @@ function rmRenderOutcome(){
   if(rmTipo()==='passiva')stop='Ricerca Passiva conclusa dopo il Primo Incontro.';
   else if(rmBlockedAfter(1))stop='Ricerca interrotta dopo il Primo Incontro: Valigia Magica necessaria per proseguire dopo la cattura.';
   else if(items.length>=2 && rmBlockedAfter(2))stop='Ricerca interrotta dopo il Secondo Incontro: Valigia Magica necessaria per proseguire dopo la cattura.';
-  else stop='Ricerca conclusa dopo '+items.length+' Incontro'+(items.length===1?'':'i')+'.';
+  else stop='Ricerca conclusa dopo '+items.length+(items.length===1?' Incontro.':' Incontri.');
   host.innerHTML='<div class="nota-regole"><b>Zona di Ricerca:</b> '+rmEsc(zona||'—')+'</div><ul class="outcome-list">'+items.join('')+'</ul><div class="nota-regole" style="margin-top:12px">'+rmEsc(stop)+'</div>';
 }
 
@@ -7327,7 +7327,7 @@ function rmCreateProfileSessionRecord(name){if(RM_CREATING)return RM_PROFILE_SES
 function rmEnsureProfileSession(createIfMissing){var name=rmProfileName();if(!name){rmProfileStatus('Inserisci il nome del PG per collegare la sessione Firebase.','bad');return Promise.reject(new Error('Nome del PG mancante.'));}if(!RM_FB.user||!RM_FB.db){rmProfileStatus('Collegamento a Firebase in corso…','');return Promise.reject(new Error('Firebase non è ancora pronto.'));}if(RM_CURRENT_ID&&rmSessionCanEdit(RM_CURRENT_DATA)&&rmNormName(rmCurrentName())===rmNormName(name)){rmRememberProfileSession(RM_CURRENT_ID,RM_CURRENT_DATA,name);rmProfileStatus('Sessione Firebase pronta ✓','ok');return Promise.resolve({id:RM_CURRENT_ID,data:RM_CURRENT_DATA});}if(RM_PROFILE_SESSION_ID&&rmNormName(RM_PROFILE_SESSION_NAME)===rmNormName(name)){rmProfileStatus('Sessione Firebase pronta ✓','ok');return Promise.resolve({id:RM_PROFILE_SESSION_ID,data:RM_PROFILE_SESSION_DATA});}if(RM_PROFILE_SESSION_PROMISE)return RM_PROFILE_SESSION_PROMISE;rmProfileStatus('Collegamento del PG a Firebase…','');RM_PROFILE_SESSION_PROMISE=rmFindOwnSessionForProfile(name).then(function(found){if(found){RM_PROFILE_PENDING_CREATE=false;rmRememberProfileSession(found.id,found.data,name);rmProfileStatus('Sessione Firebase pronta ✓','ok');return found;}if(!createIfMissing){rmProfileStatus('PG salvato su Firebase · nessuna Ricerca in corso.','ok');return null;}rmProfileStatus('Creo la sessione Firebase del PG…','');return rmCreateProfileSessionRecord(name).then(function(created){RM_PROFILE_PENDING_CREATE=false;rmProfileStatus('Sessione Firebase creata ✓','ok');return created;});}).catch(function(err){console.error(err);rmProfileStatus('Errore Firebase: '+(err.message||err),'bad');throw err;}).finally(function(){RM_PROFILE_SESSION_PROMISE=null;});return RM_PROFILE_SESSION_PROMISE;}
 function rmReleaseCurrentForProfile(name){if(!RM_CURRENT_ID)return Promise.resolve();if(rmNormName(rmCurrentName())===rmNormName(name))return Promise.resolve();var p=(!RM_READONLY&&rmSessionCanEdit(RM_CURRENT_DATA))?rmSaveNow():Promise.resolve(true);return p.then(function(){RM_CURRENT_ID='';RM_CURRENT_DATA=null;RM_READONLY=false;rmWorkspace().style.display='none';rmEl('creature-session-home').style.display='block';if(/^#session=/.test(String(window.location.hash||''))){try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){}}});}
 function rmProfileNameCommitted(createIfMissing){var name=rmProfileName();RM_PROFILE_SESSION_ID='';RM_PROFILE_SESSION_DATA=null;RM_PROFILE_SESSION_NAME='';RM_PROFILE_PENDING_CREATE=!!(createIfMissing!==false);if(!name){RM_PROFILE_PENDING_CREATE=false;rmProfileStatus('Inserisci il nome del PG.','');return Promise.resolve(null);}return rmReleaseCurrentForProfile(name).then(function(){return rmEnsureProfileSession(createIfMissing!==false);}).then(function(found){RM_PROFILE_PENDING_CREATE=false;return found;});}
-function rmEnterResearchFromProfile(){var name=rmProfileName();if(!name){mostraModo('Personaggio');rmProfileStatus('Inserisci prima il nome del PG.','bad');var f=rmEl('pgNomeSessione');if(f)f.focus();return;}/* La scheda Ricerca deve essere cliccabile subito: Firebase può terminare il collegamento dopo. */mostraModo('Ricerca');rmEl('creature-session-home').style.display='block';rmWorkspace().style.display='none';rmStatus('rm-session-home-msg','Apro la Ricerca di '+name+'…','');MZ_GUIDE_DIRTY_BEFORE_READY=true;if(MZ_GUIDE_READY&&RM_FB.user){MZ_GUIDE_DIRTY_BEFORE_READY=false;mzGuideSaveNow();}if(!RM_FB.user||!RM_FB.db){RM_PROFILE_OPEN_PENDING=true;rmProfileStatus('Collegamento del PG a Firebase in corso…','');rmStatus('rm-session-home-msg','Collegamento a Firebase in corso… la Ricerca si aprirà automaticamente.','');return;}RM_PROFILE_OPEN_PENDING=false;rmProfileStatus('Apro la Ricerca del PG…','');rmReleaseCurrentForProfile(name).then(function(){return rmEnsureProfileSession(true);}).then(function(found){if(!found||!found.id)return;try{history.replaceState(null,'',window.location.pathname+window.location.search+'#session='+encodeURIComponent(found.id));}catch(e){}if(RM_CURRENT_ID===found.id&&RM_CURRENT_DATA){rmEl('creature-session-home').style.display='none';rmWorkspace().style.display='block';rmStatus('rm-session-home-msg','','');rmApplyFlow();rmUpdateToolbar();return;}return rmLoadSession(found.id);}).catch(function(err){rmStatus('rm-session-home-msg','Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');rmProfileStatus('Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');});}
+function rmEnterResearchFromProfile(){var name=rmProfileName();if(!name){mostraModo('Personaggio');rmProfileStatus('Inserisci prima il nome del PG.','bad');var f=rmEl('pgNomeSessione');if(f)f.focus();return;}/* La scheda Ricerca deve essere cliccabile subito: Firebase può terminare il collegamento dopo. */mostraModo('Ricerca');rmEl('creature-session-home').style.display='block';rmWorkspace().style.display='none';rmStatus('rm-session-home-msg','Apro la Ricerca di '+name+'…','');if(typeof window.mzGuidePrepareForResearch==='function'){window.mzGuidePrepareForResearch();}if(!RM_FB.user||!RM_FB.db){RM_PROFILE_OPEN_PENDING=true;rmProfileStatus('Collegamento del PG a Firebase in corso…','');rmStatus('rm-session-home-msg','Collegamento a Firebase in corso… la Ricerca si aprirà automaticamente.','');return;}RM_PROFILE_OPEN_PENDING=false;rmProfileStatus('Apro la Ricerca del PG…','');rmReleaseCurrentForProfile(name).then(function(){return rmEnsureProfileSession(true);}).then(function(found){if(!found||!found.id)return;try{history.replaceState(null,'',window.location.pathname+window.location.search+'#session='+encodeURIComponent(found.id));}catch(e){}if(RM_CURRENT_ID===found.id&&RM_CURRENT_DATA){rmEl('creature-session-home').style.display='none';rmWorkspace().style.display='block';rmStatus('rm-session-home-msg','','');rmApplyFlow();rmUpdateToolbar();return;}return rmLoadSession(found.id);}).catch(function(err){rmStatus('rm-session-home-msg','Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');rmProfileStatus('Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');});}
 function rmUpdateToolbar(){
   if(!RM_CURRENT_DATA)return;
   var mine=RM_FB.user&&RM_CURRENT_DATA.ownerUid===RM_FB.user.uid,narr=RM_FB.user&&RM_FB.user.uid===RM_NARRATOR_UID,parts=[];
@@ -7349,7 +7349,7 @@ function rmSetReadonly(ro){
 }
 function rmPayload(){
   var st=rmCollectState();
-  return {ownerUid:RM_CURRENT_DATA.ownerUid,initialPgName:RM_CURRENT_DATA.initialPgName||rmCurrentName(),pgName:rmCurrentName(),tipoRicerca:rmTipo(),createdAt:RM_CURRENT_DATA.createdAt||null,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'standard-ricerca-v1',state:st};
+  return {ownerUid:RM_CURRENT_DATA.ownerUid,initialPgName:RM_CURRENT_DATA.initialPgName||rmCurrentName(),pgName:rmCurrentName(),tipoRicerca:rmTipo(),createdAt:RM_CURRENT_DATA.createdAt||null,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'standard-ricerca-v2-profile',state:st};
 }
 function rmScheduleSave(){
   if(RM_RESTORING||RM_DELETING||!RM_CURRENT_ID||RM_READONLY||!rmSessionCanEdit(RM_CURRENT_DATA))return;
@@ -7997,7 +7997,15 @@ function mzGuideCollectState(){
 function mzGuideSetFields(fields,restoreProfile){fields=fields||{};document.querySelectorAll((restoreProfile?'#modoPersonaggio [data-key],':'')+'#modoMagizoologia [data-key]').forEach(function(f){var k=f.getAttribute('data-key');if(fields[k]===undefined)return;if(f.type==='checkbox'||f.type==='radio')f.checked=!!fields[k];else f.value=fields[k];});}
 function mzGuideRestoreRows(rows,globals){['fiducia','scoperta','cura','domesticazione','allevamento'].forEach(function(ph){var box=mzPhaseBox(ph);if(box)box.innerHTML='';});MZ_SHARED_BONUSES=mzGuideClone((globals&&globals.shared)||{});MZ_SHARED_UID=Number((globals&&globals.sharedUid)||0);MZ_BONUS_UID=0;(rows||[]).forEach(function(d){if(!d.phase||!d.preset||!MZ_PHASE_BONUS_PRESETS[d.preset])return;/* v60: scarta i vecchi bonus manuali. */var row=mzCreatePhaseBonusRow(d.phase,{preset:d.preset,source:d.source,condition:d.condition,type:d.type,value:d.value,fatica:d.fatica,total:d.total,used:d.used,linkId:d.linkId,localUsed:d.localUsed,sharedUsed:d.linkId&&MZ_SHARED_BONUSES[d.linkId]?MZ_SHARED_BONUSES[d.linkId].used:0,resolverState:d.resolverState,silent:true});if(!row)return;var used=row.querySelector('[data-role="used"]');if(used&&d.used!==undefined)used.value=d.used;var apply=row.querySelector('[data-role="apply"]');if(apply){apply.checked=!!d.apply;apply.disabled=false;}row.dataset.autoApplied=d.autoApplied||'';if(d.linkId)row.dataset.linkId=d.linkId;});Object.keys(MZ_SHARED_BONUSES||{}).forEach(function(id){if(typeof mzSyncSharedRows==='function')mzSyncSharedRows(id);});}
 function mzGuideApplyState(st){if(!st)return;if(!st.specificVoteV58&&st.fields){st=mzGuideClone(st);st.fields=st.fields||{};st.fields.pgVoto='';}MZ_GUIDE_RESTORING=true;try{var restoreProfile=true;mzGuideSetFields(st.fields,restoreProfile);if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();var g=st.globals||{};mzGuideRestoreRows(st.bonusRows||[],g);MZ_FIDUCIA_HISTORY=mzGuideClone(g.fiduciaHistory||[]);MZ_SCOPERTA_HISTORY=mzGuideClone(g.scopertaHistory||[]);MZ_SCOPERTA_FAILURES=Number(g.scopertaFailures||0);MZ_CURA_HISTORY=mzGuideClone(g.curaHistory||[]);MZ_CURA_FAILURES=Number(g.curaFailures||0);MZ_DOMESTICAZIONE_HISTORY=mzGuideClone(g.domHistory||[]);MZ_SCOPERTA_FALLITA=!!g.scopertaFallita;MZ_CURA_FALLITA=!!g.curaFallita;MZ_CURA_MALUS_ALLEVAMENTO=Number(g.curaMalus||0);MZ_LAST_CURA_BONUS_DOM=Number(g.lastCuraBonus||0);MZ_IMPOSIUM_SUCCESS=!!g.imposiumSuccess;MZ_IMPOSIUM_DOM_MALUS=Number(g.imposiumDom||0);MZ_IMPOSIUM_POST_MALUS=Number(g.imposiumPost||0);MZ_ILLEGAL_SIGNATURES=mzGuideClone(g.illegalSignatures||{cura:null,allevamento:null});curaEbbeUnFallimento=!!g.curaEbbe;if(typeof mzRenderFiduciaHistory==='function')mzRenderFiduciaHistory();if(typeof mzRenderScopertaHistory==='function')mzRenderScopertaHistory();if(typeof mzRenderCuraHistory==='function')mzRenderCuraHistory();if(typeof mzRenderDomesticazioneHistory==='function')mzRenderDomesticazioneHistory();if(typeof mzSyncAllAttemptDisplays==='function')mzSyncAllAttemptDisplays();if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();if(st.activePanel&&document.getElementById('pannello'+st.activePanel))mostraPannello(st.activePanel);}finally{MZ_GUIDE_RESTORING=false;}if(typeof rmEnsureProfileSession==='function'&&RM_FB&&RM_FB.user&&rmProfileName())setTimeout(function(){rmEnsureProfileSession(RM_PROFILE_PENDING_CREATE).catch(function(){});},0);}
-function mzGuideSaveNow(){var ref=mzGuideDoc();if(!ref||MZ_GUIDE_RESTORING)return Promise.resolve();if(MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}var payload={recordType:'guide',ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-guide-v45',state:mzGuideCollectState()};mzGuideStatus('Guida: salvataggio automatico su Firebase…','saving');var task=MZ_GUIDE_SAVE_CHAIN.catch(function(){}).then(function(){return ref.set(payload,{merge:true});}).then(function(){mzGuideStatus('Guida salvata automaticamente su Firebase ✓','ok');}).catch(function(err){console.error(err);mzGuideStatus('Guida: errore di salvataggio Firebase — '+(err.message||err),'bad');});MZ_GUIDE_SAVE_CHAIN=task;return task;}
+function mzGuideSaveNow(){var ref=mzGuideDoc();if(!ref||MZ_GUIDE_RESTORING)return Promise.resolve();if(MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}var payload={recordType:'guide',ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-guide-v77',state:mzGuideCollectState()};mzGuideStatus('Guida: salvataggio automatico su Firebase…','saving');var task=MZ_GUIDE_SAVE_CHAIN.catch(function(){}).then(function(){return ref.set(payload,{merge:true});}).then(function(){mzGuideStatus('Guida salvata automaticamente su Firebase ✓','ok');}).catch(function(err){console.error(err);mzGuideStatus('Guida: errore di salvataggio Firebase — '+(err.message||err),'bad');});MZ_GUIDE_SAVE_CHAIN=task;return task;}
+window.mzGuidePrepareForResearch=function(){
+  MZ_GUIDE_DIRTY_BEFORE_READY=true;
+  if(MZ_GUIDE_READY&&RM_FB.user){
+    MZ_GUIDE_DIRTY_BEFORE_READY=false;
+    return mzGuideSaveNow();
+  }
+  return Promise.resolve();
+};
 function mzGuideScheduleSave(){
   if(MZ_GUIDE_RESTORING)return;
   if(!MZ_GUIDE_READY||!RM_FB.user){
@@ -8082,7 +8090,7 @@ window.mzResetPersistentGuideForNewPg=function(btn){
     var ps=document.getElementById('rm-profile-session-status');if(ps){ps.textContent='Profilo azzerato. Salvataggio dei valori vuoti…';ps.className='session-status';}
   }finally{MZ_GUIDE_RESTORING=false;}
   var ref=mzGuideDoc();
-  var payload={recordType:'guide',ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-guide-v59',state:mzGuideCollectState()};
+  var payload={recordType:'guide',ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-guide-v77',state:mzGuideCollectState()};
   ref.set(payload,{merge:true}).then(function(){
     try{
       for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i)||'';if(k.indexOf('ffgdr_mz_knowledge_')===0)localStorage.removeItem(k);}
