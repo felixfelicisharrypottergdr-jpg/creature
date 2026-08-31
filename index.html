@@ -3,7 +3,7 @@
 <!-- v130: sessioni Ricerca Creature condivise tra dispositivi, chiave stabile per PG, recupero sessioni legacy e rimozione vincolo ownerUid -->
 
 <!-- v118 audit fonti: base v117; licenza 150 G confermata dallo screenshot aggiornato; Repello Babbanum lasciato non automatizzato per fonte +1/+2 incoerente; regressione in corso -->
-<!-- Magizoologia tool v123 — rimosso selettore Giorno/Notte; requisiti temporali restano nelle regole specifiche -->
+<!-- Magizoologia tool v132 — profili PG pubblici cross-device; feedback test: leggibilità, controlli specifici, bonus per incontro -->
 <html lang="it">
 <head>
 <meta charset="utf-8"/>
@@ -1060,13 +1060,13 @@ body{color:#211008!important;}
 .scheda h3,.blocco-incontro h3{color:#4a1a08!important;}
 .scheda .nota-regole,.blocco-incontro .nota-regole{color:#3d2113!important;font-weight:600;line-height:1.52;}
 .formula-tag{
-  background:#f0b681!important;
+  background:#7a3519!important;
   color:#fff7f0!important;
   border:1px solid #d78548!important;
   font-weight:700;
 }
 .scheda .formula-tag,.blocco-incontro .formula-tag{
-  background:#b86b34!important;
+  background:#7a3519!important;
   color:#fff7f0!important;
   border-color:#8d481f!important;
 }
@@ -1092,15 +1092,15 @@ body{color:#211008!important;}
 /* ===== v25: colori distinti per i tasti Incontro I / II / III ===== */
 .flow-page-btn[data-rm-page="enc1"]{background:linear-gradient(180deg,#587433 0%,#35511c 100%)!important;border-color:#8fb260!important;color:#f4ffe8!important;}
 .flow-page-btn[data-rm-page="enc1"]:hover:not(:disabled){background:linear-gradient(180deg,#6e8c46 0%,#416626 100%)!important;}
-.flow-page-btn[data-rm-page="enc1"].active{background:linear-gradient(180deg,#7da253 0%,#456c29 100%)!important;border-color:#c7e7a0!important;color:#ffffff!important;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 14px rgba(151,194,105,.28)!important;}
+.flow-page-btn[data-rm-page="enc1"].active{background:linear-gradient(180deg,#496b28 0%,#314b1c 100%)!important;border-color:#c7e7a0!important;color:#ffffff!important;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 14px rgba(151,194,105,.28)!important;}
 
-.flow-page-btn[data-rm-page="enc2"]{background:linear-gradient(180deg,#a87918 0%,#77510d 100%)!important;border-color:#d8b155!important;color:#fff9e8!important;}
+.flow-page-btn[data-rm-page="enc2"]{background:linear-gradient(180deg,#73500e 0%,#523807 100%)!important;border-color:#d8b155!important;color:#fff9e8!important;}
 .flow-page-btn[data-rm-page="enc2"]:hover:not(:disabled){background:linear-gradient(180deg,#bf8d21 0%,#896114 100%)!important;}
-.flow-page-btn[data-rm-page="enc2"].active{background:linear-gradient(180deg,#d2a13a 0%,#946718 100%)!important;border-color:#f3d78d!important;color:#fffdf4!important;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 14px rgba(233,193,98,.26)!important;}
+.flow-page-btn[data-rm-page="enc2"].active{background:linear-gradient(180deg,#73500e 0%,#523807 100%)!important;border-color:#f3d78d!important;color:#fffdf4!important;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 14px rgba(233,193,98,.26)!important;}
 
 .flow-page-btn[data-rm-page="enc3"]{background:linear-gradient(180deg,#8b3228 0%,#5e1d16 100%)!important;border-color:#bf6c61!important;color:#fff0ee!important;}
 .flow-page-btn[data-rm-page="enc3"]:hover:not(:disabled){background:linear-gradient(180deg,#a83e32 0%,#70251d 100%)!important;}
-.flow-page-btn[data-rm-page="enc3"].active{background:linear-gradient(180deg,#c65446 0%,#812a20 100%)!important;border-color:#f0a09a!important;color:#fff8f7!important;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 14px rgba(207,92,80,.25)!important;}
+.flow-page-btn[data-rm-page="enc3"].active{background:linear-gradient(180deg,#9a382f 0%,#672219 100%)!important;border-color:#f0a09a!important;color:#fff8f7!important;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 14px rgba(207,92,80,.25)!important;}
 
 .flow-page-btn[data-rm-page="enc1"].locked,.flow-page-btn[data-rm-page="enc2"].locked,.flow-page-btn[data-rm-page="enc3"].locked{opacity:.55!important;filter:saturate(.85)!important;}
 
@@ -1205,13 +1205,13 @@ body{color:#211008!important;}
   color:#ead8b4!important;
 }
 .rm-bolcino-incontro .out-tag{
-  background:linear-gradient(180deg,#b4873d,#76541f)!important;
+  background:linear-gradient(180deg,#76521e,#4e3511)!important;
   border-color:#d2ad67!important;
   color:#fff3d6!important;
   text-shadow:0 1px 0 #49300f;
 }
 .rm-bolcino-incontro .out-tag.out-ok{
-  background:linear-gradient(180deg,#3f8a50,#255c33)!important;
+  background:linear-gradient(180deg,#2f6f3e,#1e4d2a)!important;
   border-color:#78bd87!important;
   color:#f3fff5!important;
   text-shadow:0 1px 0 #173c21;
@@ -1228,7 +1228,7 @@ body{color:#211008!important;}
   color:#dfbd74!important;
 }
 .rm-bolcino-incontro .copy-btn{
-  background:linear-gradient(180deg,#ad7f34,#71501c)!important;
+  background:linear-gradient(180deg,#73501c,#4d3410)!important;
   border-color:#c99d50!important;
   color:#fff0cf!important;
 }
@@ -2005,9 +2005,9 @@ body{color:#211008!important;}
   background:#bb6032!important;
 }
 #mzRiprovaFiducia:disabled{
-  background:#7c4a32!important;
+  background:#69351f!important;
   border-color:#a86b49!important;
-  color:#e6c3aa!important;
+  color:#f4ded0!important;
   opacity:1!important;
 }
 
@@ -2175,7 +2175,7 @@ body{color:#211008!important;}
   color:#fff2e7!important;
 }
 #modoMagizoologia .pannello table.fasce th{
-  background:#b66534!important;
+  background:#7a3519!important;
   color:#fff5ed!important;
   border-color:#d98e59!important;
 }
@@ -2244,7 +2244,7 @@ body{color:#211008!important;}
   color:#fff5ed!important;
 }
 #modoMagizoologia .pannello table.fasce th{
-  background:#c8733f!important;
+  background:#7a3519!important;
   color:#fffaf5!important;
   border-color:#eda56f!important;
 }
@@ -3962,7 +3962,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </details>
 <div class="mz-bonus-manager" id="rmBonusRicercaBox">
 <h3>Oggetti / Incantesimi / Conoscenze — Bonus alla Ricerca</h3>
-<p class="mz-bonus-help">Seleziona ciò che stai usando. Se una Conoscenza o un Incantesimo richiede prima di stabilirne la riuscita, il collegamento al Generatore comparirà direttamente nella relativa riga; se serve un dado aggiuntivo, il tool mostrerà soltanto quel dado e la casella per inserirne il risultato. Per gli Oggetti a usi limitati basta scegliere l’Incontro in cui li stai applicando.</p>
+<p class="mz-bonus-help">Seleziona ciò che stai usando. Se una Conoscenza o un Incantesimo richiede prima di stabilirne la riuscita, il collegamento al Generatore comparirà direttamente nella relativa riga; se serve un dado aggiuntivo, il tool mostrerà soltanto quel dado e la casella per inserirne il risultato. Per gli Oggetti a usi limitati basta scegliere l’Incontro in cui li stai applicando. Puoi anche aprire questo stesso pannello direttamente dentro ciascun Incontro: andare avanti e indietro non cancella i dadi o gli altri risultati già inseriti.</p>
 <input data-key="bonusRicercaJson" id="rmBonusRicercaJson" type="hidden" value="[]"/>
 <div class="mz-bonus-list" id="rmBonusRicercaRows"></div>
 <button class="mz-bonus-add" id="rmAddBonusRicerca" type="button">+ Aggiungi Oggetto / Incantesimo / Conoscenza</button>
@@ -7461,6 +7461,7 @@ function rmApplyFlow(){
   for(var k=0;k<gotos.length;k++){var g=gotos[k],pg=g.getAttribute('data-rm-goto');g.disabled=!rmPageUnlocked(pg);}
 }
 function rmGoto(page,scroll){
+  if(typeof rmReturnBonusManagerHome==='function')rmReturnBonusManagerHome();
   if(page==='summary')page='config';
   if(rmConfigReady())RM_FLOW.summaryVisited=true;
   if(page==='outcome'&&rmPageUnlocked('outcome'))RM_FLOW.outcomeVisited=true;
@@ -7470,6 +7471,7 @@ function rmGoto(page,scroll){
   if(scroll!==false){var p=document.querySelector('#creature-workspace [data-rm-page-panel="'+page+'"]');if(p)setTimeout(function(){try{p.scrollIntoView({behavior:'auto',block:'start'});}catch(e){}},0);}
 }
 function rmResumeFlow(){
+  if(typeof rmReturnBonusManagerHome==='function')rmReturnBonusManagerHome();
   var page='config';
   if(!rmConfigReady())page='config';
   else if(!rmEncounterComplete(1))page='enc1';
@@ -7551,7 +7553,7 @@ function rmSessionTime(data){var t=data&&data.updatedAt;if(t&&typeof t.toMillis=
 function rmIsResearchData(data){return !!(data&&((!data.recordType)||data.recordType==='research'));}
 function rmMatchesProfile(data,name){return rmIsResearchData(data)&&rmNormName(data.normalizedPgName||data.pgName||data.initialPgName)===rmNormName(name);}
 function rmNewSessionState(name){var ep=rmProfiloEmpatia();if(ep===null)throw new Error('Inserisci un valore valido di Empatia.');return {nomePgRicerca:name,empatiaRicerca:String(ep),sapienza:String(rmProfiloSapienza()),tipoRicerca:'attiva',valigiaMagica:'no',zonaRicerca:'',bonusRicercaJson:'[]',summaryVisited:false,outcomeVisited:false,flowPage:'config'};}
-function rmNewSessionData(name){return {recordType:'research',publicSession:true,normalizedPgName:rmNormName(name),ownerUid:RM_FB.user.uid,initialPgName:name,pgName:name,tipoRicerca:'attiva',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-ricerca-v130',state:rmNewSessionState(name)};}
+function rmNewSessionData(name){return {recordType:'research',publicSession:true,normalizedPgName:rmNormName(name),ownerUid:RM_FB.user.uid,initialPgName:name,pgName:name,tipoRicerca:'attiva',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-ricerca-v132',state:rmNewSessionState(name)};}
 function rmRememberProfileSession(id,data,name){RM_PROFILE_SESSION_ID=id||'';RM_PROFILE_SESSION_DATA=data||null;RM_PROFILE_SESSION_NAME=name||((data&&(data.pgName||data.initialPgName))||'');}
 function rmCollectSessionsForProfile(name){
   if(!RM_FB.db||!RM_FB.user)return Promise.resolve([]);
@@ -7577,7 +7579,7 @@ function rmFindSessionForProfile(name){
       if(!rows.length)return null;
       var best=rows[0],legacy=best.data||{},migrated={};
       Object.keys(legacy).forEach(function(k){migrated[k]=legacy[k];});
-      migrated.recordType='research';migrated.publicSession=true;migrated.normalizedPgName=wanted;migrated.ownerUid=RM_FB.user.uid;migrated.migratedFrom=best.id;migrated.migratedOwnerUid=legacy.ownerUid||'';migrated.updatedAt=firebase.firestore.FieldValue.serverTimestamp();migrated.toolVersion='magizoologia-ricerca-v130';
+      migrated.recordType='research';migrated.publicSession=true;migrated.normalizedPgName=wanted;migrated.ownerUid=RM_FB.user.uid;migrated.migratedFrom=best.id;migrated.migratedOwnerUid=legacy.ownerUid||'';migrated.updatedAt=firebase.firestore.FieldValue.serverTimestamp();migrated.toolVersion='magizoologia-ricerca-v132';
       return stableRef.set(migrated,{merge:false}).then(function(){return stableRef.get();}).then(function(newDoc){
         if(!newDoc.exists)throw new Error('La Ricerca recuperata non è stata riletta correttamente.');
         return rmCleanupLegacySessions(name,stableId,rows).then(function(){return {id:newDoc.id,data:newDoc.data(),migrated:true};});
@@ -7632,7 +7634,7 @@ function rmSetReadonly(ro){
 }
 function rmPayload(){
   var st=rmCollectState();
-  return {recordType:'research',publicSession:true,normalizedPgName:rmNormName(rmCurrentName()),ownerUid:(RM_CURRENT_DATA&&RM_CURRENT_DATA.ownerUid)||RM_FB.user.uid,initialPgName:(RM_CURRENT_DATA&&RM_CURRENT_DATA.initialPgName)||rmCurrentName(),pgName:rmCurrentName(),tipoRicerca:rmTipo(),createdAt:(RM_CURRENT_DATA&&RM_CURRENT_DATA.createdAt)||null,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-ricerca-v130',state:st};
+  return {recordType:'research',publicSession:true,normalizedPgName:rmNormName(rmCurrentName()),ownerUid:(RM_CURRENT_DATA&&RM_CURRENT_DATA.ownerUid)||RM_FB.user.uid,initialPgName:(RM_CURRENT_DATA&&RM_CURRENT_DATA.initialPgName)||rmCurrentName(),pgName:rmCurrentName(),tipoRicerca:rmTipo(),createdAt:(RM_CURRENT_DATA&&RM_CURRENT_DATA.createdAt)||null,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-ricerca-v132',state:st};
 }
 function rmScheduleSave(){
   if(RM_RESTORING||RM_DELETING||!RM_CURRENT_ID||RM_READONLY||!rmSessionCanEdit(RM_CURRENT_DATA))return;
@@ -7781,14 +7783,40 @@ function rmBack(){
 }
 function rmSetupSearchBonusUI(){
   var add=rmEl('rmAddBonusRicerca'),host=rmEl('rmBonusRicercaRows');if(!add||!host)return;
-  add.addEventListener(evtClick,function(){if(RM_READONLY)return;host.appendChild(rmBuildSearchBonusRow({preset:'',value:0,scope:'all'}));setupNumericInputs();rmSyncSearchBonusHidden();ricalcolaRicerca();rmScheduleSave();});
+  add.addEventListener(evtClick,function(){if(RM_READONLY)return;var box=rmEl('rmBonusRicercaBox'),ctx=box&&box.getAttribute('data-rm-enc-context');host.appendChild(rmBuildSearchBonusRow({preset:'',value:0,scope:(ctx==='1'||ctx==='2'||ctx==='3')?ctx:'all'}));setupNumericInputs();rmSyncSearchBonusHidden();ricalcolaRicerca();rmScheduleSave();});
   host.addEventListener(evtClick,function(e){var b=e.target&&e.target.closest?e.target.closest('.rm-search-bonus-remove'):null;if(!b||RM_READONLY)return;var r=b.closest('.rm-search-bonus-row');if(r)r.remove();rmSyncSearchBonusHidden();ricalcolaRicerca();rmScheduleSave();},true);
   function changed(e){if(RM_READONLY||!e.target.closest('.rm-search-bonus-row'))return;var row=e.target.closest('.rm-search-bonus-row');if(e.target.classList.contains('rm-search-bonus-preset'))rmApplySearchBonusPreset(row);rmSyncSearchBonusHidden();ricalcolaRicerca();rmScheduleSave();}
   host.addEventListener('input',changed,true);host.addEventListener('change',changed,true);
   rmRenderSearchBonusesFromHidden(true);rmUpdateSearchBonusSummary();
 }
 
+function rmBonusManagerSetContext(n){
+ var box=rmEl('rmBonusRicercaBox'),add=rmEl('rmAddBonusRicerca');if(!box)return;
+ var ctx=(String(n)==='1'||String(n)==='2'||String(n)==='3')?String(n):'';
+ if(ctx)box.setAttribute('data-rm-enc-context',ctx);else box.removeAttribute('data-rm-enc-context');
+ if(add)add.textContent=ctx?('+ Aggiungi Oggetto / Incantesimo / Conoscenza per Incontro '+({1:'I',2:'II',3:'III'}[ctx])):'+ Aggiungi Oggetto / Incantesimo / Conoscenza';
+}
+function rmReturnBonusManagerHome(){
+ var box=rmEl('rmBonusRicercaBox'),home=rmEl('rmBonusRicercaHome');if(!box||!home)return;
+ if(box.parentNode!==home)home.appendChild(box);rmBonusManagerSetContext('');
+}
+function rmOpenEncounterBonusManager(n){
+ var box=rmEl('rmBonusRicercaBox'),dock=rmEl('rmEncBonusDock'+n);if(!box||!dock)return;
+ dock.appendChild(box);rmBonusManagerSetContext(n);box.scrollIntoView({behavior:'auto',block:'start'});
+}
+function rmInitEncounterBonusDocks(){
+ var box=rmEl('rmBonusRicercaBox');if(!box)return;
+ if(!rmEl('rmBonusRicercaHome')){var home=document.createElement('div');home.id='rmBonusRicercaHome';box.parentNode.insertBefore(home,box);home.appendChild(box);}
+ for(var n=1;n<=3;n++){
+   var block=rmEl('blocco'+n);if(!block||rmEl('rmEncBonusTools'+n))continue;
+   var tools=document.createElement('div');tools.className='rm-enc-bonus-tools';tools.id='rmEncBonusTools'+n;
+   tools.innerHTML='<div class="rm-enc-bonus-help"><b>Bonus di questo Incontro:</b> puoi aggiungere o modificare qui Oggetti, Incantesimi e Conoscenze senza tornare alla Configurazione. I risultati già inseriti negli altri step restano salvati: cambia soltanto ciò che dipende dal bonus modificato.</div><button type="button" class="mz-bonus-add" data-rm-open-enc-bonus="'+n+'">Gestisci bonus dell’Incontro '+({1:'I',2:'II',3:'III'}[n])+'</button><div class="rm-enc-bonus-dock" id="rmEncBonusDock'+n+'"></div>';
+   var h2=block.querySelector('h2');if(h2&&h2.nextSibling)block.insertBefore(tools,h2.nextSibling);else block.insertBefore(tools,block.firstChild);
+ }
+ document.addEventListener(evtClick,function(e){var b=e.target&&e.target.closest?e.target.closest('[data-rm-open-enc-bonus]'):null;if(!b)return;rmOpenEncounterBonusManager(b.getAttribute('data-rm-open-enc-bonus'));},true);
+}
 function rmSetupControls(){
+  rmInitEncounterBonusDocks();
   rmEl('rm-btn-new-session').addEventListener(evtClick,rmCreateSession);
   rmEl('rm-btn-refresh-sessions').addEventListener(evtClick,rmLoadSessions);
   rmEl('rm-btn-back-sessions').addEventListener(evtClick,rmBack);
@@ -8257,11 +8285,11 @@ function mzGuideApplyState(st){if(!st)return;if(!st.specificVoteV58&&st.fields){
 function mzProfileDefaultState(name){
   return {specificVoteV58:1,fields:{pgNomeSessione:name||'',pgTipo:'studente',pgAdultoCDCM:'si',empatia:'10',sapienzaProfilo:'0',livAmico:'0',livCustode:'0',livAddestratore:'0',livAllevatore:'0',pgMagizoologoMestiere:false,pgLicenzaCreatureSpeciali:false},activePanel:'Riconoscimento',bonusRows:[],globals:{shared:{},sharedUid:0,fiduciaHistory:[],scopertaHistory:[],scopertaFailures:0,curaHistory:[],curaFailures:0,curaConsecutiveFailures:0,domHistory:[],scopertaFallita:false,curaFallita:false,curaMalus:0,lastCuraBonus:0,imposiumSuccess:false,imposiumDom:0,imposiumPost:0,illegalSignatures:{cura:null,allevamento:null},curaEbbe:false}};
 }
-function mzProfileSavePayload(name){return {recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v131',state:mzGuideCollectState()};}
+function mzProfileSavePayload(name){return {recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v132',state:mzGuideCollectState()};}
 function mzProfileLegacyGuideRowsForName(name){if(!RM_FB.db||!RM_FB.user)return Promise.resolve([]);var wanted=rmNormName(name);return RM_FB.db.collection(RM_COLLECTION).get().then(function(snap){var rows=[];snap.forEach(function(doc){var d=doc.data()||{};var st=d.state||{};var fields=st.fields||{};var n=fields.pgNomeSessione||d.pgName||d.initialPgName||'';if(d.recordType==='guide'&&rmNormName(n)===wanted)rows.push({id:doc.id,data:d});});rows.sort(function(a,b){return rmSessionTime(b.data)-rmSessionTime(a.data);});return rows;});}
 function mzProfileEnsurePickerSelection(name){var p=mzProfilePicker();if(!p)return;var wanted=rmNormName(name);var found='';for(var i=0;i<p.options.length;i++){if(rmNormName(p.options[i].value)===wanted){found=p.options[i].value;break;}}p.value=found||'';}
 function mzProfileRefreshList(selectedName){var picker=mzProfilePicker();if(!picker)return Promise.resolve([]);if(!RM_FB.db||!RM_FB.user){picker.innerHTML='<option value="">— Firebase non pronto —</option>';mzProfilePickerStatus('Collegamento a Firebase in corso…','');return Promise.resolve([]);}mzProfilePickerStatus('Leggo l’elenco dei profili salvati…','');return RM_FB.db.collection(RM_COLLECTION).get().then(function(snap){var map={};snap.forEach(function(doc){var d=doc.data()||{};if(d.recordType!=='profile')return;var n=d.pgName||((d.state&&d.state.fields&&d.state.fields.pgNomeSessione)||'');var key=rmNormName(n);if(!key)return;var old=map[key];if(!old||rmSessionTime(d)>rmSessionTime(old.data))map[key]={id:doc.id,name:n,data:d};});var arr=Object.keys(map).map(function(k){return map[k];}).sort(function(a,b){return a.name.localeCompare(b.name,'it',{sensitivity:'base'});});var html=['<option value="">— Seleziona un PG salvato —</option>'];arr.forEach(function(r){html.push('<option value="'+String(r.name).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')+'">'+String(r.name).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</option>');});picker.innerHTML=html.join('');if(selectedName)mzProfileEnsurePickerSelection(selectedName);else if(MZ_GUIDE_BOUND_NAME)mzProfileEnsurePickerSelection(MZ_GUIDE_BOUND_NAME);mzProfilePickerStatus(arr.length?'Profili disponibili: '+arr.length+' ✓':'Nessun profilo Magizoologia salvato per ora.','ok');return arr;}).catch(function(err){console.error(err);picker.innerHTML='<option value="">— Impossibile leggere i profili —</option>';mzProfilePickerStatus('Impossibile leggere l’elenco dei profili: '+(err.message||err),'bad');return [];});}
-function mzProfileOpenByName(name,opts){opts=opts||{};name=String(name||'').trim();if(!name){mzProfilePickerStatus('Seleziona o inserisci prima un nome PG.','');return Promise.resolve(null);}if(!RM_FB.db||!RM_FB.user){mzProfilePickerStatus('Collegamento a Firebase in corso…','');return Promise.resolve(null);}var currentName=String(MZ_GUIDE_BOUND_NAME||'').trim();var before=(currentName&&rmNormName(currentName)!==rmNormName(name)&&MZ_GUIDE_READY)?mzGuideSaveNow():Promise.resolve(true);return before.catch(function(){return true;}).then(function(){MZ_GUIDE_LOADING=true;MZ_GUIDE_READY=false;mzGuideStatus('Profilo/Guida: caricamento del PG '+name+'…','saving');mzProfilePickerStatus('Carico il profilo di '+name+'…','');var ref=mzGuideDoc(name);if(!ref)throw new Error('Profilo non disponibile.');return ref.get().then(function(doc){if(doc.exists&&doc.data()&&doc.data().recordType==='profile'&&doc.data().state)return {id:doc.id,data:doc.data(),state:doc.data().state,source:'profile'};return mzProfileLegacyGuideRowsForName(name).then(function(rows){if(rows.length){var best=rows[0],state=best.data&&best.data.state?best.data.state:mzProfileDefaultState(name),payload={recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v131',migratedFrom:best.id,state:state};return ref.set(payload,{merge:false}).then(function(){return ref.get();}).then(function(nd){return {id:nd.id,data:nd.data(),state:nd.data().state,source:'migrated'};});}return {id:ref.id,data:null,state:mzProfileDefaultState(name),source:'blank'};});});}).then(function(found){mzGuideApplyState(found.state||mzProfileDefaultState(name));MZ_GUIDE_CURRENT_DOC_ID=found.id||mzProfileDocId(name);MZ_GUIDE_BOUND_NAME=name;MZ_GUIDE_READY=true;MZ_GUIDE_LOADING=false;MZ_GUIDE_DIRTY_BEFORE_READY=false;var btn=document.getElementById('mzResetAllBtn');if(btn)btn.disabled=false;if(found.source==='profile'){mzGuideStatus('Profilo/Guida di '+name+' ripristinati da Firebase ✓','ok');mzProfilePickerStatus('Profilo di '+name+' aperto ✓','ok');}else if(found.source==='migrated'){mzGuideStatus('Recuperato e convertito il vecchio profilo di '+name+' ✓','ok');mzProfilePickerStatus('Vecchio profilo di '+name+' recuperato e convertito ✓','ok');}else{mzGuideStatus('Nuovo profilo pronto per '+name+' · autosalvataggio attivo ✓','ok');mzProfilePickerStatus('Nessun profilo esistente: puoi compilare un nuovo profilo per '+name+'.','ok');}return mzProfileRefreshList(name).then(function(){return found;});}).catch(function(err){console.error(err);MZ_GUIDE_LOADING=false;MZ_GUIDE_READY=true;mzGuideStatus('Profilo/Guida: errore Firebase — '+(err.message||err),'bad');mzProfilePickerStatus('Impossibile aprire il profilo: '+(err.message||err),'bad');return null;});}
+function mzProfileOpenByName(name,opts){opts=opts||{};name=String(name||'').trim();if(!name){mzProfilePickerStatus('Seleziona o inserisci prima un nome PG.','');return Promise.resolve(null);}if(!RM_FB.db||!RM_FB.user){mzProfilePickerStatus('Collegamento a Firebase in corso…','');return Promise.resolve(null);}var currentName=String(MZ_GUIDE_BOUND_NAME||'').trim();var before=(currentName&&rmNormName(currentName)!==rmNormName(name)&&MZ_GUIDE_READY)?mzGuideSaveNow():Promise.resolve(true);return before.catch(function(){return true;}).then(function(){MZ_GUIDE_LOADING=true;MZ_GUIDE_READY=false;mzGuideStatus('Profilo/Guida: caricamento del PG '+name+'…','saving');mzProfilePickerStatus('Carico il profilo di '+name+'…','');var ref=mzGuideDoc(name);if(!ref)throw new Error('Profilo non disponibile.');return ref.get().then(function(doc){if(doc.exists&&doc.data()&&doc.data().recordType==='profile'&&doc.data().state)return {id:doc.id,data:doc.data(),state:doc.data().state,source:'profile'};return mzProfileLegacyGuideRowsForName(name).then(function(rows){if(rows.length){var best=rows[0],state=best.data&&best.data.state?best.data.state:mzProfileDefaultState(name),payload={recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v132',migratedFrom:best.id,state:state};return ref.set(payload,{merge:false}).then(function(){return ref.get();}).then(function(nd){return {id:nd.id,data:nd.data(),state:nd.data().state,source:'migrated'};});}return {id:ref.id,data:null,state:mzProfileDefaultState(name),source:'blank'};});});}).then(function(found){mzGuideApplyState(found.state||mzProfileDefaultState(name));MZ_GUIDE_CURRENT_DOC_ID=found.id||mzProfileDocId(name);MZ_GUIDE_BOUND_NAME=name;MZ_GUIDE_READY=true;MZ_GUIDE_LOADING=false;MZ_GUIDE_DIRTY_BEFORE_READY=false;var btn=document.getElementById('mzResetAllBtn');if(btn)btn.disabled=false;if(found.source==='profile'){mzGuideStatus('Profilo/Guida di '+name+' ripristinati da Firebase ✓','ok');mzProfilePickerStatus('Profilo di '+name+' aperto ✓','ok');}else if(found.source==='migrated'){mzGuideStatus('Recuperato e convertito il vecchio profilo di '+name+' ✓','ok');mzProfilePickerStatus('Vecchio profilo di '+name+' recuperato e convertito ✓','ok');}else{mzGuideStatus('Nuovo profilo pronto per '+name+' · autosalvataggio attivo ✓','ok');mzProfilePickerStatus('Nessun profilo esistente: puoi compilare un nuovo profilo per '+name+'.','ok');}return mzProfileRefreshList(name).then(function(){return found;});}).catch(function(err){console.error(err);MZ_GUIDE_LOADING=false;MZ_GUIDE_READY=true;mzGuideStatus('Profilo/Guida: errore Firebase — '+(err.message||err),'bad');mzProfilePickerStatus('Impossibile aprire il profilo: '+(err.message||err),'bad');return null;});}
 function mzProfileHandleTypedName(name){name=String(name||'').trim();if(!name){MZ_GUIDE_BOUND_NAME='';MZ_GUIDE_CURRENT_DOC_ID='';mzProfileEnsurePickerSelection('');mzProfilePickerStatus('Inserisci un nome o seleziona un PG salvato.','');return;}mzProfileOpenByName(name,{fromTyping:true});}
 function mzGuideSaveNow(){var current=String((document.getElementById('pgNomeSessione')||{}).value||'').trim();if(MZ_GUIDE_RESTORING)return Promise.resolve();if(!current){mzGuideStatus('Profilo/Guida: inserisci prima il nome del PG.','');return Promise.resolve(false);}if(MZ_GUIDE_BOUND_NAME&&current&&MZ_GUIDE_BOUND_NAME.toLocaleLowerCase('it')!==current.toLocaleLowerCase('it')){mzGuideStatus('Profilo/Guida non salvati: appartengono a '+MZ_GUIDE_BOUND_NAME+'. Usa «Nuovo PG / Cambia PG» oppure seleziona un altro profilo dall’elenco.','bad');return Promise.resolve(false);}var ref=mzGuideDoc(current);if(!ref)return Promise.resolve(false);if(MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}var payload=mzProfileSavePayload(current);mzGuideStatus('Profilo/Guida: salvataggio automatico su Firebase…','saving');var task=MZ_GUIDE_SAVE_CHAIN.catch(function(){}).then(function(){return ref.set(payload,{merge:true});}).then(function(){MZ_GUIDE_BOUND_NAME=current;MZ_GUIDE_CURRENT_DOC_ID=ref.id;MZ_GUIDE_READY=true;mzGuideStatus('Profilo/Guida salvati automaticamente su Firebase ✓','ok');return mzProfileRefreshList(current).then(function(){return true;});}).catch(function(err){console.error(err);mzGuideStatus('Profilo/Guida: errore di salvataggio Firebase — '+(err.message||err),'bad');return false;});MZ_GUIDE_SAVE_CHAIN=task;return task;}
 window.mzGuidePrepareForResearch=function(){MZ_GUIDE_DIRTY_BEFORE_READY=true;if(MZ_GUIDE_READY&&RM_FB.user){MZ_GUIDE_DIRTY_BEFORE_READY=false;return mzGuideSaveNow();}return Promise.resolve();};
@@ -9049,6 +9077,39 @@ refresh();
 .mz-v78-auto-health{display:none!important}
 .mz-v78-invalid-species{box-shadow:0 0 0 2px #a74d40 inset!important}
 @media(max-width:650px){.mz-v78-search-use .mz-v78-field{flex:1 1 100%}.mz-v78-linked-use{margin-left:0;width:100%}}
+
+/* v132 — leggibilità dei riquadri tecnici scuri: nessun testo scuro su fondo scuro. */
+.mz-v78-box,
+.mz-v91-box,
+.rm-special,
+.mz-bonus-manager,
+.scheda .esito,
+.blocco-incontro .esito{color:#f7e7da!important;}
+.mz-v78-box .check-riga label,
+.mz-v91-box .check-riga label,
+.rm-special .check-riga label,
+.mz-bonus-manager .check-riga label,
+.mz-v78-box .result-line>span:not(.out-tag),
+.mz-v91-box .result-line>span:not(.out-tag),
+.rm-special .result-line>span:not(.out-tag),
+.mz-bonus-manager .result-line>span:not(.out-tag),
+.mz-v78-box .mz-v78-note,
+.mz-v91-box .mz-v78-note,
+.mz-v91-box .numeric-note,
+.mz-v78-box .numeric-note{color:#f7e7da!important;opacity:1!important;}
+.mz-v78-box b,.mz-v78-box strong,
+.mz-v91-box b,.mz-v91-box strong,
+.rm-special b,.rm-special strong,
+.mz-bonus-manager b,.mz-bonus-manager strong{color:#ffd09f!important;}
+.mz-v91-box .mz-v91-narrator{color:#f7d9cf!important;}
+
+/* Bonus modificabili direttamente da ciascun Incontro. */
+.rm-enc-bonus-tools{margin:10px 0 14px;padding:10px 12px;border:1px solid #a86134;border-radius:8px;background:#fff2e5;color:#3b1b0d;}
+.rm-enc-bonus-tools .rm-enc-bonus-help{font-size:.9em;line-height:1.45;margin-bottom:8px;color:#54301f;}
+.rm-enc-bonus-tools button{margin:0;}
+.rm-enc-bonus-dock{margin-top:10px;}
+.rm-enc-bonus-dock .mz-bonus-manager{margin:0;}
+
 </style>
 <script id="magizoologia-v78-consolidated-fixes">
 (function(){
@@ -10114,10 +10175,11 @@ function sap(){return typeof window.mzProfiloSapienza==='function'?window.mzProf
 function pgType(){return ((E('pgTipo')||{}).value||'studente');}
 function phase(){return ((E('faseVitale')||{}).value||'');}
 function addLv(){return Math.max(0,Number((E('livAddestratore')||{}).value||0));}
+function allevLv(){return Math.max(0,Number((E('livAllevatore')||{}).value||0));}
 function align(){return ((E('pgAllineamento')||{}).value||'');}
 var D={"demiguise":{"c":"XXXX","l":"Legale","o":"Neutrale","p":[50,30,15,28],"note":"Creatura esotica: in Ricerca Casuale si incontra soltanto fuori dal Regno Unito. Invisibilità difensiva; per individuarlo invisibile: 1d60 ≤ Percezione + Sapienza Magizoologica. Dopo 3 fallimenti consecutivi fugge definitivamente."},"diricawl":{"c":"XX","l":"Legale","o":"Neutrale","p":[25,25,8,12],"note":"Diricella all’incontro con 1 su 1d10; chi lo alleva sviluppa immunità permanente. Possiede 50 PSS per la Smaterializzazione con passeggeri."},"doxy":{"c":"XXX","l":"Illegale","o":"Sempre ostile","p":[110,30,7,25],"note":"Possedere, allevare, acquistare o vendere Doxy è Azione Illegale. In Ricerca il Doxy trovato è accompagnato da altri 1d20 Doxy."},"drakul":{"c":"X","l":"Legale","o":"Neutrale","p":[20,25,5,20],"note":"Ecolalia furtiva: può ripetere quanto detto in 1 post di 1 PG entro 5 post totali. Un morso riuscito causa perdita di Resistenza per 2 post del bersaglio; il malus non cumula."},"duckbill":{"c":"X","l":"Legale","o":"Neutrale","p":[30,50,10,2],"note":"L’Antenna si ottiene soltanto in inverno. Le Urla perforanti causano un malus di Destrezza per 2 post; il malus non cumula e termina a fine role."},"dugbog":{"c":"XXX","l":"Legale","o":"Sempre ostile","p":[120,100,25,15],"note":"Il riconoscimento speciale e la ricerca di resti/Ingredienti nei dintorni sono già gestiti nella sezione Ricerca del tool."},"duriccio":{"c":"X","l":"Legale","o":"Neutrale","p":[15,25,10,5],"note":"Mutaforma buffo: in non ostilità fornisce un bonus di Volontà per 2 post; se ostile provoca invece una perdita di Volontà per 2 post. Il regolamento non indica qui l’entità numerica del bonus/malus."}};
 var R={"Artiglio Rosa dei Balcani":{"tables":[{"agg":"Draghi: bassa / Umani: bassa - media se minacciato","p":[210,150,18,20]}],"mal":-3,"ability":"Presidio Territoriale","note":"Quando percepisce una minaccia verso la natura o il proprio territorio, l’Artiglio Rosa passa dalla calma a un comportamento di respingimento. Se i PG compiono azioni chiaramente invasive nel territorio, l'Artiglio Rosa diventa di aggressività Media verso gli umani."},"Aurelius Sabulo":{"tables":[{"agg":"Draghi: bassa / Umani: media","p":[205,100,5,18]}],"mal":-3,"ability":"Morso Tossico","note":"Il morso inocula un veleno letale. Se morde, il bersaglio subisce un danno in Salute (stessi effetti e Sintomi del Veleno Arsenicum)."},"B.I.M.B.O.":{"tables":[{"agg":"Draghi: media / Umani: alta","p":[220,200,15,10]}],"mal":-5,"ability":"Contagio Draconico","note":"La semplice permanenza nei pressi del B.I.M.B.O. aumenta drasticamente il rischio di Vaiolo di Drago. Sostituisce la regola generale: si tira 1d10 e si contrae il Vaiolo con 1–5 ."},"Blualato":{"tables":[{"agg":"Draghi: bassa / Umani: bassa","p":[130,50,25,20]}],"mal":0,"ability":"Miniaturizzazione Elusiva","note":"Può rimpicciolirsi fino a dimensioni minuscole, diventando un bersaglio quasi imprendibile. Quando è in forma ridotta, chi tenta di colpirlo o afferrarlo applica –2 Destrezza esclusivamente al confronto necessario per quella singola azione ; il modificatore non permane nei post successivi."},"Compospinato Svizzero":{"tables":[{"agg":"Draghi: media / Umani: bassa","p":[205,50,5,10]}],"mal":0,"ability":"Sensibilità Divinatoria","note":"Percepisce l’indole di chi ha davanti e reagisce di conseguenza. In base al proprio Allineamento, il PG Adulto ottiene: - Buono : +1 Possibilità in fase di Fiducia - Neutrale : // - Malvagio : –1 Possibilità in fase di Fiducia I PG Studenti subiscono –2 Possibilità in fase di Fiducia a prescindere dall’Allineamento."},"Contrario Crescente Hawaiano":{"tables":[{"agg":"Draghi: alta / Umani: bassa","p":[220,200,25,6]},{"agg":"Draghi: media / Umani: media","p":[200,65,19,11]},{"agg":"Draghi: media / Umani: media","p":[180,50,5,15]},{"agg":"Draghi: bassa / Umani: alta","p":[160,10,1,20]}],"mal":-5,"ability":"Crescita Inversa","note":"Cambia drasticamente taglia e stile di combattimento lungo la vita. Effetti per stadio: - Infante (mastodontico) : Aggressività verso Draghi alta; Cariche schiaccianti: bonus +50 Forza quando attaca. I bersagli applicano –2 Destrezza esclusivamente al confronto necessario per schivare quella carica ; il modificatore non permane dopo la risoluzione dell’attacco. - Adolescente (grande) : usa i parametri in tabella.…"},"Cornolungo Romeno":{"tables":[{"agg":"Draghi: bassa / Umani: bassa","p":[220,180,20,14]}],"mal":0,"ability":"Corna d’Oro","note":"Specialista di cariche e impalamenti: l’arma “firma” è l’impatto frontale. Se il Cornolungo attacca con una carica, ottiene +50 Forza all'attacco."},"Dorsorugoso di Norvegia":{"tables":[{"agg":"Draghi: molto alta / Umani: media","p":[220,170,19,13]}],"mal":-3,"ability":"Predazione Costiera","note":"Sfrutta l’acqua come copertura e minaccia, emergendo all’improvviso. In ambienti costieri o con accesso immediato all’acqua, il Dorsorugoso ottiene +3 Destrezza ai suoi movimenti."},"Drago Specchio":{"tables":[{"agg":"Draghi: bassa / Umani: alta","p":[210,170,18,16]}],"mal":-5,"ability":"Fiammata Incantata","note":"Quando attacca, produce una fiammata-lampo che riproduce effetti magici noti. Effetto: Lancio di 1d30 per determinare l’effetto: 1 Expelliarmus 2 Defodio 3 Elettro 4 Distillato Soporifero 5 Hostis Sui 6 Ad Caelum 7 Alerte Ascenderai 8 Pozione della Debolezza 9 Deprimo 10 Pozione Paralizzante 11 Expulso 12 Frastuonum 13 Impedimenta 14 Obscuro 15 Tarantallegra 16 Gas Strozzante 17 Bombarda maxima 18 Elettro Maxima 1…"},"Drago Yún della Cina":{"tables":[{"agg":"Draghi: bassa / Umani: bassa","p":[250,200,22,14]}],"mal":0,"ability":"Vapore Soporifero","note":"Quando deve difendersi avvolge la vittima in una nube di vapore che induce sonno profondo. Se colpisce, produce gli stessi effetti del Distillato Soporifero."},"Forteventre Ucraino":{"tables":[{"agg":"Draghi: media / Umani: molto alta","p":[250,200,23,13]}],"mal":-7,"ability":"Schiacciamento Strutturale","note":"La vera minaccia è la massa: atterraggi, crolli e danni ambientali. In ambienti urbani/strutturati, i danni a coperture, muri e pavimentazioni ottengono un bonus di +100 Forza (solo per danni a cose/oggetti), ma applica –3 Destrezza ai propri confronti di movimento e schivata finché rimane nell’ambiente urbano o strutturato in cui sta sfruttando lo Schiacciamento Strutturale; il modificatore cessa immediatamente q…"},"Gallese Verde":{"tables":[{"agg":"Draghi: molto bassa / Umani: molto bassa","p":[210,120,16,14]}],"mal":0,"ability":"Ruggito Melodico","note":"Preferisce intimidire e mettere distanza, evitando l'attacco diretto. Se i PG adottano un approccio chiaramente pacifico ottengono un bonus di +1 possibilità al tentativo ottenere la Fiducia."},"Grigiosmunto Russo":{"tables":[{"agg":"Draghi: alta / Umani: media","p":[220,140,18,18]}],"mal":-3,"ability":"Frusta del Cielo","note":"Sfrutta coda e ali per prese, sbilanciamenti e cadute da grande altezza. Quando usa la coda per intrappolare o spingere, il bersaglio applica –3 Destrezza esclusivamente al confronto effettuato per liberarsi o mantenere l’equilibrio ; il modificatore non permane dopo la risoluzione del tentativo."},"Grugnocorto Svedese":{"tables":[{"agg":"Draghi: media / Umani: media","p":[220,160,20,16]}],"mal":-3,"ability":"Fuoco Azzurro","note":"Estremamente distruttivo verso materiali organici, comprese le persone. Quando attacca con il fuoco, ottiene un bonus di +50 Forza al suo attacco."},"Leggiadria":{"tables":[{"agg":"Draghi: media / Umani: alta","p":[210,170,17,21]}],"mal":-5,"ability":"Urlo Pressurizzato","note":"Non attacca con il proprio fuoco, ma respinge con un’onda d’aria continua (stessi effetti di Ventus Maxima). Può sbilanciare o respingere più bersagli ravvicinati senza infliggere necessariamente danni da fuoco; è possibile riuscire a resistere alla spinta, subendo ugualmente i danni, se al lancio di 1d30 si pesca un esito compreso tra 1-Destrezza ."},"Ninki Nanka Gigante":{"tables":[{"agg":"Draghi: media / Umani: media","p":[210,140,16,17]}],"mal":-3,"ability":"Alito Mefitico","note":"Un “fuoco” velenoso che stordisce e danneggia nel tempo. I PG che vengono colpiti subiscono gli stessi effetti e Sintomi del Veleno Noxius."},"Nero delle Ebridi":{"tables":[{"agg":"Draghi: alta / Umani: media","p":[225,180,20,15]}],"mal":-3,"ability":"Territorio Inviolabile","note":"Il suo territorio richiede un’enorme estensione e reagisce male a intrusioni persistenti. Un PG che lo incontra durante una Ricerca Casuale, deve lanciare 1d5: con risultato 1-2 , si trova all'interno del suo territorio. In questo caso, ogni tentativo ottenere la sua Fiducia in quel territorio subisce un malus di -1 Possibilità (-1 al primo tentativo, -2 al secondo tentativo, eccetera)."},"Opaleye delle Antipodi":{"tables":[{"agg":"Draghi: molto bassa / Umani: molto bassa","p":[220,170,18,25]}],"mal":0,"ability":"Meraviglia Perlacea","note":"La bellezza e il valore di scaglie/uova attirano bracconieri e rendono l’animale sospettoso. Se i PG mostrano l'intenzione di ottenere le sue uova o scaglie o qualsiasi altra parte del suo corpo, ottengono un malus di –3 Possibilità in fase di Fiducia immediato al tentativo di approccio."},"Petardo Cinese":{"tables":[{"agg":"Draghi: media / Umani: alta","p":[230,170,19,16]}],"mal":-5,"ability":"Fiamma a Fungo","note":"La sua fiammata genera un'esplosione ad area, producendo gli stessi effetti di effetti della Pozione Esplosiva."},"Rosa di Lapponia":{"tables":[{"agg":"Draghi: alta / Umani: media","p":[225,150,17,18]}],"mal":-3,"ability":"Bolle Incandescenti","note":"Le sue fiammate non producono fuoco ma bolle ustionanti, subdole, più pericolose del fuoco normale. Se colpiscono, il bersaglio subisce gli stessi effetti dell'Incendio Maxima."},"Rossocorno":{"tables":[{"agg":"Draghi: bassa verso i cugini, media verso gli altri draghi / Umani: molto alta","p":[225,180,19,15]}],"mal":-7,"ability":"Getto d’Acqua Pressurizzato","note":"Un “soffio” d’acqua che spinge, contunde e può sbilanciare. Chi viene colpito subisce gli stessi effetti di Aqua Eructo, ma può resistere alla spinta ed allo spostamento se, al lancio di 1d30, pesca un risultato compreso tra 1-Destrezza , subendo tuttavia in ogni caso i danni previsti."},"Soviet 404":{"tables":[{"agg":"Draghi: bassa / Umani: alta","p":[220,190,22,8]}],"mal":-5,"ability":"Massa Valanghiva","note":"Non vola e non sputa fuoco: è una “montagna che si muove”. In ambienti nevosi, ogni suo movimento brusco può innescare instabilità: genera una valanga di neve immediata se, al lancio di 1d4, esce 1 ."},"Ungaro Spinato":{"tables":[{"agg":"Draghi: media / Umani: media","p":[250,190,23,17]}],"mal":-3,"ability":"Gittata Devastante","note":"Soffio a raggio molto ampio (fino a 15 metri). Quando colpisce con il proprio fuoco, può colpire fino ad un massimo di 15 bersagli contemporaneamente."},"Vipero Peruviano":{"tables":[{"agg":"Draghi: molto bassa / Umani: molto alta","p":[210,140,15,25]}],"mal":-7,"ability":"Mordi-e-Fuggi Velenoso","note":"Piccolo, rapidissimo, letale. Dopo un attacco andato a segno ottiene +1 Destrezza esclusivamente per il proprio attacco immediatamente successivo ; il bonus non è cumulativo e viene consumato alla risoluzione di quell’attacco, indipendentemente dal suo esito. Quando tenta di fuggire o evitare un colpo applica invece +2 Destrezza esclusivamente al confronto relativo a quella singola azione ."},"Voceleggiadra Vesuviano":{"tables":[{"agg":"Draghi: bassa / Umani: bassa","p":[205,170,21,5]}],"mal":0,"ability":"Canto Caldo","note":"Il ruggito/canto agisce più su emozione e fascinazione che su danno diretto. Se i PG non si presentano come minaccia, ottengono +1 Possibilità in fase di Fiducia . Se riescono a ottenere la Fiducia, ottengono un bonus di +2 Empatia per i successivi 3 utilizzi del Parametro nella stessa role . Gli utilizzi non consumati alla chiusura della role vengono persi e il bonus non prosegue in role successive."},"Yggrastoth":{"tables":[{"agg":"Draghi: media (attacca se provocato) / Umani: bassa","p":[250,200,23,16]}],"mal":0,"ability":"Crisalide di Ghiaccio","note":"Il suo “fuoco gelido” intrappola, creando una specie di crisalide intorno al bersaglio che viene colpito. Un bersaglio colpito può subisce gli stessi effetti di Glacius Maxima ma viene immobilizzato all'interno di una crisalide di ghiaccio. Per liberarsi da solo deve lanciare 1d30 e ottenere un risultato compreso fra 1 e la propria Resistenza . In caso di successo il ghiaccio si spezza e il bersaglio riesce a libe…"}};
-var state={race:'',background:false,threat:false,peaceful:false,bodyparts:false,nothreat:false,territory:false,territoryAttempt:1,demiPerc:'',demiRoll:'',dirPss:50,dirPassengers:1,bimboRoll:'',mirrorRoll:''};
+var state={race:'',background:false,threat:false,peaceful:false,bodyparts:false,nothreat:false,territory:false,territoryAttempt:1,demiPerc:'',demiRoll:'',dirPss:50,dirPassengers:1,dirRaised:false,dirCapRoll:'',bimboRoll:'',mirrorRoll:''};
 var MIRROR=['','Expelliarmus','Defodio','Elettro','Distillato Soporifero','Hostis Sui','Ad Caelum','Alerte Ascenderai','Pozione della Debolezza','Deprimo','Pozione Paralizzante','Expulso','Frastuonum','Impedimenta','Obscuro','Tarantallegra','Gas Strozzante','Bombarda Maxima','Elettro Maxima','Distillato del Silenzio','Confundus','Bombarda','Diffindo','Pozione Stordente','Mucus ad Nauseam','Veleno di Semi di Luna','Flipendo','Gambemolli','Languelingua','Pozione Starnutosa','Stupeficium'];
 function ageAdjusted(p){var ph=phase(),f={adulta:1,infante:.25,adolescente:.75,anziana:.5}[ph];if(f===undefined)return null;return p.map(function(v){return Math.max(1,Math.floor(v*f));});}
 function ensurePanel(){var anchor=E('mzV81BestiaryAC')||E('mzV78SpeciesRuleBox');if(!anchor)return null;var p=E('mzV82BestiaryD');if(!p){p=document.createElement('div');p.id='mzV82BestiaryD';p.className='mz-v78-box';anchor.parentNode.insertBefore(p,anchor.nextSibling);}return p;}
@@ -10152,17 +10214,17 @@ function dragonInfo(){var r=R[state.race];if(!r)return '<div class="mz-v78-note"
 function renderPanel(){var p=ensurePanel();if(!p)return;var k=key(),d=D[k];if(k!=='drago'&&!d){p.style.display='none';p.innerHTML='';return;}p.style.display='block';if(k==='drago'){var h='<b>Bestiario aggiornato — Drago</b><div class="mz-v78-note"><b>Classificazione:</b> XXXXX · <b>Riconoscimento:</b> tutti riconoscono che è un Drago. Per interagire serve Sapienza Magizoologica 1+. I Draghi non possono seguire Domesticazione, Addestramento, Riserva o Allevamento normali.</div>'+dragonSpecialFields()+'<div id="mzV82DragonInfo">'+dragonInfo()+'</div>';p.innerHTML=h;bindDragon();return;}
  setHostClass(d);var cur=ageAdjusted(d.p),phLabel={uovo:'Uovo/Cucciolo',infante:'Infante',adolescente:'Adolescente',adulta:'Adulta',anziana:'Anziana'}[phase()]||'non selezionata';var h='<b>Bestiario aggiornato — '+esc(sp())+'</b><div class="mz-v78-note"><b>Classificazione:</b> '+d.c+' · <b>Legalità:</b> '+d.l+' · <b>Ostilità:</b> '+d.o+'</div><div class="mz-v78-fixed"><b>Parametri Adulti:</b> Forza '+d.p[0]+' · Salute '+d.p[1]+' · Resistenza '+d.p[2]+' · Destrezza '+d.p[3]+'</div>';if(cur)h+='<div class="mz-v78-fixed"><b>Parametri per fase '+phLabel+':</b> Forza '+cur[0]+' · Salute '+cur[1]+' · Resistenza '+cur[2]+' · Destrezza '+cur[3]+'</div>';h+='<div class="mz-v78-note">'+d.note+'</div>';
  if(k==='demiguise')h+='<div class="mz-v78-roll"><b>Vedere un Demiguise invisibile</b><div class="dice-code">[dice=1d60]Individuare il Demiguise invisibile[/dice]</div><div class="mz-v78-compact-line"><span>Percezione:</span><input type="number" min="0" id="mzV82DemiPerc" value="'+esc(state.demiPerc)+'"><span>Risultato 1d60:</span><input type="number" min="1" max="60" id="mzV82DemiRoll" value="'+esc(state.demiRoll)+'"><span id="mzV82DemiTag" class="out-tag out-neutral">in attesa</span></div><div class="mz-v78-note">Soglia = Percezione + Sapienza Magizoologica. Dopo tre fallimenti consecutivi fugge definitivamente.</div></div>';
- if(k==='diricawl')h+='<div class="mz-v78-roll"><b>Tracker PSS del Diricawl</b><div class="mz-v78-compact-line"><span>PSS attuali:</span><input type="number" min="0" max="50" id="mzV82DirPss" value="'+esc(state.dirPss)+'"><span>Passeggeri:</span><input type="number" min="1" max="10" id="mzV82DirPassengers" value="'+esc(state.dirPassengers)+'"><span id="mzV82DirTag" class="out-tag out-neutral">—</span></div><div id="mzV82DirInfo" class="mz-v78-note"></div></div>';
+ if(k==='diricawl')h+='<div class="mz-v78-roll"><b>Smaterializzazione con passeggeri</b><div class="check-riga"><input type="checkbox" id="mzV82DirRaised" data-key="mzV82DirRaised" '+(state.dirRaised?'checked':'')+'><label for="mzV82DirRaised">Il Diricawl è nato e cresciuto in una Riserva</label></div><div id="mzV82DirCapacityBox" class="mz-v78-note"></div><div class="result-line" id="mzV82DirCapRollWrap" style="display:none"><div class="dice-code" id="mzV82DirCap_code"></div><button type="button" class="copy-btn mz-v78-copy" data-v78-copy="mzV82DirCap_code">Copia</button></div><div class="mz-v78-compact-line" id="mzV82DirCapInputWrap" style="display:none"><span>Risultato:</span><input type="number" min="1" max="3" id="mzV82DirCapRoll" data-key="mzV82DirCapRoll" value="'+esc(state.dirCapRoll)+'"><span id="mzV82DirCapTag" class="out-tag out-neutral">in attesa</span></div><div class="mz-v78-note">Un Diricawl appena trovato in natura può trasportare soltanto il PG che ne ha conquistato la Fiducia. Le capacità maggiori valgono esclusivamente per un esemplare nato e cresciuto in Riserva.</div><hr><b>Tracker PSS del Diricawl</b><div class="mz-v78-compact-line"><span>PSS attuali:</span><input type="number" min="0" max="50" id="mzV82DirPss" data-key="mzV82DirPss" value="'+esc(state.dirPss)+'"><span>Persone/Creature trasportate:</span><input type="number" min="1" max="10" id="mzV82DirPassengers" data-key="mzV82DirPassengers" value="'+esc(state.dirPassengers)+'"><span id="mzV82DirTag" class="out-tag out-neutral">—</span></div><div id="mzV82DirInfo" class="mz-v78-note"></div></div>';
  if(k==='doxy')h+='<div class="mz-v78-note"><b>Importante:</b> «Sempre ostile» non equivale a interazione impossibile. Le normali fasi restano disponibili quando i requisiti generali lo consentono; è il possesso/allevamento a costituire Azione Illegale.</div>';p.innerHTML=h;bindD();updateD();}
-function bindD(){[['mzV82DemiPerc','demiPerc'],['mzV82DemiRoll','demiRoll'],['mzV82DirPss','dirPss'],['mzV82DirPassengers','dirPassengers']].forEach(function(x){var e=E(x[0]);if(e)e.addEventListener('input',function(){state[x[1]]=this.value;updateD();});});}
-function updateD(){if(E('mzV82DemiTag')){var perc=Number((E('mzV82DemiPerc')||{}).value||0),roll=Number((E('mzV82DemiRoll')||{}).value||0),thr=perc+sap(),tag=E('mzV82DemiTag');if(!roll){tag.textContent='soglia '+thr;tag.className='out-tag out-neutral';}else{tag.textContent=roll<=thr?'Individuato':'Fallimento';tag.className='out-tag '+(roll<=thr?'out-ok':'out-fail');}}if(E('mzV82DirInfo')){var pss=Math.max(0,Number((E('mzV82DirPss')||{}).value||0)),pass=Math.max(1,Number((E('mzV82DirPassengers')||{}).value||1)),cost=(pgType()==='adulto'&&Number((E('livAllevatore')||E('livAllevatoreCreature')||{}).value||0)>=1)?5:10;var rem=Math.max(0,pss-pass*cost),msg='Costo: '+cost+' PSS per passeggero · consumo '+(pass*cost)+' · residui '+rem+'. ';if(rem===0)msg+='A 0 PSS il Diricawl muore.';else if(rem<=10)msg+='A 10 PSS o meno è esausto e non può Smaterializzarsi per 3 mesi ON/OFFGame.';E('mzV82DirInfo').textContent=msg;}}
+function bindD(){[['mzV82DemiPerc','demiPerc'],['mzV82DemiRoll','demiRoll'],['mzV82DirPss','dirPss'],['mzV82DirPassengers','dirPassengers'],['mzV82DirCapRoll','dirCapRoll']].forEach(function(x){var e=E(x[0]);if(e)e.addEventListener('input',function(){state[x[1]]=this.value;updateD();});});var raised=E('mzV82DirRaised');if(raised)raised.addEventListener('change',function(){state.dirRaised=!!this.checked;state.dirCapRoll='';var rr=E('mzV82DirCapRoll');if(rr)rr.value='';updateD();});}
+function updateD(){if(E('mzV82DemiTag')){var perc=Number((E('mzV82DemiPerc')||{}).value||0),roll=Number((E('mzV82DemiRoll')||{}).value||0),thr=perc+sap(),tag=E('mzV82DemiTag');if(!roll){tag.textContent='soglia '+thr;tag.className='out-tag out-neutral';}else{tag.textContent=roll<=thr?'Individuato':'Fallimento';tag.className='out-tag '+(roll<=thr?'out-ok':'out-fail');}}if(E('mzV82DirInfo')){var raised=!!(E('mzV82DirRaised')&&E('mzV82DirRaised').checked),student=pgType()==='studente',lv=allevLv(),base=0,faces=0,fixed=null,label='';if(!raised){fixed=1;label='Esemplare appena trovato: può portare soltanto il PG che ne ha conquistato la Fiducia.';}else if(student&&lv<1){fixed=1;label='Studente senza Allevatore: massimo 1 persona/Creatura.';}else if(student){base=0;faces=2;label='Studente con Allevatore: massimo 1d2 persone/Creature.';}else if(lv<1){base=1;faces=2;label='Adulto senza Allevatore: massimo 1+1d2 persone/Creature.';}else if(lv===1){fixed=3;label='Allevatore I: massimo 3 persone/Creature.';}else if(lv===2){base=1;faces=3;label='Allevatore II: massimo 1+1d3 persone/Creature.';}else if(lv===3){base=2;faces=2;label='Allevatore III: massimo 2+1d2 persone/Creature.';}else if(lv===4){base=2;faces=3;label='Allevatore IV: massimo 2+1d3 persone/Creature.';}else{fixed=5;label='Allevatore V: massimo 5 persone/Creature.';}var box=E('mzV82DirCapacityBox'),rw=E('mzV82DirCapRollWrap'),iw=E('mzV82DirCapInputWrap'),code=E('mzV82DirCap_code'),ri=E('mzV82DirCapRoll'),ct=E('mzV82DirCapTag');if(box)box.innerHTML='<b>Capienza:</b> '+label;if(rw)rw.style.display=faces?'':'none';if(iw)iw.style.display=faces?'':'none';if(code&&faces)code.textContent='[dice='+(base?base+'+':'')+'1d'+faces+']Diricawl — capienza massima[/dice]';if(ri){ri.max=String(faces||3);ri.disabled=!faces;if(!faces)ri.value='';}var rv=faces?Number((ri||{}).value||0):0,maxCap=fixed!=null?fixed:(rv?base+rv:null);if(ct){ct.textContent=maxCap!=null?'max '+maxCap:'in attesa';ct.className='out-tag '+(maxCap!=null?'out-ok':'out-neutral');}var pss=Math.max(0,Number((E('mzV82DirPss')||{}).value||0)),pass=Math.max(1,Number((E('mzV82DirPassengers')||{}).value||1)),cost=(!student&&lv>=1)?5:10,rem=Math.max(0,pss-pass*cost),msg='Costo: '+cost+' PSS per persona/Creatura · consumo '+(pass*cost)+' · residui '+rem+'. ';if(maxCap!=null&&pass>maxCap)msg+='ATTENZIONE: il numero indicato supera la capienza massima di '+maxCap+'. ';if(rem===0)msg+='A 0 PSS il Diricawl muore.';else if(rem<=10)msg+='A 10 PSS o meno è esausto e non può Smaterializzarsi per 3 mesi ON/OFFGame.';E('mzV82DirInfo').textContent=msg;}}
 function bindDragon(){var r=E('mzV82DragonRace');if(r)r.addEventListener('change',function(){state.race=this.value;renderPanel();recalc();});var bg=E('mzV82DragonBackground');if(bg)bg.addEventListener('change',function(){state.background=this.checked;updateDragon();});[['mzV82DragonThreat','threat'],['mzV82DragonPeace','peaceful'],['mzV82DragonBody','bodyparts'],['mzV82DragonNoThreat','nothreat']].forEach(function(x){var e=E(x[0]);if(e)e.addEventListener('change',function(){state[x[1]]=this.checked;updateDragon();});});var nr=E('mzV82NeroTerritoryRoll');if(nr)nr.addEventListener('input',function(){var v=Number(this.value||0);state.territory=(v===1||v===2);var tag=E('mzV82NeroTerritoryTag');if(tag){tag.textContent=!v?'in attesa':state.territory?'Nel territorio':'Fuori dal territorio';tag.className='out-tag '+(!v?'out-neutral':state.territory?'out-fail':'out-ok');}updateDragon();});var na=E('mzV82NeroAttempt');if(na)na.addEventListener('input',function(){state.territoryAttempt=Math.max(1,Number(this.value||1));updateDragon();});var br=E('mzV82BimboRoll');if(br)br.addEventListener('input',function(){state.bimboRoll=this.value;var v=Number(this.value||0),tag=E('mzV82BimboTag');if(tag){tag.textContent=!v?'1–5 contagio':v<=5?'Vaiolo di Drago':'Nessun contagio';tag.className='out-tag '+(!v?'out-neutral':v<=5?'out-fail':'out-ok');}});var mr=E('mzV82MirrorRoll');if(mr)mr.addEventListener('input',function(){state.mirrorRoll=this.value;var v=Number(this.value||0),tag=E('mzV82MirrorTag');if(tag){tag.textContent=v>=1&&v<=30?MIRROR[v]:'in attesa';tag.className='out-tag '+(v?'out-ok':'out-neutral');}});}
 function updateDragon(){var h=E('mzV82DragonInfo');if(h)h.innerHTML=dragonInfo();recalc();}
 function recalc(){if(typeof window.ricalcolaMagizoologia==='function')window.ricalcolaMagizoologia();}
 function enforce(){var k=key(),il=E('creaturaIllegaleRiserva');if(k==='drago'){var cl=E('classificazione');if(cl&&cl.value!=='XXXXX'){cl.value='XXXXX';fire(cl);}var rec=E('creaturaRiconosciuta');if(rec&&!rec.checked){rec.checked=true;fire(rec);}if(il&&il.checked){il.checked=false;fire(il);}}else if(D[k]){setHostClass(D[k]);var mustBeIllegal=(k==='doxy');if(il&&il.checked!==mustBeIllegal){il.checked=mustBeIllegal;fire(il);}}}
 if(typeof window.mzPhaseTotals==='function'){var prevTotals=window.mzPhaseTotals;window.mzPhaseTotals=function(ph){var out=prevTotals.apply(this,arguments);if(out&&key()==='drago'&&ph==='fiducia'&&state.race){var mod=dragonHumanMalus();out.possibilita+=mod;out.effects=out.effects||[];if(mod!==0)out.effects.push({source:'Drago — '+state.race,type:mod<0?'malusPossibilita':'possibilita',value:Math.abs(mod),fatica:0,total:1,used:1,localUsed:1,applied:true,phase:ph,stackGroup:'v82-drago',unlimited:true,linkId:'',presetKey:'v82_drago'});}return out;};}
 if(typeof window.recomputeFiducia==='function'){var prevF=window.recomputeFiducia;window.recomputeFiducia=function(){if(key()==='drago'&&sap()<1){var inp=E('risultatoFiducia'),tag=E('tagFiducia'),formula=E('formulaFiducia'),code=E('codiceFiducia'),copy=E('copiaFiducia'),note=E('noteFiducia');if(inp){inp.value='';inp.disabled=true;}if(copy)copy.disabled=true;if(tag){tag.textContent='Fiducia non disponibile';tag.className='out-tag out-fail';}if(formula)formula.textContent='Drago: per interagire serve Sapienza Magizoologica 1+.';if(code)code.textContent='Nessun dado.';if(note)note.textContent='Tutti riconoscono il Drago, ma la normale interazione richiede Sapienza Magizoologica.';return;}return prevF.apply(this,arguments);};}
-document.addEventListener('change',function(e){var id=e.target&&e.target.id||'';if(id==='specieCreaturaGuida'||id==='faseVitale'||id==='pgTipo'||id==='sapienzaProfilo'||id==='livAddestratore'||id==='pgAllineamento')setTimeout(function(){enforce();renderPanel();recalc();},0);},true);
+document.addEventListener('change',function(e){var id=e.target&&e.target.id||'';if(id==='specieCreaturaGuida'||id==='faseVitale'||id==='pgTipo'||id==='sapienzaProfilo'||id==='livAddestratore'||id==='livAllevatore'||id==='pgAllineamento')setTimeout(function(){enforce();renderPanel();recalc();},0);},true);
 function init(){enforce();renderPanel();}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(init,0);});else setTimeout(init,0);
 })();
 </script>
@@ -10692,7 +10754,7 @@ function render(){
    h+='<div class="mz-v78-note"><b>Pericoli/menzogne:</b> l’esito non è autoconclusivo: va segnalato al Narratore. <b>Orientamento:</b> se PG e Kneazle si smarriscono insieme, ritrova autoconclusivamente la via di casa.</div>';
  }
  if(k==='lethifold'){
-   h+='<hr><b>Parametri dell’esemplare</b>'+check('mzV85LethNarrated','La role è già gestita da un Narratore')+'<div id="mzV85LethNarratorMsg" class="mz-v91-narrator" style="display:none"><b>Tiri del Narratore:</b> i quattro Parametri variabili dell’esemplare vengono determinati dal Narratore prima di risolvere gli attacchi.</div><div id="mzV85LethPlayerStats">'+roll('mzV85LethF',30,'Forza: 220 + 1d30')+roll('mzV85LethS',10,'Salute: 250 + (1d10×5)')+roll('mzV85LethR',10,'Resistenza: 40 + 1d10')+roll('mzV85LethD',10,'Destrezza: 20 + 1d10')+'</div><div id="mzV85LethStats" class="mz-v78-fixed"></div>';
+   h+='<hr><b>Parametri dell’esemplare</b>'+check('mzV85LethNarrated','La role è già gestita da un Narratore')+'<div id="mzV85LethNarratorMsg" class="mz-v91-narrator" style="display:none"><b>Tiri del Narratore:</b> in una role masterata i quattro dadi qui sotto appartengono al Narratore. I risultati vanno comunque inseriti nel tool una sola volta, così tutti i calcoli successivi usano gli stessi Parametri dell’esemplare.</div><div id="mzV85LethPlayerStats">'+roll('mzV85LethF',30,'Forza: 220 + 1d30')+roll('mzV85LethS',10,'Salute: 250 + (1d10×5)')+roll('mzV85LethR',10,'Resistenza: 40 + 1d10')+roll('mzV85LethD',10,'Destrezza: 20 + 1d10')+'</div><div id="mzV85LethStats" class="mz-v78-fixed"></div>';
    h+='<hr><b>Attacco durante il sonno</b>'+field('mzV85LethPerc','Percezione del PG',0,60,'',1)+field('mzV85LethDiv','Sapienza Divinatoria',0,25,0,1)+roll('mzV85LethWake',50,'1d50 — svegliarsi in tempo')+'<div id="mzV85LethWakeOut" class="mz-v78-fixed"></div>';
    h+='<hr><b>Soffocamento</b>'+field('mzV85LethPosts','Post successivi trascorsi ancora avvolto',0,50,0,1)+field('mzV85LethCurrentRes','Resistenza attuale del PG',0,100,'',1)+roll('mzV85LethWand',30,'1d30 — raggiungere la bacchetta')+'<div id="mzV85LethSuffOut" class="mz-v78-fixed"></div>';
    h+='<hr><b>Patronus</b>'+field('mzV85PatronusForce','Forza del Patronus',0,999,'',1)+'<div id="mzV85PatronusOut" class="mz-v78-fixed"></div>';
@@ -10702,7 +10764,7 @@ function render(){
    h+='<hr><b>Schizzi di veleno</b>'+roll('mzV85LobSplashes',5,'1d5 — numero di schizzi')+field('mzV85LobDex','Destrezza attuale del PG',0,100,'',1)+check('mzV85LobUnder','Il PG è sott’acqua')+field('mzV85LobHits','Schizzi che hanno vinto il confronto',0,5,0,1)+'<div id="mzV85LobPoisonOut" class="mz-v78-fixed"></div>';
    h+=check('mzV85LobBreath','Il PG ha Algabranchia/Testabolla')+check('mzV85LobAlone','Il PG è solo')+'<div id="mzV85LobRescueWrap" style="display:none">'+roll('mzV85LobRescue',5,'1d5 — soccorso se paralizzato, sott’acqua, senza protezione respiratoria e solo')+'</div><div id="mzV85LobDrownOut" class="mz-v78-fixed"></div>';
    h+='<hr><b>Estrarre il Veleno</b>'+check('mzV85LobTrust','Fiducia già ottenuta')+roll('mzV85LobExtract',6,'1d6 — estrazione')+'<div id="mzV85LobExtractOut" class="mz-v78-fixed"></div>';
-   h+=check('mzV85LobDidExtract','Il PG ha effettivamente estratto veleno in questa role')+'<div id="mzV85LobIllegalContext" style="display:none">'+check('mzV85LobNarrated','La role è già gestita da un Narratore')+'<div id="mzV85LobIllegalWrap">'+roll('mzV85LobIllegal',5,'1d5 — controllo estrazione illegale')+'</div></div><div id="mzV85LobIllegalOut" class="mz-v78-fixed"></div>';
+   h+=check('mzV85LobDidExtract','Il PG ha effettivamente estratto veleno in questa role')+'<div id="mzV85LobIllegalContext" style="display:none">'+check('mzV85LobNarrated','La role è già gestita da un Narratore')+'<div id="mzV85LobIllegalWrap">'+roll('mzV85LobIllegal',5,'1d5 — controllo estrazione illegale (Player in free role / Narratore in role masterata)')+'</div></div><div id="mzV85LobIllegalOut" class="mz-v78-fixed"></div>';
    h+='<hr><b>Usarlo come arma</b>'+check('mzV85LobOwned','Il Lobalug appartiene alla Riserva del PG')+roll('mzV85LobCommand',50,'1d50 — comando su Lobalug non proprio')+'<div id="mzV85LobWeaponOut" class="mz-v78-fixed"></div>';
  }
  if(k==='lumaca carnivora'){
@@ -10749,9 +10811,9 @@ function update(){
  }
  if(k==='lethifold'){
    var lethNarr=E('mzV85LethNarrated')&&E('mzV85LethNarrated').checked,lethPlayer=E('mzV85LethPlayerStats'),lethMsg=E('mzV85LethNarratorMsg');
-   if(lethPlayer)lethPlayer.style.display=lethNarr?'none':'';if(lethMsg)lethMsg.style.display=lethNarr?'':'none';
-   ['mzV85LethF','mzV85LethS','mzV85LethR','mzV85LethD'].forEach(function(id){var e=E(id);if(e){e.disabled=lethNarr;if(lethNarr)e.value='';}});
-   var st=lethNarr?null:lethStats(),so=E('mzV85LethStats');if(so)so.innerHTML=lethNarr?'<b>Parametri affidati al Narratore.</b> Inserisci nel tool soltanto gli eventuali dati successivi comunicati durante la role.':st?'<b>Parametri fissati per questo esemplare:</b> Forza '+st.f+' · Salute '+st.s+' · Resistenza '+st.r+' · Destrezza '+st.d:'Inserisci i quattro risultati una sola volta per questo esemplare.';
+   if(lethPlayer)lethPlayer.style.display='';if(lethMsg)lethMsg.style.display=lethNarr?'':'none';
+   ['mzV85LethF','mzV85LethS','mzV85LethR','mzV85LethD'].forEach(function(id){var e=E(id);if(e)e.disabled=false;});
+   var st=lethNarr?null:lethStats(),so=E('mzV85LethStats');if(so)so.innerHTML=lethNarr?(st?'<b>Parametri determinati dal Narratore e fissati per questo esemplare:</b> Forza '+st.f+' · Salute '+st.s+' · Resistenza '+st.r+' · Destrezza '+st.d:'<b>Role masterata:</b> usa i quattro dadi sopra come tiri del Narratore e inserisci i risultati una sola volta.'):(st?'<b>Parametri fissati per questo esemplare:</b> Forza '+st.f+' · Salute '+st.s+' · Resistenza '+st.r+' · Destrezza '+st.d:'Inserisci i quattro risultati una sola volta per questo esemplare.');
    var per=Number((E('mzV85LethPerc')||{}).value||0),div=Number((E('mzV85LethDiv')||{}).value||0),wr=Number((E('mzV85LethWake')||{}).value||0),wo=E('mzV85LethWakeOut'),thr=per+div;
    if(wo)wo.innerHTML='<b>Soglia risveglio:</b> '+thr+' su 1d50. '+(!wr?'Inserisci il risultato.':wr<=thr?'<b>Si sveglia in tempo.</b>':'<b>Non si sveglia:</b> viene avvolto e parte il Soffocamento.');
    var posts=Math.max(0,Math.floor(Number((E('mzV85LethPosts')||{}).value||0))),mal=5+posts*10,res=Number((E('mzV85LethCurrentRes')||{}).value||0),wand=Number((E('mzV85LethWand')||{}).value||0),su=E('mzV85LethSuffOut');
@@ -10766,7 +10828,7 @@ function update(){
    if(do_){if(current>0||!under)do_.innerHTML='Nessun rischio automatico di annegamento da paralisi completa in questa configurazione.';else if(breath)do_.innerHTML='<b>Paralisi completa ma respirazione protetta:</b> non può nuotare, ma Algabranchia/Testabolla evita il rischio respiratorio.';else if(!alone)do_.innerHTML='<b>Paralisi completa sott’acqua:</b> rischio di annegamento, ma il 1d5 di soccorso automatico non si applica perché il PG non è solo.';else do_.innerHTML='<b>Paralisi completa sott’acqua e PG solo:</b> rischio di annegamento.'+(rescue?(rescue<=3?' <b>Soccorso automatico:</b> intervengono Maridi/PNG/Creature marine intelligenti.':' <b>Nessun soccorso automatico.</b>'):' Lancia 1d5: 1–3 soccorso, 4–5 nessun soccorso.');}
    var trust=E('mzV85LobTrust')&&E('mzV85LobTrust').checked,lv=custode(),er=Number((E('mzV85LobExtract')||{}).value||0),eo=E('mzV85LobExtractOut'),threshold=lv>=5?6:1+lv;
    if(eo)eo.innerHTML=(trust?'Fiducia già ottenuta. ':'<b>Senza Fiducia:</b> prima dell’estrazione rilascia automaticamente 1d5 schizzi. ')+'<b>Custode Lv '+lv+':</b> '+(lv>=5?'estrazione autoconclusiva.':('successo con 1–'+threshold+' su 1d6. '+(!er?'Inserisci il risultato.':er<=threshold?'<b>Estrazione riuscita.</b>':'<b>Fallimento:</b> rilascia ulteriori 1d5 schizzi.')));
-   var didExtract=E('mzV85LobDidExtract')&&E('mzV85LobDidExtract').checked,illegalNeed=didExtract&&!isMagizoologo(),ic=E('mzV85LobIllegalContext'),lobNarr=E('mzV85LobNarrated')&&E('mzV85LobNarrated').checked,iw=E('mzV85LobIllegalWrap'),ii=E('mzV85LobIllegal');if(ic)ic.style.display=illegalNeed?'':'none';if(iw)iw.style.display=illegalNeed&&!lobNarr?'':'none';if(ii){ii.disabled=!illegalNeed||lobNarr;if(!illegalNeed||lobNarr)ii.value='';}var ir=Number((ii||{}).value||0),io=E('mzV85LobIllegalOut');if(io)io.innerHTML=isMagizoologo()?'<b>Magizoologo di mestiere:</b> estrazione legalmente consentita; nessun controllo 1d5 per il reato.':!didExtract?'Nessun controllo: il PG non ha estratto veleno in questa role.':lobNarr?'<b>Role masterata:</b> il controllo 1d5 viene effettuato dal Narratore; 1–3 = estrazione notata, 4–5 = non scoperta.':'<b>Free role senza Narratore:</b> il player effettua una sola volta per role 1d5. '+(!ir?'1–3 = scoperto, 4–5 = non scoperto.':ir<=3?'<b>Estrazione notata e denunciabile.</b>':'Estrazione non scoperta.');
+   var didExtract=E('mzV85LobDidExtract')&&E('mzV85LobDidExtract').checked,illegalNeed=didExtract&&!isMagizoologo(),ic=E('mzV85LobIllegalContext'),lobNarr=E('mzV85LobNarrated')&&E('mzV85LobNarrated').checked,iw=E('mzV85LobIllegalWrap'),ii=E('mzV85LobIllegal');if(ic)ic.style.display=illegalNeed?'':'none';if(iw)iw.style.display=illegalNeed?'':'none';if(ii){ii.disabled=!illegalNeed;if(!illegalNeed)ii.value='';}var ir=Number((ii||{}).value||0),io=E('mzV85LobIllegalOut');if(io)io.innerHTML=isMagizoologo()?'<b>Magizoologo di mestiere:</b> estrazione legalmente consentita; nessun controllo 1d5 per il reato.':!didExtract?'Nessun controllo: il PG non ha estratto veleno in questa role.':lobNarr?('<b>Role masterata:</b> questo 1d5 appartiene al Narratore. '+(!ir?'1–3 = estrazione notata, 4–5 = non scoperta.':ir<=3?'<b>Estrazione notata e denunciabile.</b>':'Estrazione non scoperta.')):'<b>Free role senza Narratore:</b> questo 1d5 appartiene al player. '+(!ir?'1–3 = scoperto, 4–5 = non scoperto.':ir<=3?'<b>Estrazione notata e denunciabile.</b>':'Estrazione non scoperta.');
    var own=E('mzV85LobOwned')&&E('mzV85LobOwned').checked,cr=Number((E('mzV85LobCommand')||{}).value||0),wo=E('mzV85LobWeaponOut'),s=sap(),thr2=empathy()+s;
    if(wo){if(own)wo.innerHTML=s>=25?'<b>Uso come arma disponibile:</b> Sapienza 25+, Lobalug della propria Riserva → 1d5 schizzi su comando.':'<b>Uso come arma non disponibile:</b> per il Lobalug della propria Riserva serve Sapienza Magizoologica 25.';else wo.innerHTML='<b>Lobalug non proprio:</b> 1d50 ≤ Empatia + Sapienza = '+thr2+'. '+(!cr?'Inserisci il risultato.':cr<=thr2?'<b>Comando riuscito:</b> può proiettare 1d5 schizzi.':'<b>Comando fallito.</b>');}
  }
@@ -11872,6 +11934,19 @@ function renderHealthNarrator(n,h){
  return h;
 }
 
+function mzV132AuditHasVisibleContent(box){
+ if(!box)return false;
+ var kids=Array.prototype.slice.call(box.children||[]);
+ for(var i=0;i<kids.length;i++){
+   var el=kids[i];
+   if(el.tagName==='STRONG')continue;
+   var cs=window.getComputedStyle?window.getComputedStyle(el):null;
+   if(el.style.display==='none'||(cs&&cs.display==='none'))continue;
+   if(el.offsetParent!==null||!cs)return true;
+ }
+ return false;
+}
+function mzV132RefreshAuditBox(n){var box=E('mzV91Audit'+n);if(box)box.style.display=mzV132AuditHasVisibleContent(box)?'':'none';}
 function renderAudit(n){
  var host=E('mzV78EncounterExtras'+n),name=currentName(n),k=key(n);if(!host||!name)return;
  var race=(E('v89DragonTag'+n)||{}).textContent||'';
@@ -11880,7 +11955,7 @@ function renderAudit(n){
  if(box&&box.dataset.sig===sig){updateAudit(n);return;}
  if(box)box.remove();
  box=document.createElement('div');box.id='mzV91Audit'+n;box.className='mz-v91-box';box.dataset.sig=sig;
- var h='<strong>Controllo specifico v92 — '+esc(name)+'</strong>';
+ var h='<strong>Controlli specifici — '+esc(name)+'</strong>';
  if(k==='hanabira'){
    h+='<div class="mz-v91-narrator"><b>Ricerca ordinaria:</b> gli avvistamenti riguardano quasi sempre maschi adulti. Femmina o puledro è un caso eccezionale: chiedi al Narratore prima di usarlo.</div>';
    h+='<div id="mzV91_'+n+'_hanabiraExceptions">';for(var hx=1;hx<=10;hx++)h+='<div class="check-riga" id="mzV91_'+n+'_hanabiraExceptionWrap'+hx+'" style="display:none"><input type="checkbox" id="mzV91_'+n+'_hanabiraException'+hx+'" data-key="mzV91_'+n+'_hanabiraException'+hx+'"><label for="mzV91_'+n+'_hanabiraException'+hx+'">Esemplare '+hx+': il Narratore ha autorizzato femmina/puledro — usa il normale 1d40</label></div>';h+='</div>';
@@ -11947,7 +12022,7 @@ function renderAudit(n){
  h=renderHealthNarrator(n,h);
  box.innerHTML=h;host.appendChild(box);
  if(typeof window.setupNumericInputs==='function')window.setupNumericInputs();
- updateAudit(n);
+ updateAudit(n);mzV132RefreshAuditBox(n);
 }
 
 function updateOldDependent(n){
@@ -12026,6 +12101,7 @@ function updateAudit(n){
    var gr=val('mzV78_'+n+'_grifone',1,10),needs=gr!==null&&gr<=3;toggle(p+'grifNarratorMsg',needs);toggle(p+'grifNarratorOk_wrap',needs);if(!needs&&E(p+'grifNarratorOk'))E(p+'grifNarratorOk').checked=false;
  }
  var hn=healthNeedsNarrator(n);toggle(p+'healthNarratorMsg',hn);toggle(p+'healthNarratorOk_wrap',hn);if(!hn&&E(p+'healthNarratorOk'))E(p+'healthNarratorOk').checked=false;
+ mzV132RefreshAuditBox(n);
 }
 
 function req(id,min,max){return val(id,min,max)!==null;}
@@ -12649,5 +12725,209 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 <!-- v129: tiri Narratore corretti secondo fonte specifica Ricerca/Bestiario -->
+
+<style id="v133-contrast-audit">
+/* v133 — audit contrasto: testo leggibile sui contenitori principali. */
+.formula-tag,.scheda .formula-tag,.blocco-incontro .formula-tag{background:#7a3519!important;color:#fffaf5!important;}
+#modoMagizoologia .pannello table.fasce th{background:#7a3519!important;color:#fffaf5!important;}
+#mzRiprovaFiducia:disabled{background:#69351f!important;color:#f4ded0!important;}
+/* Contenitori scuri: le classi descrittive non devono ereditare colori scuri. */
+.mz-v78-box>.mz-v78-note,.mz-v78-box>.mz-v78-fixed,.mz-v78-box>.mz-v78-warning,
+.rm-special>.rm-travel-small,.rm-specie-helper>.rm-travel-small,.summary-box>.numeric-note{color:#f7e9dd!important;}
+/* Contenitori chiari: note e spiegazioni restano scure. */
+.scheda>.profilo-condiviso-note,.scheda .numeric-note,.scheda .profilo-session-hint,
+.mz-disease-box,.mz-disease-box .mz-v78-note,.mz-disease-box label{color:#3b1d10!important;}
+</style>
+
+<style id="v134-contrast-fix">
+/* v134 — seconda passata contrasto sui contenitori annidati. */
+.mz-hostility-body,.mz-hostility-body .numeric-note,.mz-hostility-body label,
+.rm-travel-assistant,.rm-travel-assistant .numeric-note,
+.rm-travel-panel,.rm-travel-panel .numeric-note,
+.rm-specie-helper,.rm-specie-helper .numeric-note{color:#f7e9dd!important;}
+#modoMagizoologia .pannello .mz-transfer-meta .nota-regole,
+#modoMagizoologia .pannello .mz-transfer-meta .nota-regole *{color:#18384d!important;}
+.mz-disease-box,.mz-disease-box b,.mz-disease-box strong,.mz-disease-box label,
+.mz-disease-box .numeric-note,.mz-disease-box .mz-v78-note,.mz-disease-box .result-line>span:not(.out-tag):not(.rm-travel-status){color:#3b1d10!important;}
+.mz-disease-box .rm-travel-status.wait{color:#e8c69d!important;background:#26170d!important;}
+.mz-disease-box .rm-travel-status.ok{color:#c8e6b8!important;background:#15200f!important;}
+.mz-disease-box .rm-travel-status.bad{color:#f0b09a!important;background:#351a11!important;}
+
+/* v134 — secondo audit di contrasto: badge/avvisi su pannelli chiari e accenti su gradienti scuri. */
+.badge-bloccato{background:#f5d6c5!important;color:#541b0d!important;border-color:#87351f!important;font-weight:700!important;}
+.badge-sbloccato{background:#dcebcf!important;color:#244219!important;border-color:#5d7d49!important;font-weight:700!important;}
+.blocco-avviso{background:#f9e0d1!important;color:#4b1b0d!important;border-color:#87351f!important;font-weight:600!important;}
+#modoMagizoologia .pannello .mz-bonus-manager b,
+#modoMagizoologia .pannello .mz-bonus-manager strong{color:#fff2e8!important;}
+#modoMagizoologia .pannello .mz-guide-summary-card b,
+#modoMagizoologia .pannello .mz-fatigue-card b{color:#fff2e8!important;}
+</style>
+
+<script id="magizoologia-v135-stress-catene-dadi">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function norm(v){v=String(v||'');try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}return v.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();}
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function val(id){var e=E(id);return e&&e.value!==''?Number(e.value):null;}
+function checked(id){return !!(E(id)&&E(id).checked);}
+function sap(){return Math.max(0,Math.min(25,Number((E('sapienzaProfilo')||{}).value||0)));}
+function cust(){return Math.max(0,Math.min(5,Number((E('livCustode')||{}).value||0)));}
+function empathy(){return Math.max(0,Number((E('empatia')||{}).value||0));}
+function isMagizoologo(){return !!(E('pgMagizoologoMestiere')&&E('pgMagizoologoMestiere').checked);}
+function roll(id,faces,label){return '<div class="mz-v78-roll" id="'+id+'_wrap"><b>'+esc(label)+'</b><div class="dice-code" id="'+id+'_code">[dice=1d'+faces+']'+esc(label)+'[/dice]</div><button type="button" class="copy-btn" data-copy-source="'+id+'_code">Copia</button><div class="result-line"><span>Risultato:</span><input type="number" inputmode="numeric" min="1" max="'+faces+'" id="'+id+'" data-key="'+id+'"><span class="out-tag out-neutral" id="'+id+'_tag">in attesa</span></div></div>';}
+function num(id,label,min,max){return '<div class="mz-v78-field"><label>'+esc(label)+'</label><input type="number" inputmode="numeric" min="'+min+'"'+(max!=null?' max="'+max+'"':'')+' id="'+id+'" data-key="'+id+'"></div>';}
+function check(id,label){return '<div class="check-riga"><input type="checkbox" id="'+id+'" data-key="'+id+'"><label for="'+id+'">'+label+'</label></div>';}
+function tag(id,text,ok){var t=E(id+'_tag');if(!t)return;t.textContent=text;t.className='out-tag '+(ok===true?'out-ok':ok===false?'out-fail':'out-neutral');}
+function show(id,on,clear){var w=E(id);if(w)w.style.display=on?'':'none';if(!on&&(clear||[]).length){(clear||[]).forEach(function(x){var e=E(x);if(e)e.value='';});}}
+function restoreFields(root,fields){if(!root||!fields)return;root.querySelectorAll('[data-key]').forEach(function(e){var k=e.getAttribute('data-key');if(fields[k]===undefined)return;if(e.type==='checkbox'||e.type==='radio')e.checked=!!fields[k];else e.value=fields[k];});}
+
+/* ---------- GUIDA: catene che nella v134 erano descritte ma non interamente operative ---------- */
+var guideSig='';
+function guideSpecies(){return norm((E('specieCreaturaGuida')||{}).value||'');}
+function guideRace(){return String((E('mzV82DragonRace')||{}).value||'').trim();}
+function activeGuidePanel(k){if(k==="bolcino d'oro")return E('mzV81BestiaryAC');if(k==='doxy'||k==='drago')return E('mzV82BestiaryD');if(k==='ghoul'||k==='glowbug'||k==='jobberknoll'||k==='jarvey')return E('mzV84BestiaryGJ');if(k==='lobalug')return E('mzV85BestiaryKL');if(k==='marmite')return E('mzV86BestiaryMZ');return null;}
+function buildGuide(force,fields){
+ var k=guideSpecies(),race=guideRace(),sig=k+'|'+race,old=E('mzV135GuideChainBox');
+ if(!["bolcino d'oro",'doxy','ghoul','glowbug','jobberknoll','jarvey','marmite','lobalug','drago'].includes(k)){if(old)old.remove();guideSig='';return;}
+ if(old&&guideSig===sig&&!force){updateGuide();return;}
+ var remembered={};if(old)old.querySelectorAll('[data-key]').forEach(function(e){remembered[e.getAttribute('data-key')]=(e.type==='checkbox')?!!e.checked:e.value;});if(old)old.remove();
+ var anchor=activeGuidePanel(k);if(!anchor)return;
+ var b=document.createElement('div');b.id='mzV135GuideChainBox';b.className='mz-v78-box';b.dataset.sig=sig;var h='<h3 style="margin-top:0">Catena operativa dei dadi specifici</h3><div class="mz-v78-note">I dadi successivi compaiono soltanto quando l’esito precedente li rende realmente necessari.</div>';
+ if(k==="bolcino d'oro"){
+   h+='<div id="v135BolcinoIllegalWrap" style="display:none">'+roll('v135BolcinoIllegalRoll',5,'Bolcino d’Oro — scoperta dell’Azione Illegale (Narratore)')+'<div id="v135BolcinoIllegalOut" class="mz-v78-fixed"></div><div class="mz-v78-note"><b>Tiro del Narratore:</b> con 1 il PG viene scoperto. Il dado compare soltanto se è stato indicato che il Bolcino è stato ferito o ucciso.</div></div>';
+ }
+ if(k==='doxy'){
+   h+=check('v135DoxyIndoor','La scena si svolge in un ambiente chiuso con Doxy presenti: l’area è infestata')+'<div id="v135DoxyWrap" style="display:none"><div class="mz-v78-grid">'+num('v135DoxyCount','Numero complessivo di Doxy presenti',1,999)+'</div><div id="v135DoxyLevel" class="mz-v78-fixed"></div>'+roll('v135DoxyPlayerRoll',10,'Doxy — rischio morso nel post del PG (Player)')+'<div id="v135DoxyPlayerOut" class="mz-v78-fixed"></div>'+roll('v135DoxyNarrRoll',10,'Doxy — danni ambientali a fine giro (Narratore, facoltativo)')+'<div id="v135DoxyNarrOut" class="mz-v78-fixed"></div><div class="mz-v78-note">Il tiro del Player si ripete a <b>ogni proprio post</b>. Il tiro del Narratore è distinto e può essere effettuato <b>alla fine di ogni giro completo</b>; sovrascrivi i risultati quando passi al post/giro successivo.</div></div>';
+ }
+ if(k==='ghoul'){
+   h+='<div id="v135GhoulNext" style="display:none"><div class="mz-v78-note"><b>1–2 sul 1d3 «piccoli animali nei dintorni»:</b> determina ora separatamente le cinque quantità.</div>'+roll('v135GhoulCrisopa',2,'Ghoul — Mosche Crisopa')+roll('v135GhoulFormicaleoni',2,'Ghoul — Formicaleoni')+roll('v135GhoulRagni',2,'Ghoul — Ragni')+roll('v135GhoulFalene',2,'Ghoul — Falene')+roll('v135GhoulScarabei',2,'Ghoul — Scarabei (occhi)')+'</div>';
+ }
+ if(k==='glowbug'){
+   h+='<div id="v135GlowNext" style="display:none"><div class="mz-v78-note"><b>1 sul 1d2 «insetti/Doxy attirati»:</b> determina le quantità di tutte le categorie presenti.</div>'+roll('v135GlowCrisopa',2,'Glowbug — Mosche Crisopa')+roll('v135GlowFormicaleoni',2,'Glowbug — Formicaleoni')+roll('v135GlowFalene',2,'Glowbug — Falene')+roll('v135GlowDoxy',5,'Glowbug — Doxy ostili')+'</div>';
+ }
+ if(k==='marmite'){
+   h+='<div id="v135MarmiteNext" style="display:none"><div class="mz-v78-note"><b>1 sul 1d2 «Creature attirate»:</b> determina le quantità di tutte le categorie presenti.</div>'+roll('v135MarmiteCrisopa',2,'Marmite — Mosche Crisopa')+roll('v135MarmiteFalene',2,'Marmite — Falene')+roll('v135MarmiteFormicaleoni',2,'Marmite — Formicaleoni')+roll('v135MarmiteDoxy',5,'Marmite — Doxy ostili')+'</div>';
+ }
+ if(k==='jobberknoll'){
+   h+='<div id="v135JobNext" style="display:none"><div class="mz-v78-note"><b>1–2 sul 1d3 «controllare il nido»:</b> determina le tre quantità.</div>'+roll('v135JobLombrichi',3,'Jobberknoll — Lombrichi (muco)')+roll('v135JobVermicoli',3,'Jobberknoll — Vermicoli (muco)')+roll('v135JobLucertole',3,'Jobberknoll — Lucertole (muco)')+'</div>';
+ }
+ if(k==='jarvey'){
+   h+='<div id="v135JarNext" style="display:none"><div class="mz-v78-note"><b>Gnomi presenti:</b> dopo il 1d5 già mostrato sopra, lancia un 1d2 per ciascun Gnomo.</div>';for(var j=1;j<=5;j++)h+='<div id="v135JarStateWrap'+j+'" style="display:none">'+roll('v135JarState'+j,2,'Jarvey — Gnomo '+j+': 1 vivo · 2 mangiucchiato')+'</div>';h+='</div>';
+ }
+ if(k==='lobalug'){
+   h+='<div class="mz-v78-note"><b>Estrazione del Veleno:</b> senza Fiducia il primo 1d5 avviene <u>prima</u> del tiro di estrazione. Se l’estrazione fallisce, parte un secondo 1d5 distinto.</div>';
+   h+='<div id="v135LobPre" style="display:none">'+roll('v135LobPreShots',5,'Lobalug — schizzi prima dell’estrazione (senza Fiducia)')+'</div>';
+   h+='<div id="v135LobAuto" class="mz-v78-fixed" style="display:none"><b>Custode V:</b> estrazione autoconclusiva; il 1d6 non va lanciato.</div>';
+   h+='<div id="v135LobPost" style="display:none">'+roll('v135LobPostShots',5,'Lobalug — ulteriori schizzi dopo estrazione fallita')+'</div>';
+   h+='<hr><b>Uso come arma</b><div id="v135LobWeaponGate" class="mz-v78-fixed"></div><div id="v135LobWeaponShots" style="display:none">'+roll('v135LobWeaponShotsRoll',5,'Lobalug — schizzi proiettati contro il bersaglio')+'</div>';
+ }
+ if(k==='drago'){
+   if(race==='Drago Specchio')h+='<div class="mz-v78-note"><b>Fiammata Incantata:</b> il 1d30 con tutti i 30 esiti è già mostrato nel riquadro del Drago sopra; non viene duplicato qui.</div>';
+   if(race==='Leggiadria'||race==='Rossocorno')h+=check('v135DragonPushHit','Il bersaglio è stato colpito e prova a resistere alla spinta/spostamento')+'<div id="v135DragonPushWrap" style="display:none"><div class="mz-v78-grid">'+num('v135DragonDex','Destrezza del bersaglio',0,100)+'</div>'+roll('v135DragonPushRoll',30,race+' — resistere alla spinta')+'<div id="v135DragonPushOut" class="mz-v78-fixed"></div><div class="mz-v78-note">Questo è il tiro del <b>Player bersaglio</b>. Anche se resiste allo spostamento, subisce comunque i danni previsti dall’abilità.</div></div>';
+   if(race==='Soviet 404')h+=check('v135DragonSnow','Il Drago compie un movimento brusco in ambiente nevoso')+'<div id="v135DragonSnowWrap" style="display:none">'+roll('v135DragonSnowRoll',4,'Soviet 404 — rischio valanga')+'<div id="v135DragonSnowOut" class="mz-v78-fixed"></div><div class="mz-v78-note">In una scena ostile/masterata questo tiro viene gestito dal <b>Narratore</b>.</div></div>';
+   if(race==='Yggrastoth')h+=check('v135DragonIce','Il bersaglio è stato colpito ed è imprigionato nella Crisalide di Ghiaccio')+'<div id="v135DragonIceWrap" style="display:none"><div class="mz-v78-grid">'+num('v135DragonRes','Resistenza del bersaglio',0,100)+'</div>'+roll('v135DragonIceRoll',30,'Yggrastoth — liberarsi dalla Crisalide di Ghiaccio')+'<div id="v135DragonIceOut" class="mz-v78-fixed"></div><div class="mz-v78-note">Tiro del <b>Player bersaglio</b>; in caso di fallimento può ritentare nel proprio post successivo.</div></div>';
+   if(!['Drago Specchio','Leggiadria','Rossocorno','Soviet 404','Yggrastoth'].includes(race))h+='<div class="mz-v78-note">Per questa razza non emerge una catena aggiuntiva di dadi successivi oltre ai controlli già presenti nel tool.</div>';
+ }
+ b.innerHTML=h;anchor.parentNode.insertBefore(b,anchor.nextSibling);guideSig=sig;restoreFields(b,remembered);restoreFields(b,fields);updateGuide();
+}
+function updateGuide(){
+ var k=guideSpecies();
+ if(k==="bolcino d'oro"){
+   var hurt=checked('mzV81BolcinoFerito'),br=val('v135BolcinoIllegalRoll'),bo=E('v135BolcinoIllegalOut');show('v135BolcinoIllegalWrap',hurt);if(bo)bo.innerHTML=!hurt?'':br==null?'Lancio del Narratore in attesa.':br===1?'<b>Il PG viene scoperto.</b>':'Il PG non viene scoperto da questo controllo.';if(br!=null)tag('v135BolcinoIllegalRoll',br===1?'scoperto':'non scoperto',br===1?false:true);
+ }
+ if(k==='doxy'){
+   var din=checked('v135DoxyIndoor');show('v135DoxyWrap',din);if(din){var dc=val('v135DoxyCount'),dl=E('v135DoxyLevel'),pr=val('v135DoxyPlayerRoll'),nr=val('v135DoxyNarrRoll'),po=E('v135DoxyPlayerOut'),no=E('v135DoxyNarrOut'),pt=0,nt=0,lev='';if(dc!=null){if(dc<=5){lev='lieve';pt=3;nt=2;}else if(dc<=15){lev='media';pt=5;nt=4;}else{lev='grave';pt=7;nt=6;}}if(dl)dl.innerHTML=dc==null?'Inserisci il numero complessivo di Doxy per determinare il livello dell’infestazione.':'<b>Infestazione '+lev+':</b> morso del PG con 1–'+pt+' · danni ambientali con 1–'+nt+' su 1d10.';if(po)po.innerHTML=dc==null?'Determina prima il livello dell’infestazione.':pr==null?'Tiro del Player in attesa.':pr<=pt?'<b>Morso di Doxy:</b> applica gli effetti del morso/avvelenamento.':'Nessun morso in questo post.';if(no)no.innerHTML=dc==null?'Determina prima il livello dell’infestazione.':nr==null?'Tiro facoltativo del Narratore in attesa.':nr<=nt?'<b>Danni a beni/strutture:</b> il Narratore determina le conseguenze concrete.':'Nessun danno ambientale in questo giro.';if(pr!=null&&dc!=null)tag('v135DoxyPlayerRoll',pr<=pt?'morso':'nessun morso',pr<=pt?false:true);if(nr!=null&&dc!=null)tag('v135DoxyNarrRoll',nr<=nt?'danni':'nessun danno',nr<=nt?false:true);}
+ }
+ if(k==='ghoul'){var r=val('mzV84GhoulNearby');show('v135GhoulNext',r!==null&&r<=2);}
+ if(k==='glowbug'){show('v135GlowNext',val('mzV84GlowNearby')===1);}
+ if(k==='marmite'){show('v135MarmiteNext',val('v86Marmite')===1);}
+ if(k==='jobberknoll'){var rj=val('mzV84JobNest');show('v135JobNext',rj!==null&&rj<=2);}
+ if(k==='jarvey'){var a=val('mzV84JarGnome'),c=val('mzV84JarGnomeCount'),on=a===1&&c!=null;show('v135JarNext',on);for(var i=1;i<=5;i++)show('v135JarStateWrap'+i,on&&i<=c);}
+ if(k==='ghoul'&&val('mzV84GhoulNearby')!==null&&val('mzV84GhoulNearby')<=2){['v135GhoulCrisopa','v135GhoulFormicaleoni','v135GhoulRagni','v135GhoulFalene','v135GhoulScarabei'].forEach(function(id){var x=val(id);if(x!=null)tag(id,String(x),true);});}
+ if(k==='glowbug'&&val('mzV84GlowNearby')===1){['v135GlowCrisopa','v135GlowFormicaleoni','v135GlowFalene','v135GlowDoxy'].forEach(function(id){var x=val(id);if(x!=null)tag(id,String(x),true);});}
+ if(k==='marmite'&&val('v86Marmite')===1){['v135MarmiteCrisopa','v135MarmiteFalene','v135MarmiteFormicaleoni','v135MarmiteDoxy'].forEach(function(id){var x=val(id);if(x!=null)tag(id,String(x),true);});}
+ if(k==='jobberknoll'){var jr0=val('mzV84JobNest');if(jr0!==null&&jr0<=2)['v135JobLombrichi','v135JobVermicoli','v135JobLucertole'].forEach(function(id){var x=val(id);if(x!=null)tag(id,String(x),true);});}
+ if(k==='jarvey'){for(var js=1;js<=5;js++){var jv=val('v135JarState'+js);if(jv!=null)tag('v135JarState'+js,jv===1?'vivo':'mangiucchiato',jv===1?true:false);}}
+ if(k==='lobalug'){
+   var trust=checked('mzV85LobTrust'),lv=cust(),er=val('mzV85LobExtract'),thr=1+lv,extractRoll=E('mzV85LobExtract'),extractWrap=extractRoll&&extractRoll.closest('.mz-v78-roll');
+   show('v135LobPre',!trust);show('v135LobAuto',lv>=5);if(extractWrap)extractWrap.style.display=lv>=5?'none':'';
+   var failed=lv<5&&er!=null&&er>thr;show('v135LobPost',failed);
+   var own=checked('mzV85LobOwned'),cmd=val('mzV85LobCommand'),cmdEl=E('mzV85LobCommand'),cmdWrap=cmdEl&&cmdEl.closest('.mz-v78-roll'),s=sap(),gate=E('v135LobWeaponGate'),ready=false;
+   if(cmdWrap)cmdWrap.style.display=(!own&&s>=25)?'':'none';
+   if(gate){if(s<25)gate.innerHTML='<b>Non disponibile:</b> per usare un Lobalug come arma serve Sapienza Magizoologica 25.';else if(own){gate.innerHTML='<b>Lobalug della propria Riserva:</b> il comando è disponibile senza 1d50; passa direttamente al numero di schizzi.';ready=true;}else if(cmd==null)gate.innerHTML='<b>Lobalug non proprio:</b> prima serve il 1d50 già mostrato sopra, con soglia Empatia + Sapienza = '+(empathy()+s)+'.';else if(cmd<=empathy()+s){gate.innerHTML='<b>Comando riuscito:</b> determina il numero di schizzi.';ready=true;}else gate.innerHTML='<b>Comando fallito:</b> nessun 1d5 di schizzi per questo tentativo.';}var oldWo=E('mzV85LobWeaponOut');if(oldWo){if(s<25)oldWo.innerHTML='<b>Uso come arma non disponibile:</b> serve Sapienza Magizoologica 25.';else if(own)oldWo.innerHTML='<b>Lobalug della propria Riserva:</b> nessun 1d50 di comando; determina direttamente 1d5 schizzi.';else oldWo.innerHTML='<b>Lobalug non proprio:</b> 1d50 ≤ Empatia + Sapienza = '+(empathy()+s)+'. '+(cmd==null?'Inserisci il risultato.':cmd<=empathy()+s?'<b>Comando riuscito:</b> determina 1d5 schizzi.':'<b>Comando fallito.</b>');}
+   show('v135LobWeaponShots',ready);var ws=val('v135LobWeaponShotsRoll');if(ws!=null)tag('v135LobWeaponShotsRoll',String(ws),true);
+ }
+ if(k==='drago'){
+   var race=guideRace();if(race==='Leggiadria'||race==='Rossocorno'){var on=checked('v135DragonPushHit');show('v135DragonPushWrap',on);var r=val('v135DragonPushRoll'),d=val('v135DragonDex'),o=E('v135DragonPushOut');if(o)o.innerHTML=!on?'':r==null?'Lancia 1d30.':r<=Math.max(0,d||0)?'<b>Resiste alla spinta/spostamento.</b> I danni restano applicati.':'<b>Non resiste:</b> subisce anche spinta/spostamento oltre ai danni.';if(r!=null)tag('v135DragonPushRoll',r<=Math.max(0,d||0)?'resiste':'spostato',r<=Math.max(0,d||0));}
+   if(race==='Soviet 404'){var sn=checked('v135DragonSnow');show('v135DragonSnowWrap',sn);var sr=val('v135DragonSnowRoll'),so=E('v135DragonSnowOut');if(so)so.innerHTML=!sn?'':sr==null?'Lancia 1d4.':sr===1?'<b>Valanga immediata.</b>':'Nessuna valanga da questo movimento.';if(sr!=null)tag('v135DragonSnowRoll',sr===1?'valanga':'nessuna valanga',sr===1?false:true);}
+   if(race==='Yggrastoth'){var ic=checked('v135DragonIce');show('v135DragonIceWrap',ic);var ir=val('v135DragonIceRoll'),res=val('v135DragonRes'),io=E('v135DragonIceOut');if(io)io.innerHTML=!ic?'':ir==null?'Lancia 1d30.':ir<=Math.max(0,res||0)?'<b>Il ghiaccio si spezza: bersaglio libero.</b>':'<b>Rimane immobilizzato:</b> può ritentare nel proprio post successivo o ricevere aiuto esterno.';if(ir!=null)tag('v135DragonIceRoll',ir<=Math.max(0,res||0)?'libero':'imprigionato',ir<=Math.max(0,res||0));}
+ }
+}
+
+/* ---------- RICERCA: azioni concatenate che possono nascere dallo stesso incontro ---------- */
+function encounterSpecies(n){return norm((E('specieCreatura'+n)||{}).value||'');}
+function encounterRace(n){return String((E('v89DragonTag'+n)||{}).textContent||'').trim();}
+function researchHost(n){return E('mzV91Audit'+n)||E('mzV78EncounterExtras'+n);}
+function buildResearch(n,force,state){
+ var k=encounterSpecies(n),race=encounterRace(n),sig=k+'|'+race,old=E('mzV135ResearchChain'+n);if(k!=='doxy'&&k!=='lobalug'&&k!=='drago'){if(old)old.remove();return;}if(old&&old.dataset.sig===sig&&!force){updateResearch(n);return;}var remember={};if(old)old.querySelectorAll('[data-key]').forEach(function(e){remember[e.getAttribute('data-key')]=e.type==='checkbox'?!!e.checked:e.value;});if(old)old.remove();var host=researchHost(n);if(!host)return;var b=document.createElement('div');b.id='mzV135ResearchChain'+n;b.className='mz-v91-box';b.dataset.sig=sig;var p='v135R_'+n+'_',h='<strong>Catena successiva dell’Incontro</strong><div class="mz-v78-note">Questi controlli non sostituiscono i dadi necessari a determinare la Creatura: compaiono solo se durante lo stesso Incontro viene attivata la relativa azione.</div>';
+ if(k==='doxy'){
+   h+=check(p+'doxyNarrDo','È terminato un giro completo: mostra il controllo facoltativo dei danni ambientali del Narratore')+'<div id="'+p+'doxyNarrWrap" style="display:none">'+roll(p+'doxyNarrRoll',10,'Doxy — danni ambientali a fine giro (Narratore)')+'<div id="'+p+'doxyNarrOut" class="mz-v78-fixed"></div><div class="mz-v78-note">Questo tiro è <b>distinto</b> dal 1d10 che ogni Player lancia nel proprio post per il rischio di morso.</div></div>';
+ }
+ if(k==='lobalug'){
+   h+=check(p+'lobDo','Il PG prova a estrarre il Veleno dal Lobalug durante questo Incontro')+'<div id="'+p+'lobWrap" style="display:none">'+check(p+'lobTrust','La Fiducia del Lobalug è già stata ottenuta')+'<div id="'+p+'lobPre" style="display:none">'+roll(p+'lobPreRoll',5,'Lobalug — schizzi prima dell’estrazione (senza Fiducia)')+'</div><div id="'+p+'lobExtractWrap">'+roll(p+'lobExtract',6,'Lobalug — estrazione del Veleno')+'</div><div id="'+p+'lobAuto" class="mz-v78-fixed" style="display:none"><b>Custode V:</b> estrazione autoconclusiva.</div><div id="'+p+'lobPost" style="display:none">'+roll(p+'lobPostRoll',5,'Lobalug — ulteriori schizzi dopo estrazione fallita')+'</div><div id="'+p+'lobIllegal" style="display:none">'+check(p+'lobNarrated','La role è masterata: questo controllo appartiene al Narratore')+'<div id="'+p+'lobIllegalPlayer">'+roll(p+'lobIllegalRoll',5,'Lobalug — controllo estrazione illegale (Player in free role / Narratore in role masterata)')+'</div><div class="mz-v78-note">1–3: estrazione notata e denunciabile · 4–5: non scoperta. In role masterata il dado resta copiabile ma appartiene al <b>Narratore</b>; il Player non è obbligato a inserirne il risultato.</div></div></div>';
+   h+=check(p+'lobWeaponDo','Il PG prova a usare il Lobalug come arma subacquea durante questo Incontro')+'<div id="'+p+'lobWeaponWrap" style="display:none"><div id="'+p+'lobWeaponGate" class="mz-v78-fixed"></div>'+check(p+'lobWeaponOwned','Il Lobalug appartiene alla Riserva del PG')+'<div id="'+p+'lobWeaponCommandWrap" style="display:none">'+roll(p+'lobWeaponCommand',50,'Lobalug — comando su esemplare non proprio (Player)')+'</div><div id="'+p+'lobWeaponShotsWrap" style="display:none">'+roll(p+'lobWeaponShots',5,'Lobalug — schizzi proiettati contro il bersaglio')+'</div></div>';
+ }
+ if(k==='drago'){
+   if(race==='Drago Specchio')h+=check(p+'mirrorDo','Il Narratore sta risolvendo un attacco di Fiammata Incantata')+'<div id="'+p+'mirrorWrap" style="display:none">'+roll(p+'mirrorRoll',30,'Drago Specchio — effetto Fiammata Incantata (Narratore)')+'<div id="'+p+'mirrorOut" class="mz-v78-fixed"></div></div>';
+   if(race==='Leggiadria'||race==='Rossocorno')h+=check(p+'pushDo','Il PG è stato colpito e deve verificare se resiste alla spinta/spostamento')+'<div id="'+p+'pushWrap" style="display:none"><div class="mz-v78-grid">'+num(p+'dex','Destrezza del PG bersaglio',0,100)+'</div>'+roll(p+'pushRoll',30,race+' — resistere alla spinta (Player)')+'<div id="'+p+'pushOut" class="mz-v78-fixed"></div></div>';
+   if(race==='Soviet 404')h+=check(p+'snowDo','Il Narratore sta risolvendo un movimento brusco del Soviet 404 in ambiente nevoso')+'<div id="'+p+'snowWrap" style="display:none">'+roll(p+'snowRoll',4,'Soviet 404 — rischio valanga (Narratore)')+'<div id="'+p+'snowOut" class="mz-v78-fixed"></div></div>';
+   if(race==='Yggrastoth')h+=check(p+'iceDo','Il PG è stato colpito ed è imprigionato nella Crisalide di Ghiaccio')+'<div id="'+p+'iceWrap" style="display:none"><div class="mz-v78-grid">'+num(p+'res','Resistenza del PG bersaglio',0,100)+'</div>'+roll(p+'iceRoll',30,'Yggrastoth — liberarsi dalla Crisalide (Player)')+'<div id="'+p+'iceOut" class="mz-v78-fixed"></div></div>';
+   if(!['Drago Specchio','Leggiadria','Rossocorno','Soviet 404','Yggrastoth'].includes(race))h+='<div class="mz-v78-note">Nessun nuovo tiro concatenato da mostrare per questa razza oltre ai controlli già presenti.</div>';
+ }
+ b.innerHTML=h;host.parentNode.insertBefore(b,host.nextSibling);restoreFields(b,remember);restoreFields(b,state);updateResearch(n);
+}
+var MIRROR=['','Expelliarmus','Defodio','Elettro','Distillato Soporifero','Hostis Sui','Ad Caelum','Alerte Ascenderai','Pozione della Debolezza','Deprimo','Pozione Paralizzante','Expulso','Frastuonum','Impedimenta','Obscuro','Tarantallegra','Gas Strozzante','Bombarda Maxima','Elettro Maxima','Distillato del Silenzio','Confundus','Bombarda','Diffindo','Pozione Stordente','Mucus ad Nauseam','Veleno di Semi di Luna','Flipendo','Gambemolli','Languelingua','Pozione Starnutosa','Stupeficium'];
+function updateResearch(n){
+ var k=encounterSpecies(n),race=encounterRace(n),p='v135R_'+n+'_';
+ if(k==='doxy'){
+   var don=checked(p+'doxyNarrDo');show(p+'doxyNarrWrap',don);if(don){var extra=val('mzV78_'+n+'_doxyOrda'),total=extra==null?null:1+extra,thr=total==null?0:(total<=5?2:total<=15?4:6),dr=val(p+'doxyNarrRoll'),doo=E(p+'doxyNarrOut');if(doo)doo.innerHTML=total==null?'Determina prima quanti Doxy sono presenti.':dr==null?'<b>Infestazione '+(total<=5?'lieve':total<=15?'media':'grave')+':</b> il Narratore provoca danni con 1–'+thr+' su 1d10.':dr<=thr?'<b>Danni a beni/strutture:</b> il Narratore determina le conseguenze concrete.':'Nessun danno ambientale in questo giro.';if(dr!=null&&total!=null)tag(p+'doxyNarrRoll',dr<=thr?'danni':'nessun danno',dr<=thr?false:true);}
+ }
+ if(k==='lobalug'){
+   var on=checked(p+'lobDo');show(p+'lobWrap',on);if(!on)return;var trust=checked(p+'lobTrust'),lv=cust(),pre=E(p+'lobPre'),extW=E(p+'lobExtractWrap'),auto=E(p+'lobAuto'),er=val(p+'lobExtract'),thr=1+lv;if(pre)pre.style.display=!trust?'':'none';if(extW)extW.style.display=lv>=5?'none':'';if(auto)auto.style.display=lv>=5?'':'none';var success=lv>=5||(er!=null&&er<=thr),failed=lv<5&&er!=null&&er>thr;show(p+'lobPost',failed);var illegal=success&&!isMagizoologo(),iw=E(p+'lobIllegal');if(iw)iw.style.display=illegal?'':'none';var narr=checked(p+'lobNarrated'),ip=E(p+'lobIllegalPlayer');if(ip)ip.style.display=illegal?'':'none';var won=checked(p+'lobWeaponDo'),ww=E(p+'lobWeaponWrap');if(ww)ww.style.display=won?'':'none';if(won){var s=sap(),own=checked(p+'lobWeaponOwned'),cmdW=E(p+'lobWeaponCommandWrap'),shotsW=E(p+'lobWeaponShotsWrap'),cmd=val(p+'lobWeaponCommand'),gate=E(p+'lobWeaponGate'),ready=false;if(cmdW)cmdW.style.display=(s>=25&&!own)?'':'none';if(s<25){if(gate)gate.innerHTML='<b>Non disponibile:</b> serve Sapienza Magizoologica 25.';}else if(own){if(gate)gate.innerHTML='<b>Lobalug della propria Riserva:</b> nessun 1d50 di comando; determina direttamente gli schizzi.';ready=true;}else if(cmd==null){if(gate)gate.innerHTML='<b>Lobalug non proprio:</b> lancia 1d50 ≤ Empatia + Sapienza = '+(empathy()+s)+'.';}else if(cmd<=empathy()+s){if(gate)gate.innerHTML='<b>Comando riuscito:</b> determina il numero di schizzi.';ready=true;}else if(gate)gate.innerHTML='<b>Comando fallito:</b> nessuno schizzo in questo tentativo.';if(shotsW)shotsW.style.display=ready?'':'none';var sh=val(p+'lobWeaponShots');if(sh!=null)tag(p+'lobWeaponShots',String(sh),true);}
+ }
+ if(k==='drago'){
+   if(race==='Drago Specchio'){var on=checked(p+'mirrorDo');show(p+'mirrorWrap',on);var r=val(p+'mirrorRoll'),o=E(p+'mirrorOut');if(o)o.innerHTML=!on?'':r==null?'Lancio del Narratore in attesa.':'<b>Effetto:</b> '+esc(MIRROR[r]||'—')+'.';if(r!=null)tag(p+'mirrorRoll',MIRROR[r]||'esito',null);}
+   if(race==='Leggiadria'||race==='Rossocorno'){var onp=checked(p+'pushDo');show(p+'pushWrap',onp);var rr=val(p+'pushRoll'),d=val(p+'dex'),oo=E(p+'pushOut');if(oo)oo.innerHTML=!onp?'':rr==null?'Lancia 1d30.':rr<=Math.max(0,d||0)?'<b>Resiste allo spostamento.</b> I danni si applicano comunque.':'<b>Non resiste:</b> subisce anche spinta/spostamento.';if(rr!=null)tag(p+'pushRoll',rr<=Math.max(0,d||0)?'resiste':'spostato',rr<=Math.max(0,d||0));}
+   if(race==='Soviet 404'){var ons=checked(p+'snowDo');show(p+'snowWrap',ons);var sr=val(p+'snowRoll'),so=E(p+'snowOut');if(so)so.innerHTML=!ons?'':sr==null?'Lancio del Narratore in attesa.':sr===1?'<b>Valanga immediata.</b>':'Nessuna valanga.';if(sr!=null)tag(p+'snowRoll',sr===1?'valanga':'nessuna valanga',sr===1?false:true);}
+   if(race==='Yggrastoth'){var oni=checked(p+'iceDo');show(p+'iceWrap',oni);var ir=val(p+'iceRoll'),res=val(p+'res'),io=E(p+'iceOut');if(io)io.innerHTML=!oni?'':ir==null?'Lancia 1d30.':ir<=Math.max(0,res||0)?'<b>Si libera.</b>':'<b>Rimane immobilizzato:</b> ritenta nel post successivo o riceve aiuto.';if(ir!=null)tag(p+'iceRoll',ir<=Math.max(0,res||0)?'libero':'imprigionato',ir<=Math.max(0,res||0));}
+ }
+}
+function researchReady135(n){var k=encounterSpecies(n),race=encounterRace(n),p='v135R_'+n+'_';
+ if(k==='lobalug'&&checked(p+'lobDo')){var trust=checked(p+'lobTrust'),lv=cust();if(!trust&&val(p+'lobPreRoll')==null)return false;var er=lv>=5?1:val(p+'lobExtract');if(lv<5&&er==null)return false;var success=lv>=5||er<=1+lv,failed=lv<5&&er>1+lv;if(failed&&val(p+'lobPostRoll')==null)return false;if(success&&!isMagizoologo()&&!checked(p+'lobNarrated')&&val(p+'lobIllegalRoll')==null)return false;}if(k==='lobalug'&&checked(p+'lobWeaponDo')&&sap()>=25){var own=checked(p+'lobWeaponOwned'),cmd=val(p+'lobWeaponCommand');if(!own&&cmd==null)return false;var ready=own||cmd<=empathy()+sap();if(ready&&val(p+'lobWeaponShots')==null)return false;}
+ if(k==='drago'){
+   if(race==='Drago Specchio'&&checked(p+'mirrorDo')&&val(p+'mirrorRoll')==null)return false;
+   if((race==='Leggiadria'||race==='Rossocorno')&&checked(p+'pushDo')&&(val(p+'dex')==null||val(p+'pushRoll')==null))return false;
+   if(race==='Soviet 404'&&checked(p+'snowDo')&&val(p+'snowRoll')==null)return false;
+   if(race==='Yggrastoth'&&checked(p+'iceDo')&&(val(p+'res')==null||val(p+'iceRoll')==null))return false;
+ }
+ return true;}
+
+/* Aggancio alla Ricerca: il primo ricalcolo crea i blocchi, il secondo passaggio di rmApplyState può ripristinarli. */
+var prevAfter=window.__mzV78ResearchAfterCalc;
+window.__mzV78ResearchAfterCalc=function(){if(typeof prevAfter==='function')prevAfter.apply(this,arguments);for(var n=1;n<=3;n++)buildResearch(n,false);};
+var prevComplete=window.__mzV78EncounterComplete;
+window.__mzV78EncounterComplete=function(n){var base=typeof prevComplete==='function'?prevComplete(n):true;return !!base&&researchReady135(n);};
+
+/* Ripristino dei campi dinamici della Guida. */
+var prevGuideApply=window.mzGuideApplyState;
+if(typeof prevGuideApply==='function')window.mzGuideApplyState=function(st){var r=prevGuideApply.apply(this,arguments);setTimeout(function(){buildGuide(true,(st&&st.fields)||{});},0);return r;};
+
+function refreshAll(){setTimeout(function(){buildGuide(false);for(var n=1;n<=3;n++)buildResearch(n,false);if(typeof window.rmGating==='function')window.rmGating();},0);}
+document.addEventListener('change',function(e){var id=e.target&&e.target.id||'';if(id==='specieCreaturaGuida'||id==='mzV82DragonRace'||id==='livCustode'||id==='sapienzaProfilo'||id==='empatia'||id==='pgMagizoologoMestiere'||id==='mzV81BolcinoFerito'||/^mzV84(GhoulNearby|GlowNearby|JobNest|JarGnome|JarGnomeCount)$/.test(id)||id==='v86Marmite'||/^mzV85Lob/.test(id)||/^v135/.test(id)){refreshAll();}},true);
+document.addEventListener('input',function(e){var id=e.target&&e.target.id||'';if(/^mzV84(GhoulNearby|GlowNearby|JobNest|JarGnome|JarGnomeCount)$/.test(id)||id==='v86Marmite'||/^mzV85Lob/.test(id)||/^v135/.test(id)||/^v89DragonRoll[123]$/.test(id)){refreshAll();}},true);
+function init(){setTimeout(function(){buildGuide(false);for(var n=1;n<=3;n++)buildResearch(n,false);},50);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
 </body>
 </html>
