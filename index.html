@@ -1,9 +1,12 @@
 
+
+
 <!DOCTYPE html>
 <!-- v130: sessioni Ricerca Creature condivise tra dispositivi, chiave stabile per PG, recupero sessioni legacy e rimozione vincolo ownerUid -->
 
 <!-- v118 audit fonti: base v117; licenza 150 G confermata dallo screenshot aggiornato; Repello Babbanum lasciato non automatizzato per fonte +1/+2 incoerente; regressione in corso -->
 <!-- Magizoologia tool v132 — profili PG pubblici cross-device; feedback test: leggibilità, controlli specifici, bonus per incontro -->
+<!-- v138: Lobalug — controllo estrazione illegale unico per role, spostato all’Esito della Ricerca e non più ripetuto/bloccante per Incontro -->
 <html lang="it">
 <head>
 <meta charset="utf-8"/>
@@ -4115,6 +4118,14 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="scheda">
 <h2>Esito della Ricerca</h2>
 <div id="rm-outcome-content"></div>
+<div class="rm-special" id="rmLobalugIllegalRole" style="display:none">
+<h3 style="margin-top:0">Lobalug — controllo unico sull’estrazione illegale</h3>
+<div class="nota-regole">Compare se, durante questa Ricerca, un PG non Magizoologo ha estratto con successo Veleno di Lobalug. Il regolamento richiede <b>un solo 1d5 al termine della role</b>, indipendentemente dal numero di tentativi o di Incontri.</div>
+<div class="check-riga"><input data-key="v138LobIllegalNarrated" id="v138LobIllegalNarrated" type="checkbox"/><label for="v138LobIllegalNarrated">La role è masterata: il tiro appartiene al Narratore</label></div>
+<div class="result-line"><div class="dice-code" id="v138LobIllegalCode">[dice=1d5]Lobalug — controllo unico estrazione illegale al termine della role[/dice]</div><button class="copy-btn" data-copy-source="v138LobIllegalCode" type="button">Copia</button></div>
+<div class="result-line"><span>Risultato (1-5):</span><input data-key="v138LobIllegalRoll" id="v138LobIllegalRoll" max="5" min="1" type="number"/><span class="out-tag out-neutral" id="v138LobIllegalTag">in attesa</span></div>
+<div class="mz-v78-fixed" id="v138LobIllegalOut"></div>
+</div>
 </div>
 <div class="flow-actions"><button class="flow-action-btn" data-rm-goto="enc1" data-session-control="1" type="button">← Torna agli Incontri</button><span class="nota-regole">Per chiudere definitivamente la Ricerca usa «Concludi ed elimina Ricerca» nella barra in alto.</span></div>
 </section>
@@ -9971,7 +9982,7 @@ var B={
  "asticello":{c:"XX",l:"Legale",o:"Neutrale",p:[55,40,15,25],note:"Se Addestrato può tentare Scasso e Furto minuto. Prima dell’azione furtiva un osservatore può notarlo con 1d30 ≤ Percezione."},
  "augurey":{c:"XX",l:"Legale",o:"Neutrale",p:[55,60,10,25],note:"All’incontro: Sindrome dell’Augurey con 1 su 1d10. Chi alleva un Augurey sviluppa immunità permanente e non effettua quel controllo durante l’Allevamento."},
  "avvincino":{c:"XX",l:"Legale",o:"Sempre ostile",p:[80,75,10,25],note:"Sempre ostile non significa non domesticabile. Avvinghiamento in acqua: per liberarsi 1d30 ≤ Resistenza."},
- "baku":{c:"X",l:"Legale",o:"Mai ostile",p:[30,80,15,20],note:"−5 Possibilità sia in Fiducia sia in Domesticazione per la sua estrema schivezza."},
+ "baku":{c:"X",l:"Legale",o:"Mai ostile",p:[30,80,15,20],note:"−5 Possibilità sia in Fiducia sia in Domesticazione per la sua estrema schivezza. Aspirare i sogni: un Baku appartenente al PG può applicare una volta per role, a un solo personaggio addormentato o a riposo nella stessa area, gli effetti della Pozione Senza Sogni per quella notte; l’effetto non è cumulabile con la Pozione Senza Sogni assunta nella stessa notte."},
  "basertilia":{c:"X",l:"Legale",o:"Mai ostile",p:[20,15,10,25],note:"Sparizione con 1 su 1d20 all’incontro. Chi alleva una Basertilia sviluppa immunità permanente e non effettua quel controllo durante l’Allevamento."},
  "basilisco":{c:"XXXXX",l:"Illegale",o:"Sempre ostile",p:[300,300,40,25],note:"Non può essere trovato tramite Ricerca e non può essere sottoposto a Fiducia, Domesticazione, Addestramento o Allevamento. Solo un Rettilofono può tentare ordini temporanei in incontri eccezionali."},
  "berretto rosso":{c:"XXX",l:"Legale",o:"Sempre ostile",p:[140,100,20,20],note:"Può seguire le procedure generali nonostante lo status Sempre ostile. Attirarlo volontariamente tra Babbani o usarlo per ferire altri PG è Azione Illegale."},
@@ -12875,7 +12886,7 @@ function buildResearch(n,force,state){
    h+=check(p+'doxyNarrDo','È terminato un giro completo: mostra il controllo facoltativo dei danni ambientali del Narratore')+'<div id="'+p+'doxyNarrWrap" style="display:none">'+roll(p+'doxyNarrRoll',10,'Doxy — danni ambientali a fine giro (Narratore)')+'<div id="'+p+'doxyNarrOut" class="mz-v78-fixed"></div><div class="mz-v78-note">Questo tiro è <b>distinto</b> dal 1d10 che ogni Player lancia nel proprio post per il rischio di morso.</div></div>';
  }
  if(k==='lobalug'){
-   h+=check(p+'lobDo','Il PG prova a estrarre il Veleno dal Lobalug durante questo Incontro')+'<div id="'+p+'lobWrap" style="display:none">'+check(p+'lobTrust','La Fiducia del Lobalug è già stata ottenuta')+'<div id="'+p+'lobPre" style="display:none">'+roll(p+'lobPreRoll',5,'Lobalug — schizzi prima dell’estrazione (senza Fiducia)')+'</div><div id="'+p+'lobExtractWrap">'+roll(p+'lobExtract',6,'Lobalug — estrazione del Veleno')+'</div><div id="'+p+'lobAuto" class="mz-v78-fixed" style="display:none"><b>Custode V:</b> estrazione autoconclusiva.</div><div id="'+p+'lobPost" style="display:none">'+roll(p+'lobPostRoll',5,'Lobalug — ulteriori schizzi dopo estrazione fallita')+'</div><div id="'+p+'lobIllegal" style="display:none">'+check(p+'lobNarrated','La role è masterata: questo controllo appartiene al Narratore')+'<div id="'+p+'lobIllegalPlayer">'+roll(p+'lobIllegalRoll',5,'Lobalug — controllo estrazione illegale (Player in free role / Narratore in role masterata)')+'</div><div class="mz-v78-note">1–3: estrazione notata e denunciabile · 4–5: non scoperta. In role masterata il dado resta copiabile ma appartiene al <b>Narratore</b>; il Player non è obbligato a inserirne il risultato.</div></div></div>';
+   h+=check(p+'lobDo','Il PG prova a estrarre il Veleno dal Lobalug durante questo Incontro')+'<div id="'+p+'lobWrap" style="display:none">'+check(p+'lobTrust','La Fiducia del Lobalug è già stata ottenuta')+'<div id="'+p+'lobPre" style="display:none">'+roll(p+'lobPreRoll',5,'Lobalug — schizzi prima dell’estrazione (senza Fiducia)')+'</div><div id="'+p+'lobExtractWrap">'+roll(p+'lobExtract',6,'Lobalug — estrazione del Veleno')+'</div><div id="'+p+'lobAuto" class="mz-v78-fixed" style="display:none"><b>Custode V:</b> estrazione autoconclusiva.</div><div id="'+p+'lobPost" style="display:none">'+roll(p+'lobPostRoll',5,'Lobalug — ulteriori schizzi dopo estrazione fallita')+'</div><div class="mz-v78-note"><b>Se l’estrazione illegale riesce:</b> l’unico 1d5 previsto per stabilire se viene scoperta compare nell’<b>Esito della Ricerca</b>, perché va effettuato una sola volta al termine della role anche in presenza di più tentativi.</div></div>';
    h+=check(p+'lobWeaponDo','Il PG prova a usare il Lobalug come arma subacquea durante questo Incontro')+'<div id="'+p+'lobWeaponWrap" style="display:none"><div id="'+p+'lobWeaponGate" class="mz-v78-fixed"></div>'+check(p+'lobWeaponOwned','Il Lobalug appartiene alla Riserva del PG')+'<div id="'+p+'lobWeaponCommandWrap" style="display:none">'+roll(p+'lobWeaponCommand',50,'Lobalug — comando su esemplare non proprio (Player)')+'</div><div id="'+p+'lobWeaponShotsWrap" style="display:none">'+roll(p+'lobWeaponShots',5,'Lobalug — schizzi proiettati contro il bersaglio')+'</div></div>';
  }
  if(k==='drago'){
@@ -12894,7 +12905,30 @@ function updateResearch(n){
    var don=checked(p+'doxyNarrDo');show(p+'doxyNarrWrap',don);if(don){var extra=val('mzV78_'+n+'_doxyOrda'),total=extra==null?null:1+extra,thr=total==null?0:(total<=5?2:total<=15?4:6),dr=val(p+'doxyNarrRoll'),doo=E(p+'doxyNarrOut');if(doo)doo.innerHTML=total==null?'Determina prima quanti Doxy sono presenti.':dr==null?'<b>Infestazione '+(total<=5?'lieve':total<=15?'media':'grave')+':</b> il Narratore provoca danni con 1–'+thr+' su 1d10.':dr<=thr?'<b>Danni a beni/strutture:</b> il Narratore determina le conseguenze concrete.':'Nessun danno ambientale in questo giro.';if(dr!=null&&total!=null)tag(p+'doxyNarrRoll',dr<=thr?'danni':'nessun danno',dr<=thr?false:true);}
  }
  if(k==='lobalug'){
-   var on=checked(p+'lobDo');show(p+'lobWrap',on);if(!on)return;var trust=checked(p+'lobTrust'),lv=cust(),pre=E(p+'lobPre'),extW=E(p+'lobExtractWrap'),auto=E(p+'lobAuto'),er=val(p+'lobExtract'),thr=1+lv;if(pre)pre.style.display=!trust?'':'none';if(extW)extW.style.display=lv>=5?'none':'';if(auto)auto.style.display=lv>=5?'':'none';var success=lv>=5||(er!=null&&er<=thr),failed=lv<5&&er!=null&&er>thr;show(p+'lobPost',failed);var illegal=success&&!isMagizoologo(),iw=E(p+'lobIllegal');if(iw)iw.style.display=illegal?'':'none';var narr=checked(p+'lobNarrated'),ip=E(p+'lobIllegalPlayer');if(ip)ip.style.display=illegal?'':'none';var won=checked(p+'lobWeaponDo'),ww=E(p+'lobWeaponWrap');if(ww)ww.style.display=won?'':'none';if(won){var s=sap(),own=checked(p+'lobWeaponOwned'),cmdW=E(p+'lobWeaponCommandWrap'),shotsW=E(p+'lobWeaponShotsWrap'),cmd=val(p+'lobWeaponCommand'),gate=E(p+'lobWeaponGate'),ready=false;if(cmdW)cmdW.style.display=(s>=25&&!own)?'':'none';if(s<25){if(gate)gate.innerHTML='<b>Non disponibile:</b> serve Sapienza Magizoologica 25.';}else if(own){if(gate)gate.innerHTML='<b>Lobalug della propria Riserva:</b> nessun 1d50 di comando; determina direttamente gli schizzi.';ready=true;}else if(cmd==null){if(gate)gate.innerHTML='<b>Lobalug non proprio:</b> lancia 1d50 ≤ Empatia + Sapienza = '+(empathy()+s)+'.';}else if(cmd<=empathy()+s){if(gate)gate.innerHTML='<b>Comando riuscito:</b> determina il numero di schizzi.';ready=true;}else if(gate)gate.innerHTML='<b>Comando fallito:</b> nessuno schizzo in questo tentativo.';if(shotsW)shotsW.style.display=ready?'':'none';var sh=val(p+'lobWeaponShots');if(sh!=null)tag(p+'lobWeaponShots',String(sh),true);}
+   /* v137 — Estrazione del Veleno e uso come arma sono azioni indipendenti. */
+   var on=checked(p+'lobDo'),lobWrap=E(p+'lobWrap');
+   if(lobWrap)lobWrap.style.display=on?'':'none';
+   if(on){
+     var trust=checked(p+'lobTrust'),lv=cust(),pre=E(p+'lobPre'),extW=E(p+'lobExtractWrap'),auto=E(p+'lobAuto'),er=val(p+'lobExtract'),thr=1+lv;
+     if(pre)pre.style.display=!trust?'':'none';
+     if(extW)extW.style.display=lv>=5?'none':'';
+     if(auto)auto.style.display=lv>=5?'':'none';
+     var failed=lv<5&&er!=null&&er>thr;
+     show(p+'lobPost',failed);
+   }
+   var won=checked(p+'lobWeaponDo'),ww=E(p+'lobWeaponWrap');
+   if(ww)ww.style.display=won?'':'none';
+   if(won){
+     var s=sap(),own=checked(p+'lobWeaponOwned'),cmdW=E(p+'lobWeaponCommandWrap'),shotsW=E(p+'lobWeaponShotsWrap'),cmd=val(p+'lobWeaponCommand'),gate=E(p+'lobWeaponGate'),ready=false;
+     if(cmdW)cmdW.style.display=(s>=25&&!own)?'':'none';
+     if(s<25){if(gate)gate.innerHTML='<b>Non disponibile:</b> serve Sapienza Magizoologica 25.';}
+     else if(own){if(gate)gate.innerHTML='<b>Lobalug della propria Riserva:</b> nessun 1d50 di comando; determina direttamente gli schizzi.';ready=true;}
+     else if(cmd==null){if(gate)gate.innerHTML='<b>Lobalug non proprio:</b> lancia 1d50 ≤ Empatia + Sapienza = '+(empathy()+s)+'.';}
+     else if(cmd<=empathy()+s){if(gate)gate.innerHTML='<b>Comando riuscito:</b> determina il numero di schizzi.';ready=true;}
+     else if(gate)gate.innerHTML='<b>Comando fallito:</b> nessuno schizzo in questo tentativo.';
+     if(shotsW)shotsW.style.display=ready?'':'none';
+     var sh=val(p+'lobWeaponShots');if(sh!=null)tag(p+'lobWeaponShots',String(sh),true);
+   }
  }
  if(k==='drago'){
    if(race==='Drago Specchio'){var on=checked(p+'mirrorDo');show(p+'mirrorWrap',on);var r=val(p+'mirrorRoll'),o=E(p+'mirrorOut');if(o)o.innerHTML=!on?'':r==null?'Lancio del Narratore in attesa.':'<b>Effetto:</b> '+esc(MIRROR[r]||'—')+'.';if(r!=null)tag(p+'mirrorRoll',MIRROR[r]||'esito',null);}
@@ -12904,7 +12938,7 @@ function updateResearch(n){
  }
 }
 function researchReady135(n){var k=encounterSpecies(n),race=encounterRace(n),p='v135R_'+n+'_';
- if(k==='lobalug'&&checked(p+'lobDo')){var trust=checked(p+'lobTrust'),lv=cust();if(!trust&&val(p+'lobPreRoll')==null)return false;var er=lv>=5?1:val(p+'lobExtract');if(lv<5&&er==null)return false;var success=lv>=5||er<=1+lv,failed=lv<5&&er>1+lv;if(failed&&val(p+'lobPostRoll')==null)return false;if(success&&!isMagizoologo()&&!checked(p+'lobNarrated')&&val(p+'lobIllegalRoll')==null)return false;}if(k==='lobalug'&&checked(p+'lobWeaponDo')&&sap()>=25){var own=checked(p+'lobWeaponOwned'),cmd=val(p+'lobWeaponCommand');if(!own&&cmd==null)return false;var ready=own||cmd<=empathy()+sap();if(ready&&val(p+'lobWeaponShots')==null)return false;}
+ if(k==='lobalug'&&checked(p+'lobDo')){var trust=checked(p+'lobTrust'),lv=cust();if(!trust&&val(p+'lobPreRoll')==null)return false;var er=lv>=5?1:val(p+'lobExtract');if(lv<5&&er==null)return false;var failed=lv<5&&er>1+lv;if(failed&&val(p+'lobPostRoll')==null)return false;}if(k==='lobalug'&&checked(p+'lobWeaponDo')&&sap()>=25){var own=checked(p+'lobWeaponOwned'),cmd=val(p+'lobWeaponCommand');if(!own&&cmd==null)return false;var ready=own||cmd<=empathy()+sap();if(ready&&val(p+'lobWeaponShots')==null)return false;}
  if(k==='drago'){
    if(race==='Drago Specchio'&&checked(p+'mirrorDo')&&val(p+'mirrorRoll')==null)return false;
    if((race==='Leggiadria'||race==='Rossocorno')&&checked(p+'pushDo')&&(val(p+'dex')==null||val(p+'pushRoll')==null))return false;
@@ -12929,5 +12963,167 @@ document.addEventListener('input',function(e){var id=e.target&&e.target.id||'';i
 function init(){setTimeout(function(){buildGuide(false);for(var n=1;n<=3;n++)buildResearch(n,false);},50);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
+
+<script id="magizoologia-v138-lobalug-controllo-unico-role">
+(function(){
+/* v138 — il controllo dell'estrazione illegale del Lobalug è per-role, non per-Incontro. */
+function E(id){return document.getElementById(id);}
+function norm(v){return String(v||'').trim().toLowerCase();}
+function nval(id){var e=E(id),v=e&&e.value;if(v==null||String(v).trim()==='')return null;var n=Number(v);return Number.isFinite(n)?n:null;}
+function checked(id){var e=E(id);return !!(e&&e.checked);}
+function cust(){return Math.max(0,Math.min(5,Number((E('livCustode')||{}).value||0)));}
+function magizoologo(){return checked('pgMagizoologoMestiere');}
+function isLobalug(n){return norm((E('specieCreatura'+n)||{}).value)==='lobalug';}
+function illegalExtractionSucceeded(n){
+ if(!isLobalug(n)||!checked('v135R_'+n+'_lobDo')||magizoologo())return false;
+ var lv=cust();if(lv>=5)return true;
+ var r=nval('v135R_'+n+'_lobExtract');return r!==null&&r>=1&&r<=1+lv;
+}
+function required(){for(var i=1;i<=3;i++)if(illegalExtractionSucceeded(i))return true;return false;}
+function refresh(){
+ var box=E('rmLobalugIllegalRole');if(!box)return;
+ var need=required();box.style.display=need?'':'none';
+ var narr=checked('v138LobIllegalNarrated'),r=nval('v138LobIllegalRoll'),tag=E('v138LobIllegalTag'),out=E('v138LobIllegalOut');
+ if(!need){if(tag){tag.textContent='non necessario';tag.className='out-tag out-neutral';}if(out)out.innerHTML='';return;}
+ if(tag){
+   if(r===null){tag.textContent=narr?'Narratore':'in attesa';tag.className='out-tag out-neutral';}
+   else if(r>=1&&r<=3){tag.textContent='estrazione notata';tag.className='out-tag out-fail';}
+   else if(r>=4&&r<=5){tag.textContent='non scoperta';tag.className='out-tag out-ok';}
+   else{tag.textContent='valore non valido';tag.className='out-tag out-fail';}
+ }
+ if(out){
+   if(narr&&r===null)out.innerHTML='<b>Role masterata:</b> il Narratore effettua questo unico 1d5 al termine della role; il Player non deve conoscerne né inserirne necessariamente il risultato.';
+   else if(r===null)out.innerHTML='<b>Da risolvere al termine della role:</b> effettua un solo 1d5 complessivo, anche se il PG ha tentato o riuscito nell’estrazione più volte durante i tre Incontri.';
+   else if(r>=1&&r<=3)out.innerHTML='<b>1–3:</b> l’estrazione illegale viene notata e può essere denunciata.';
+   else if(r>=4&&r<=5)out.innerHTML='<b>4–5:</b> l’estrazione illegale non viene scoperta.';
+   else out.innerHTML='Inserisci un risultato compreso tra 1 e 5.';
+ }
+}
+var prevOutcome=window.rmRenderOutcome;
+if(typeof prevOutcome==='function')window.rmRenderOutcome=function(){var r=prevOutcome.apply(this,arguments);refresh();return r;};
+var prevAfter=window.__mzV78ResearchAfterCalc;
+window.__mzV78ResearchAfterCalc=function(){if(typeof prevAfter==='function')prevAfter.apply(this,arguments);refresh();};
+document.addEventListener('change',function(e){var id=e.target&&e.target.id||'';if(id==='pgMagizoologoMestiere'||id==='livCustode'||id==='v138LobIllegalNarrated'||/^v135R_[123]_lob/.test(id))setTimeout(refresh,0);},true);
+document.addEventListener('input',function(e){var id=e.target&&e.target.id||'';if(id==='v138LobIllegalRoll'||id==='livCustode'||/^v135R_[123]_lob/.test(id))setTimeout(refresh,0);},true);
+function init(){setTimeout(refresh,80);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+<style id="v136-contrast-final-audit">
+/* v136 — audit finale esclusivamente grafico. Nessuna logica di gioco modificata. */
+/* v137 — fix funzionale: nel Lobalug di Ricerca, estrazione del Veleno e uso come arma restano azioni indipendenti. */
+/* v138 — controllo estrazione illegale Lobalug unico per role e risolto all’Esito, non per singolo Incontro. */
+
+/* Schede chiare: testo principale sempre scuro. */
+.scheda,.blocco-incontro{color:#2f180d!important;}
+.scheda .campo label,.blocco-incontro .campo label{color:#54220d!important;}
+.scheda .check-riga label,.blocco-incontro .check-riga label,
+.scheda .result-line>span:not(.out-tag):not(.rm-travel-status),
+.blocco-incontro .result-line>span:not(.out-tag):not(.rm-travel-status),
+.scheda .numeric-note,.blocco-incontro .numeric-note,
+.scheda .nota-regole,.blocco-incontro .nota-regole,
+.scheda .profilo-session-hint,.blocco-incontro .profilo-session-hint{color:#3b2114!important;opacity:1!important;}
+.scheda h2,.blocco-incontro h2{color:#351208!important;}
+.scheda h3,.blocco-incontro h3{color:#431807!important;}
+
+/* Input nelle schede chiare: fondo scuro, testo/placeholder chiaro. */
+.scheda input[type=text],.scheda input[type=number],.scheda select,.scheda textarea,
+.blocco-incontro input[type=text],.blocco-incontro input[type=number],.blocco-incontro select,.blocco-incontro textarea{
+  background:#522b1a!important;color:#fff8f2!important;border-color:#7e4427!important;
+}
+.scheda input::placeholder,.blocco-incontro input::placeholder{color:#f1dfd2!important;opacity:1!important;}
+.scheda input:disabled,.scheda select:disabled,.scheda textarea:disabled,
+.blocco-incontro input:disabled,.blocco-incontro select:disabled,.blocco-incontro textarea:disabled{opacity:.78!important;}
+
+/* Badge Incontro: il caso dello screenshot resta esplicitamente protetto. */
+.badge-incontro{opacity:1!important;text-shadow:none!important;}
+.badge-bloccato{background:#f5d6c5!important;color:#541b0d!important;border-color:#87351f!important;font-weight:800!important;}
+.badge-sbloccato{background:#dcebcf!important;color:#244219!important;border-color:#5d7d49!important;font-weight:800!important;}
+.blocco-avviso{background:#f9e0d1!important;color:#4b1b0d!important;border-color:#87351f!important;font-weight:650!important;}
+
+/* Esiti: contrasto indipendente dal contenitore che li ospita. */
+.out-tag{opacity:1!important;text-shadow:none!important;font-weight:800!important;}
+.out-neutral{background:#3b2115!important;color:#fff0e3!important;border-color:#8a5435!important;}
+.out-ok,.out-success{background:#203918!important;color:#e8f7df!important;border-color:#668a55!important;}
+.out-fail{background:#512017!important;color:#ffe2d9!important;border-color:#a75a49!important;}
+
+/* Contenitori tecnici scuri: mai testo marrone/scuro ereditato dalle card chiare. */
+.mz-bonus-manager,.mz-bonus-row,.mz-v78-box:not(.mz-disease-box),.mz-v91-box,
+.rm-special,.rm-specie-helper,.summary-box,.esito,.mz-resolver-roll,.mz-resolver-outcome,
+.rm-travel-assistant,.rm-travel-panel,.rm-travel-summary,.rm-travel-warning,.rm-travel-danger,.rm-travel-risk,
+.mz-table-block,.mz-summary-section,.rm-rules-details{
+  color:#f8e9dd!important;
+}
+.mz-bonus-manager .check-riga label,.mz-bonus-row .check-riga label,
+.mz-v78-box:not(.mz-disease-box) .check-riga label,.mz-v91-box .check-riga label,
+.rm-special .check-riga label,.rm-specie-helper .check-riga label,
+.rm-travel-assistant .check-riga label,.rm-travel-panel .check-riga label,
+.rm-travel-risk .check-riga label,
+.mz-bonus-manager .result-line>span:not(.out-tag),.mz-bonus-row .result-line>span:not(.out-tag),
+.mz-v78-box:not(.mz-disease-box) .result-line>span:not(.out-tag),.mz-v91-box .result-line>span:not(.out-tag),
+.rm-special .result-line>span:not(.out-tag),.rm-specie-helper .result-line>span:not(.out-tag),
+.rm-travel-assistant .result-line>span:not(.out-tag),.rm-travel-panel .result-line>span:not(.out-tag),
+.rm-travel-risk .result-line>span:not(.out-tag),
+.mz-v78-box:not(.mz-disease-box) .mz-v78-note,.mz-v91-box .mz-v78-note,
+.mz-v91-box .numeric-note,.rm-special .numeric-note,.rm-specie-helper .numeric-note,
+.rm-travel-assistant .numeric-note,.rm-travel-panel .numeric-note,.rm-travel-risk .numeric-note{
+  color:#f8e9dd!important;opacity:1!important;
+}
+.mz-bonus-manager b,.mz-bonus-manager strong,.mz-bonus-row b,.mz-bonus-row strong,
+.mz-v78-box:not(.mz-disease-box) b,.mz-v78-box:not(.mz-disease-box) strong,
+.mz-v91-box b,.mz-v91-box strong,.rm-special b,.rm-special strong,.rm-specie-helper b,.rm-specie-helper strong,
+.rm-travel-assistant b,.rm-travel-assistant strong,.rm-travel-panel b,.rm-travel-panel strong,.rm-travel-risk b,.rm-travel-risk strong{
+  color:#ffd7ad!important;
+}
+
+/* Avvisi tecnici generati dinamicamente. */
+.mz-v91-narrator{background:#351812!important;color:#ffe2da!important;border-left-color:#c56855!important;}
+.mz-v91-source-conflict{background:#3a2a10!important;color:#ffe7ba!important;border-left-color:#d5a24d!important;}
+.mz-v91-ok{background:#172b14!important;color:#e2f5d8!important;border-left-color:#6e9a5e!important;}
+.mz-v91-narrator b,.mz-v91-source-conflict b,.mz-v91-ok b{color:inherit!important;}
+
+/* Sessioni e banner su fondi scuri. */
+.session-card,.session-toolbar-card,.session-modal-box{color:#f8e9dd!important;}
+.session-lead,.session-meta,.session-owner,.session-status{color:#e7cdbb!important;}
+.session-status.ok{color:#d7f0c6!important;}
+.session-status.bad{color:#ffd0c3!important;}
+.session-warning{background:#3b2116!important;color:#ffe7d8!important;border-color:#a45d35!important;}
+.readonly-banner{background:#421b14!important;color:#ffe0d4!important;border-color:#b25b45!important;}
+/* Nel profilo, che è chiaro, gli status restano scuri. */
+#modoPersonaggio .session-status{color:#4b2a1b!important;}
+#modoPersonaggio .session-status.ok{color:#274c1f!important;}
+#modoPersonaggio .session-status.bad{color:#76241b!important;}
+
+/* Stati Trasporti. */
+.rm-travel-status.wait{color:#ffe2b5!important;background:#2b1a0e!important;border-color:#9a7042!important;}
+.rm-travel-status.ok{color:#d9f0c9!important;background:#172512!important;border-color:#62864d!important;}
+.rm-travel-status.bad{color:#ffd0c1!important;background:#421b13!important;border-color:#a6533d!important;}
+
+/* Malattie e controlli condizionali sono box chiari: testo sempre scuro. */
+.mz-disease-box,.mz-disease-box label,.mz-disease-box .mz-v78-note,.mz-disease-box .numeric-note,
+.mz-disease-box .result-line>span:not(.out-tag):not(.rm-travel-status),.mz-disease-box b,.mz-disease-box strong{
+  color:#42162a!important;opacity:1!important;
+}
+.mz-condition-check,.mz-condition-check label,.mz-condition-check label b{color:#55172d!important;opacity:1!important;}
+
+/* Box blu di trasferimento: corpo e controlli esplicitamente coordinati. */
+#modoMagizoologia .mz-transfer-meta{color:#eef8ff!important;}
+#modoMagizoologia .mz-transfer-meta>summary{color:#f3fbff!important;}
+#modoMagizoologia .mz-transfer-meta .nota-regole,#modoMagizoologia .mz-transfer-meta .nota-regole *{color:#18384d!important;}
+#modoMagizoologia .mz-transfer-meta .campo label{color:#e7f6ff!important;}
+#modoMagizoologia .mz-transfer-meta input,#modoMagizoologia .mz-transfer-meta select{background:#f7fcff!important;color:#17364c!important;}
+
+/* Pulsanti: leggibili anche disabled/locked. */
+button:disabled,.flow-page-btn.locked{opacity:.72!important;}
+.flow-page-btn,.flow-action-btn,.copy-btn,.session-btn,.bottone-azione{color:#fff8f2!important;}
+
+/* Link: separazione netta fra superfici scure e schede chiare. */
+.contenitore a,.session-card a,.session-toolbar-card a,.rm-special a,.rm-specie-helper a,.mz-v78-box:not(.mz-disease-box) a,.mz-v91-box a{color:#fff0df!important;}
+.scheda a,.blocco-incontro a,.mz-disease-box a,.mz-condition-check a{color:#3b190a!important;}
+
+/* Le tabelle della Guida mantengono intestazioni scure con testo molto chiaro. */
+table.fasce th,#modoMagizoologia .pannello table.fasce th{background:#6a2b13!important;color:#fffaf6!important;}
+</style>
+
 </body>
 </html>
