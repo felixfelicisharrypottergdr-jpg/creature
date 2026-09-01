@@ -1,12 +1,16 @@
 
 
 
+
 <!DOCTYPE html>
+<!-- v140: audit finale Ingredienti/Remuvo — Banshee/Ashwinder speciali, Acromantula/Manticora/Serpente Marino/Tebo, stagionalità Duckbill, regressioni v139 -->
+<!-- v139: allineamento Erbologia v110 + Regolamento Ingredienti aggiornato: Repello Babbanum +1; produzione Ingredienti completa e non inventata; legalità dal Glossario; Lobalug/Nogtail speciali; Remuvo sceglie un solo tipo; copy fallback robusto; UX blocco incontri -->
 <!-- v130: sessioni Ricerca Creature condivise tra dispositivi, chiave stabile per PG, recupero sessioni legacy e rimozione vincolo ownerUid -->
 
-<!-- v118 audit fonti: base v117; licenza 150 G confermata dallo screenshot aggiornato; Repello Babbanum lasciato non automatizzato per fonte +1/+2 incoerente; regressione in corso -->
+<!-- v118 audit fonti: base v117; licenza 150 G confermata dallo screenshot aggiornato; nota storica Repello Babbanum superata dalla v139 (+1 faccia secondo il regolamento aggiornato) -->
 <!-- Magizoologia tool v132 — profili PG pubblici cross-device; feedback test: leggibilità, controlli specifici, bonus per incontro -->
 <!-- v138: Lobalug — controllo estrazione illegale unico per role, spostato all’Esito della Ricerca e non più ripetuto/bloccante per Incontro -->
+<!-- v139: allineamento finale con Erbologia v110 e Glossario Ingredienti: legalità Ingredienti autoritativa, Repello Babbanum +1, Produzione/Remuvo per specie, fallback Copia, UX blocchi Incontro e invalidazione contesti. -->
 <html lang="it">
 <head>
 <meta charset="utf-8"/>
@@ -3295,13 +3299,13 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="check-riga"><input data-key="protFiantoDuri" id="protFiantoDuri" type="checkbox"/><label for="protFiantoDuri">Fianto Duri: +4 facce · Fatica -1</label></div>
 <div class="check-riga"><input data-key="protIterumPostMe" id="protIterumPostMe" type="checkbox"/><label for="protIterumPostMe">Iterum Post Me: +5 facce · Fatica -1,5</label></div>
 <div class="check-riga"><input data-key="protProtegoMaxima" id="protProtegoMaxima" type="checkbox"/><label for="protProtegoMaxima">Protego Maxima: +10 facce · Fatica -3</label></div>
-<div class="check-riga"><input data-key="protRepelloBabbanum" id="protRepelloBabbanum" type="checkbox"/><label for="protRepelloBabbanum">Repello Babbanum: bonus facce NON RISOLTO (+1 nell’elenco / +2 nell’esempio) · Fatica -1,5</label></div>
+<div class="check-riga"><input data-key="protRepelloBabbanum" id="protRepelloBabbanum" type="checkbox"/><label for="protRepelloBabbanum">Repello Babbanum: +1 faccia · Fatica -1,5</label></div>
 <div class="check-riga"><input data-key="protRepelloInimicum" id="protRepelloInimicum" type="checkbox"/><label for="protRepelloInimicum">Repello Inimicum: +3 facce · Fatica -2</label></div>
 <div class="check-riga"><input data-key="protSalvioHexia" id="protSalvioHexia" type="checkbox"/><label for="protSalvioHexia">Salvio Hexia: +3 facce · Fatica -2</label></div>
 <div class="formula-tag" id="formulaProtezioneIllegale"></div>
 <div class="nota-regole mz-illegal-fatigue-note"><b>Fatica degli Incantesimi:</b> la Fatica indicata accanto alle protezioni è quella sostenuta quando l'Incantesimo è stato evocato. Il riepilogo finale la mostra separatamente come <b>Fatica già spesa per predisporre la Riserva</b>, senza scalarla una seconda volta dalla Fatica delle fasi.</div>
 <div class="nota-regole">Questo è il controllo specifico per la <b>Produzione/Allevamento illegale</b>: non viene aggiunto anche il normale 1d100 delle Azioni Illegali Generiche. L'eventuale tentativo di scoperta da parte di un altro PG tramite <b>Orecchie Indiscrete</b> resta esterno al tool, perché dipende dai Parametri e dalle Conoscenze di quel PG.</div>
-<div class="nota-regole"><b>Fonte incoerente — Repello Babbanum:</b> l'elenco assegna <b>+1 faccia</b>, mentre l'esempio successivo ne conteggia <b>+2</b>. Il tool <b>non somma alcuna faccia</b> per Repello Babbanum finché il regolamento non viene uniformato; la protezione può comunque essere registrata per ricordarne la presenza e la Fatica già sostenuta.</div>
+<div class="nota-regole"><b>Repello Babbanum:</b> il regolamento aggiornato assegna <b>+1 faccia</b> al dado di scoperta. Come le altre protezioni, deve essere stato evocato ONGame in un post precedente.</div>
 </div>
 </div>
 <div class="barra-tab">
@@ -4024,6 +4028,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </div>
 </div>
 <div class="flow-actions"><button class="flow-action-btn" data-rm-goto="config" data-session-control="1" type="button">← Configurazione</button><div><button class="flow-action-btn" data-rm-goto="outcome" data-session-control="1" type="button">Concludi qui</button> <button class="flow-action-btn" data-rm-goto="enc2" data-session-control="1" type="button">Secondo Incontro →</button></div></div>
+<div class="rm-next-lock-reason" id="rmNextLockReason2" style="display:none"></div>
 </section>
 <section class="research-flow-page" data-rm-page-panel="enc2">
 <div class="blocco-incontro" id="blocco2">
@@ -4068,6 +4073,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </div>
 </div>
 <div class="flow-actions"><button class="flow-action-btn" data-rm-goto="enc1" data-session-control="1" type="button">← Primo Incontro</button><div><button class="flow-action-btn" data-rm-goto="outcome" data-session-control="1" type="button">Concludi qui</button> <button class="flow-action-btn" data-rm-goto="enc3" data-session-control="1" type="button">Terzo Incontro →</button></div></div>
+<div class="rm-next-lock-reason" id="rmNextLockReason3" style="display:none"></div>
 </section>
 <section class="research-flow-page" data-rm-page-panel="enc3">
 <div class="blocco-incontro" id="blocco3">
@@ -6756,7 +6762,7 @@ var MZ_ILLEGAL_PROTECTIONS={
   protFiantoDuri:{name:'Fianto Duri',faces:4,fatica:1},
   protIterumPostMe:{name:'Iterum Post Me',faces:5,fatica:1.5},
   protProtegoMaxima:{name:'Protego Maxima',faces:10,fatica:3},
-  protRepelloBabbanum:{name:'Repello Babbanum',faces:null,fatica:1.5,unresolved:true},
+  protRepelloBabbanum:{name:'Repello Babbanum',faces:1,fatica:1.5,unresolved:false},
   protRepelloInimicum:{name:'Repello Inimicum',faces:3,fatica:2},
   protSalvioHexia:{name:'Salvio Hexia',faces:3,fatica:2}
 };
@@ -6828,7 +6834,6 @@ function mzRecomputeIllegalPhase(phase){
   var nome=phase==='cura'?'Cura':'Allevamento';
   note.innerHTML=(mzMagizoologoMestiere()?'<b>Dado base:</b> 1d50 — Magizoologo di mestiere.':'<b>Dado base:</b> 1d30 — PG non Magizoologo di mestiere.')+
     '<br>'+(extra?('<b>Protezioni con valore certo:</b> +'+extra+' facce.'):('<b>Protezioni con valore certo:</b> nessuna.'))+
-    (document.getElementById('protRepelloBabbanum')&&document.getElementById('protRepelloBabbanum').checked?'<br><b>Repello Babbanum:</b> presente ma non conteggiato nel dado: il regolamento indica sia +1 sia +2 facce.':'')+
     '<br><b>Dado finale:</b> 1d'+faces+'.'+
     '<br><b>Esito:</b> soltanto con <b>1</b> il PG viene scoperto da un PNG; in quel caso <a class="rm-narratore-link" href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">contatta il Narratore</a>.';
   code.textContent=mzForumDiceBlock(
@@ -7385,11 +7390,15 @@ function rmPageUnlocked(page){
   return false;
 }
 function rmGating(){
-  var g2=rmPageUnlocked('enc2'),g3=rmPageUnlocked('enc3'),b2=rmEl('badge2'),b3=rmEl('badge3'),a2=rmEl('avviso2'),a3=rmEl('avviso3');
+  var g2=rmPageUnlocked('enc2'),g3=rmPageUnlocked('enc3'),b2=rmEl('badge2'),b3=rmEl('badge3'),a2=rmEl('avviso2'),a3=rmEl('avviso3'),n2=rmEl('rmNextLockReason2'),n3=rmEl('rmNextLockReason3');
+  var reason2=rmTipo()!=='attiva'?'Il Secondo Incontro è disponibile soltanto con Ricerca Attiva.':(!rmEncounterComplete(1)?'Per sbloccare il Secondo Incontro completa tutti i dadi necessari del Primo Incontro.':(rmBlockedAfter(1)?'Hai catturato la Creatura del Primo Incontro e vuoi portarla con te: per proseguire serve la Valigia Magica.':'Secondo Incontro non ancora disponibile.'));
+  var reason3=rmTipo()!=='attiva'?'Il Terzo Incontro è disponibile soltanto con Ricerca Attiva.':(!rmEncounterComplete(2)?'Per sbloccare il Terzo Incontro completa tutti i dadi necessari del Secondo Incontro.':(rmBlockedAfter(2)?'Hai catturato una o più Creature del Secondo Incontro e vuoi portarle con te: per proseguire serve la Valigia Magica.':'Terzo Incontro non ancora disponibile.'));
   if(b2){b2.textContent=g2?'sbloccato':'bloccato';b2.className='badge-incontro '+(g2?'badge-sbloccato':'badge-bloccato');}
-  if(a2){a2.style.display=g2?'none':'block';a2.textContent=rmTipo()!=='attiva'?'Disponibile solo con Ricerca Attiva.':(!rmEncounterComplete(1)?'Completa prima il Primo Incontro.':(rmBlockedAfter(1)?'Hai catturato la Creatura del Primo Incontro: ti serve la Valigia Magica per proseguire.':'Secondo Incontro non ancora disponibile.'));}
+  if(a2){a2.style.display=g2?'none':'block';a2.textContent=reason2;}
+  if(n2){n2.style.display=g2?'none':'block';n2.textContent=reason2;}
   if(b3){b3.textContent=g3?'sbloccato':'bloccato';b3.className='badge-incontro '+(g3?'badge-sbloccato':'badge-bloccato');}
-  if(a3){a3.style.display=g3?'none':'block';a3.textContent=rmTipo()!=='attiva'?'Disponibile solo con Ricerca Attiva.':(!rmEncounterComplete(2)?'Completa prima il Secondo Incontro.':(rmBlockedAfter(2)?'Hai catturato Creature del Secondo Incontro: ti serve la Valigia Magica per proseguire.':'Terzo Incontro non ancora disponibile.'));}
+  if(a3){a3.style.display=g3?'none':'block';a3.textContent=reason3;}
+  if(n3){n3.style.display=g3?'none':'block';n3.textContent=reason3;}
   return {g2:g2,g3:g3};
 }
 
@@ -7564,7 +7573,7 @@ function rmSessionTime(data){var t=data&&data.updatedAt;if(t&&typeof t.toMillis=
 function rmIsResearchData(data){return !!(data&&((!data.recordType)||data.recordType==='research'));}
 function rmMatchesProfile(data,name){return rmIsResearchData(data)&&rmNormName(data.normalizedPgName||data.pgName||data.initialPgName)===rmNormName(name);}
 function rmNewSessionState(name){var ep=rmProfiloEmpatia();if(ep===null)throw new Error('Inserisci un valore valido di Empatia.');return {nomePgRicerca:name,empatiaRicerca:String(ep),sapienza:String(rmProfiloSapienza()),tipoRicerca:'attiva',valigiaMagica:'no',zonaRicerca:'',bonusRicercaJson:'[]',summaryVisited:false,outcomeVisited:false,flowPage:'config'};}
-function rmNewSessionData(name){return {recordType:'research',publicSession:true,normalizedPgName:rmNormName(name),ownerUid:RM_FB.user.uid,initialPgName:name,pgName:name,tipoRicerca:'attiva',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-ricerca-v132',state:rmNewSessionState(name)};}
+function rmNewSessionData(name){return {recordType:'research',publicSession:true,normalizedPgName:rmNormName(name),ownerUid:RM_FB.user.uid,initialPgName:name,pgName:name,tipoRicerca:'attiva',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-ricerca-v140',state:rmNewSessionState(name)};}
 function rmRememberProfileSession(id,data,name){RM_PROFILE_SESSION_ID=id||'';RM_PROFILE_SESSION_DATA=data||null;RM_PROFILE_SESSION_NAME=name||((data&&(data.pgName||data.initialPgName))||'');}
 function rmCollectSessionsForProfile(name){
   if(!RM_FB.db||!RM_FB.user)return Promise.resolve([]);
@@ -7590,7 +7599,7 @@ function rmFindSessionForProfile(name){
       if(!rows.length)return null;
       var best=rows[0],legacy=best.data||{},migrated={};
       Object.keys(legacy).forEach(function(k){migrated[k]=legacy[k];});
-      migrated.recordType='research';migrated.publicSession=true;migrated.normalizedPgName=wanted;migrated.ownerUid=RM_FB.user.uid;migrated.migratedFrom=best.id;migrated.migratedOwnerUid=legacy.ownerUid||'';migrated.updatedAt=firebase.firestore.FieldValue.serverTimestamp();migrated.toolVersion='magizoologia-ricerca-v132';
+      migrated.recordType='research';migrated.publicSession=true;migrated.normalizedPgName=wanted;migrated.ownerUid=RM_FB.user.uid;migrated.migratedFrom=best.id;migrated.migratedOwnerUid=legacy.ownerUid||'';migrated.updatedAt=firebase.firestore.FieldValue.serverTimestamp();migrated.toolVersion='magizoologia-ricerca-v140';
       return stableRef.set(migrated,{merge:false}).then(function(){return stableRef.get();}).then(function(newDoc){
         if(!newDoc.exists)throw new Error('La Ricerca recuperata non è stata riletta correttamente.');
         return rmCleanupLegacySessions(name,stableId,rows).then(function(){return {id:newDoc.id,data:newDoc.data(),migrated:true};});
@@ -7645,7 +7654,7 @@ function rmSetReadonly(ro){
 }
 function rmPayload(){
   var st=rmCollectState();
-  return {recordType:'research',publicSession:true,normalizedPgName:rmNormName(rmCurrentName()),ownerUid:(RM_CURRENT_DATA&&RM_CURRENT_DATA.ownerUid)||RM_FB.user.uid,initialPgName:(RM_CURRENT_DATA&&RM_CURRENT_DATA.initialPgName)||rmCurrentName(),pgName:rmCurrentName(),tipoRicerca:rmTipo(),createdAt:(RM_CURRENT_DATA&&RM_CURRENT_DATA.createdAt)||null,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-ricerca-v132',state:st};
+  return {recordType:'research',publicSession:true,normalizedPgName:rmNormName(rmCurrentName()),ownerUid:(RM_CURRENT_DATA&&RM_CURRENT_DATA.ownerUid)||RM_FB.user.uid,initialPgName:(RM_CURRENT_DATA&&RM_CURRENT_DATA.initialPgName)||rmCurrentName(),pgName:rmCurrentName(),tipoRicerca:rmTipo(),createdAt:(RM_CURRENT_DATA&&RM_CURRENT_DATA.createdAt)||null,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-ricerca-v140',state:st};
 }
 function rmScheduleSave(){
   if(RM_RESTORING||RM_DELETING||!RM_CURRENT_ID||RM_READONLY||!rmSessionCanEdit(RM_CURRENT_DATA))return;
@@ -8296,11 +8305,11 @@ function mzGuideApplyState(st){if(!st)return;if(!st.specificVoteV58&&st.fields){
 function mzProfileDefaultState(name){
   return {specificVoteV58:1,fields:{pgNomeSessione:name||'',pgTipo:'studente',pgAdultoCDCM:'si',empatia:'10',sapienzaProfilo:'0',livAmico:'0',livCustode:'0',livAddestratore:'0',livAllevatore:'0',pgMagizoologoMestiere:false,pgLicenzaCreatureSpeciali:false},activePanel:'Riconoscimento',bonusRows:[],globals:{shared:{},sharedUid:0,fiduciaHistory:[],scopertaHistory:[],scopertaFailures:0,curaHistory:[],curaFailures:0,curaConsecutiveFailures:0,domHistory:[],scopertaFallita:false,curaFallita:false,curaMalus:0,lastCuraBonus:0,imposiumSuccess:false,imposiumDom:0,imposiumPost:0,illegalSignatures:{cura:null,allevamento:null},curaEbbe:false}};
 }
-function mzProfileSavePayload(name){return {recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v132',state:mzGuideCollectState()};}
+function mzProfileSavePayload(name){return {recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v140',state:mzGuideCollectState()};}
 function mzProfileLegacyGuideRowsForName(name){if(!RM_FB.db||!RM_FB.user)return Promise.resolve([]);var wanted=rmNormName(name);return RM_FB.db.collection(RM_COLLECTION).get().then(function(snap){var rows=[];snap.forEach(function(doc){var d=doc.data()||{};var st=d.state||{};var fields=st.fields||{};var n=fields.pgNomeSessione||d.pgName||d.initialPgName||'';if(d.recordType==='guide'&&rmNormName(n)===wanted)rows.push({id:doc.id,data:d});});rows.sort(function(a,b){return rmSessionTime(b.data)-rmSessionTime(a.data);});return rows;});}
 function mzProfileEnsurePickerSelection(name){var p=mzProfilePicker();if(!p)return;var wanted=rmNormName(name);var found='';for(var i=0;i<p.options.length;i++){if(rmNormName(p.options[i].value)===wanted){found=p.options[i].value;break;}}p.value=found||'';}
 function mzProfileRefreshList(selectedName){var picker=mzProfilePicker();if(!picker)return Promise.resolve([]);if(!RM_FB.db||!RM_FB.user){picker.innerHTML='<option value="">— Firebase non pronto —</option>';mzProfilePickerStatus('Collegamento a Firebase in corso…','');return Promise.resolve([]);}mzProfilePickerStatus('Leggo l’elenco dei profili salvati…','');return RM_FB.db.collection(RM_COLLECTION).get().then(function(snap){var map={};snap.forEach(function(doc){var d=doc.data()||{};if(d.recordType!=='profile')return;var n=d.pgName||((d.state&&d.state.fields&&d.state.fields.pgNomeSessione)||'');var key=rmNormName(n);if(!key)return;var old=map[key];if(!old||rmSessionTime(d)>rmSessionTime(old.data))map[key]={id:doc.id,name:n,data:d};});var arr=Object.keys(map).map(function(k){return map[k];}).sort(function(a,b){return a.name.localeCompare(b.name,'it',{sensitivity:'base'});});var html=['<option value="">— Seleziona un PG salvato —</option>'];arr.forEach(function(r){html.push('<option value="'+String(r.name).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')+'">'+String(r.name).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</option>');});picker.innerHTML=html.join('');if(selectedName)mzProfileEnsurePickerSelection(selectedName);else if(MZ_GUIDE_BOUND_NAME)mzProfileEnsurePickerSelection(MZ_GUIDE_BOUND_NAME);mzProfilePickerStatus(arr.length?'Profili disponibili: '+arr.length+' ✓':'Nessun profilo Magizoologia salvato per ora.','ok');return arr;}).catch(function(err){console.error(err);picker.innerHTML='<option value="">— Impossibile leggere i profili —</option>';mzProfilePickerStatus('Impossibile leggere l’elenco dei profili: '+(err.message||err),'bad');return [];});}
-function mzProfileOpenByName(name,opts){opts=opts||{};name=String(name||'').trim();if(!name){mzProfilePickerStatus('Seleziona o inserisci prima un nome PG.','');return Promise.resolve(null);}if(!RM_FB.db||!RM_FB.user){mzProfilePickerStatus('Collegamento a Firebase in corso…','');return Promise.resolve(null);}var currentName=String(MZ_GUIDE_BOUND_NAME||'').trim();var before=(currentName&&rmNormName(currentName)!==rmNormName(name)&&MZ_GUIDE_READY)?mzGuideSaveNow():Promise.resolve(true);return before.catch(function(){return true;}).then(function(){MZ_GUIDE_LOADING=true;MZ_GUIDE_READY=false;mzGuideStatus('Profilo/Guida: caricamento del PG '+name+'…','saving');mzProfilePickerStatus('Carico il profilo di '+name+'…','');var ref=mzGuideDoc(name);if(!ref)throw new Error('Profilo non disponibile.');return ref.get().then(function(doc){if(doc.exists&&doc.data()&&doc.data().recordType==='profile'&&doc.data().state)return {id:doc.id,data:doc.data(),state:doc.data().state,source:'profile'};return mzProfileLegacyGuideRowsForName(name).then(function(rows){if(rows.length){var best=rows[0],state=best.data&&best.data.state?best.data.state:mzProfileDefaultState(name),payload={recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v132',migratedFrom:best.id,state:state};return ref.set(payload,{merge:false}).then(function(){return ref.get();}).then(function(nd){return {id:nd.id,data:nd.data(),state:nd.data().state,source:'migrated'};});}return {id:ref.id,data:null,state:mzProfileDefaultState(name),source:'blank'};});});}).then(function(found){mzGuideApplyState(found.state||mzProfileDefaultState(name));MZ_GUIDE_CURRENT_DOC_ID=found.id||mzProfileDocId(name);MZ_GUIDE_BOUND_NAME=name;MZ_GUIDE_READY=true;MZ_GUIDE_LOADING=false;MZ_GUIDE_DIRTY_BEFORE_READY=false;var btn=document.getElementById('mzResetAllBtn');if(btn)btn.disabled=false;if(found.source==='profile'){mzGuideStatus('Profilo/Guida di '+name+' ripristinati da Firebase ✓','ok');mzProfilePickerStatus('Profilo di '+name+' aperto ✓','ok');}else if(found.source==='migrated'){mzGuideStatus('Recuperato e convertito il vecchio profilo di '+name+' ✓','ok');mzProfilePickerStatus('Vecchio profilo di '+name+' recuperato e convertito ✓','ok');}else{mzGuideStatus('Nuovo profilo pronto per '+name+' · autosalvataggio attivo ✓','ok');mzProfilePickerStatus('Nessun profilo esistente: puoi compilare un nuovo profilo per '+name+'.','ok');}return mzProfileRefreshList(name).then(function(){return found;});}).catch(function(err){console.error(err);MZ_GUIDE_LOADING=false;MZ_GUIDE_READY=true;mzGuideStatus('Profilo/Guida: errore Firebase — '+(err.message||err),'bad');mzProfilePickerStatus('Impossibile aprire il profilo: '+(err.message||err),'bad');return null;});}
+function mzProfileOpenByName(name,opts){opts=opts||{};name=String(name||'').trim();if(!name){mzProfilePickerStatus('Seleziona o inserisci prima un nome PG.','');return Promise.resolve(null);}if(!RM_FB.db||!RM_FB.user){mzProfilePickerStatus('Collegamento a Firebase in corso…','');return Promise.resolve(null);}var currentName=String(MZ_GUIDE_BOUND_NAME||'').trim();var before=(currentName&&rmNormName(currentName)!==rmNormName(name)&&MZ_GUIDE_READY)?mzGuideSaveNow():Promise.resolve(true);return before.catch(function(){return true;}).then(function(){MZ_GUIDE_LOADING=true;MZ_GUIDE_READY=false;mzGuideStatus('Profilo/Guida: caricamento del PG '+name+'…','saving');mzProfilePickerStatus('Carico il profilo di '+name+'…','');var ref=mzGuideDoc(name);if(!ref)throw new Error('Profilo non disponibile.');return ref.get().then(function(doc){if(doc.exists&&doc.data()&&doc.data().recordType==='profile'&&doc.data().state)return {id:doc.id,data:doc.data(),state:doc.data().state,source:'profile'};return mzProfileLegacyGuideRowsForName(name).then(function(rows){if(rows.length){var best=rows[0],state=best.data&&best.data.state?best.data.state:mzProfileDefaultState(name),payload={recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v140',migratedFrom:best.id,state:state};return ref.set(payload,{merge:false}).then(function(){return ref.get();}).then(function(nd){return {id:nd.id,data:nd.data(),state:nd.data().state,source:'migrated'};});}return {id:ref.id,data:null,state:mzProfileDefaultState(name),source:'blank'};});});}).then(function(found){mzGuideApplyState(found.state||mzProfileDefaultState(name));MZ_GUIDE_CURRENT_DOC_ID=found.id||mzProfileDocId(name);MZ_GUIDE_BOUND_NAME=name;MZ_GUIDE_READY=true;MZ_GUIDE_LOADING=false;MZ_GUIDE_DIRTY_BEFORE_READY=false;var btn=document.getElementById('mzResetAllBtn');if(btn)btn.disabled=false;if(found.source==='profile'){mzGuideStatus('Profilo/Guida di '+name+' ripristinati da Firebase ✓','ok');mzProfilePickerStatus('Profilo di '+name+' aperto ✓','ok');}else if(found.source==='migrated'){mzGuideStatus('Recuperato e convertito il vecchio profilo di '+name+' ✓','ok');mzProfilePickerStatus('Vecchio profilo di '+name+' recuperato e convertito ✓','ok');}else{mzGuideStatus('Nuovo profilo pronto per '+name+' · autosalvataggio attivo ✓','ok');mzProfilePickerStatus('Nessun profilo esistente: puoi compilare un nuovo profilo per '+name+'.','ok');}return mzProfileRefreshList(name).then(function(){return found;});}).catch(function(err){console.error(err);MZ_GUIDE_LOADING=false;MZ_GUIDE_READY=true;mzGuideStatus('Profilo/Guida: errore Firebase — '+(err.message||err),'bad');mzProfilePickerStatus('Impossibile aprire il profilo: '+(err.message||err),'bad');return null;});}
 function mzProfileHandleTypedName(name){name=String(name||'').trim();if(!name){MZ_GUIDE_BOUND_NAME='';MZ_GUIDE_CURRENT_DOC_ID='';mzProfileEnsurePickerSelection('');mzProfilePickerStatus('Inserisci un nome o seleziona un PG salvato.','');return;}mzProfileOpenByName(name,{fromTyping:true});}
 function mzGuideSaveNow(){var current=String((document.getElementById('pgNomeSessione')||{}).value||'').trim();if(MZ_GUIDE_RESTORING)return Promise.resolve();if(!current){mzGuideStatus('Profilo/Guida: inserisci prima il nome del PG.','');return Promise.resolve(false);}if(MZ_GUIDE_BOUND_NAME&&current&&MZ_GUIDE_BOUND_NAME.toLocaleLowerCase('it')!==current.toLocaleLowerCase('it')){mzGuideStatus('Profilo/Guida non salvati: appartengono a '+MZ_GUIDE_BOUND_NAME+'. Usa «Nuovo PG / Cambia PG» oppure seleziona un altro profilo dall’elenco.','bad');return Promise.resolve(false);}var ref=mzGuideDoc(current);if(!ref)return Promise.resolve(false);if(MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}var payload=mzProfileSavePayload(current);mzGuideStatus('Profilo/Guida: salvataggio automatico su Firebase…','saving');var task=MZ_GUIDE_SAVE_CHAIN.catch(function(){}).then(function(){return ref.set(payload,{merge:true});}).then(function(){MZ_GUIDE_BOUND_NAME=current;MZ_GUIDE_CURRENT_DOC_ID=ref.id;MZ_GUIDE_READY=true;mzGuideStatus('Profilo/Guida salvati automaticamente su Firebase ✓','ok');return mzProfileRefreshList(current).then(function(){return true;});}).catch(function(err){console.error(err);mzGuideStatus('Profilo/Guida: errore di salvataggio Firebase — '+(err.message||err),'bad');return false;});MZ_GUIDE_SAVE_CHAIN=task;return task;}
 window.mzGuidePrepareForResearch=function(){MZ_GUIDE_DIRTY_BEFORE_READY=true;if(MZ_GUIDE_READY&&RM_FB.user){MZ_GUIDE_DIRTY_BEFORE_READY=false;return mzGuideSaveNow();}return Promise.resolve();};
@@ -9133,7 +9142,8 @@ function fire(el,type){if(!el)return;try{el.dispatchEvent(new Event(type||'chang
 function diceCode(label,faces){return '<div class="result-line"><div class="dice-code" id="'+label+'_code">[dice=1d'+faces+']'+esc(label.replace(/^mzV78_/,''))+'[/dice]</div><button type="button" class="copy-btn mz-v78-copy" data-v78-copy="'+label+'_code">Copia</button></div>';}
 function rollHtml(id,faces,title){return '<div class="mz-v78-roll"><b>'+esc(title)+'</b>'+diceCode(id,faces)+'<div class="result-line"><span>Risultato:</span><input type="number" id="'+id+'" data-key="'+id+'" min="1" max="'+faces+'"><span class="out-tag out-neutral" id="'+id+'_tag">in attesa</span></div></div>';}
 function setTag(id,text,state){var t=E(id+'_tag');if(!t)return;t.textContent=text||'in attesa';t.className='out-tag '+(state==='ok'?'out-ok':state==='fail'?'out-fail':'out-neutral');}
-function copyText(id){var e=E(id);if(!e)return;var txt=e.textContent||'';if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).catch(function(){});return;}var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(err){}ta.remove();}
+function mzCopyRawText(txt,btn){txt=String(txt||'');function feedback(ok){if(!btn)return;var old=btn.textContent;btn.textContent=ok?'Copiato':'Copia manuale';setTimeout(function(){btn.textContent=old;},1000);}function legacy(){try{var ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.left='-9999px';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();var ok=!!document.execCommand('copy');ta.remove();if(ok){feedback(true);return true;}}catch(err){}try{window.prompt('Copia manualmente il testo:',txt);}catch(err2){}feedback(false);return false;}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){feedback(true);}).catch(function(){legacy();});return true;}return legacy();}
+function copyText(id){var e=E(id);if(!e)return false;return mzCopyRawText(e.textContent||'',null);}
 document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-v78-copy]'):null;if(b){e.preventDefault();copyText(b.getAttribute('data-v78-copy'));}},true);
 
 /* ---------- Catalogo specie e regole strutturali ---------- */
@@ -9151,7 +9161,8 @@ var NO_RESERVE={};['acromantula','centauro','elfo domestico','fantasma','dissenn
 /* Specie per cui la scheda dice esplicitamente che l'interazione normale fallisce sempre.
    Sono separate da ALWAYS: alcune Creature sempre ostili (es. Pixie) possono essere placate e poi gestite. */
 var HARD_INTERACTION_FAIL={};['kappa','lumaca carnivora','pogrebin','lethifold','basilisco'].forEach(function(x){HARD_INTERACTION_FAIL[x]=1;});
-var REMUVO_ONLY={};['ghoul','gnomo','horklump','imp','lumaca carnivora','abarimon','oni','crup','fiammagranchio','graphorn','jigglypuff','lupo mannaro','schiopodo sparacoda','sobolan','wampus','zouwu','ciclope','orco'].forEach(function(x){REMUVO_ONLY[x]=1;});
+var REMUVO_ONLY={};['ghoul','gnomo','horklump','imp','lumaca carnivora','abarimon','oni','crup','fiammagranchio','graphorn','jigglypuff','lupo mannaro','schiopodo sparacoda','sobolan','nogtail','wampus','zouwu','ciclope','orco'].forEach(function(x){REMUVO_ONLY[x]=1;});
+var SPECIAL_EXTRACTION_ONLY={'lobalug':'Il Veleno di Lobalug non viene prodotto dal normale Ciclo e non usa Remuvo: utilizza il riquadro specifico «Estrarre il Veleno» del Lobalug. Il controllo dell’eventuale estrazione illegale resta quello specifico 1d5, una sola volta per role.'};
 var LICENSE={};['crup','fiammagranchio','fwooper','kneazle'].forEach(function(x){LICENSE[x]=1;});
 function mzHasSpecialCreatureLicense(){var el=document.getElementById('pgLicenzaCreatureSpeciali');return !!(el&&el.checked);}
 var LICENSE_RULE='Licenza per Allevamento Creature Speciali: 150 Galeoni, nominativa, permanente e acquistata una sola volta. La stessa licenza vale per Crup, Fiammagranchio, Fwooper e Kneazle. Jarvey non richiede questa licenza.';
@@ -9207,7 +9218,7 @@ function ensureGuideFields(){
   var born=E('nataInRiserva');if(!born)return;
   var row=born.closest('.check-riga');
   if(!E('giaAddomesticata')){var a=document.createElement('div');a.className='check-riga';a.innerHTML='<input type="checkbox" id="giaAddomesticata" data-key="giaAddomesticata"><label for="giaAddomesticata">La Creatura è già addomesticata / fa già parte della Riserva</label>';row.parentNode.insertBefore(a,row.nextSibling);row=a;}
-  if(!E('allevataPersonalmente')){var b=document.createElement('div');b.className='check-riga';b.innerHTML='<input type="checkbox" id="allevataPersonalmente" data-key="allevataPersonalmente"><label for="allevataPersonalmente">L’ho allevata personalmente fin da Uovo/Cucciolo</label>';row.parentNode.insertBefore(b,row.nextSibling);row=b;}
+  if(!E('allevataPersonalmente')){var b=document.createElement('div');b.className='check-riga';b.innerHTML='<input type="checkbox" id="allevataPersonalmente" data-key="allevataPersonalmente"><label for="allevataPersonalmente">L’ho allevata personalmente fin da Uovo/Cucciolo</label>';row.parentNode.insertBefore(b,row.nextSibling);row=b;}if(!E('mzV139OwnBonusChoice')){var bc=document.createElement('div');bc.id='mzV139OwnBonusChoice';bc.className='check-riga';bc.style.display='none';bc.innerHTML='<input type="checkbox" id="mzV139OwnDurationMode" data-key="mzV139OwnDurationMode"><label for="mzV139OwnDurationMode"><b>Per l’effetto che sto risolvendo, applico il bonus alla durata</b> invece del bonus percentuale ai Parametri</label>';row.parentNode.insertBefore(bc,row.nextSibling);}
   if(!E('feritaTaglioCreatura')){var c=document.createElement('div');c.className='check-riga mz-condition-check';c.innerHTML='<input type="checkbox" id="feritaTaglioCreatura" data-key="feritaTaglioCreatura"><label for="feritaTaglioCreatura"><b>Conseguenza eventuale:</b> spunta solo se il PG ha realmente subito una ferita da taglio provocata dalla Creatura</label>';row.parentNode.insertBefore(c,row.nextSibling);}
   if(!E('mzV78SpeciesRuleBox')){var sync=E('mzSpeciesClassSync'),box=document.createElement('div');box.id='mzV78SpeciesRuleBox';box.className='mz-v78-box';box.style.display='none';sync.parentNode.insertBefore(box,sync.nextSibling);}
 }
@@ -9414,39 +9425,23 @@ if(typeof window.recomputeDomesticazione==='function'){
 
 function percentAllevamento(){var t=(E('tagAllevamento')||{}).textContent||'',m=t.match(/(0|33|66|100)%/);return m?Number(m[1]):null;}
 var QTY={X:{ib:1,id:5,cb:1,cd:4},XX:{ib:1,id:4,cb:1,cd:3},XXX:{ib:1,id:3,cb:1,cd:2},XXXX:{ib:1,id:2,cb:2,cd:0},XXXXX:{ib:2,id:0,cb:1,cd:0}};
-/* Ingredienti producibili: elenco centralizzato ricavato dagli specchietti del Bestiario.
-   Gli Oggetti/parti ottenibili esclusivamente tramite Remuvo sono esclusi.
-   Occamy: il Guscio resta nel flusso speciale della Riproduzione (1d3 alla schiusa), non nella Produzione generica. */
-var PRODUCTION_INGREDIENTS={
-  'baku':['Pelle di Baku','Pelo di Baku','Caccola di Baku'],
-  'basertilia':['Uovo di Basertilia','Pelle di Basertilia'],
-  'billywig':['Pungiglione di Billywig','Veleno di Billywig'],
-  'birdengold':['Piuma di Birdengold','Lacrima di Birdengold'],
-  'doxy':['Uovo di Doxy','Ala di Doxy','Pelo di Doxy','Veleno di Doxy'],
-  'duckbill':['Antenna di Duckbill','Artiglio di Duckbill'],
-  'duriccio':['Spina di Duriccio','Pelo di Duriccio'],
-  'erumpent':['Coda di Erumpent','Fluido di Erumpent'],
-  'fata':['Ala di Fata','Polvere di Fata'],
-  'fenice':['Piuma di Fenice','Lacrima di Fenice'],
-  'fiammablu':['Cristallo di Fiammablu','Crine di Fiammablu','Squama di Fiammablu'],
-  'grifone':['Artiglio di Grifone','Piuma di Grifone'],
-  'hanabira':['Crine di Hanabira','Fiore di Hanabira','Petalo di Hanabira'],
-  'ippocampo':['Uovo di Ippocampo','Squama di Ippocampo'],
-  'ippogrifo':['Piuma di Ippogrifo','Artiglio di Ippogrifo'],
-  'kavouras':['Veleno di Kàvouras','Chela di Kàvouras'],
-  'mau':['Pelo di Mau','Baffo di Mau'],
-  'ninki nanka':['Veleno di Ninki Nanka','Scaglia di Ninki Nanka','Dente di Ninki Nanka'],
-  'porlock':['Muco di Porlock','Pelo di Porlock'],
-  'ramora':['Squama di Ramora','Uovo di Ramora'],
-  'shellusk':['Polvere di Shellusk','Guscio di Shellusk'],
-  'snaso':['Pelo di Snaso','Unghia di Snaso'],
-  'unicorno':['Crine di Unicorno','Corno di Unicorno','Sangue di Unicorno'],
-  'wiggity':['Dente di Wiggity','Pelo di Wiggity','Escremento di Wiggity']
-};
-/* Un solo Ingrediente producibile: nessun sottotiro necessario. La Gemma resta Remuvo-only. */
-PRODUCTION_INGREDIENTS['serpecorno']=['Squama di Serpecorno'];
-PRODUCTION_INGREDIENTS['occamy']=['Piuma di Occamy'];
-function productionIngredientsFor(key){return PRODUCTION_INGREDIENTS[norm(key)]||[];}
+/* v139 — Ingredienti dal Bestiario aggiornato. Le parti marcate come Oggetti da collezionismo sono escluse. */
+var PRODUCTION_INGREDIENTS={"acromantula":["Veleno di Acromantula"],"alastridente":["Pelle di Alastridente"],"aoi kaeru":["Squama di Aoi Kaeru"],"ashwinder":["Uovo di Ashwinder","Cenere di Ashwinder"],"avvincino":["Zanna di Avvincino"],"baku":["Pelle di Baku","Pelo di Baku","Caccola di Baku"],"banshee":["Lacrima di Banshee"],"basertilia":["Uovo di Basertilia","Pelle di Basertilia"],"bicorno":["Corno di Bicorno"],"billywig":["Pungiglione di Billywig","Veleno di Billywig"],"birdengold":["Piuma di Birdengold","Lacrima di Birdengold"],"bundimun":["Secrezione di Bundimun"],"cavallo alato":["Crine di Cavallo Alato"],"chizpurfle":["Zanna di Chizpurfle"],"chupacabra":["Squama di Chupacabra"],"clabbert":["Unghia di Clabbert"],"demiguise":["Pelo di Demiguise"],"diricawl":["Piuma di Diricawl"],"doxy":["Uovo di Doxy","Ala di Doxy","Pelo di Doxy","Veleno di Doxy"],"drago":["Pelle di Drago","Corda di cuore di Drago","Artiglio di Drago"],"drakul":["Zanna di Drakul"],"duckbill":["Antenna di Duckbill","Artiglio di Duckbill"],"duriccio":["Spina di Duriccio","Pelo di Duriccio"],"erkling":["Dito di Erkling"],"erumpent":["Coda di Erumpent","Fluido di Erumpent"],"fata":["Ala di Fata","Polvere di Fata"],"fenice":["Piuma di Fenice","Lacrima di Fenice"],"fiammablu":["Cristallo di Fiammablu","Crine di Fiammablu","Squama di Fiammablu"],"fwooper":["Piuma di Fwooper"],"ghoul":["Bava di Ghoul"],"glumbumble":["Melassa di Glumbumble"],"gnomo":["Muco di Gnomo","Unghia di Gnomo"],"graphorn":["Corno di Graphorn"],"grifone":["Artiglio di Grifone","Piuma di Grifone"],"hanabira":["Crine di Hanabira","Fiore di Hanabira","Petalo di Hanabira"],"hodag":["Corno di Hodag"],"horklump":["Succo di Horklump"],"ippocampo":["Uovo di Ippocampo","Squama di Ippocampo"],"ippogrifo":["Piuma di Ippogrifo","Artiglio di Ippogrifo"],"jarvey":["Saliva di Jarvey"],"jobberknoll":["Piuma di Jobberknoll"],"kappa":["Acqua di testa di Kappa"],"kavouras":["Veleno di Kàvouras","Chela di Kàvouras"],"kelpie":["Saliva di Kelpie"],"knarl":["Aculeo di Knarl"],"kneazle":["Unghia di Kneazle"],"lobalug":["Veleno di Lobalug"],"lumaca carnivora":["Bava di Lumaca Carnivora"],"malaclaw maculato":["Coda di Malacaw Maculato"],"manticora":["Veleno di Manticora"],"marmite":["Latte di Marmite"],"matagot":["Artiglio di Matagot"],"mau":["Pelo di Mau","Baffi di Mau"],"moke":["Pelle di Moke"],"mooncalf":["Sterco di Mooncalf"],"nascondombra":["Pelo di Nascondombra"],"ninfa dei boschi":["Capello di Ninfa dei Boschi"],"ninki nanka":["Veleno di Ninki Nanka","Scaglia di Ninki Nanka","Dente di Ninki Nanka"],"nogtail":["Latte maledetto di Nogtail"],"nundu":["Saliva di Nundu"],"occamy":["Piuma di Occamy"],"pixie":["Ala di Pixie"],"plimpi":["Squama di Plimpi"],"pogrebin":["Pelo di orecchie del Pogrebin"],"porlock":["Muco di Porlock","Pelo di Porlock"],"puffskein":["Pelo di Puffskein"],"purvincolo":["Appendici di Purvincolo"],"ramora":["Squama di Ramora","Uovo di Ramora"],"re em":["Sangue di Re'em"],"salamandra":["Sangue di Salamandra"],"sblorb":["Fango di Sblorb"],"scriber":["Ala di Scriber"],"serpecorno":["Squama di Serpecorno"],"serpente marino":["Squama di Serpente Marino"],"sfinge":["Artiglio di Sfinge"],"shellusk":["Polvere di Shellusk","Guscio di Shellusk"],"shrake":["Spina di Shrake"],"snaso":["Pelo di Snaso","Unghia di Snaso"],"sobolan":["Pelo di Sobolan"],"streeler":["Muco di Streeler"],"tebo":["Pelle di Tebo"],"thestral":["Crine di Thestral"],"troll":["Muco di Troll"],"tuono alato":["Piuma di Tuono Alato"],"unicorno":["Crine di Unicorno","Corno di Unicorno","Sangue di Unicorno"],"vampiro":["Sangue di Vampiro"],"veela":["Capello di Veela"],"velenottero":["Veleno di Velenottero"],"vermicolo":["Muco di Vermicolo"],"wiggity":["Dente di Wiggity","Pelo di Wiggity","Escremento di Wiggity"],"yeti":["Pelo di Yeti"]};
+var MZ_V139_BESTIARY_INGREDIENTS=PRODUCTION_INGREDIENTS;
+var MZ_V139_INGREDIENT_LEGALITY={"Acqua di testa di Kappa":"legale","Aculeo di Knarl":"legale","Ala di Doxy":"legale","Ala di Fata":"legale","Ala di Pixie":"legale","Ala di Scriber":"legale","Antenna di Duckbill":"legale","Appendici di Purvincolo":"legale","Artiglio di Drago":"legale","Artiglio di Duckbill":"legale","Artiglio di Grifone":"legale","Artiglio di Ippogrifo":"legale","Artiglio di Matagot":"legale","Artiglio di Sfinge":"legale","Baffi di Mau":"legale","Bava di Ghoul":"legale","Bava di Lumaca Carnivora":"legale","Caccola di Baku":"legale","Capello di Ninfa dei Boschi":"legale","Capello di Veela":"legale","Cenere di Ashwinder":"legale","Chela di Kàvouras":"legale","Coda di Erumpent":"legale","Coda di Malacaw Maculato":"legale","Corda di cuore di Drago":"legale","Corno di Bicorno":"legale","Corno di Graphorn":"legale","Corno di Hodag":"legale","Corno di Unicorno":"legale","Crine di Cavallo Alato":"legale","Crine di Fiammablu":"legale","Crine di Hanabira":"legale","Crine di Thestral":"legale","Crine di Unicorno":"legale","Cristallo di Fiammablu":"legale","Dente di Ninki Nanka":"legale","Dente di Wiggity":"legale","Dito di Erkling":"legale","Escremento di Wiggity":"legale","Fango di Sblorb":"legale","Fiore di Hanabira":"legale","Fluido di Erumpent":"legale","Guscio di Shellusk":"legale","Guscio di uovo di Occamy":"legale","Lacrima di Banshee":"legale","Lacrima di Birdengold":"legale","Lacrima di Fenice":"legale","Latte di Marmite":"legale","Latte maledetto di Nogtail":"illegale","Melassa di Glumbumble":"legale","Muco di Gnomo":"legale","Muco di Porlock":"legale","Muco di Streeler":"legale","Muco di Troll":"legale","Muco di Vermicolo":"legale","Pelle di Alastridente":"pozionista","Pelle di Baku":"legale","Pelle di Basertilia":"legale","Pelle di Drago":"pozionista","Pelle di Moke":"legale","Pelle di Tebo":"pozionista","Pelo di Baku":"legale","Pelo di Demiguise":"legale","Pelo di Doxy":"legale","Pelo di Duriccio":"legale","Pelo di Mau":"legale","Pelo di Nascondombra":"legale","Pelo di Porlock":"legale","Pelo di Puffskein":"legale","Pelo di Snaso":"legale","Pelo di Sobolan":"legale","Pelo di Wiggity":"legale","Pelo di Yeti":"legale","Pelo di orecchie del Pogrebin":"legale","Petalo di Hanabira":"legale","Piuma di Birdengold":"legale","Piuma di Diricawl":"legale","Piuma di Fenice":"legale","Piuma di Fwooper":"legale","Piuma di Grifone":"legale","Piuma di Ippogrifo":"legale","Piuma di Jobberknoll":"legale","Piuma di Occamy":"pozionista","Piuma di Tuono Alato":"pozionista","Polvere di Fata":"pozionista","Polvere di Shellusk":"legale","Pungiglione di Billywig":"legale","Saliva di Jarvey":"legale","Saliva di Kelpie":"legale","Saliva di Nundu":"illegale","Sangue di Re'em":"illegale","Sangue di Salamandra":"pozionista","Sangue di Unicorno":"illegale","Sangue di Vampiro":"pozionista","Scaglia di Ninki Nanka":"legale","Secrezione di Bundimun":"legale","Spina di Duriccio":"legale","Spina di Shrake":"legale","Squama di Aoi Kaeru":"legale","Squama di Chupacabra":"legale","Squama di Fiammablu":"legale","Squama di Ippocampo":"legale","Squama di Plimpi":"legale","Squama di Ramora":"legale","Squama di Serpecorno":"legale","Squama di Serpente Marino":"legale","Sterco di Mooncalf":"legale","Succo di Horklump":"legale","Unghia di Clabbert":"legale","Unghia di Gnomo":"legale","Unghia di Kneazle":"legale","Unghia di Snaso":"legale","Uovo di Ashwinder":"legale","Uovo di Basertilia":"legale","Uovo di Doxy":"legale","Uovo di Ippocampo":"legale","Uovo di Ramora":"legale","Veleno di Acromantula":"pozionista","Veleno di Billywig":"pozionista","Veleno di Doxy":"pozionista","Veleno di Kàvouras":"pozionista","Veleno di Lobalug":"pozionista","Veleno di Manticora":"pozionista","Veleno di Ninki Nanka":"pozionista","Veleno di Velenottero":"pozionista","Zanna di Avvincino":"illegale","Zanna di Chizpurfle":"legale","Zanna di Drakul":"pozionista"};
+function v139KnownSpeciesKey(k){if(typeof RM_SPEC_LINKS!=='object')return false;for(var n in RM_SPEC_LINKS){if(norm(n)===k)return true;}return false;}
+window.v139KnownSpeciesKey=v139KnownSpeciesKey;
+function ingredientLegality(name){return MZ_V139_INGREDIENT_LEGALITY[name]||'sconosciuta';}
+function ingredientLegalityLabel(name){var v=ingredientLegality(name);return v==='legale'?'Legale':(v==='pozionista'?'Illegale · eccezione Pozionista di mestiere solo per preparare Pozioni':(v==='illegale'?'Illegale per tutti':'Legalità non classificata'));}
+function ingredientLegalityShort(name){var v=ingredientLegality(name);return v==='legale'?'legale':(v==='pozionista'?'🚫 · Pozionista ✔':'🚫 illegale');}
+function ingredientLawHtml(items){items=items||[];if(!items.length)return '';var rows=items.map(function(x){return '<b>'+esc(x)+':</b> '+esc(ingredientLegalityLabel(x));}).join('<br>');return '<div class="mz-v139-ingredient-law"><b>Legalità secondo il Glossario Ingredienti aggiornato</b><br>'+rows+'<br><span>L’ottenimento tramite Produzione/Allevamento non genera da solo il controllo dell’Azione Illegale previsto per l’<b>uso</b> o la <b>vendita</b> dell’Ingrediente. Essere Magizoologo di mestiere non concede un’eccezione sugli Ingredienti: l’eventuale deroga indicata con «Pozionista ✔» riguarda soltanto il Pozionista di mestiere che usa l’Ingrediente per preparare Pozioni. Restano separati gli eventuali reati propri della procedura di prelievo indicati nello specchietto della Creatura.</span></div>'; }
+
+window.ingredientLegality=ingredientLegality;
+window.ingredientLegalityLabel=ingredientLegalityLabel;
+window.ingredientLegalityShort=ingredientLegalityShort;
+window.ingredientLawHtml=ingredientLawHtml;
+function productionIngredientsFor(key){var k=norm(key),arr=(PRODUCTION_INGREDIENTS[k]||[]).slice();if(k==='duckbill'&&!(document.getElementById('mzV140DuckbillWinter')&&document.getElementById('mzV140DuckbillWinter').checked))arr=arr.filter(function(x){return x!=='Antenna di Duckbill';});return arr;}
+window.productionIngredientsFor=productionIngredientsFor;
 function ingredientTypeLabel(items,v){return (v>=1&&v<=items.length)?items[v-1]:'';}
 function renderIngredientTypeRolls(total){
   var host=E('mzV78IngredientTypeRolls');if(!host)return;
@@ -9457,14 +9452,15 @@ function renderIngredientTypeRolls(total){
   if(host.dataset.sig!==sig){
     host.dataset.sig=sig;host.innerHTML='';
     var legend='<div class="mz-v78-note"><b>Quale Ingrediente ottieni?</b> Il regolamento richiede 1d'+items.length+' per ogni Ingrediente prodotto: ';
-    legend+=items.map(function(x,i){return '<b>'+(i+1)+'</b> = '+esc(x);}).join(' · ')+'</div>';
+    legend+=items.map(function(x,i){return '<b>'+(i+1)+'</b> = '+esc(x)+' <span class="mz-v139-law-chip">'+esc(ingredientLegalityShort(x))+'</span>';}).join(' · ')+'</div>';
+    legend+=ingredientLawHtml(items);
     host.insertAdjacentHTML('beforeend',legend);
     for(var i=1;i<=qty;i++)host.insertAdjacentHTML('beforeend',rollHtml('mzV119IngredientType_'+i,items.length,'Ingrediente '+i+' — tipo'));
     if(typeof window.setupNumericInputs==='function')setupNumericInputs();
   }
   for(var j=1;j<=qty;j++){
-    var id='mzV119IngredientType_'+j,v=num(id,1,items.length);
-    setTag(id,v===null?'in attesa':ingredientTypeLabel(items,v),v===null?'':'ok');
+    var id='mzV119IngredientType_'+j,v=num(id,1,items.length),nm=v===null?'':ingredientTypeLabel(items,v);
+    setTag(id,v===null?'in attesa':nm+' · '+ingredientLegalityShort(nm),v===null?'':'ok');
   }
 }
 
@@ -9500,6 +9496,7 @@ var NORMAL_ALLEVAMENTO_BLOCK={
   'nano':'Il Nano non viene Domesticato e non usa il normale Allevamento. Se almeno un Nano vive stabilmente in Riserva, una volta per anno OFFGame può comparire 1d3 uova tramite la procedura speciale del suo riquadro.'
 };
 function specialReproRule(k){return SPECIAL_REPRODUCTION[k]||null;}
+window.MZ_V140_SPECIAL_REPRODUCTION=SPECIAL_REPRODUCTION;
 
 /* v106 — i rischi legati alla Produzione si tirano ASSIEME al dado di Produzione,
    quindi non dipendono dall'esito (anche un 0% non li annulla). */
@@ -9510,7 +9507,7 @@ function updateProductionRiskTags(){
 function renderProductionRisks(){
   var panel=E('pannelloAllevamento');if(!panel)return;var b=E('mzV106ProductionRiskBox');if(!b){b=document.createElement('div');b.id='mzV106ProductionRiskBox';b.className='mz-v78-box mz-disease-box';var pb=E('mzV78ProductionBlock');if(pb&&pb.parentNode===panel)panel.insertBefore(b,pb);else panel.appendChild(b);}
   var name=speciesName(),k=norm(name),cls=(E('classificazione')||{}).value||'',tipo=(E('tipoCicloAllevamento')||{}).value||'produzione',fase=(E('faseVitale')||{}).value||'',rollInp=E('risultatoAllevamento');
-  var normal=!!name&&tipo==='produzione'&&fase!=='uovo'&&!NORMAL_ALLEVAMENTO_BLOCK[k]&&canReserve(name)&&!REMUVO_ONLY[k]&&rollInp&&!rollInp.disabled;
+  var normal=!!name&&tipo==='produzione'&&fase!=='uovo'&&!NORMAL_ALLEVAMENTO_BLOCK[k]&&canReserve(name)&&!REMUVO_ONLY[k]&&!SPECIAL_EXTRACTION_ONLY[k]&&(!v139KnownSpeciesKey(k)||productionIngredientsFor(k).length>0)&&rollInp&&!rollInp.disabled;
   var ira=normal&&(cls==='XXXX'||cls==='XXXXX'),pd=normal?PROD_DISEASE[k]:null;
   if(!ira&&!pd){b.style.display='none';b.innerHTML='';b.dataset.sig='';return;}
   b.style.display='block';var sig=[k,cls,ira?1:0,pd?pd.name:''].join('|');if(b.dataset.sig!==sig){
@@ -9520,16 +9517,18 @@ function renderProductionRisks(){
   updateProductionRiskTags();
 }
 
-function ownRaisedText(){if(!E('allevataPersonalmente')||!E('allevataPersonalmente').checked)return '';var lv=Math.max(0,Number((E('livAllevatore')||{}).value||0));if(!lv)return '<b>Creatura allevata personalmente:</b> il bonus richiede Allevatore di Creature Magiche.';var pct=[0,10,15,20,25,30][lv],post=['','+1 post','+1d2 post','+2 post','+1+1d2 post','+3 post'][lv];return '<b>Bonus Creatura allevata personalmente:</b> +'+pct+'% a tutti i Parametri (o durata degli effetti degli attacchi/usi) · '+post+'.';}
-function updateProductionResults(){var b=E('mzV78ProductionBlock');if(!b||b.style.display==='none')return;var die=E('mzV78QtyRoll'),base=Number(b.dataset.base||0),faces=Number(b.dataset.faces||0),manualMin=Number(b.dataset.manualMin||0),manualMax=Number(b.dataset.manualMax||0),v=faces?num('mzV78QtyRoll',1,faces):0,total=faces?(v===null?null:base+v):base;if(manualMin){total=num('mzV78QtyManual',manualMin,manualMax);}var out=E('mzV78QtyResult');if(out){if(total===null)out.textContent='Quantità: inserisci un valore valido.';else out.innerHTML='<b>Quantità:</b> '+total;}
+function ownRaisedText(){if(!E('allevataPersonalmente')||!E('allevataPersonalmente').checked)return '';var lv=Math.max(0,Number((E('livAllevatore')||{}).value||0));if(!lv)return '<b>Creatura allevata personalmente:</b> il bonus richiede Allevatore di Creature Magiche.';var pct=[0,10,15,20,25,30][lv],post=['','+1 post','+1d2 post','+2 post','+1+1d2 post','+3 post'][lv],mode=E('mzV139OwnDurationMode')&&E('mzV139OwnDurationMode').checked?'durata':'parametri';var row=E('mzV139OwnBonusChoice');if(row)row.style.display='flex';return mode==='durata'?'<b>Bonus Creatura allevata personalmente — durata:</b> '+post+'. <b>Questo sostituisce</b> il +'+pct+'% ai Parametri per l’effetto che stai risolvendo; non sommare entrambi.':'<b>Bonus Creatura allevata personalmente — Parametri:</b> +'+pct+'% a tutti i Parametri. Per un effetto espresso in post puoi scegliere invece il bonus durata '+post+', ma i due benefici sono <b>alternativi</b> sullo stesso effetto.';}
+function updateProductionResults(){var b=E('mzV78ProductionBlock');if(!b||b.style.display==='none')return;var die=E('mzV78QtyRoll'),base=Number(b.dataset.base||0),faces=Number(b.dataset.faces||0),manualMin=Number(b.dataset.manualMin||0),manualMax=Number(b.dataset.manualMax||0),v=faces?num('mzV78QtyRoll',1,faces):0,total=faces?(v===null?null:base+v):base;if(manualMin){total=num('mzV78QtyManual',manualMin,manualMax);}var out=E('mzV78QtyResult'),typeTotal=total,sap25=Number((E('sapienzaProfilo')||{}).value||0)>=25;if(out){if(total===null)out.textContent='Quantità: inserisci un valore valido.';else{out.innerHTML='<b>Quantità:</b> '+total;if(sap25){var fin=total*1.2,extra=total*0.2,isInt=Math.floor(fin)===fin;out.innerHTML+='<br><b>Sapienza Magizoologica 25:</b> +20% = +'+Number(extra.toFixed(2))+' → '+Number(fin.toFixed(2))+'.'+(isInt?'':' <span class="mz-v78-note">Il regolamento non specifica come arrotondare eventuali frazioni: la quantità finale resta da chiarire.</span>');if(isInt)typeTotal=fin;}}}
   if(die)setTag('mzV78QtyRoll',v===null?'in attesa':'Valido',v===null?'':'ok');
   ['mzV78Ira','mzV78ProdDisease','mzV78OwnPost'].forEach(function(id){var x=E(id);if(!x)return;var vv=Number(x.value||0),max=Number(x.max||0);if(!vv||vv<1||vv>max){setTag(id,'in attesa','');return;}if(id==='mzV78Ira')setTag(id,vv===1?'Ira':'Nessuna Ira',vv===1?'fail':'ok');else if(id==='mzV78ProdDisease'){var k=speciesKey(),pd=PROD_DISEASE[k],bad=!!(pd&&pd.bad.indexOf(vv)>=0);setTag(id,bad?pd.name:'Nessun contagio',bad?'fail':'ok');}else{var lv=Math.max(0,Number((E('livAllevatore')||{}).value||0)),bonus=(lv===4?1+vv:vv);setTag(id,'Bonus durata = +'+bonus+' post','ok');}});
-  if(E('mzV78OccamyShells')){var sh=num('mzV78OccamyShells',1,3);setTag('mzV78OccamyShells',sh===null?'in attesa':sh+' Gusci',''+(sh===null?'':'ok'));}var host=E('mzV78IngredientTypeRolls');if(host){if(total===null){host.innerHTML='';host.dataset.sig='';}else renderIngredientTypeRolls(total);}renderCureCubMalus(total);
+  if(E('mzV78OccamyShells')){var sh=num('mzV78OccamyShells',1,3);setTag('mzV78OccamyShells',sh===null?'in attesa':sh+' Gusci',''+(sh===null?'':'ok'));}var host=E('mzV78IngredientTypeRolls');if(host){if(total===null){host.innerHTML='';host.dataset.sig='';}else{renderIngredientTypeRolls(typeTotal);if(sap25&&typeTotal===total&&total!==null&&Math.floor(total*1.2)!==total*1.2)host.insertAdjacentHTML('afterbegin','<div class="mz-v78-note"><b>Quantità finale non intera:</b> i sottotiri coprono soltanto i '+Math.floor(total)+' Ingredienti certi prima del +20%; il tool non inventa il trattamento della frazione.</div>');}}renderCureCubMalus(total);
 }
 function renderProductionBlock(){var panel=E('pannelloAllevamento');if(!panel)return;var b=E('mzV78ProductionBlock');if(!b){b=document.createElement('div');b.id='mzV78ProductionBlock';b.className='mz-v78-box';panel.appendChild(b);}var name=speciesName(),k=norm(name),cls=(E('classificazione')||{}).value||'',pct=percentAllevamento(),tipo=(E('tipoCicloAllevamento')||{}).value||'produzione';renderProductionRisks();if(!name){b.style.display='none';return;}b.style.display='block';
   if(NORMAL_ALLEVAMENTO_BLOCK[k]){b.className='mz-v78-box mz-v78-warn';b.innerHTML='<b>Allevamento standard non disponibile:</b> '+NORMAL_ALLEVAMENTO_BLOCK[k];return;}if(!canReserve(name)){b.className='mz-v78-box mz-v78-warn';b.innerHTML='<b>Allevamento non disponibile:</b> questa specie non segue il normale percorso di Allevamento in Riserva.';return;}b.className='mz-v78-box';
   if(k==='vampiro'&&((E('tipoCicloAllevamento')||{}).value||'produzione')!=='produzione'){b.className='mz-v78-box mz-v78-warn';b.innerHTML='<b>Riproduzione non disponibile:</b> i Vampiri non si riproducono normalmente; possono generare nuovi Vampiri soltanto tramite morso letale a maghi o streghe.';return;}
   if(REMUVO_ONLY[k]&&((E('tipoCicloAllevamento')||{}).value||'produzione')==='produzione'){b.className='mz-v78-box mz-v78-warn';b.innerHTML='<b>Produzione spontanea non disponibile:</b> gli Ingredienti/parti mappati per questa specie si ottengono soltanto tramite Remuvo.';return;}
+  if(SPECIAL_EXTRACTION_ONLY[k]&&((E('tipoCicloAllevamento')||{}).value||'produzione')==='produzione'){b.className='mz-v78-box mz-v78-warn';b.innerHTML='<b>Produzione spontanea non disponibile:</b> '+SPECIAL_EXTRACTION_ONLY[k];return;}
+  if(((E('tipoCicloAllevamento')||{}).value||'produzione')==='produzione'&&v139KnownSpeciesKey(k)&&productionIngredientsFor(k).length===0){b.className='mz-v78-box mz-v78-warn';b.innerHTML='<b>Nessun Ingrediente producibile:</b> il Bestiario aggiornato non elenca Ingredienti ottenibili per questa specie. Il tool non genera quindi una quantità anonima usando la sola Classificazione.';return;}
   var faseVitale=(E('faseVitale')||{}).value||'';
   if(tipo==='riproduzione'&&specialReproRule(k)&&specialReproRule(k).blocked){b.className='mz-v78-box mz-v78-warn';b.innerHTML='<b>Riproduzione standard non disponibile:</b> '+specialReproRule(k).message;return;}if(tipo==='riproduzione'&&faseVitale!=='adulta'){b.className='mz-v78-box mz-v78-warn';b.innerHTML='<b>Riproduzione non disponibile:</b> il regolamento consente 1 sola Riproduzione esclusivamente durante l’Adultità.';return;}
   if(faseVitale==='uovo'&&pct!==null&&pct>0){b.innerHTML='<b>Schiusa / crescita:</b> questo ciclo non produce Ingredienti o Cuccioli. Usa il numero di post determinato dall’esito di Allevamento; completati i post, la Creatura passa all’Infanzia.<br>'+ownRaisedText();return;}
@@ -9539,11 +9538,12 @@ function renderProductionBlock(){var panel=E('pannelloAllevamento');if(!panel)re
     if(manualMin){h+='<div class="mz-v78-field"><label>Numero di '+esc(sr.label||'cuccioli')+' ('+manualMin+'–'+manualMax+')</label><input type="number" id="mzV78QtyManual" data-key="mzV78QtyManual" min="'+manualMin+'" max="'+manualMax+'"></div>';}else if(faces)h+=rollHtml('mzV78QtyRoll',faces,(prod?'Ingredienti':'Cuccioli')+' extra');else h+='<div class="mz-v78-fixed">Quantità fissa: <b>'+base+'</b>'+(sr&&sr.label?' '+esc(sr.label):'')+'.</div>';h+='<div id="mzV78QtyResult" class="mz-v78-fixed"></div><div id="mzV120CureCubMalus"></div>';
     if(specialNote)h+='<div class="mz-v78-note"><b>Regola specifica:</b> '+specialNote+'</div>';
     if(!prod&&k==='occamy')h+=rollHtml('mzV78OccamyShells',3,'Gusci di Occamy ottenuti alla schiusa');
-    if(prod){var prodItems=productionIngredientsFor(k);if(prodItems.length===1)h+='<div class="mz-v78-note"><b>Ingrediente prodotto:</b> '+esc(prodItems[0])+'.</div>';h+='<div id="mzV78IngredientTypeRolls"></div>';}
+    if(prod){var prodItems=productionIngredientsFor(k);if(prodItems.length===1)h+='<div class="mz-v78-note"><b>Ingrediente prodotto:</b> '+esc(prodItems[0])+' <span class="mz-v139-law-chip">'+esc(ingredientLegalityShort(prodItems[0]))+'</span>.</div>'+ingredientLawHtml(prodItems);h+='<div id="mzV78IngredientTypeRolls"></div>';}
     if(k==='bicorno'&&!prod)h+='<div class="mz-v78-note"><b>Bicorno:</b> se la Riproduzione riesce, le nuove corna danno +5 Resistenza e +5 Forza, cumulativi.</div>';
-    h+='<div class="mz-v78-note">'+ownRaisedText()+'</div>';var lv=Math.max(0,Number((E('livAllevatore')||{}).value||0));if(E('allevataPersonalmente')&&E('allevataPersonalmente').checked&&(lv===2||lv===4))h+=rollHtml('mzV78OwnPost',2,'Bonus durata degli effetti della Creatura allevata personalmente');b.innerHTML=h;if(typeof window.setupNumericInputs==='function')setupNumericInputs();}
+    h+='<div class="mz-v78-note">'+ownRaisedText()+'</div>';var lv=Math.max(0,Number((E('livAllevatore')||{}).value||0));if(E('allevataPersonalmente')&&E('allevataPersonalmente').checked&&E('mzV139OwnDurationMode')&&E('mzV139OwnDurationMode').checked&&(lv===2||lv===4))h+=rollHtml('mzV78OwnPost',2,'Bonus durata degli effetti della Creatura allevata personalmente');b.innerHTML=h;if(typeof window.setupNumericInputs==='function')setupNumericInputs();}
   updateProductionResults();
 }
+window.mzV140RunProduction=renderProductionBlock;
 if(typeof window.recomputeAllevamento==='function'){
   var v78BaseAll=window.recomputeAllevamento;window.recomputeAllevamento=function(){var out=v78BaseAll.apply(this,arguments);var name=speciesName(),k=norm(name),blocked=!!NORMAL_ALLEVAMENTO_BLOCK[k]||(name&&!canReserve(name));if(blocked){var inp=E('risultatoAllevamento'),tag=E('tagAllevamento'),formula=E('formulaAllevamento'),code=E('codiceAllevamento'),copy=E('copiaAllevamento');if(inp){inp.value='';inp.disabled=true;}if(copy)copy.disabled=true;if(tag){tag.textContent='Allevamento non disponibile';tag.className='out-tag out-fail';}if(formula)formula.textContent=NORMAL_ALLEVAMENTO_BLOCK[k]||'La specie non può seguire il normale Allevamento in Riserva.';if(code)code.textContent='Nessun dado.';}renderProductionBlock();return out;};
 }
@@ -9890,12 +9890,12 @@ var V80_REMUVO={
  a100:{label:'Adulto senza Sapienza · 100%',base:5,faces:0,damage:30,q:[[1,6],[7,11],[12,15]],hostile:[1,6]},
  sap100:{label:'Adulto con Sapienza Magizoologica 1+ · 100%',base:5,faces:2,damage:20,q:[[1,7],[8,12],[13,15]],hostile:[1,7]}
 };
-function v80RemuvoActive(){return !!(v80E('mzV80RemuvoUse')&&v80E('mzV80RemuvoUse').checked&&V80_REMUVO[(v80E('mzV80RemuvoProfile')||{}).value]);}
+function v80RemuvoActive(){var use=!!(v80E('mzV80RemuvoUse')&&v80E('mzV80RemuvoUse').checked&&V80_REMUVO[(v80E('mzV80RemuvoProfile')||{}).value]);if(!use)return false;var k=typeof speciesKey==='function'?speciesKey():'',items=typeof productionIngredientsFor==='function'?productionIngredientsFor(k):[],sel=v80E('mzV139RemuvoIngredientSelect');if(items&&items.length)return !!(sel&&sel.value&&items.indexOf(sel.value)>=0);return false;}
 function v80ManualRemuvo(){var b=v80E('mzBonusDomesticazione'),yes=false;if(!b)return false;b.querySelectorAll('.mz-bonus-row').forEach(function(r){var k=r.dataset.resolvedPresetKey||r.dataset.presetKey||'',a=r.querySelector('[data-role="apply"]');if(k==='remuvo_malus_dom'&&a&&a.checked)yes=true;});return yes;}
 function v80CreateRemuvo(){
   var p=v80E('pannelloAllevamento');if(!p||v80E('mzV80RemuvoBlock'))return;
   var d=document.createElement('div');d.id='mzV80RemuvoBlock';d.className='blocco-conseguenza';
-  d.innerHTML='<h3>Remuvo — raccolta immediata di Ingredienti</h3><div class="nota-regole">Usalo quando il PG estrae <b>Ingredienti</b> con Remuvo senza attendere il rilascio spontaneo. Il tool gestisce quantità, danno permanente, integrità di ogni Ingrediente, rischio di Ostilità, <b>-5 possibilità in Domesticazione</b> se necessario e <b>-1,5 Fatica</b>. <b>Non usare questo pannello per gli Oggetti da collezionismo:</b> quantità, limiti e conseguenze di quelle parti seguono esclusivamente lo specchietto della specie e non usano il 1d15 di integrità.</div><div class="check-riga"><input type="checkbox" id="mzV80RemuvoUse" data-key="mzV80RemuvoUse"><label for="mzV80RemuvoUse">Sto usando Remuvo per ottenere <b>Ingredienti</b> da questa Creatura (non un Oggetto da collezionismo)</label></div><div id="mzV80RemuvoBody" style="display:none"><div class="mz-v78-grid"><div class="mz-v78-field"><label>Esito / profilo di Remuvo</label><select id="mzV80RemuvoProfile" data-key="mzV80RemuvoProfile"></select></div></div><div id="mzV80RemuvoRule"></div><div id="mzV80RemuvoQuantity"></div><div id="mzV80RemuvoQuality"></div><div id="mzV80RemuvoHostility"></div><div id="mzV80RemuvoConflict"></div></div>';
+  d.innerHTML='<h3>Remuvo — raccolta immediata di Ingredienti</h3><div class="nota-regole">Usalo quando il PG estrae <b>Ingredienti</b> con Remuvo senza attendere il rilascio spontaneo. Il tool gestisce quantità, danno permanente, integrità di ogni Ingrediente, rischio di Ostilità, <b>-5 possibilità in Domesticazione</b> se necessario e <b>-1,5 Fatica</b>. <b>Non usare questo pannello per gli Oggetti da collezionismo:</b> quantità, limiti e conseguenze di quelle parti seguono esclusivamente lo specchietto della specie e non usano il 1d15 di integrità.</div><div class="check-riga"><input type="checkbox" id="mzV80RemuvoUse" data-key="mzV80RemuvoUse"><label for="mzV80RemuvoUse">Sto usando Remuvo per ottenere <b>Ingredienti</b> da questa Creatura (non un Oggetto da collezionismo)</label></div><div id="mzV80RemuvoBody" style="display:none"><div class="mz-v78-grid"><div class="mz-v78-field"><label>Esito / profilo di Remuvo</label><select id="mzV80RemuvoProfile" data-key="mzV80RemuvoProfile"></select></div></div><div id="mzV80RemuvoRule"></div><div id="mzV139RemuvoSpecialNote" class="mz-v139-special-extraction" style="display:none"></div><div id="mzV139RemuvoIngredientChoice" class="mz-v139-remuvo-choice"><div class="mz-v78-field"><label>Tipo di Ingrediente da estrarre</label><select id="mzV139RemuvoIngredientSelect"></select><input type="hidden" id="mzV139RemuvoIngredientSaved" data-key="mzV139RemuvoIngredientSaved" value=""><input type="hidden" id="mzV139RemuvoIngredientSpeciesSaved" data-key="mzV139RemuvoIngredientSpeciesSaved" value=""></div><div id="mzV139RemuvoIngredientLaw"></div></div><div id="mzV80RemuvoQuantity"></div><div id="mzV80RemuvoQuality"></div><div id="mzV80RemuvoHostility"></div><div id="mzV80RemuvoConflict"></div></div>';
   var foot=p.querySelector('.mz-phase-footer-nav');p.insertBefore(d,foot||null);
 }
 function v80ProfileOptions(){
@@ -9917,7 +9917,7 @@ function v80UpdateRemuvoResults(){
   var hv=v80Num('mzV80RemuvoHostile',1,10),bad=hv!==null&&hv>=d.hostile[0]&&hv<=d.hostile[1];if(typeof window.setTag==='function'){if(hv===null)setTag('mzV80RemuvoHostile','in attesa','');else setTag('mzV80RemuvoHostile',bad?'Creatura ostile':'Non diventa ostile',bad?'fail':'ok');}var rn=v80E('mzV95RemuvoNarrator');if(rn)rn.style.display=bad?'block':'none';
 }
 function v80RenderRemuvo(rebuild){
-  var body=v80E('mzV80RemuvoBody');if(!body)return;var use=!!(v80E('mzV80RemuvoUse')&&v80E('mzV80RemuvoUse').checked);body.style.display=use?'block':'none';if(!use)return;
+  var body=v80E('mzV80RemuvoBody');if(!body)return;if(typeof window.mzV139GuardRemuvo==='function')window.mzV139GuardRemuvo();var use=!!(v80E('mzV80RemuvoUse')&&v80E('mzV80RemuvoUse').checked);body.style.display=use?'block':'none';if(!use)return;if(typeof window.mzV139RenderRemuvoIngredientChoice==='function')window.mzV139RenderRemuvoIngredientChoice();
   var key=(v80E('mzV80RemuvoProfile')||{}).value,d=V80_REMUVO[key],q=v80E('mzV80RemuvoQuantity'),h=v80E('mzV80RemuvoHostility'),r=v80E('mzV80RemuvoRule'),c=v80E('mzV80RemuvoConflict');
   if(!d){if(r)r.innerHTML='<div class="nota-regole">Seleziona l’esito di Remuvo per preparare i dadi.</div>';if(q)q.innerHTML='';if(h)h.innerHTML='';return;}
   if(r)r.innerHTML='<div class="mz-v78-fixed"><b>Fatica:</b> -1,5 · <b>Danno permanente:</b> -'+d.damage+'% a tutti i Parametri della Creatura.'+(!v80Already()?' · <b>Domesticazione:</b> -5 possibilità automatiche.':'')+'</div>';
@@ -9953,8 +9953,11 @@ if(typeof window.mzCreatePhaseBonusRow==='function'){
 }
 
 v80CreateRemuvo();
+window.MZ_V140_REMUVO_PROFILES=V80_REMUVO;
+window.mzV140QualityLabel=v80QualityLabel;
+window.mzV140RunRemuvo=function(rebuild){return v80RenderRemuvo(!!rebuild);};
 function v80RefreshAll(rebuild){v80SyncImposiumFatica();v80ProfileOptions();v80RenderRemuvo(!!rebuild);if(typeof window.recomputeDomesticazione==='function')recomputeDomesticazione();if(typeof window.updateProductionResults==='function')updateProductionResults();}
-document.addEventListener('change',function(ev){var id=ev.target&&ev.target.id||'';if(id==='mzV80RemuvoUse'||id==='mzV80RemuvoProfile'){v80RenderRemuvo(true);if(typeof window.recomputeDomesticazione==='function')recomputeDomesticazione();return;}if(id==='pgTipo'||id==='sapienzaProfilo'){v80RefreshAll(true);return;}if(id==='ostilita'||id==='giaAddomesticata'){v80RenderRemuvo(false);if(typeof window.recomputeDomesticazione==='function')recomputeDomesticazione();return;}if(ev.target&&ev.target.closest&&ev.target.closest('#mzV80RemuvoBlock'))v80UpdateRemuvoResults();});
+document.addEventListener('change',function(ev){var id=ev.target&&ev.target.id||'';if(id==='mzV80RemuvoUse'||id==='mzV80RemuvoProfile'||id==='mzV139RemuvoIngredientSelect'){v80RenderRemuvo(id!=='mzV139RemuvoIngredientSelect');if(typeof window.recomputeDomesticazione==='function')recomputeDomesticazione();return;}if(id==='pgTipo'||id==='sapienzaProfilo'){v80RefreshAll(true);return;}if(id==='ostilita'||id==='giaAddomesticata'){v80RenderRemuvo(false);if(typeof window.recomputeDomesticazione==='function')recomputeDomesticazione();return;}if(ev.target&&ev.target.closest&&ev.target.closest('#mzV80RemuvoBlock'))v80UpdateRemuvoResults();});
 document.addEventListener('input',function(ev){if(ev.target&&ev.target.closest&&ev.target.closest('#mzV80RemuvoBlock'))v80UpdateRemuvoResults();});
 document.addEventListener('DOMContentLoaded',function(){v80ProfileOptions();v80RenderRemuvo(false);v80SyncImposiumFatica();});
 })();
@@ -10774,7 +10777,7 @@ function render(){
  if(k==='lobalug'){
    h+='<hr><b>Schizzi di veleno</b>'+roll('mzV85LobSplashes',5,'1d5 — numero di schizzi')+field('mzV85LobDex','Destrezza attuale del PG',0,100,'',1)+check('mzV85LobUnder','Il PG è sott’acqua')+field('mzV85LobHits','Schizzi che hanno vinto il confronto',0,5,0,1)+'<div id="mzV85LobPoisonOut" class="mz-v78-fixed"></div>';
    h+=check('mzV85LobBreath','Il PG ha Algabranchia/Testabolla')+check('mzV85LobAlone','Il PG è solo')+'<div id="mzV85LobRescueWrap" style="display:none">'+roll('mzV85LobRescue',5,'1d5 — soccorso se paralizzato, sott’acqua, senza protezione respiratoria e solo')+'</div><div id="mzV85LobDrownOut" class="mz-v78-fixed"></div>';
-   h+='<hr><b>Estrarre il Veleno</b>'+check('mzV85LobTrust','Fiducia già ottenuta')+roll('mzV85LobExtract',6,'1d6 — estrazione')+'<div id="mzV85LobExtractOut" class="mz-v78-fixed"></div>';
+   h+='<hr><b>Estrarre il Veleno</b>'+ingredientLawHtml(['Veleno di Lobalug'])+check('mzV85LobTrust','Fiducia già ottenuta')+roll('mzV85LobExtract',6,'1d6 — estrazione')+'<div id="mzV85LobExtractOut" class="mz-v78-fixed"></div>';
    h+=check('mzV85LobDidExtract','Il PG ha effettivamente estratto veleno in questa role')+'<div id="mzV85LobIllegalContext" style="display:none">'+check('mzV85LobNarrated','La role è già gestita da un Narratore')+'<div id="mzV85LobIllegalWrap">'+roll('mzV85LobIllegal',5,'1d5 — controllo estrazione illegale (Player in free role / Narratore in role masterata)')+'</div></div><div id="mzV85LobIllegalOut" class="mz-v78-fixed"></div>';
    h+='<hr><b>Usarlo come arma</b>'+check('mzV85LobOwned','Il Lobalug appartiene alla Riserva del PG')+roll('mzV85LobCommand',50,'1d50 — comando su Lobalug non proprio')+'<div id="mzV85LobWeaponOut" class="mz-v78-fixed"></div>';
  }
@@ -10864,7 +10867,7 @@ function bind(){
 document.addEventListener('click',function(e){
  var b=e.target&&e.target.closest?e.target.closest('[data-v85-copy]'):null;if(!b)return;
  var t=b.getAttribute('data-v85-copy')||'';if(!t)return;
- try{navigator.clipboard.writeText(t);var old=b.textContent;b.textContent='Copiato';setTimeout(function(){b.textContent=old;},800);}catch(err){}
+ mzCopyRawText(t,b);
 },true);
 document.addEventListener('change',function(e){
  var id=e.target&&e.target.id||'';
@@ -11040,7 +11043,7 @@ if(typeof window.recomputeDomesticazione==='function'){
 function bind(){
   var p=E('mzV86BestiaryMZ');if(!p)return;p.querySelectorAll('input,select').forEach(function(x){x.addEventListener(x.type==='checkbox'||x.tagName==='SELECT'?'change':'input',function(){update();if(typeof window.ricalcolaMagizoologia==='function')ricalcolaMagizoologia();});});
 }
-document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-v86-copy]'):null;if(!b)return;var t=b.getAttribute('data-v86-copy')||'';try{navigator.clipboard.writeText(t);var old=b.textContent;b.textContent='Copiato';setTimeout(function(){b.textContent=old;},800);}catch(err){}},true);
+document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-v86-copy]'):null;if(!b)return;var t=b.getAttribute('data-v86-copy')||'';mzCopyRawText(t,b);},true);
 document.addEventListener('change',function(e){var id=e.target&&e.target.id||'';if(id==='specieCreaturaGuida'||id==='faseVitale'||id==='sapienzaProfilo'||id==='pgAllineamento'||id==='pgTipo'||id==='pgVoto'||id==='livAddestratore')setTimeout(function(){render();if(typeof window.ricalcolaMagizoologia==='function')ricalcolaMagizoologia();},0);},true);
 function init(){render();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(init,0);});else setTimeout(init,0);
@@ -11283,7 +11286,7 @@ if(typeof window.recomputeDomesticazione==='function'){
 }
 
 function bind(){var p=E('mzV87EntityBox');if(!p)return;p.querySelectorAll('input,select').forEach(function(x){if(x.getAttribute('data-v87-bound')==='1')return;x.setAttribute('data-v87-bound','1');x.addEventListener(x.type==='checkbox'||x.tagName==='SELECT'?'change':'input',function(){update();if(typeof window.ricalcolaMagizoologia==='function')ricalcolaMagizoologia();});});}
-document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-v87-copy]'):null;if(!b)return;var t=b.getAttribute('data-v87-copy')||'';try{navigator.clipboard.writeText(t);var old=b.textContent;b.textContent='Copiato';setTimeout(function(){b.textContent=old;},800);}catch(err){}},true);
+document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-v87-copy]'):null;if(!b)return;var t=b.getAttribute('data-v87-copy')||'';mzCopyRawText(t,b);},true);
 document.addEventListener('change',function(e){var id=e.target&&e.target.id||'';if(id==='specieCreaturaGuida'||id==='pgAllineamento'||id==='sapienzaProfilo'||id==='livAddestratore')setTimeout(function(){render();if(typeof window.ricalcolaMagizoologia==='function')ricalcolaMagizoologia();},0);},true);
 function addLegilimensOption(){
  var dl=E('specieCreaturaGuidaList')||document.querySelector('datalist');if(!dl)return;
@@ -11454,7 +11457,7 @@ function update(){
  }
 }
 function bind(){var p=E('mzV88SpiritBox');if(!p)return;p.querySelectorAll('input,select').forEach(function(x){x.addEventListener(x.type==='checkbox'||x.tagName==='SELECT'?'change':'input',update);});}
-document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-v88-copy]'):null;if(!b)return;var t=b.getAttribute('data-v88-copy')||'';try{navigator.clipboard.writeText(t);var old=b.textContent;b.textContent='Copiato';setTimeout(function(){b.textContent=old;},800);}catch(err){}},true);
+document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-v88-copy]'):null;if(!b)return;var t=b.getAttribute('data-v88-copy')||'';mzCopyRawText(t,b);},true);
 
 /* Tutte le voci di questo blocco usano procedure speciali, non Fiducia/Domesticazione standard. */
 if(typeof window.recomputeFiducia==='function'){
@@ -13124,6 +13127,118 @@ button:disabled,.flow-page-btn.locked{opacity:.72!important;}
 /* Le tabelle della Guida mantengono intestazioni scure con testo molto chiaro. */
 table.fasce th,#modoMagizoologia .pannello table.fasce th{background:#6a2b13!important;color:#fffaf6!important;}
 </style>
+
+
+<style id="magizoologia-v139-alignment-style">
+.rm-next-lock-reason{margin:8px 0 16px;padding:9px 11px;border:1px solid #a45a36;border-left:4px solid #b24b3d;border-radius:6px;background:#321812;color:#ffe7da;font-size:.84em;line-height:1.45}
+.mz-v139-ingredient-law{margin:9px 0;padding:9px 11px;border:1px solid #8a5f2c;border-left:4px solid #c79645;border-radius:6px;background:#28180e;color:#f7e2cf;font-size:.82em;line-height:1.5}
+.mz-v139-ingredient-law>b{color:#ffd09a}.mz-v139-ingredient-law span{color:#e8cdb8}.mz-v139-law-chip{display:inline-block;padding:1px 6px;border:1px solid #a1693b;border-radius:10px;background:#3a2115;color:#ffe0bc;font-size:.8em;font-weight:700}
+.mz-v139-remuvo-choice{margin:10px 0;padding:10px;border:1px solid #74452d;border-radius:6px;background:#1b100b}.mz-v139-special-extraction{margin:9px 0;padding:10px 12px;border:1px solid #a94d2d;border-left:4px solid #c86143;border-radius:6px;background:#3c1a13;color:#ffe0d4;line-height:1.45}
+</style>
+<script id="magizoologia-v139-alignment">
+(function(){
+'use strict';
+function e(id){return document.getElementById(id);}
+function speciesKey139(){return typeof norm==='function'?norm((e('specieCreaturaGuida')||{}).value||''):String((e('specieCreaturaGuida')||{}).value||'').toLowerCase();}
+function esc139(x){return typeof esc==='function'?esc(x):String(x||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+window.mzV139GuardRemuvo=function(){var k=speciesKey139(),use=e('mzV80RemuvoUse'),note=e('mzV139RemuvoSpecialNote'),choice=e('mzV139RemuvoIngredientChoice'),items=(typeof productionIngredientsFor==='function'?productionIngredientsFor(k):[])||[],known=typeof v139KnownSpeciesKey==='function'&&v139KnownSpeciesKey(k);if(!use)return;if(k==='lobalug'){if(use.checked){use.checked=false;}use.disabled=true;if(note){note.style.display='block';note.innerHTML='<b>Lobalug:</b> il Veleno segue la procedura specifica «Estrarre il Veleno» della scheda e <b>non</b> il Remuvo generico. L’eventuale controllo illegale rimane il 1d5 specifico, una sola volta per role.';}if(choice)choice.style.display='none';return;}if(known&&!items.length){if(use.checked)use.checked=false;use.disabled=true;if(note){note.style.display='block';note.innerHTML='<b>Remuvo Ingredienti non disponibile:</b> il Bestiario aggiornato non elenca Ingredienti per questa specie. Eventuali parti indicate come <b>Oggetti da collezionismo</b> seguono esclusivamente lo specchietto specifico e non usano il pannello generico di Remuvo.';}if(choice)choice.style.display='none';return;}use.disabled=false;if(note){note.style.display='none';note.innerHTML='';}if(choice)choice.style.display='';};
+window.mzV139RenderRemuvoIngredientChoice=function(){var sel=e('mzV139RemuvoIngredientSelect'),saved=e('mzV139RemuvoIngredientSaved'),savedSpecies=e('mzV139RemuvoIngredientSpeciesSaved'),law=e('mzV139RemuvoIngredientLaw'),wrap=e('mzV139RemuvoIngredientChoice');if(!sel||!wrap)return;var k=speciesKey139(),items=(typeof productionIngredientsFor==='function'?productionIngredientsFor(k):[])||[],sameSpecies=!!(savedSpecies&&savedSpecies.value===k);if(!items.length){wrap.style.display='none';sel.innerHTML='';if(saved)saved.value='';if(savedSpecies)savedSpecies.value=k||'';if(law)law.innerHTML='';return;}wrap.style.display='block';var old=sameSpecies?(sel.value||(saved&&saved.value)||''):'';if(!sameSpecies){sel.value='';if(saved)saved.value='';}var html='<option value="">— Scegli un solo tipo —</option>';items.forEach(function(x){html+='<option value="'+esc139(x)+'">'+esc139(x)+'</option>';});if(sel.innerHTML!==html)sel.innerHTML=html;if(old&&items.indexOf(old)>=0)sel.value=old;if(!sel.value&&items.length===1)sel.value=items[0];if(saved)saved.value=sel.value||'';if(savedSpecies)savedSpecies.value=k||'';var val=sel.value;if(law){law.innerHTML=val?(typeof ingredientLawHtml==='function'?ingredientLawHtml([val]):''):'<div class="mz-v78-note"><b>Scegli prima il tipo di Ingrediente.</b> Se la Creatura ne fornisce più di uno, Remuvo permette di scegliere <b>un solo tipo</b> per l’utilizzo corrente e tutta la quantità ottenuta appartiene a quel tipo.</div>';}};
+function syncOwnChoice(){var row=e('mzV139OwnBonusChoice'),own=e('allevataPersonalmente'),lv=Number((e('livAllevatore')||{}).value||0),mode=e('mzV139OwnDurationMode');if(!row)return;var on=!!(own&&own.checked&&lv>0);row.style.display=on?'flex':'none';if(!on&&mode)mode.checked=false;}
+function syncAll(){syncOwnChoice();if(window.mzV139GuardRemuvo)window.mzV139GuardRemuvo();if(e('mzV80RemuvoUse')&&e('mzV80RemuvoUse').checked&&window.mzV139RenderRemuvoIngredientChoice)window.mzV139RenderRemuvoIngredientChoice();}
+document.addEventListener('change',function(ev){var id=ev.target&&ev.target.id||'';if(id==='specieCreaturaGuida'||id==='allevataPersonalmente'||id==='livAllevatore'||id==='mzV139OwnDurationMode'){setTimeout(function(){syncAll();if(typeof window.mzV140RunProduction==='function')window.mzV140RunProduction();},0);}if(id==='mzV139RemuvoIngredientSelect'){var sv=e('mzV139RemuvoIngredientSaved'),ss=e('mzV139RemuvoIngredientSpeciesSaved');if(sv)sv.value=ev.target.value||'';if(ss)ss.value=speciesKey139();if(window.mzV139RenderRemuvoIngredientChoice)window.mzV139RenderRemuvoIngredientChoice();}},true);
+window.addEventListener('load',function(){setTimeout(syncAll,0);});
+setTimeout(syncAll,0);
+})();
+</script>
+
+
+<style id="magizoologia-v140-remuvo-audit-style">
+#mzV140DuckbillSeason{margin:10px 0;padding:10px 12px;border:1px solid #8a5f2c;border-left:4px solid #c79645;border-radius:6px;background:#28180e;color:#f7e2cf;line-height:1.45}
+#mzV140DuckbillSeason label{color:#f7e2cf!important;font-weight:700}
+.mz-v140-special-rule{margin:8px 0;padding:9px 11px;border:1px solid #a45a36;border-left:4px solid #c86143;border-radius:6px;background:#351812;color:#ffe2d4;line-height:1.45}
+</style>
+<script id="magizoologia-v140-remuvo-audit">
+(function(){
+'use strict';
+function E140(id){return document.getElementById(id);}
+function k140(){var v=(E140('specieCreaturaGuida')||{}).value||'';return typeof norm==='function'?norm(v):String(v).trim().toLowerCase();}
+function esc140(v){return typeof esc==='function'?esc(v):String(v==null?'':v).replace(/[&<>\"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c];});}
+function remuvoOn140(){var u=E140('mzV80RemuvoUse'),p=E140('mzV80RemuvoProfile'),sel=E140('mzV139RemuvoIngredientSelect');return !!(u&&u.checked&&p&&p.value&&sel&&sel.value);}
+
+/* Duckbill: l'Antenna esiste fra gli Ingredienti, ma è ottenibile soltanto d'inverno. */
+function ensureDuckbillSeason140(){
+  var panel=E140('pannelloAllevamento'); if(!panel||E140('mzV140DuckbillSeason'))return;
+  var d=document.createElement('div');d.id='mzV140DuckbillSeason';d.style.display='none';
+  d.innerHTML='<div class="check-riga"><input type="checkbox" id="mzV140DuckbillWinter" data-key="mzV140DuckbillWinter"><label for="mzV140DuckbillWinter">La role / il ciclo si svolge in <b>inverno</b></label></div><div class="mz-v78-note">L\'Antenna di Duckbill può essere ottenuta soltanto durante l\'inverno. Fuori dall\'inverno il tool considera producibile/estraibile soltanto l\'Artiglio.</div>';
+  var prod=E140('mzV106ProductionRiskBox')||E140('mzV78ProductionBlock')||E140('mzV80RemuvoBlock');
+  panel.insertBefore(d,prod||panel.querySelector('.mz-phase-footer-nav')||null);
+}
+function syncDuckbillSeason140(){ensureDuckbillSeason140();var d=E140('mzV140DuckbillSeason');if(d)d.style.display=k140()==='duckbill'?'block':'none';}
+var baseProductionIngredients140=window.productionIngredientsFor;
+if(typeof baseProductionIngredients140==='function'){
+  window.productionIngredientsFor=function(key){var arr=(baseProductionIngredients140.apply(this,arguments)||[]).slice(),k=typeof norm==='function'?norm(key):String(key||'').toLowerCase();if(k==='duckbill'&&!(E140('mzV140DuckbillWinter')&&E140('mzV140DuckbillWinter').checked))arr=arr.filter(function(x){return x!=='Antenna di Duckbill';});return arr;};
+}
+
+/* Remuvo: alcune specie possiedono una procedura che prevale sul pannello generico. */
+window.mzV139GuardRemuvo=function(){
+  var k=k140(),use=E140('mzV80RemuvoUse'),note=E140('mzV139RemuvoSpecialNote'),choice=E140('mzV139RemuvoIngredientChoice'),items=(typeof productionIngredientsFor==='function'?productionIngredientsFor(k):[])||[],known=typeof v139KnownSpeciesKey==='function'&&v139KnownSpeciesKey(k);if(!use)return;
+  var msg='';
+  if(k==='lobalug')msg='<b>Lobalug:</b> il Veleno segue esclusivamente la procedura specifica «Estrarre il Veleno» della scheda e non il Remuvo generico. Il controllo dell\'eventuale estrazione illegale resta quello specifico, una sola volta per role.';
+  else if(k==='banshee')msg='<b>Banshee:</b> le Lacrime devono essere raccolte fisicamente con la mano o con un contenitore. Qualsiasi tentativo di prelievo magico le disperde e le rende inutilizzabili: <b>Remuvo non è disponibile</b>.';
+  else if(k==='ashwinder')msg='<b>Ashwinder:</b> Uova e Cenere seguono il ciclo specifico della specie (ricerca/congelamento delle 3 Uova e raccolta della Cenere al completamento del ciclo). <b>Remuvo generico non si applica</b>.';
+  if(msg){if(use.checked)use.checked=false;use.disabled=true;if(note){note.style.display='block';note.innerHTML=msg;}if(choice)choice.style.display='none';return;}
+  if(known&&!items.length){if(use.checked)use.checked=false;use.disabled=true;if(note){note.style.display='block';note.innerHTML='<b>Remuvo Ingredienti non disponibile:</b> il Bestiario aggiornato non elenca Ingredienti estraibili per questa specie. Eventuali parti considerate <b>Oggetti da collezionismo</b> seguono lo specchietto specifico e non il pannello generico.';}if(choice)choice.style.display='none';return;}
+  use.disabled=false;if(note){note.style.display='none';note.innerHTML='';}if(choice)choice.style.display='';
+};
+
+function qualityLabel140(v,q){if(typeof window.mzV140QualityLabel==='function')return window.mzV140QualityLabel(v,q);if(v>=q[0][0]&&v<=q[0][1])return ['Integro','ok'];if(v>=q[1][0]&&v<=q[1][1])return ['Parzialmente danneggiato',''];return ['Danneggiato','fail'];}
+function buildAcroQuality140(total,d){var h=E140('mzV80RemuvoQuality');if(!h)return;if(!total){h.innerHTML='<b>Qualità:</b> seleziona prima la taglia dell\'Acromantula.';h.dataset.n='';return;}if(h.dataset.n!==('acro-'+total)){h.dataset.n='acro-'+total;h.innerHTML='<b>Qualità delle dosi — 1d15 per ciascuna</b><div class="mz-v78-note">La quantità è stabilita dalla taglia; l\'integrità segue il normale esito di Remuvo.</div>';for(var i=1;i<=total;i++)h.insertAdjacentHTML('beforeend',typeof rollHtml==='function'?rollHtml('mzV80RemuvoQuality'+i,15,'Dose di Veleno '+i):'');if(typeof window.setupNumericInputs==='function')setupNumericInputs();}for(var j=1;j<=total;j++){var el=E140('mzV80RemuvoQuality'+j),v=el&&el.value!==''?Number(el.value):null,z=v===null?null:qualityLabel140(v,d.q);if(typeof setTag==='function')setTag('mzV80RemuvoQuality'+j,v===null?'in attesa':z[0],v===null?'':z[1]);}}
+function syncAcroSpecificCheckbox140(){var c=E140('mzV78RemuvoAcromantula'),u=E140('mzV80RemuvoUse');if(c&&k140()==='acromantula')c.checked=!!(u&&u.checked);var row=c&&c.closest?c.closest('.check-riga'):null;if(row&&k140()==='acromantula')row.style.display='none';var out=E140('mzV78RemuvoAcromantulaOut');if(out&&k140()==='acromantula')out.innerHTML='<b>Usa il pannello Remuvo sotto.</b> La taglia selezionata qui determina automaticamente 1/2/3 dosi; l\'estrazione da un esemplare vivo lo uccide e causa −1 Empatia permanente.';}
+function postRemuvo140(){
+  syncDuckbillSeason140();syncAcroSpecificCheckbox140();
+  var k=k140(),use=E140('mzV80RemuvoUse'),body=E140('mzV80RemuvoBody');if(!use||!use.checked||!body)return;
+  var key=(E140('mzV80RemuvoProfile')||{}).value,d=(window.MZ_V140_REMUVO_PROFILES||{})[key],r=E140('mzV80RemuvoRule'),q=E140('mzV80RemuvoQuantity'),qh=E140('mzV80RemuvoQuality'),h=E140('mzV80RemuvoHostility'),note=E140('mzV139RemuvoSpecialNote');
+  if(!d)return;
+  if(k==='acromantula'){
+    var sz=Number((E140('mzV78AcroRemuvoSize')||{}).value||0);
+    if(note){note.style.display='block';note.innerHTML='<b>Acromantula — regola specifica:</b> da un esemplare vivo si ottengono <b>1/2/3 dosi</b> rispettivamente da taglia piccola/media/grande. L\'estrazione lo <b>uccide</b> e causa <b>−1 Empatia permanente</b>. Quantità e Ostilità generiche di Remuvo non si applicano; l\'integrità delle dosi continua a seguire il profilo di Remuvo.';}
+    if(r)r.innerHTML='<div class="mz-v78-fixed"><b>Fatica:</b> −1,5 · <b>Conseguenza specifica:</b> morte dell\'Acromantula viva e −1 Empatia permanente. Il normale danno percentuale/Ostilità di Remuvo è assorbito dalla conseguenza specifica.</div>';
+    if(q)q.innerHTML='<b>Numero di dosi ottenute</b><div class="mz-v78-fixed">'+(sz?('Taglia selezionata: <b>'+sz+' '+(sz===1?'dose':'dosi')+'</b>.'):'Seleziona la taglia nel riquadro specifico dell\'Acromantula.')+'</div>';
+    buildAcroQuality140(sz,d);
+    if(h)h.innerHTML='<div class="mz-v78-fixed"><b>Ostilità:</b> nessun 1d10. L\'estrazione da viva provoca direttamente la morte della Creatura.</div>';
+    var rn=E140('mzV95RemuvoNarrator');if(rn)rn.style.display='none';
+  } else if(k==='manticora'){
+    if(note){note.style.display='block';note.innerHTML='<b>Manticora — regola specifica:</b> il Veleno si estrae soltanto con Remuvo sul pungiglione. L\'estrazione <b>uccide la Manticora</b> e causa <b>−1 Empatia permanente</b>. Quantità e integrità seguono Remuvo; il 1d10 di Ostilità non ha senso dopo la conseguenza letale.';}
+    if(r)r.innerHTML='<div class="mz-v78-fixed"><b>Fatica:</b> −1,5 · <b>Conseguenza specifica:</b> morte della Manticora e −1 Empatia permanente. Quantità e qualità restano quelle determinate dal profilo di Remuvo.</div>';
+    if(h)h.innerHTML='<div class="mz-v78-fixed"><b>Ostilità:</b> nessun 1d10; l\'estrazione provoca direttamente la morte della Creatura.</div>';
+    var rn2=E140('mzV95RemuvoNarrator');if(rn2)rn2.style.display='none';
+  } else if(k==='serpente marino'){
+    if(note){note.style.display='block';note.innerHTML='<b>Serpente Marino — regola specifica:</b> tentare di ottenere le Squame tramite Remuvo rende la Creatura <b>ostile automaticamente</b>. Non si effettua il normale 1d10 di Ostilità.';}
+    if(h)h.innerHTML='<div class="mz-v78-fixed"><b>Ostilità automatica:</b> il Serpente Marino diventa ostile appena tenti il prelievo delle Squame con Remuvo.</div>';
+    var rn3=E140('mzV95RemuvoNarrator');if(rn3)rn3.style.display='none';
+  } else if(k==='tebo'){
+    if(note){note.style.display='block';note.innerHTML='<b>Tebo:</b> se Remuvo rimuove la Pelle da un esemplare <b>ancora vivo</b>, oltre alle normali conseguenze di Remuvo la Creatura subisce Danni di Salute e il PG perde <b>1 Empatia permanente</b>.';}
+  }
+}
+
+/* Riepilogo: sostituisce gli esiti generici incompatibili con le regole specifiche. */
+if(typeof window.mzGuideMalusLines==='function'){
+  var oldMalus140=window.mzGuideMalusLines;window.mzGuideMalusLines=function(){var a=oldMalus140.apply(this,arguments)||[],k=k140();if(!remuvoOn140())return a;
+    if(k==='acromantula'||k==='manticora'||k==='serpente marino')a=a.filter(function(x){return !(String(x).indexOf('Remuvo: -')===0||String(x).indexOf('Remuvo: la Creatura è diventata ostile.')===0);});
+    if(k==='acromantula')a.push('Remuvo su Acromantula viva: la Creatura muore e il PG perde 1 Empatia permanente.');
+    if(k==='manticora')a.push('Remuvo sul pungiglione della Manticora: la Creatura muore e il PG perde 1 Empatia permanente.');
+    if(k==='serpente marino')a.push('Remuvo sulle Squame del Serpente Marino: la Creatura diventa ostile automaticamente.');
+    if(k==='tebo')a.push('Tebo: se la Pelle viene rimossa mentre è ancora vivo, subisce Danni di Salute e il PG perde 1 Empatia permanente.');
+    return a;};
+}
+
+function invalidateDuckbillIngredientContext140(){var h=E140('mzV78IngredientTypeRolls');if(h){h.innerHTML='';h.dataset.sig='';}var sel=E140('mzV139RemuvoIngredientSelect'),sv=E140('mzV139RemuvoIngredientSaved');if(sel)sel.value='';if(sv)sv.value='';if(typeof window.mzV140RunProduction==='function')window.mzV140RunProduction();if(typeof window.mzV139RenderRemuvoIngredientChoice==='function')window.mzV139RenderRemuvoIngredientChoice();if(typeof window.mzV140RunRemuvo==='function')window.mzV140RunRemuvo(true);}
+function syncAll140(){syncDuckbillSeason140();if(typeof window.mzV139GuardRemuvo==='function')window.mzV139GuardRemuvo();if(E140('mzV80RemuvoUse')&&E140('mzV80RemuvoUse').checked&&typeof window.mzV139RenderRemuvoIngredientChoice==='function')window.mzV139RenderRemuvoIngredientChoice();postRemuvo140();}
+document.addEventListener('change',function(ev){var id=ev.target&&ev.target.id||'';if(id==='mzV140DuckbillWinter'){invalidateDuckbillIngredientContext140();}if(id==='specieCreaturaGuida'||id==='mzV80RemuvoUse'||id==='mzV80RemuvoProfile'||id==='mzV139RemuvoIngredientSelect'||id==='mzV78AcroRemuvoSize')setTimeout(syncAll140,0);},true);
+window.addEventListener('load',function(){setTimeout(syncAll140,0);});
+ensureDuckbillSeason140();setTimeout(syncAll140,0);
+})();
+</script>
 
 </body>
 </html>
