@@ -2,7 +2,9 @@
 
 
 
+
 <!DOCTYPE html>
+<!-- v141: fix altezza iframe anti-loop: misura solo il contenuto reale, non la viewport -->
 <!-- v140: audit finale Ingredienti/Remuvo — Banshee/Ashwinder speciali, Acromantula/Manticora/Serpente Marino/Tebo, stagionalità Duckbill, regressioni v139 -->
 <!-- v139: allineamento Erbologia v110 + Regolamento Ingredienti aggiornato: Repello Babbanum +1; produzione Ingredienti completa e non inventata; legalità dal Glossario; Lobalug/Nogtail speciali; Remuvo sceglie un solo tipo; copy fallback robusto; UX blocco incontri -->
 <!-- v130: sessioni Ricerca Creature condivise tra dispositivi, chiave stabile per PG, recupero sessioni legacy e rimozione vincolo ownerUid -->
@@ -8133,26 +8135,38 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
 })();
 
 
-/* ===== ALTEZZA DINAMICA IFRAME — Magizoologia v59 stabile ===== */
+/* ===== ALTEZZA DINAMICA IFRAME — v141: anti-loop viewport ===== */
 (function(){
   'use strict';
   var lastSent=0, timer=null;
 
+  /*
+     Non usare documentElement/body.scrollHeight: dentro un iframe con
+     html/body min-height:100% quei valori crescono insieme all'altezza
+     assegnata dal parent e creano un feedback infinito.
+     La .contenitore, invece, misura soltanto il contenuto reale del tool.
+  */
   function contentHeight(){
-    var de=document.documentElement,b=document.body,c=document.querySelector('.contenitore');
-    var vals=[de?de.scrollHeight:0,de?de.offsetHeight:0,b?b.scrollHeight:0,b?b.offsetHeight:0];
-    if(c){
-      var r=c.getBoundingClientRect();
-      vals.push(Math.ceil(r.bottom+(window.pageYOffset||0)));
-      vals.push(Math.ceil((c.offsetTop||0)+(c.scrollHeight||0)));
-    }
-    return Math.ceil(Math.max.apply(Math,vals)+90);
+    var c=document.querySelector('.contenitore');
+    if(!c)return 0;
+
+    var r=c.getBoundingClientRect();
+    var b=document.body;
+    var cs=b&&window.getComputedStyle?window.getComputedStyle(b):null;
+    var padBottom=cs?parseFloat(cs.paddingBottom)||0:0;
+    var marginBottom=cs?parseFloat(cs.marginBottom)||0:0;
+
+    return Math.ceil(r.bottom+(window.pageYOffset||0)+padBottom+marginBottom+8);
   }
 
   function send(force){
     var h=contentHeight();
     if(!isFinite(h)||h<300)return;
-    if(!force&&Math.abs(h-lastSent)<4)return;
+
+    /* Anche i reinvii forzati non devono rispedire la stessa altezza:
+       il resize dell'iframe può generare a sua volta un resize interno. */
+    if(lastSent&&Math.abs(h-lastSent)<3)return;
+
     lastSent=h;
     try{window.parent.postMessage({tipo:'altezzaMagizoologia',altezza:h},'*');}catch(e){}
     try{window.parent.postMessage({type:'ffgdr:iframe-height',tool:'magizoologia',height:h},'*');}catch(e){}
@@ -8164,15 +8178,15 @@ aggiornaCampiTipoPG();ricalcolaMagizoologia();ricalcolaRicerca();
   }
 
   window.mzNotifyHeight=function(){schedule(false,35);};
-  window.addEventListener('load',function(){send(true);schedule(true,260);});
-  window.addEventListener('resize',function(){schedule(true,80);});
-  window.addEventListener('hashchange',function(){schedule(true,40);});
+  window.addEventListener('load',function(){send(true);schedule(false,260);});
+  window.addEventListener('resize',function(){schedule(false,80);});
+  window.addEventListener('hashchange',function(){schedule(false,40);});
   document.addEventListener('click',function(e){
     if(e.target&&e.target.closest&&e.target.closest('button,summary,.flow-page-btn,.modo-bottone'))schedule(false,45);
   },true);
   document.addEventListener('change',function(){schedule(false,55);},true);
-  document.addEventListener('toggle',function(e){if(e.target&&e.target.tagName==='DETAILS')schedule(true,45);},true);
-  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){schedule(true,20);}).catch(function(){});}
+  document.addEventListener('toggle',function(e){if(e.target&&e.target.tagName==='DETAILS')schedule(false,45);},true);
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){schedule(false,20);}).catch(function(){});}
 
   window.addEventListener('message',function(e){
     var d=e.data||{};
