@@ -3,6 +3,7 @@
 
 
 
+<!-- Magizoologia tool v142 — avviso evidente quando si tenta di aprire la Ricerca senza aver inserito il nome del PG. -->
 <!DOCTYPE html>
 <!-- v141: fix altezza iframe anti-loop: misura solo il contenuto reale, non la viewport -->
 <!-- v140: audit finale Ingredienti/Remuvo — Banshee/Ashwinder speciali, Acromantula/Manticora/Serpente Marino/Tebo, stagionalità Duckbill, regressioni v139 -->
@@ -2466,6 +2467,27 @@ input[readonly]{opacity:1!important;cursor:default!important}
   background:rgba(0,0,0,.10);
   font-size:.72em!important;
 }
+#modoPersonaggio .session-status.research-warning{
+  display:flex;
+  width:100%;
+  box-sizing:border-box;
+  min-height:auto;
+  margin-top:10px!important;
+  padding:10px 12px;
+  border:1px solid #8e3c2d;
+  border-left:5px solid #8e3c2d;
+  border-radius:8px;
+  background:#f0c4a8;
+  color:#531b10!important;
+  font-size:.84em!important;
+  font-weight:800;
+  line-height:1.4;
+}
+#pgNomeSessione.research-required{
+  outline:3px solid #9a3e2d!important;
+  outline-offset:2px;
+  box-shadow:0 0 0 4px rgba(154,62,45,.16)!important;
+}
 #modoPersonaggio .check-riga{
   padding:10px 12px;
   border:1px solid rgba(0,0,0,.18);
@@ -2946,8 +2968,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <h2>Il tuo Personaggio</h2>
 <div class="mz-profile-picker-wrap">
 <div class="profile-section-label">Profili salvati</div>
-<div class="profilo-condiviso-note">Seleziona subito un <b>PG già salvato</b> per ripristinare automaticamente tutti i suoi dati di Magizoologia e della Guida!
-  Se invece vuoi iniziare con un <b>nuovo PG</b>, usa il tasto «Nuovo PG / Cambia PG», inserisci il nome e compila i campi.</div>
+<div class="profilo-condiviso-note">Seleziona subito un <b>PG già salvato</b> per ripristinare automaticamente tutti i suoi dati di Magizoologia e della Guida, senza dover prima entrare in «Ricerca». Se invece vuoi iniziare con un <b>nuovo PG</b>, usa il tasto «Nuovo PG / Cambia PG», inserisci il nome e compila i campi.</div>
 <div class="riga">
 <div class="campo" style="flex:1 1 320px">
 <label>PG già salvato</label>
@@ -7636,7 +7657,7 @@ function rmEnsureProfileSession(createIfMissing){
 }
 function rmReleaseCurrentForProfile(name){if(!RM_CURRENT_ID)return Promise.resolve();if(rmNormName(rmCurrentName())===rmNormName(name))return Promise.resolve();var p=(!RM_READONLY&&rmSessionCanEdit(RM_CURRENT_DATA))?rmSaveNow():Promise.resolve(true);return p.then(function(){RM_CURRENT_ID='';RM_CURRENT_DATA=null;RM_READONLY=false;rmWorkspace().style.display='none';rmEl('creature-session-home').style.display='block';if(/^#session=/.test(String(window.location.hash||''))){try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){}}});}
 function rmProfileNameCommitted(createIfMissing){var name=rmProfileName();RM_PROFILE_SESSION_ID='';RM_PROFILE_SESSION_DATA=null;RM_PROFILE_SESSION_NAME='';RM_PROFILE_PENDING_CREATE=!!(createIfMissing!==false);if(!name){RM_PROFILE_PENDING_CREATE=false;rmProfileStatus('Inserisci il nome del PG.','');return Promise.resolve(null);}return rmReleaseCurrentForProfile(name).then(function(){return rmEnsureProfileSession(createIfMissing!==false);}).then(function(found){RM_PROFILE_PENDING_CREATE=false;return found;});}
-function rmEnterResearchFromProfile(){var name=rmProfileName();if(!name){mostraModo('Personaggio');rmProfileStatus('Inserisci prima il nome del PG.','bad');var f=rmEl('pgNomeSessione');if(f)f.focus();return;}/* La scheda Ricerca deve essere cliccabile subito: Firebase può terminare il collegamento dopo. */mostraModo('Ricerca');rmEl('creature-session-home').style.display='block';rmWorkspace().style.display='none';rmStatus('rm-session-home-msg','Apro la Ricerca di '+name+'…','');if(typeof window.mzGuidePrepareForResearch==='function'){window.mzGuidePrepareForResearch();}if(!RM_FB.user||!RM_FB.db){RM_PROFILE_OPEN_PENDING=true;rmProfileStatus('Collegamento del PG a Firebase in corso…','');rmStatus('rm-session-home-msg','Collegamento a Firebase in corso… la Ricerca si aprirà automaticamente.','');return;}RM_PROFILE_OPEN_PENDING=false;rmProfileStatus('Cerco la Ricerca del PG…','');rmReleaseCurrentForProfile(name).then(function(){return rmEnsureProfileSession(true);}).then(function(found){if(!found||!found.id)return;try{history.replaceState(null,'',window.location.pathname+window.location.search+'#session='+encodeURIComponent(found.id));}catch(e){}if(RM_CURRENT_ID===found.id&&RM_CURRENT_DATA){rmEl('creature-session-home').style.display='none';rmWorkspace().style.display='block';rmStatus('rm-session-home-msg','','');rmApplyFlow();rmUpdateToolbar();return;}return rmLoadSession(found.id);}).catch(function(err){rmStatus('rm-session-home-msg','Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');rmProfileStatus('Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');});}
+function rmEnterResearchFromProfile(){var name=rmProfileName();var f=rmEl('pgNomeSessione');if(!name){mostraModo('Personaggio');rmProfileStatus('⚠ Inserisci prima il nome del PG per accedere alla Ricerca.','bad research-warning');if(f){f.classList.add('research-required');f.focus();try{f.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}}return;}if(f)f.classList.remove('research-required');/* La scheda Ricerca deve essere cliccabile subito: Firebase può terminare il collegamento dopo. */mostraModo('Ricerca');rmEl('creature-session-home').style.display='block';rmWorkspace().style.display='none';rmStatus('rm-session-home-msg','Apro la Ricerca di '+name+'…','');if(typeof window.mzGuidePrepareForResearch==='function'){window.mzGuidePrepareForResearch();}if(!RM_FB.user||!RM_FB.db){RM_PROFILE_OPEN_PENDING=true;rmProfileStatus('Collegamento del PG a Firebase in corso…','');rmStatus('rm-session-home-msg','Collegamento a Firebase in corso… la Ricerca si aprirà automaticamente.','');return;}RM_PROFILE_OPEN_PENDING=false;rmProfileStatus('Cerco la Ricerca del PG…','');rmReleaseCurrentForProfile(name).then(function(){return rmEnsureProfileSession(true);}).then(function(found){if(!found||!found.id)return;try{history.replaceState(null,'',window.location.pathname+window.location.search+'#session='+encodeURIComponent(found.id));}catch(e){}if(RM_CURRENT_ID===found.id&&RM_CURRENT_DATA){rmEl('creature-session-home').style.display='none';rmWorkspace().style.display='block';rmStatus('rm-session-home-msg','','');rmApplyFlow();rmUpdateToolbar();return;}return rmLoadSession(found.id);}).catch(function(err){rmStatus('rm-session-home-msg','Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');rmProfileStatus('Non riesco ad aprire la Ricerca: '+(err.message||err),'bad');});}
 function rmUpdateToolbar(){
   if(!RM_CURRENT_DATA)return;
   var parts=['Sessione condivisa'];
@@ -7990,6 +8011,16 @@ function mostraModo(nome){
   }
 }
 
+document.addEventListener('input',function(e){
+  if(e.target&&e.target.id==='pgNomeSessione'&&String(e.target.value||'').trim()){
+    e.target.classList.remove('research-required');
+    var s=rmEl('rm-profile-session-status');
+    if(s&&s.classList.contains('research-warning')){
+      s.textContent='';
+      s.className='session-status';
+    }
+  }
+},true);
 document.getElementById('modoPersonaggioBtn').addEventListener(evtClick, function(){ mostraModo('Personaggio'); });
 document.getElementById('modoMagizoologiaBtn').addEventListener(evtClick, function(){ mostraModo('Magizoologia'); });
 document.getElementById('modoRicercaBtn').addEventListener(evtClick, rmEnterResearchFromProfile);
