@@ -3,7 +3,7 @@
 
 
 
-<!-- Magizoologia tool v147 — rimosso il flash del messaggio di caricamento dei profili salvati; restano solo gli stati utili. -->
+<!-- Magizoologia tool v148 — rimossi i comandi manuali Aggiorna elenco da profili e Ricerche; gli elenchi continuano a caricarsi nei flussi automatici previsti. -->
 <!DOCTYPE html>
 <!-- v141: fix altezza iframe anti-loop: misura solo il contenuto reale, non la viewport -->
 <!-- v140: audit finale Ingredienti/Remuvo — Banshee/Ashwinder speciali, Acromantula/Manticora/Serpente Marino/Tebo, stagionalità Duckbill, regressioni v139 -->
@@ -2982,11 +2982,11 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="campo" style="flex:1 1 320px">
 <label>PG già salvato</label>
 <select id="mzProfilePicker"><option value="">— Seleziona un PG salvato —</option></select>
+<div class="profilo-session-hint">L'elenco viene letto da Firebase e mostra i profili Magizoologia già esistenti.</div>
 </div>
 <div class="campo" style="flex:0 1 260px">
 <label>Azioni rapide</label>
 <div class="mz-profile-picker-actions">
-<button class="bottone-secondario" id="mzProfileRefreshBtn" type="button"><i aria-hidden="true" class="fa-solid fa-rotate"></i> Aggiorna elenco</button>
 <button class="mz-reset-profile-btn" id="mzPrepareNewProfileBtn" type="button"><i aria-hidden="true" class="fa-solid fa-user-plus"></i> Nuovo PG / Cambia PG</button>
 </div>
 </div>
@@ -3789,7 +3789,6 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 <div class="session-status" id="rm-firebase-auth-status">Connessione a Firebase…</div>
 <div class="session-new-row">
 <button class="session-btn" data-session-control="1" id="rm-btn-new-session" type="button">+ Nuova Ricerca</button>
-<button class="session-btn ghost" data-session-control="1" id="rm-btn-refresh-sessions" type="button">↻ Aggiorna</button>
 </div>
 <div class="session-status" id="rm-session-home-msg"></div>
 <div id="rm-session-list"></div>
@@ -7870,7 +7869,6 @@ function rmInitEncounterBonusDocks(){
 function rmSetupControls(){
   rmInitEncounterBonusDocks();
   rmEl('rm-btn-new-session').addEventListener(evtClick,rmCreateSession);
-  rmEl('rm-btn-refresh-sessions').addEventListener(evtClick,rmLoadSessions);
   rmEl('rm-btn-back-sessions').addEventListener(evtClick,rmBack);
   rmEl('rm-btn-delete-session').addEventListener(evtClick,rmOpenDelete);
   rmEl('rm-btn-cancel-delete').addEventListener(evtClick,rmCloseDelete);
@@ -8372,7 +8370,7 @@ window.mzGuideFirebaseReady=function(user){if(!user||!RM_FB.db||MZ_GUIDE_LOADING
 function mz44InsideGuideOrProfile(t){var g=document.getElementById('modoMagizoologia'),p=document.getElementById('modoPersonaggio');return !!(t&&((g&&g.contains(t))||(p&&p.contains(t))));}
 document.addEventListener('input',function(e){if(!mz44InsideGuideOrProfile(e.target))return;if(e.target&&e.target.id==='pgNomeSessione'){if(MZ_GUIDE_NAME_SAVE_TIMER)clearTimeout(MZ_GUIDE_NAME_SAVE_TIMER);MZ_GUIDE_NAME_SAVE_TIMER=setTimeout(function(){MZ_GUIDE_NAME_SAVE_TIMER=null;mzGuideScheduleSave();},1100);return;}mzGuideScheduleSave();},true);
 document.addEventListener('change',function(e){if(!mz44InsideGuideOrProfile(e.target))return;if(e.target&&e.target.id==='pgNomeSessione'&&MZ_GUIDE_NAME_SAVE_TIMER){clearTimeout(MZ_GUIDE_NAME_SAVE_TIMER);MZ_GUIDE_NAME_SAVE_TIMER=null;}mzGuideScheduleSave();},true);
-document.addEventListener('click',function(e){if(mz44InsideGuideOrProfile(e.target)&&e.target.closest&&e.target.closest('button')&&e.target.id!=='mzResetAllBtn'&&e.target.id!=='mzPrepareNewProfileBtn'&&e.target.id!=='mzProfileRefreshBtn')setTimeout(mzGuideScheduleSave,80);},true);
+document.addEventListener('click',function(e){if(mz44InsideGuideOrProfile(e.target)&&e.target.closest&&e.target.closest('button')&&e.target.id!=='mzResetAllBtn'&&e.target.id!=='mzPrepareNewProfileBtn')setTimeout(mzGuideScheduleSave,80);},true);
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&MZ_GUIDE_READY)mzGuideSaveNow();});
 window.addEventListener('pagehide',function(){if(MZ_GUIDE_READY)mzGuideSaveNow();});
 
@@ -8381,8 +8379,6 @@ var mzResetAllBtn=document.getElementById('mzResetAllBtn');
 if(mzResetAllBtn)mzResetAllBtn.addEventListener('click',function(){window.mzResetPersistentGuideForNewPg(mzResetAllBtn);});
 var mzPrepareNewProfileBtn=document.getElementById('mzPrepareNewProfileBtn');
 if(mzPrepareNewProfileBtn)mzPrepareNewProfileBtn.addEventListener('click',function(){window.mzResetPersistentGuideForNewPg(mzResetAllBtn||mzPrepareNewProfileBtn);var nameField=document.getElementById('pgNomeSessione');if(nameField)nameField.focus();});
-var mzProfileRefreshBtn=document.getElementById('mzProfileRefreshBtn');
-if(mzProfileRefreshBtn)mzProfileRefreshBtn.addEventListener('click',function(){if(typeof mzProfileRefreshList==='function')mzProfileRefreshList(rmProfileName()||MZ_GUIDE_BOUND_NAME||'');});
 var mzProfilePickerEl=document.getElementById('mzProfilePicker');
 if(mzProfilePickerEl)mzProfilePickerEl.addEventListener('change',function(){var name=this.value||'';if(name&&typeof mzProfileOpenByName==='function')mzProfileOpenByName(name);});
 
