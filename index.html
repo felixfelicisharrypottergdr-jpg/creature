@@ -3,7 +3,7 @@
 
 
 
-<!-- Magizoologia tool v145 — rimossa la conta numerica dei profili salvati; mantenuti caricamento, errori e stato elenco vuoto. -->
+<!-- Magizoologia tool v146 — nascosto completamente il contenitore stato profili quando non contiene testo, eliminando il residuo grafico. -->
 <!DOCTYPE html>
 <!-- v141: fix altezza iframe anti-loop: misura solo il contenuto reale, non la viewport -->
 <!-- v140: audit finale Ingredienti/Remuvo — Banshee/Ashwinder speciali, Acromantula/Manticora/Serpente Marino/Tebo, stagionalità Duckbill, regressioni v139 -->
@@ -2992,7 +2992,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </div>
 </div>
 </div>
-<div class="session-status mz-profile-picker-status" id="mz-profile-picker-status"></div>
+<div class="session-status mz-profile-picker-status" id="mz-profile-picker-status" style="display:none"></div>
 </div>
 <div class="profilo-condiviso-note">Compila qui soltanto i <b>dati generici del PG</b>: nome, tipo, Empatia, Sapienza Magizoologica, Conoscenze Avanzate e, per gli Adulti, l’eventuale frequenza pregressa di CDCM. Per gli <b>Studenti</b> il voto della singola Creatura viene richiesto soltanto dopo che la Ricerca ha identificato quale Creatura è stata trovata oppure direttamente nella Guida.</div>
 <div class="profile-section-label">Dati del Personaggio</div>
@@ -8318,7 +8318,7 @@ if(typeof window.rmResumeFlow==='function'){window.rmResumeFlow=function(){var p
 /* ---------- Firebase: Profilo Magizoologia pubblico per PG ---------- */
 var MZ_GUIDE_RESTORING=false,MZ_GUIDE_SAVE_TIMER=null,MZ_GUIDE_NAME_SAVE_TIMER=null,MZ_GUIDE_SAVE_CHAIN=Promise.resolve(),MZ_GUIDE_READY=false,MZ_GUIDE_DIRTY_BEFORE_READY=false,MZ_GUIDE_LOADING=false,MZ_GUIDE_BOUND_NAME='',MZ_GUIDE_CURRENT_DOC_ID='';
 function mzGuideStatus(msg,kind){var e=document.getElementById('mz-guide-save-status');if(!e)return;e.textContent=msg;e.className='guide-firebase-bar'+(kind?' '+kind:'');}
-function mzProfilePickerStatus(msg,kind){var e=document.getElementById('mz-profile-picker-status');if(!e)return;e.textContent=msg||'';e.className='session-status mz-profile-picker-status'+(kind?' '+kind:'');}
+function mzProfilePickerStatus(msg,kind){var e=document.getElementById('mz-profile-picker-status');if(!e)return;msg=String(msg||'').trim();e.textContent=msg;e.className='session-status mz-profile-picker-status'+(kind?' '+kind:'');e.style.display=msg?'':'none';}
 function mzProfilePicker(){return document.getElementById('mzProfilePicker');}
 function mzProfileDocId(name){return 'profile_'+rmPublicSessionId(name);}
 function mzGuideDoc(name){var n=String(name||rmProfileName()||MZ_GUIDE_BOUND_NAME||'').trim();if(!RM_FB||!RM_FB.db||!RM_FB.user||!n)return null;MZ_GUIDE_CURRENT_DOC_ID=mzProfileDocId(n);return RM_FB.db.collection(RM_COLLECTION).doc(MZ_GUIDE_CURRENT_DOC_ID);}
