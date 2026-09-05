@@ -1,4 +1,9 @@
 
+<!-- Magizoologia tool v151 — quarto audit Azioni Illegali: il controllo di Allevamento vale per un solo ciclo; al completamento il ciclo viene consolidato e il successivo richiede un nuovo 1d30/1d50. -->
+<!-- Magizoologia v150 — terzo audit gate Creature illegali: Creatura fissata dopo il primo tiro, copertura completa della Licenza Speciale (Crup/Fiammagranchio/Fwooper/Kneazle), Velenottero forzato illegale e configurazione Allevamento selezionabile prima del gate. -->
+<!-- Magizoologia v149 — audit gate Creature illegali: dado fotografato all’avvio, risultato persistente, reset al cambio Creatura, blocco anti-metagame e legalità automatica non disattivabile per le specie note come illegali. -->
+<!-- Magizoologia tool v148 — gate bloccanti anti-metagame per tutte le Creature illegali gestite in Riserva: Cura e Allevamento, tiro autonomo 1d30/1d50 + protezioni, Narratore solo con esito 1. -->
+
 
 
 
@@ -13287,6 +13292,222 @@ function syncAll140(){syncDuckbillSeason140();if(typeof window.mzV139GuardRemuvo
 document.addEventListener('change',function(ev){var id=ev.target&&ev.target.id||'';if(id==='mzV140DuckbillWinter'){invalidateDuckbillIngredientContext140();}if(id==='specieCreaturaGuida'||id==='mzV80RemuvoUse'||id==='mzV80RemuvoProfile'||id==='mzV139RemuvoIngredientSelect'||id==='mzV78AcroRemuvoSize')setTimeout(syncAll140,0);},true);
 window.addEventListener('load',function(){setTimeout(syncAll140,0);});
 ensureDuckbillSeason140();setTimeout(syncAll140,0);
+})();
+</script>
+
+
+<style id="mz-v149-illegal-gate-style">
+.mz-v148-gate{margin:12px 0 16px;padding:14px 16px;border:2px solid #8d433c;border-radius:8px;background:#fff0e8;color:#401e16}.mz-v148-gate.ok{border-color:#5f8554;background:#edf7e9;color:#20391d}.mz-v148-gate.bad{border-color:#a33440;background:#ffe7e9;color:#541820}.mz-v148-gate-title{font-weight:800;font-size:1.06em;margin-bottom:6px}.mz-v148-gate-copy{line-height:1.5}.mz-v148-gate-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+.mz-v148-locked-part{opacity:.48!important;filter:saturate(.65);pointer-events:none!important}
+</style>
+<script id="magizoologia-v150-illegal-phase-gates">(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function norm(v){v=String(v||'');try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}return v.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();}
+function hidden(id,def){var x=E(id);if(x)return x;x=document.createElement('input');x.type='hidden';x.id=id;x.setAttribute('data-key',id);x.value=def==null?'':String(def);(E('modoMagizoologia')||document.body).appendChild(x);return x;}
+function gateDisable(x,on,mark){if(!x)return;mark=mark||'mzV150GateDisabled';if(on){if(!x.disabled){x.disabled=true;x.dataset[mark]='1';}}else if(x.dataset[mark]==='1'){x.disabled=false;delete x.dataset[mark];}}
+function currentSpecies(){return String((E('specieCreaturaGuida')||{}).value||'').trim();}
+var FIXED_ILLEGAL={acromantula:1,basilisco:1,bicorno:1,chimera:1,ciclope:1,doxy:1,velenottero:1};
+var LICENSED_SPECIAL={crup:1,fiammagranchio:1,fwooper:1,kneazle:1};
+function hasSpecialLicense(){return typeof window.mzHasSpecialCreatureLicense==='function'?!!window.mzHasSpecialCreatureLicense():!!(E('pgLicenzaCreatureSpeciali')&&E('pgLicenzaCreatureSpeciali').checked);}
+function knownIllegalStatus(){var k=norm(currentSpecies());if(FIXED_ILLEGAL[k])return true;if(LICENSED_SPECIAL[k])return !hasSpecialLicense();return null;}
+function syncKnownIllegal(){var x=E('creaturaIllegaleRiserva');if(!x)return;var s=knownIllegalStatus();if(s===null){if(x.dataset.mzV150KnownIllegal==='1'){x.disabled=false;delete x.dataset.mzV150KnownIllegal;}return;}x.checked=!!s;if(!x.disabled){x.disabled=true;x.dataset.mzV150KnownIllegal='1';}}
+function illegal(){var x=E('creaturaIllegaleRiserva');return !!(x&&x.checked);}
+function started(phase){return hidden('mzV148Illegal'+phase+'Started','0').value==='1';}
+function setStarted(phase,v){hidden('mzV148Illegal'+phase+'Started','0').value=v?'1':'0';}
+function sid(phase,suf){return 'mzV149Illegal'+phase+suf;}
+function snapNum(phase,suf){var n=Number(hidden(sid(phase,suf),'').value||0);return Number.isFinite(n)?n:0;}
+function snapText(phase,suf){return String(hidden(sid(phase,suf),'').value||'');}
+function committedSpecies(){return String(hidden('mzV150IllegalCommittedSpecies','').value||'');}
+function committed(){return !!committedSpecies();}
+function setCommit(){if(!committed())hidden('mzV150IllegalCommittedSpecies','').value=currentSpecies();}
+function resetGate(phase){setStarted(phase,false);['Base','Extra','Faces','Result','Species'].forEach(function(s){hidden(sid(phase,s),'').value='';});var suf=phase==='cura'?'Cura':'Allevamento',x=E('risultatoIllegale'+suf);if(x){x.value='';x.readOnly=false;}}
+function setSnap(phase,base,extra,species){hidden(sid(phase,'Base'),'').value=String(base);hidden(sid(phase,'Extra'),'').value=String(extra);hidden(sid(phase,'Faces'),'').value=String(base+extra);hidden(sid(phase,'Result'),'').value='';hidden(sid(phase,'Species'),'').value=String(species||'');}
+function currentFaces(phase){var suf=phase==='cura'?'Cura':'Allevamento',x=E('risultatoIllegale'+suf),n=Number(x&&x.max||0);return Number.isInteger(n)&&n>1?n:0;}
+function state(phase){if(!started(phase))return {resolved:false,discovered:false,ok:false,n:null,faces:currentFaces(phase),base:0,extra:0};var faces=snapNum(phase,'Faces')||currentFaces(phase),base=snapNum(phase,'Base'),extra=snapNum(phase,'Extra'),raw=snapText(phase,'Result'),n=Number(raw),valid=raw!==''&&Number.isInteger(n)&&n>=1&&n<=faces;return {resolved:valid,discovered:valid&&n===1,ok:valid&&n!==1,n:valid?n:null,faces:faces,base:base,extra:extra};}
+function activeLock(){var lock=false;['cura','allevamento'].forEach(function(p){if(started(p)&&!state(p).ok)lock=true;});return lock;}
+function syncSpeciesContext(){var cur=currentSpecies(),commit=committedSpecies();if(commit&&norm(commit)!==norm(cur)){var sp=E('specieCreaturaGuida');if(sp)sp.value=commit;}if(!committed()&&!illegal()){resetGate('cura');resetGate('allevamento');}}
+function lockContext(){
+  var identity=committed(),active=activeLock();
+  ['specieCreaturaGuida','pgTipo','pgMagizoologoMestiere','pgLicenzaCreatureSpeciali','creaturaIllegaleRiserva'].forEach(function(id){gateDisable(E(id),identity,'mzV150IdentityDisabled');});
+  gateDisable(E('tipoCicloAllevamento'),started('allevamento'),'mzV150CycleDisabled');
+  var cfg=E('configIllegaleRiserva');if(cfg)cfg.querySelectorAll('input[type="checkbox"]').forEach(function(x){gateDisable(x,active,'mzV150ActiveDisabled');});
+  ['mzPrepareNewProfileBtn','mzResetAllBtn','bottoneReset'].forEach(function(id){var x=E(id);gateDisable(x,active,'mzV150ActiveDisabled');if(x)x.title=active?'Completa prima il controllo dell’Azione Illegale già avviato.':'';});
+}
+function phasePanel(phase){return E(phase==='cura'?'pannelloCura':'pannelloAllevamento');}
+function block(phase){return E(phase==='cura'?'rischioIllegaleCura':'rischioIllegaleAllevamento');}
+function moveBlock(phase){var p=phasePanel(phase),b=block(phase);if(!p||!b)return;var h=p.querySelector('h2'),anchor=h?h.nextSibling:p.firstChild;if(b.parentNode!==p||b.previousSibling!==h)p.insertBefore(b,anchor);}
+function isPhaseConfig(phase,x){return !!(phase==='allevamento'&&x&&x.id==='tipoCicloAllevamento');}
+function disablePhase(phase,disabled){var p=phasePanel(phase),b=block(phase);if(!p)return;p.querySelectorAll('input,select,button,textarea').forEach(function(x){if(b&&x.closest&&x.closest('#'+b.id))return;if(x.classList.contains('mz-nav-prev'))return;if(isPhaseConfig(phase,x))return;gateDisable(x,disabled,'mzV150PhaseDisabled');});Array.prototype.forEach.call(p.children,function(n){if(n===b||(n.classList&&n.classList.contains('mz-phase-footer-nav')))return;if(phase==='allevamento'&&n.contains&&E('tipoCicloAllevamento')&&n.contains(E('tipoCicloAllevamento')))return;n.classList&&n.classList.toggle('mz-v148-locked-part',disabled);});}
+function gate(phase){var b=block(phase);if(!b)return null;var id='mzV148Gate'+(phase==='cura'?'Cura':'Allevamento'),g=E(id);if(!g){g=document.createElement('div');g.id=id;g.className='mz-v148-gate';b.insertBefore(g,b.firstChild);}return g;}
+function snapshotPresentation(phase,s){if(!started(phase)||!s.faces)return;var suf=phase==='cura'?'Cura':'Allevamento',inp=E('risultatoIllegale'+suf),note=E('notaIllegale'+suf),code=E('codiceIllegale'+suf),tag=E('tagIllegale'+suf),name=phase==='cura'?'Cura':'Allevamento';if(inp){inp.max=String(s.faces);inp.value=s.resolved?String(s.n):'';}if(note)note.innerHTML='<b>Dado fissato all’avvio:</b> 1d'+s.faces+' · base '+s.base+(s.extra?' + '+s.extra+' facce di protezione':'')+'.<br><b>Esito:</b> soltanto con <b>1</b> il PG viene scoperto da un PNG.';if(code){if(typeof mzForumDiceBlock==='function')code.textContent=mzForumDiceBlock('Il PG viene scoperto da un PNG durante '+name+' della Creatura illegale?','1. Il PG viene scoperto da un PNG\n2-'+s.faces+'. Il PG non viene scoperto','[dice=1d'+s.faces+']Controllo Azione Illegale — '+name+' Creatura Magica[/dice]');else code.textContent='[dice=1d'+s.faces+']Controllo Azione Illegale — '+name+' Creatura Magica[/dice]';}if(tag){tag.textContent=!s.resolved?'in attesa':(s.discovered?'Scoperto — avvisa il Narratore':'Non scoperto');tag.className='out-tag '+(!s.resolved?'out-neutral':(s.discovered?'out-fail':'out-ok'));}}
+function renderPhase(phase){var b=block(phase);if(!b)return;if(!illegal()){b.style.display='none';disablePhase(phase,false);return;}b.style.display='block';var g=gate(phase),s=state(phase),st=started(phase),suf=phase==='cura'?'Cura':'Allevamento';snapshotPresentation(phase,s);g.className='mz-v148-gate'+(s.ok?' ok':(s.discovered?' bad':''));var html='<div class="mz-v148-gate-title">⚠ Azione Illegale — '+suf+'</div>';if(!st)html+='<div class="mz-v148-gate-copy">La Creatura selezionata è illegale. Prima di compilare questa fase devi avviare il controllo di scoperta. <b>Finché non lo avvii puoi ancora cambiare Creatura.</b> Dopo l’avvio la Creatura viene confermata definitivamente e il dado del controllo viene fissato.</div><div class="mz-v148-gate-actions"><button type="button" class="bottone-azione" data-mz-v150-start="'+phase+'">Procedi con l’Azione Illegale</button></div>';else if(!s.resolved)html+='<div class="mz-v148-gate-copy"><b>Controllo avviato.</b> Copia il dado, lancialo sul forum e inserisci il risultato. La fase resta bloccata finché il controllo non viene risolto.</div>';else if(s.discovered)html+='<div class="mz-v148-gate-copy"><b>Sei stato scoperto.</b> Non proseguire: <a class="rm-narratore-link" href="https://felixfelicisharrypottergdr.forumfree.it/?f=65091943" target="_blank" rel="noopener">contatta il Narratore</a>.</div>';else html+='<div class="mz-v148-gate-copy"><b>Non sei stato scoperto.</b> Il controllo è concluso. La Creatura resta fissata per questa Guida; prima di una fase successiva puoi aggiungere nuove protezioni, che varranno soltanto per il nuovo dado.</div>';g.innerHTML=html;var inp=E('risultatoIllegale'+suf),cp=E('copiaIllegale'+suf);if(inp){inp.disabled=!st;inp.readOnly=s.resolved;}if(cp)cp.disabled=!st;disablePhase(phase,!s.ok);}
+function render(){syncSpeciesContext();syncKnownIllegal();moveBlock('cura');moveBlock('allevamento');renderPhase('cura');renderPhase('allevamento');lockContext();}
+['cura','allevamento'].forEach(function(p){hidden('mzV148Illegal'+p+'Started','0');['Base','Extra','Faces','Result','Species'].forEach(function(s){hidden(sid(p,s),'');});});hidden('mzV150IllegalCommittedSpecies','');if(!committed()){var migrated=snapText('cura','Species')||snapText('allevamento','Species');if(migrated)hidden('mzV150IllegalCommittedSpecies','').value=migrated;}
+document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-mz-v150-start]'):null;if(!b)return;var p=b.getAttribute('data-mz-v150-start');syncKnownIllegal();if(!illegal())return;if(typeof mzRecomputeIllegalPhase==='function')mzRecomputeIllegalPhase(p);var base=typeof mzMagizoologoMestiere==='function'&&mzMagizoologoMestiere()?50:30,extra=typeof mzIllegalExtraFaces==='function'?mzIllegalExtraFaces():Math.max(0,currentFaces(p)-base);setCommit();setStarted(p,true);setSnap(p,base,extra,currentSpecies());var suf=p==='cura'?'Cura':'Allevamento',inp=E('risultatoIllegale'+suf);if(inp){inp.value='';inp.readOnly=false;}render();try{if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();}catch(err){}},true);
+document.addEventListener('input',function(e){if(!e.target||!/^risultatoIllegale(Cura|Allevamento)$/.test(e.target.id))return;var p=e.target.id.indexOf('Cura')>=0?'cura':'allevamento';if(!started(p))return;var faces=snapNum(p,'Faces'),n=Number(e.target.value);hidden(sid(p,'Result'),'').value=(e.target.value!==''&&Number.isInteger(n)&&n>=1&&n<=faces)?String(n):'';setTimeout(render,0);},true);
+document.addEventListener('change',function(e){if(e.target&&/^risultatoIllegale(Cura|Allevamento)$/.test(e.target.id)){var p=e.target.id.indexOf('Cura')>=0?'cura':'allevamento';var s=state(p);if(s.resolved)e.target.readOnly=true;render();try{if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();}catch(err){}}else if(e.target&&['creaturaIllegaleRiserva','specieCreaturaGuida','pgTipo','pgMagizoologoMestiere','pgLicenzaCreatureSpeciali','tipoCicloAllevamento'].indexOf(e.target.id)>=0){setTimeout(render,0);}else if(e.target&&e.target.closest&&e.target.closest('#configIllegaleRiserva'))setTimeout(render,0);},true);
+var old=window.ricalcolaMagizoologia;if(typeof old==='function')window.ricalcolaMagizoologia=function(){var r=old.apply(this,arguments);setTimeout(render,0);return r;};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(render,30);});else setTimeout(render,30);
+})();
+</script>
+
+
+<style id="magizoologia-v151-illegal-cycle-style">
+#mzV151NextIllegalCycle{
+  margin-top:10px;
+  padding:10px 12px;
+  border:1px solid rgba(138,194,119,.45);
+  border-radius:8px;
+  background:rgba(49,92,43,.15);
+}
+#mzV151NextIllegalCycle .mz-v151-cycle-note{margin:0 0 8px;line-height:1.45}
+</style>
+<script id="magizoologia-v151-illegal-allevamento-cycle">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function hidden(id,def){
+  var x=E(id);
+  if(x)return x;
+  x=document.createElement('input');
+  x.type='hidden';
+  x.id=id;
+  x.setAttribute('data-key',id);
+  x.value=def==null?'':String(def);
+  (E('modoMagizoologia')||document.body).appendChild(x);
+  return x;
+}
+function started(){return hidden('mzV148IllegalallevamentoStarted','0').value==='1';}
+function snapResult(){return String(hidden('mzV149IllegalallevamentoResult','').value||'');}
+function snapFaces(){var n=Number(hidden('mzV149IllegalallevamentoFaces','').value||0);return Number.isInteger(n)&&n>1?n:0;}
+function illegalGateOk(){
+  if(!started())return false;
+  var raw=snapResult(),n=Number(raw),faces=snapFaces();
+  return raw!==''&&Number.isInteger(n)&&n>=2&&n<=faces;
+}
+function normalRoll(){
+  var x=E('risultatoAllevamento'),raw=String((x||{}).value||''),n=Number(raw);
+  return raw!==''&&Number.isInteger(n)&&n>=1&&n<=10?n:null;
+}
+function cycleIndex(){
+  var x=hidden('mzV151IllegalAllevamentoCycleIndex','1'),n=Number(x.value||1);
+  return Number.isInteger(n)&&n>=1?n:1;
+}
+function setCycleIndex(n){hidden('mzV151IllegalAllevamentoCycleIndex','1').value=String(Math.max(1,Math.floor(Number(n)||1)));}
+function storedNormalRoll(){return String(hidden('mzV151IllegalAllevamentoNormalRoll','').value||'');}
+function setStoredNormalRoll(v){hidden('mzV151IllegalAllevamentoNormalRoll','').value=v==null?'':String(v);}
+function clearCycleGeneratedResults(){
+  var normal=E('risultatoAllevamento');
+  if(normal){normal.readOnly=false;normal.value='';}
+  setStoredNormalRoll('');
+  ['mzV106ProductionRiskBox','mzV78ProductionBlock'].forEach(function(id){
+    var b=E(id);
+    if(b){b.innerHTML='';b.dataset.sig='';}
+  });
+  /* Alcuni sottotiri vengono creati fuori dai due contenitori principali:
+     azzerali soltanto se appartengono alla fase Allevamento corrente. */
+  var panel=E('pannelloAllevamento');
+  if(panel){
+    panel.querySelectorAll(
+      '#mzV120CureCubMalusRoll,#mzV78Ira,#mzV78ProdDisease,#mzV78QtyRoll,#mzV78QtyManual,'+
+      '#mzV78OccamyShells,#mzV78OwnPost,[id^="mzV78IngredientType_"] input,[id^="mzV78IngredientTypeRoll"]'
+    ).forEach(function(x){
+      if('value' in x)x.value='';
+      if(x.readOnly)x.readOnly=false;
+    });
+  }
+}
+function resetIllegalAllevamentoGate(){
+  hidden('mzV148IllegalallevamentoStarted','0').value='0';
+  ['Base','Extra','Faces','Result','Species'].forEach(function(s){
+    hidden('mzV149Illegalallevamento'+s,'').value='';
+  });
+  var r=E('risultatoIllegaleAllevamento');
+  if(r){r.value='';r.readOnly=false;}
+}
+function consolidateNormalRoll(){
+  if(!illegalGateOk())return;
+  var n=normalRoll(),old=storedNormalRoll(),inp=E('risultatoAllevamento');
+  if(n===null){
+    if(!old&&inp)inp.readOnly=false;
+    return;
+  }
+  if(!old){
+    setStoredNormalRoll(n);
+    if(inp)inp.readOnly=true;
+    try{if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();}catch(e){}
+  }else if(inp){
+    inp.value=old;
+    inp.readOnly=true;
+  }
+}
+function nextBox(){
+  var gate=E('mzV148GateAllevamento');
+  if(!gate)return null;
+  var box=E('mzV151NextIllegalCycle');
+  if(!box){
+    box=document.createElement('div');
+    box.id='mzV151NextIllegalCycle';
+    gate.appendChild(box);
+  }else if(box.parentNode!==gate){
+    gate.appendChild(box);
+  }
+  return box;
+}
+function render(){
+  var box=nextBox();
+  if(!box)return;
+  var illegal=!!(E('creaturaIllegaleRiserva')&&E('creaturaIllegaleRiserva').checked);
+  var ok=illegal&&illegalGateOk();
+  if(!ok){
+    box.style.display='none';
+    return;
+  }
+  consolidateNormalRoll();
+  var roll=storedNormalRoll();
+  if(!roll){
+    box.style.display='none';
+    return;
+  }
+  box.style.display='block';
+  box.innerHTML=
+    '<div class="mz-v151-cycle-note"><b>Ciclo '+cycleIndex()+' consolidato.</b> '+
+    'Il 1d'+snapFaces()+' di scoperta appena risolto vale soltanto per questo ciclo di Allevamento. '+
+    'Prima di iniziare una nuova Produzione/Riproduzione devi aprire un nuovo controllo.</div>'+
+    '<button type="button" class="bottone-azione" id="mzV151StartNextIllegalCycle">'+
+    'Ho registrato questo ciclo — prepara il successivo</button>';
+}
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.id==='risultatoAllevamento'){
+    setTimeout(render,0);
+  }
+},true);
+document.addEventListener('click',function(e){
+  var b=e.target&&e.target.closest?e.target.closest('#mzV151StartNextIllegalCycle'):null;
+  if(!b)return;
+  clearCycleGeneratedResults();
+  setCycleIndex(cycleIndex()+1);
+  resetIllegalAllevamentoGate();
+  try{
+    if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();
+    if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();
+  }catch(err){}
+  setTimeout(render,0);
+},true);
+
+/* Se una v150 aveva già un Allevamento illegale riuscito e un risultato normale
+   inserito, trattalo come il ciclo corrente senza chiedere di rilanciare retroattivamente. */
+hidden('mzV151IllegalAllevamentoCycleIndex','1');
+hidden('mzV151IllegalAllevamentoNormalRoll','');
+var oldRecalc=window.ricalcolaMagizoologia;
+if(typeof oldRecalc==='function')window.ricalcolaMagizoologia=function(){
+  var out=oldRecalc.apply(this,arguments);
+  setTimeout(render,0);
+  return out;
+};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(render,60);});
+else setTimeout(render,60);
 })();
 </script>
 
