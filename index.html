@@ -1,6 +1,7 @@
 
 <!-- Magizoologia tool v130 — archivio Creature per PG, ripresa rapida dei cicli, ciclo persistente e dado Allevamento più leggibile. -->
 <!DOCTYPE html>
+<!-- Magizoologia tool v131 — handshake Firebase robusto anche se Auth termina prima del caricamento della Guida; contrasto archivio Creature corretto. -->
 
 <!-- v118 audit fonti: base v117; licenza 150 G confermata dallo screenshot aggiornato; Repello Babbanum lasciato non automatizzato per fonte +1/+2 incoerente; regressione in corso -->
 <!-- Magizoologia tool v123 — rimosso selettore Giorno/Notte; requisiti temporali restano nelle regole specifiche -->
@@ -2942,6 +2943,13 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 .mz-v130-delete{padding:8px 10px;border:1px solid #c26b67;border-radius:7px;background:#5b2223;color:#ffe8e5;font-family:inherit;font-weight:800;cursor:pointer}
 .mz-v130-delete:hover{background:#742a2c}
 .mz-v130-library-empty{padding:12px;border:1px dashed #9d6a4b;border-radius:8px;background:rgba(37,20,14,.48);color:#f5dfcf;line-height:1.5}
+/* v131 — contrasto archivio: forza testi chiari contro lo sfondo bruno. */
+#mzCreatureLibraryCard #mzCreatureLibraryHint,
+#mzCreatureLibraryCard #mzCreatureLibraryHint b,
+#mzCreatureLibraryCard #mzCreatureLibraryStatus,
+#mzCreatureLibraryCard .mz-v130-creature-meta,
+#mzCreatureLibraryCard .mz-v130-creature-species{color:#f6e5d7!important;}
+#mzCreatureLibraryCard #mzCreatureLibraryHint{opacity:1!important;}
 #mzCreatureLibraryStatus{margin:8px 0 0!important;color:#f2d8c5!important}
 .mz-v130-cycle-field{min-width:260px;flex:1 1 300px}
 .mz-v130-cycle-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -8358,7 +8366,7 @@ function mzGuideScheduleSave(){
   MZ_GUIDE_SAVE_TIMER=setTimeout(mzGuideSaveNow,350);
 }
 window.mzGuideFirebaseReady=function(user){
-  if(!user||!RM_FB.db||MZ_GUIDE_LOADING)return;
+  if(!user||!RM_FB.db||MZ_GUIDE_LOADING||MZ_GUIDE_READY)return;
   MZ_GUIDE_LOADING=true;MZ_GUIDE_READY=false;var ref=mzGuideDoc();
   mzGuideStatus('Guida: caricamento del salvataggio Firebase…','saving');
   ref.get().then(function(doc){
@@ -8369,6 +8377,15 @@ window.mzGuideFirebaseReady=function(user){
     mzGuideStatus(doc.exists?'Guida e archivio Creature ripristinati da Firebase · autosalvataggio attivo ✓':'Guida pronta · autosalvataggio Firebase attivo ✓','ok');
   }).catch(function(err){console.error(err);MZ_GUIDE_LOADING=false;MZ_GUIDE_READY=true;var resetBtnReady=document.getElementById('mzResetAllBtn');if(resetBtnReady)resetBtnReady.disabled=false;mzCreatureRenderLibrary();mzGuideStatus('Guida: impossibile leggere il salvataggio Firebase — '+(err.message||err),'bad');if(MZ_GUIDE_DIRTY_BEFORE_READY){MZ_GUIDE_DIRTY_BEFORE_READY=false;mzGuideSaveNow();}});
 };
+/* v131 — stesso handshake robusto di Erbologia: se Auth ha terminato prima che
+   mzGuideFirebaseReady venisse definita, avvia ora il caricamento della Guida. */
+(function mzGuideLateFirebaseHandshake(){
+  if(typeof RM_FB!=='undefined'&&RM_FB&&RM_FB.user&&RM_FB.db&&!MZ_GUIDE_READY&&!MZ_GUIDE_LOADING){
+    setTimeout(function(){
+      if(RM_FB&&RM_FB.user&&RM_FB.db&&!MZ_GUIDE_READY&&!MZ_GUIDE_LOADING)window.mzGuideFirebaseReady(RM_FB.user);
+    },0);
+  }
+})();
 function mz44InsideGuideOrProfile(t){var g=document.getElementById('modoMagizoologia'),p=document.getElementById('modoPersonaggio');return !!(t&&((g&&g.contains(t))||(p&&p.contains(t))));}
 document.addEventListener('input',function(e){
   if(!mz44InsideGuideOrProfile(e.target))return;
