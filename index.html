@@ -1,3 +1,4 @@
+<!-- Magizoologia tool v159 — audit finale contrasto: i riquadri chiari annidati nei pannelli tecnici mantengono testo scuro leggibile; i pannelli scuri mantengono testo chiaro. Nessuna modifica alla logica delle Ricerche concluse/cancellate. -->
 <!-- Magizoologia tool v158 — ripresa Ricerca sicura: aprire una Ricerca esistente non risincronizza Empatia/Sapienza dal Profilo, non cancella progressi dipendenti dalle formule e non aggiorna il timestamp finché il player non modifica davvero la Ricerca. -->
 
 <!-- Magizoologia tool v157 — conflitti Ricerca resi semantici: ignorati navigazione e ordine chiavi Firebase; avviso mostrato solo per modifiche reali dei dati. Nessuna nuova query/lettura Firestore. -->
@@ -13981,3 +13982,208 @@ if(typeof baseResetProfile==='function'){
 
 </body>
 </html>
+
+<!-- v159: hardening finale del contrasto. Inserito in fondo apposta per vincere sugli override storici. -->
+<style id="magizoologia-v159-contrast-hardening">
+/* Pannelli tecnici scuri: testo sempre chiaro, anche quando sono annidati nelle schede chiare. */
+#modoMagizoologia .mz-v78-box,
+#modoMagizoologia .mz-v91-box,
+#modoMagizoologia .rm-special,
+#modoMagizoologia .mz-bonus-manager,
+#modoMagizoologia .mz-v78-risk-box,
+#modoMagizoologia .mz-hostility-override .mz-hostility-body{
+  color:#f7e7da!important;
+}
+#modoMagizoologia .mz-v78-box .mz-v78-note,
+#modoMagizoologia .mz-v78-box .nota-regole,
+#modoMagizoologia .mz-v78-box .numeric-note,
+#modoMagizoologia .mz-v78-box label,
+#modoMagizoologia .mz-v78-box p,
+#modoMagizoologia .mz-v78-box li,
+#modoMagizoologia .mz-v78-box .result-line>span:not(.out-tag),
+#modoMagizoologia .mz-v91-box .mz-v78-note,
+#modoMagizoologia .mz-v91-box .nota-regole,
+#modoMagizoologia .mz-v91-box .numeric-note,
+#modoMagizoologia .mz-v91-box label,
+#modoMagizoologia .mz-v91-box p,
+#modoMagizoologia .mz-v91-box li,
+#modoMagizoologia .mz-v91-box .result-line>span:not(.out-tag),
+#modoMagizoologia .rm-special .nota-regole,
+#modoMagizoologia .rm-special .numeric-note,
+#modoMagizoologia .rm-special label,
+#modoMagizoologia .rm-special p,
+#modoMagizoologia .rm-special li,
+#modoMagizoologia .rm-special .result-line>span:not(.out-tag),
+#modoMagizoologia .mz-bonus-manager .nota-regole,
+#modoMagizoologia .mz-bonus-manager .numeric-note,
+#modoMagizoologia .mz-bonus-manager label,
+#modoMagizoologia .mz-bonus-manager p,
+#modoMagizoologia .mz-bonus-manager li,
+#modoMagizoologia .mz-bonus-manager .result-line>span:not(.out-tag),
+#modoMagizoologia .mz-v78-risk-box .mz-v78-note,
+#modoMagizoologia .mz-v78-risk-box label,
+#modoMagizoologia .mz-v78-risk-box .result-line>span:not(.out-tag){
+  color:#f7e7da!important;
+  opacity:1!important;
+}
+#modoMagizoologia .mz-v78-box>b,
+#modoMagizoologia .mz-v78-box>strong,
+#modoMagizoologia .mz-v91-box>b,
+#modoMagizoologia .mz-v91-box>strong,
+#modoMagizoologia .rm-special>b,
+#modoMagizoologia .rm-special>strong,
+#modoMagizoologia .mz-bonus-manager>b,
+#modoMagizoologia .mz-bonus-manager>strong,
+#modoMagizoologia .mz-v78-risk-box>b,
+#modoMagizoologia .mz-v78-risk-box>strong{
+  color:#ffd09f!important;
+}
+
+/* Riquadri sanitari chiari: devono vincere sui colori chiari del contenitore .mz-v78-box. */
+#modoMagizoologia .mz-disease-box,
+#modoMagizoologia .mz-v78-box .mz-disease-box,
+#modoMagizoologia .mz-v91-box .mz-disease-box,
+#modoMagizoologia .rm-special .mz-disease-box{
+  background:#d9f4e8!important;
+  color:#4b1730!important;
+  border-color:#7a1f3d!important;
+}
+#modoMagizoologia .mz-disease-box b,
+#modoMagizoologia .mz-disease-box strong,
+#modoMagizoologia .mz-disease-box label,
+#modoMagizoologia .mz-disease-box p,
+#modoMagizoologia .mz-disease-box li,
+#modoMagizoologia .mz-disease-box .mz-v78-note,
+#modoMagizoologia .mz-disease-box .nota-regole,
+#modoMagizoologia .mz-disease-box .numeric-note,
+#modoMagizoologia .mz-disease-box .rm-travel-small,
+#modoMagizoologia .mz-disease-box .result-line>span:not(.out-tag),
+#modoMagizoologia .mz-v78-box .mz-disease-box b,
+#modoMagizoologia .mz-v78-box .mz-disease-box strong,
+#modoMagizoologia .mz-v78-box .mz-disease-box label,
+#modoMagizoologia .mz-v78-box .mz-disease-box .mz-v78-note,
+#modoMagizoologia .mz-v78-box .mz-disease-box .nota-regole,
+#modoMagizoologia .mz-v78-box .mz-disease-box .numeric-note,
+#modoMagizoologia .mz-v78-box .mz-disease-box .result-line>span:not(.out-tag){
+  color:#4b1730!important;
+  opacity:1!important;
+}
+#modoMagizoologia .mz-disease-box .mz-v78-roll{
+  color:#4b1730!important;
+  background:transparent!important;
+  border-color:#8f3153!important;
+}
+#modoMagizoologia .mz-disease-box .dice-code{
+  background:#6d1b39!important;
+  color:#f2fff9!important;
+  border-color:#9b3e61!important;
+}
+#modoMagizoologia .mz-disease-box .copy-btn{
+  background:#7a1f3d!important;
+  color:#fff!important;
+  border-color:#a84d6c!important;
+}
+#modoMagizoologia .mz-disease-box input[type=number],
+#modoMagizoologia .mz-disease-box input[type=text],
+#modoMagizoologia .mz-disease-box select{
+  background:#fffaf7!important;
+  color:#35101f!important;
+  border-color:#8f3153!important;
+}
+#modoMagizoologia .mz-disease-box .out-tag.out-neutral{background:#f6e7ee!important;color:#5d1736!important;border-color:#9c4a68!important}
+#modoMagizoologia .mz-disease-box .out-tag.out-ok{background:#c6efde!important;color:#123f2d!important;border-color:#4b8c70!important}
+#modoMagizoologia .mz-disease-box .out-tag.out-fail{background:#f4d7df!important;color:#6c1736!important;border-color:#a33d60!important}
+
+/* Condizioni eventuali su fondo crema: niente testo chiaro ereditato dai pannelli scuri. */
+#modoMagizoologia .mz-condition-check,
+#modoMagizoologia .mz-v78-box .mz-condition-check,
+#modoMagizoologia .mz-v91-box .mz-condition-check{
+  background:#fff0da!important;
+  color:#4f152c!important;
+  border-color:#a85a72!important;
+}
+#modoMagizoologia .mz-condition-check label,
+#modoMagizoologia .mz-condition-check label b,
+#modoMagizoologia .mz-condition-check .nota-regole,
+#modoMagizoologia .mz-condition-check .numeric-note,
+#modoMagizoologia .mz-condition-check span:not(.out-tag){
+  color:#4f152c!important;
+  opacity:1!important;
+}
+
+/* Altri riquadri volutamente chiari: forza il testo scuro anche se annidati in contenitori scuri. */
+#modoMagizoologia .rm-enc-bonus-tools,
+#modoMagizoologia .mz-v154-creature-item,
+#modoMagizoologia .mz-v154-quick-import,
+#modoMagizoologia .mz-auto-trait,
+#modoMagizoologia .species-class-sync,
+#modoMagizoologia .mz-v148-gate,
+#modoMagizoologia .mz-knowledge-tool .mz-bridge-status,
+#modoMagizoologia [data-mz-bridge-status],
+#modoMagizoologia .badge-bloccato,
+#modoMagizoologia .badge-sbloccato,
+#modoMagizoologia .blocco-avviso{
+  opacity:1!important;
+}
+#modoMagizoologia .rm-enc-bonus-tools,
+#modoMagizoologia .rm-enc-bonus-tools label,
+#modoMagizoologia .rm-enc-bonus-tools p,
+#modoMagizoologia .rm-enc-bonus-tools span:not(.out-tag),
+#modoMagizoologia .rm-enc-bonus-tools .nota-regole,
+#modoMagizoologia .rm-enc-bonus-tools .numeric-note{
+  color:#3b1b0d!important;
+}
+#modoMagizoologia .mz-v154-creature-item,
+#modoMagizoologia .mz-v154-creature-item b,
+#modoMagizoologia .mz-v154-creature-item strong,
+#modoMagizoologia .mz-v154-creature-item span,
+#modoMagizoologia .mz-v154-creature-item p{color:#35180c!important}
+#modoMagizoologia .mz-v154-quick-import,
+#modoMagizoologia .mz-v154-quick-import b,
+#modoMagizoologia .mz-v154-quick-import strong,
+#modoMagizoologia .mz-v154-quick-import span,
+#modoMagizoologia .mz-v154-quick-import p{color:#25361d!important}
+#modoMagizoologia .mz-auto-trait:not(.auto-warn):not(.auto-special),
+#modoMagizoologia .mz-auto-trait:not(.auto-warn):not(.auto-special) b,
+#modoMagizoologia .mz-auto-trait:not(.auto-warn):not(.auto-special) span{color:#382117!important}
+#modoMagizoologia .mz-auto-trait.auto-ok,
+#modoMagizoologia .mz-auto-trait.auto-ok b,
+#modoMagizoologia .mz-auto-trait.auto-ok span{color:#29401d!important}
+#modoMagizoologia .mz-auto-trait.auto-warn,
+#modoMagizoologia .mz-auto-trait.auto-warn b,
+#modoMagizoologia .mz-auto-trait.auto-warn span{color:#66241f!important}
+#modoMagizoologia .mz-auto-trait.auto-special,
+#modoMagizoologia .mz-auto-trait.auto-special b,
+#modoMagizoologia .mz-auto-trait.auto-special span{color:#5b431c!important}
+#modoMagizoologia .species-class-sync,
+#modoMagizoologia .species-class-sync b,
+#modoMagizoologia .species-class-sync span{color:#3c2418!important}
+#modoMagizoologia .species-class-sync.ok,
+#modoMagizoologia .species-class-sync.ok b,
+#modoMagizoologia .species-class-sync.ok span{color:#29401d!important}
+#modoMagizoologia .species-class-sync.warn,
+#modoMagizoologia .species-class-sync.warn b,
+#modoMagizoologia .species-class-sync.warn span{color:#5b431c!important}
+#modoMagizoologia .species-class-sync.bad,
+#modoMagizoologia .species-class-sync.bad b,
+#modoMagizoologia .species-class-sync.bad span{color:#6a271e!important}
+#modoMagizoologia .mz-v148-gate,
+#modoMagizoologia .mz-v148-gate label,
+#modoMagizoologia .mz-v148-gate p,
+#modoMagizoologia .mz-v148-gate span:not(.out-tag){color:#401e16!important}
+#modoMagizoologia .mz-v148-gate.ok,
+#modoMagizoologia .mz-v148-gate.ok label,
+#modoMagizoologia .mz-v148-gate.ok p,
+#modoMagizoologia .mz-v148-gate.ok span:not(.out-tag){color:#20391d!important}
+#modoMagizoologia .mz-v148-gate.bad,
+#modoMagizoologia .mz-v148-gate.bad label,
+#modoMagizoologia .mz-v148-gate.bad p,
+#modoMagizoologia .mz-v148-gate.bad span:not(.out-tag){color:#541820!important}
+
+/* Il blocco azzurro Elfo è scuro, ma le sue note interne sono chiare: mantieni il contrasto in entrambi i livelli. */
+#modoMagizoologia .mz-transfer-meta{color:#eaf7ff!important}
+#modoMagizoologia .mz-transfer-meta>summary,
+#modoMagizoologia .mz-transfer-meta .campo label{color:#eef8ff!important}
+#modoMagizoologia .mz-transfer-meta .nota-regole,
+#modoMagizoologia .mz-transfer-meta .nota-regole b{color:#18384d!important}
+</style>
