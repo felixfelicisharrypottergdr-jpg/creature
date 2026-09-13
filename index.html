@@ -14909,3 +14909,55 @@ function init(){var f=E('pgNomeSessione');if(f){f.disabled=false;f.removeAttribu
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
+
+
+<!-- v169 — Cambio PG robusto: capture su window, salvataggio vecchio PG e reset immediato -->
+<script id="magizoologia-v169-change-pg-capture">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function safe(fn){try{return fn();}catch(err){console.error(err);}}
+function setField(id,v){var e=E(id);if(!e)return;if(e.type==='checkbox'||e.type==='radio')e.checked=!!v;else e.value=v;}
+function performChange(){
+  var field=E('pgNomeSessione');if(!field)return;
+  var old=String((typeof MZ_GUIDE_BOUND_NAME!=='undefined'&&MZ_GUIDE_BOUND_NAME)||field.value||'').trim();
+
+  /* mzGuideSaveNow costruisce il payload del vecchio PG prima che il campo venga svuotato. */
+  safe(function(){if(old&&typeof mzGuideSaveNow==='function')Promise.resolve(mzGuideSaveNow()).catch(function(err){console.error(err);});});
+  safe(function(){if(typeof rpSaveNow==='function'&&typeof RM_CURRENT_ID!=='undefined'&&RM_CURRENT_ID)Promise.resolve(rpSaveNow()).catch(function(err){console.error(err);});});
+
+  /* Feedback immediato: nessuna attesa Firebase e nessun campo grigio. */
+  field.disabled=false;field.readOnly=false;field.removeAttribute('disabled');field.removeAttribute('readonly');field.value='';
+  var btn=E('mzV167ChangePgBtn');if(btn){btn.disabled=false;btn.style.pointerEvents='auto';}
+
+  safe(function(){if(typeof RM_PROFILE_NAME_TIMER!=='undefined'&&RM_PROFILE_NAME_TIMER){clearTimeout(RM_PROFILE_NAME_TIMER);RM_PROFILE_NAME_TIMER=null;}});
+  safe(function(){if(typeof MZ_GUIDE_SAVE_TIMER!=='undefined'&&MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}});
+  safe(function(){if(typeof MZ_GUIDE_NAME_SAVE_TIMER!=='undefined'&&MZ_GUIDE_NAME_SAVE_TIMER){clearTimeout(MZ_GUIDE_NAME_SAVE_TIMER);MZ_GUIDE_NAME_SAVE_TIMER=null;}});
+  safe(function(){if(typeof RM_PROFILE_OPEN_PENDING!=='undefined')RM_PROFILE_OPEN_PENDING=false;});
+  safe(function(){if(typeof MZ_GUIDE_BOUND_NAME!=='undefined')MZ_GUIDE_BOUND_NAME='';});
+  safe(function(){if(typeof MZ_GUIDE_CURRENT_DOC_ID!=='undefined')MZ_GUIDE_CURRENT_DOC_ID='';});
+  safe(function(){if(typeof MZ_GUIDE_DIRTY_BEFORE_READY!=='undefined')MZ_GUIDE_DIRTY_BEFORE_READY=false;});
+  safe(function(){if(typeof MZ_CREATURE_LIBRARY!=='undefined')MZ_CREATURE_LIBRARY=[];});
+  safe(function(){if(typeof MZ_ACTIVE_CREATURE_ID!=='undefined')MZ_ACTIVE_CREATURE_ID='';});
+  safe(function(){if(typeof RM_PROFILE_SESSION_ID!=='undefined'){RM_PROFILE_SESSION_ID='';RM_PROFILE_SESSION_DATA=null;RM_PROFILE_SESSION_NAME='';RM_PROFILE_PENDING_CREATE=false;}});
+
+  safe(function(){if(typeof resetGuidaMagizoologia==='function')resetGuidaMagizoologia();});
+  setField('pgTipo','studente');setField('pgAdultoCDCM','si');setField('empatia','10');setField('sapienzaProfilo','0');
+  setField('livAmico','0');setField('livCustode','0');setField('livAddestratore','0');setField('livAllevatore','0');
+  setField('pgMagizoologoMestiere',false);setField('pgLicenzaCreatureSpeciali',false);
+  safe(function(){if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();});
+  safe(function(){if(typeof mzProfileEnsurePickerSelection==='function')mzProfileEnsurePickerSelection('');});
+  safe(function(){if(typeof mzCreatureRenderLibrary==='function')mzCreatureRenderLibrary();});
+  safe(function(){if(typeof mzGuideStatus==='function')mzGuideStatus('Pronto per un altro PG: scrivi il nome.','ok');});
+  try{field.focus();}catch(e){}
+}
+window.mzV169ChangePg=performChange;
+window.addEventListener('click',function(ev){
+  var t=ev.target,btn=t&&t.closest?t.closest('#mzV167ChangePgBtn'):null;if(!btn)return;
+  ev.preventDefault();ev.stopPropagation();
+  performChange();
+},true);
+function init(){var f=E('pgNomeSessione');if(f){f.disabled=false;f.readOnly=false;f.removeAttribute('disabled');f.removeAttribute('readonly');}var b=E('mzV167ChangePgBtn');if(b){b.disabled=false;b.style.pointerEvents='auto';}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
