@@ -1,4 +1,6 @@
 
+<!-- Magizoologia tool v156 — secondo audit preventivo dopo l'allineamento a Erbologia v151: identità persistente Ricerca/Creatura, reimportazione senza doppioni né reset dei progressi, apertura Ricerca dal vero flusso Firebase, protezione cambio PG, commit immediato archivio e cambio profilo senza finestra di perdita dati. Nessuna nuova query/lettura Firestore. -->
+<!-- Magizoologia tool v155 — audit preventivo allineato a Erbologia v151: identità persistente Ricerca/Creatura, reimportazione senza doppioni né reset dei progressi, apertura Ricerca dal vero flusso Firebase, protezione cambio PG e commit immediato dell'archivio. Nessuna nuova query/lettura Firestore. -->
 <!-- Magizoologia tool v154 — archivio multi-Creatura per singolo PG nello stesso documento Firebase, ripresa sicura delle Creature e importazione Ricerca→Guida disponibile direttamente dall'Incontro; preservate le ottimizzazioni Firestore v153. -->
 <!-- Magizoologia tool v153 — secondo audit Firestore: query dirette per profili/Ricerche correnti, fallback legacy soltanto quando necessario; nessuna scansione completa nel percorso normale. -->
 <!-- Magizoologia tool v152 — ottimizzazione Firestore: cache elenchi, niente scansione completa dopo autosave, lista Ricerche cache 2 min. -->
@@ -3128,6 +3130,10 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </div>
 <div class="modo-sezione" id="modoMagizoologia">
 <div class="guide-firebase-bar" id="mz-guide-save-status">Guida: collegamento a Firebase in corso…</div>
+<!-- v155: identità persistente del ritrovamento importato dalla Ricerca -->
+<input type="hidden" id="mzResearchImportSessionId" data-key="mzResearchImportSessionId" value="">
+<input type="hidden" id="mzResearchImportEncounter" data-key="mzResearchImportEncounter" value="">
+<input type="hidden" id="mzResearchImportIndex" data-key="mzResearchImportIndex" value="">
 <div class="scheda mz-v154-creature-library" id="mzCreatureLibraryCard">
   <div class="mz-v154-library-head">
     <div>
@@ -8422,7 +8428,29 @@ function mzCreatureId(){return 'creature_'+Date.now().toString(36)+'_'+Math.rand
 function mzCreatureIndex(id){for(var i=0;i<MZ_CREATURE_LIBRARY.length;i++)if(MZ_CREATURE_LIBRARY[i]&&MZ_CREATURE_LIBRARY[i].id===id)return i;return -1;}
 function mzCreatureEntryFromState(st,id,createdAt){var full=mzGuideClone(st||mzGuideCollectState()),m=mzCreatureStateMeta(full),snap=mzGuideClone(full);var only=mzGuideClone((snap&&snap.fields)||{}),profileKeys=['pgNomeSessione','pgTipo','pgAdultoCDCM','empatia','sapienzaProfilo','livAmico','livCustode','livAddestratore','livAllevatore','pgMagizoologoMestiere','pgLicenzaCreatureSpeciali'];profileKeys.forEach(function(k){delete only[k];});snap.fields=only;delete snap.creatureLibrary;delete snap.activeCreatureId;var now=Date.now();return {id:id||mzCreatureId(),pgName:m.pgName,name:m.name,species:m.species,classification:m.classification,phase:m.phase,sex:m.sex,cycle:m.cycle,panel:m.panel,cycleIndex:m.cycleIndex,createdAt:Number(createdAt||now),updatedAt:now,state:snap};}
 function mzCreatureSanitizeLibrary(v){if(!Array.isArray(v))return [];var seen={},out=[];v.forEach(function(x){if(!x||typeof x!=='object')return;var id=String(x.id||'').trim();if(!id||seen[id]||!x.state||typeof x.state!=='object')return;seen[id]=1;var m=mzCreatureStateMeta(x.state);out.push({id:id,pgName:String(x.pgName||m.pgName||'').trim(),name:String(x.name||m.name||'').trim(),species:String(x.species||m.species||'').trim(),classification:String(x.classification||m.classification||'').trim(),phase:String(x.phase||m.phase||'').trim(),sex:String(x.sex||m.sex||'').trim(),cycle:String(x.cycle||m.cycle||'produzione').trim(),panel:String(x.panel||m.panel||'Riconoscimento'),cycleIndex:Number(x.cycleIndex||m.cycleIndex||0),createdAt:Number(x.createdAt||x.updatedAt||Date.now()),updatedAt:Number(x.updatedAt||Date.now()),state:x.state});});out.sort(function(a,b){return Number(b.updatedAt||0)-Number(a.updatedAt||0);});return out;}
-function mzCreatureSyncActive(state){if(MZ_GUIDE_RESTORING||MZ_CREATURE_RESETTING)return;var full=mzGuideClone(state||mzGuideCollectState()),m=mzCreatureStateMeta(full);if(!m.pgName||!m.species)return;var entry=mzCreatureEntryFromState(full,MZ_ACTIVE_CREATURE_ID||null),idx=mzCreatureIndex(MZ_ACTIVE_CREATURE_ID);if(idx<0){MZ_ACTIVE_CREATURE_ID=entry.id;entry.id=MZ_ACTIVE_CREATURE_ID;MZ_CREATURE_LIBRARY.unshift(entry);}else{entry.id=MZ_CREATURE_LIBRARY[idx].id;entry.createdAt=MZ_CREATURE_LIBRARY[idx].createdAt||entry.createdAt;MZ_CREATURE_LIBRARY[idx]=entry;}MZ_CREATURE_LIBRARY.sort(function(a,b){return Number(b.updatedAt||0)-Number(a.updatedAt||0);});}
+function mzCreatureSyncActive(state){
+  if(MZ_GUIDE_RESTORING||MZ_CREATURE_RESETTING)return;
+  var full=mzGuideClone(state||mzGuideCollectState()),m=mzCreatureStateMeta(full);
+  if(!m.pgName||!m.species)return;
+  var idx=mzCreatureIndex(MZ_ACTIVE_CREATURE_ID);
+  if(idx>=0){
+    var owner=String(MZ_CREATURE_LIBRARY[idx].pgName||'').trim(),
+        now=String(m.pgName||'').trim();
+    if(owner&&now&&rmNormName(owner)!==rmNormName(now)){
+      /* v155: il cambio PG non può trasferire la Creatura aperta al nuovo profilo. */
+      return;
+    }
+  }
+  var entry=mzCreatureEntryFromState(full,MZ_ACTIVE_CREATURE_ID||null);
+  if(idx<0){
+    MZ_ACTIVE_CREATURE_ID=entry.id;entry.id=MZ_ACTIVE_CREATURE_ID;MZ_CREATURE_LIBRARY.unshift(entry);
+  }else{
+    entry.id=MZ_CREATURE_LIBRARY[idx].id;
+    entry.createdAt=MZ_CREATURE_LIBRARY[idx].createdAt||entry.createdAt;
+    MZ_CREATURE_LIBRARY[idx]=entry;
+  }
+  MZ_CREATURE_LIBRARY.sort(function(a,b){return Number(b.updatedAt||0)-Number(a.updatedAt||0);});
+}
 function mzCreaturePhaseText(p){return {uovo:'Uovo/Cucciolo',infante:'Infanzia',adolescente:'Adolescenza',adulta:'Adultità',anziana:'Vecchiaia'}[p.phase]||'Fase non impostata';}
 function mzCreatureCycleText(p){var t=p.cycle==='riproduzione'?'Riproduzione / Accoppiamento':'Produzione di Ingredienti';return mzCreaturePhaseText(p)+' · '+t+(p.cycleIndex>1?' · ciclo '+p.cycleIndex:'');}
 function mzCreatureRenderLibrary(){var host=document.getElementById('mzCreatureLibraryList'),status=document.getElementById('mzCreatureLibraryStatus'),hint=document.getElementById('mzCreatureLibraryHint');if(!host)return;var pg=String((document.getElementById('pgNomeSessione')||{}).value||'').trim(),n=pg.toLocaleLowerCase('it-IT');if(!pg){host.innerHTML='<div class="mz-v154-library-empty">Inserisci prima il <b>Nome del PG</b> in «Il tuo Personaggio» per vedere il suo archivio di Creature.</div>';if(status)status.textContent='';return;}var arr=MZ_CREATURE_LIBRARY.filter(function(p){return !p.pgName||String(p.pgName).trim().toLocaleLowerCase('it-IT')===n;}).sort(function(a,b){return Number(b.updatedAt||0)-Number(a.updatedAt||0);});if(hint)hint.innerHTML='Archivio di <b>'+mzCreatureEsc(pg)+'</b>. Le Creature sono salvate nello <b>stesso documento Firebase del profilo</b>: nessuna lettura aggiuntiva.';if(!arr.length){host.innerHTML='<div class="mz-v154-library-empty">Nessuna Creatura salvata per <b>'+mzCreatureEsc(pg)+'</b>. Inizia una nuova Creatura oppure apri una Ricerca.</div>';if(status)status.textContent='';return;}host.innerHTML=arr.map(function(p){var title=p.name||p.species||'Creatura senza nome',sub=(p.name&&p.species&&p.name!==p.species)?p.species:'',active=p.id===MZ_ACTIVE_CREATURE_ID,when='';try{when=new Date(Number(p.updatedAt||0)).toLocaleString('it-IT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(e){}var sex=p.sex?(' · '+p.sex):'';return '<article class="mz-v154-creature-item'+(active?' active':'')+'" data-creature-id="'+mzCreatureEsc(p.id)+'"><div><div class="mz-v154-creature-title">'+mzCreatureEsc(title)+(active?' <span>aperta</span>':'')+'</div>'+(sub?'<div class="mz-v154-creature-species">'+mzCreatureEsc(sub)+'</div>':'')+'<div class="mz-v154-creature-meta">'+mzCreatureEsc((p.classification||'—')+sex+' · '+mzCreatureCycleText(p))+(when?' · aggiorn. '+mzCreatureEsc(when):'')+'</div></div><div class="mz-v154-creature-actions"><button type="button" class="bottone-azione" data-creature-open="'+mzCreatureEsc(p.id)+'">Riprendi</button><button type="button" class="mz-v154-delete" data-creature-delete="'+mzCreatureEsc(p.id)+'" aria-label="Elimina '+mzCreatureEsc(title)+'">Elimina</button></div></article>';}).join('');if(status)status.textContent=MZ_ACTIVE_CREATURE_ID?'La Creatura aperta viene aggiornata automaticamente mentre lavori.':'Scegli «Riprendi» per aprire una Creatura.';}
@@ -8438,7 +8466,7 @@ function mzGuideApplyState(st,restoreProfile){if(!st)return;if(restoreProfile===
 function mzProfileDefaultState(name){
   return {specificVoteV58:1,fields:{pgNomeSessione:name||'',pgTipo:'studente',pgAdultoCDCM:'si',empatia:'10',sapienzaProfilo:'0',livAmico:'0',livCustode:'0',livAddestratore:'0',livAllevatore:'0',pgMagizoologoMestiere:false,pgLicenzaCreatureSpeciali:false},activePanel:'Riconoscimento',bonusRows:[],globals:{shared:{},sharedUid:0,fiduciaHistory:[],scopertaHistory:[],scopertaFailures:0,curaHistory:[],curaFailures:0,curaConsecutiveFailures:0,domHistory:[],scopertaFallita:false,curaFallita:false,curaMalus:0,lastCuraBonus:0,imposiumSuccess:false,imposiumDom:0,imposiumPost:0,illegalSignatures:{cura:null,allevamento:null},curaEbbe:false}};
 }
-function mzProfileSavePayload(name){var state=mzGuideCollectState();mzCreatureSyncActive(state);return {recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v154',state:state,creatureLibrary:MZ_CREATURE_LIBRARY,activeCreatureId:MZ_ACTIVE_CREATURE_ID};}
+function mzProfileSavePayload(name){var state=mzGuideCollectState();mzCreatureSyncActive(state);return {recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v156',state:state,creatureLibrary:MZ_CREATURE_LIBRARY,activeCreatureId:MZ_ACTIVE_CREATURE_ID};}
 function mzProfileLegacyGuideRowsForName(name){if(!RM_FB.db||!RM_FB.user)return Promise.resolve([]);var wanted=rmNormName(name);return RM_FB.db.collection(RM_COLLECTION).where('recordType','==','guide').get().then(function(snap){var rows=[];snap.forEach(function(doc){var d=doc.data()||{};var st=d.state||{};var fields=st.fields||{};var n=fields.pgNomeSessione||d.pgName||d.initialPgName||'';if(d.recordType==='guide'&&rmNormName(n)===wanted)rows.push({id:doc.id,data:d});});rows.sort(function(a,b){return rmSessionTime(b.data)-rmSessionTime(a.data);});return rows;});}
 function mzProfileEnsurePickerSelection(name){var p=mzProfilePicker();if(!p)return;var wanted=rmNormName(name);var found='';for(var i=0;i<p.options.length;i++){if(rmNormName(p.options[i].value)===wanted){found=p.options[i].value;break;}}p.value=found||'';}
 var MZ_PROFILE_LIST_CACHE_KEY='ff_mz_profile_names_v1',MZ_PROFILE_LIST_CACHE_MS=60*60*1000;
@@ -8459,7 +8487,7 @@ function mzProfileRefreshList(selectedName,force){
   mzProfilePickerStatus('Aggiorno i profili salvati…','');
   return RM_FB.db.collection(RM_COLLECTION).where('recordType','==','profile').get().then(function(snap){var map={};snap.forEach(function(doc){var d=doc.data()||{};if(d.recordType!=='profile')return;var n=d.pgName||((d.state&&d.state.fields&&d.state.fields.pgNomeSessione)||'');var key=rmNormName(n);if(!key)return;var old=map[key];if(!old||rmSessionTime(d)>rmSessionTime(old.data))map[key]={name:n,data:d};});var names=Object.keys(map).map(function(k){return map[k].name;});mzProfileCacheWrite(names);mzProfileRenderNames(names,selectedName);return names;}).catch(function(err){console.error(err);var cached=mzProfileCacheRead();if(cached){mzProfileRenderNames(cached,selectedName);mzProfilePickerStatus('Profili mostrati dalla cache locale.','ok');return cached;}picker.innerHTML='<option value="">— Impossibile leggere i profili —</option>';mzProfilePickerStatus('Impossibile leggere l’elenco dei profili: '+(err.message||err),'bad');return [];});
 }
-function mzProfileOpenByName(name,opts){opts=opts||{};name=String(name||'').trim();if(!name){mzProfilePickerStatus('Seleziona o inserisci prima un nome PG.','');return Promise.resolve(null);}if(!RM_FB.db||!RM_FB.user){mzProfilePickerStatus('Collegamento a Firebase in corso…','');return Promise.resolve(null);}var currentName=String(MZ_GUIDE_BOUND_NAME||'').trim();var before=(currentName&&rmNormName(currentName)!==rmNormName(name)&&MZ_GUIDE_READY)?mzGuideSaveNow():Promise.resolve(true);return before.catch(function(){return true;}).then(function(){MZ_GUIDE_LOADING=true;MZ_GUIDE_READY=false;mzGuideStatus('Profilo/Guida: caricamento del PG '+name+'…','saving');mzProfilePickerStatus('Carico il profilo di '+name+'…','');var ref=mzGuideDoc(name);if(!ref)throw new Error('Profilo non disponibile.');return ref.get().then(function(doc){if(doc.exists&&doc.data()&&doc.data().recordType==='profile'&&doc.data().state)return {id:doc.id,data:doc.data(),state:doc.data().state,source:'profile'};return mzProfileLegacyGuideRowsForName(name).then(function(rows){if(rows.length){var best=rows[0],state=best.data&&best.data.state?best.data.state:mzProfileDefaultState(name),payload={recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v154',migratedFrom:best.id,state:state};return ref.set(payload,{merge:false}).then(function(){return ref.get();}).then(function(nd){return {id:nd.id,data:nd.data(),state:nd.data().state,source:'migrated'};});}return {id:ref.id,data:null,state:mzProfileDefaultState(name),source:'blank'};});});}).then(function(found){mzCreatureLoadPayload(found.data||{state:found.state||mzProfileDefaultState(name)});mzGuideApplyState(found.state||mzProfileDefaultState(name));MZ_GUIDE_CURRENT_DOC_ID=found.id||mzProfileDocId(name);MZ_GUIDE_BOUND_NAME=name;MZ_GUIDE_READY=true;MZ_GUIDE_LOADING=false;MZ_GUIDE_DIRTY_BEFORE_READY=false;var btn=document.getElementById('mzResetAllBtn');if(btn)btn.disabled=false;mzCreatureRenderLibrary();if(found.source==='profile'){mzGuideStatus('Profilo/Guida di '+name+' ripristinati da Firebase ✓','ok');mzProfilePickerStatus('Profilo di '+name+' aperto ✓','ok');}else if(found.source==='migrated'){mzGuideStatus('Recuperato e convertito il vecchio profilo di '+name+' ✓','ok');mzProfilePickerStatus('Vecchio profilo di '+name+' recuperato e convertito ✓','ok');}else{mzGuideStatus('Nuovo profilo pronto per '+name+' · autosalvataggio attivo ✓','ok');mzProfilePickerStatus('Nessun profilo esistente: puoi compilare un nuovo profilo per '+name+'.','ok');}mzProfileRememberCachedName(name);return found;}).catch(function(err){console.error(err);MZ_GUIDE_LOADING=false;MZ_GUIDE_READY=true;mzGuideStatus('Profilo/Guida: errore Firebase — '+(err.message||err),'bad');mzProfilePickerStatus('Impossibile aprire il profilo: '+(err.message||err),'bad');return null;});}
+function mzProfileOpenByName(name,opts){opts=opts||{};name=String(name||'').trim();if(!name){mzProfilePickerStatus('Seleziona o inserisci prima un nome PG.','');return Promise.resolve(null);}if(!RM_FB.db||!RM_FB.user){mzProfilePickerStatus('Collegamento a Firebase in corso…','');return Promise.resolve(null);}var currentName=String(MZ_GUIDE_BOUND_NAME||'').trim();var before=(currentName&&rmNormName(currentName)!==rmNormName(name)&&MZ_GUIDE_READY)?mzGuideSaveNow():Promise.resolve(true);return before.catch(function(){return true;}).then(function(){MZ_GUIDE_LOADING=true;MZ_GUIDE_READY=false;mzGuideStatus('Profilo/Guida: caricamento del PG '+name+'…','saving');mzProfilePickerStatus('Carico il profilo di '+name+'…','');var ref=mzGuideDoc(name);if(!ref)throw new Error('Profilo non disponibile.');return ref.get().then(function(doc){if(doc.exists&&doc.data()&&doc.data().recordType==='profile'&&doc.data().state)return {id:doc.id,data:doc.data(),state:doc.data().state,source:'profile'};return mzProfileLegacyGuideRowsForName(name).then(function(rows){if(rows.length){var best=rows[0],state=best.data&&best.data.state?best.data.state:mzProfileDefaultState(name),payload={recordType:'profile',publicSession:true,normalizedPgName:rmNormName(name),pgName:name,ownerUid:RM_FB.user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'magizoologia-profile-v156',migratedFrom:best.id,state:state};return ref.set(payload,{merge:false}).then(function(){return ref.get();}).then(function(nd){return {id:nd.id,data:nd.data(),state:nd.data().state,source:'migrated'};});}return {id:ref.id,data:null,state:mzProfileDefaultState(name),source:'blank'};});});}).then(function(found){mzCreatureLoadPayload(found.data||{state:found.state||mzProfileDefaultState(name)});mzGuideApplyState(found.state||mzProfileDefaultState(name));MZ_GUIDE_CURRENT_DOC_ID=found.id||mzProfileDocId(name);MZ_GUIDE_BOUND_NAME=name;MZ_GUIDE_READY=true;MZ_GUIDE_LOADING=false;MZ_GUIDE_DIRTY_BEFORE_READY=false;var btn=document.getElementById('mzResetAllBtn');if(btn)btn.disabled=false;mzCreatureRenderLibrary();if(found.source==='profile'){mzGuideStatus('Profilo/Guida di '+name+' ripristinati da Firebase ✓','ok');mzProfilePickerStatus('Profilo di '+name+' aperto ✓','ok');}else if(found.source==='migrated'){mzGuideStatus('Recuperato e convertito il vecchio profilo di '+name+' ✓','ok');mzProfilePickerStatus('Vecchio profilo di '+name+' recuperato e convertito ✓','ok');}else{mzGuideStatus('Nuovo profilo pronto per '+name+' · autosalvataggio attivo ✓','ok');mzProfilePickerStatus('Nessun profilo esistente: puoi compilare un nuovo profilo per '+name+'.','ok');}mzProfileRememberCachedName(name);return found;}).catch(function(err){console.error(err);MZ_GUIDE_LOADING=false;MZ_GUIDE_READY=true;mzGuideStatus('Profilo/Guida: errore Firebase — '+(err.message||err),'bad');mzProfilePickerStatus('Impossibile aprire il profilo: '+(err.message||err),'bad');return null;});}
 function mzProfileHandleTypedName(name){name=String(name||'').trim();if(!name){MZ_GUIDE_BOUND_NAME='';MZ_GUIDE_CURRENT_DOC_ID='';mzProfileEnsurePickerSelection('');mzProfilePickerStatus('Inserisci un nome o seleziona un PG salvato.','');return;}mzProfileOpenByName(name,{fromTyping:true});}
 function mzGuideSaveNow(){var current=String((document.getElementById('pgNomeSessione')||{}).value||'').trim();if(MZ_GUIDE_RESTORING)return Promise.resolve();if(!current){mzGuideStatus('Profilo/Guida: inserisci prima il nome del PG.','');return Promise.resolve(false);}if(MZ_GUIDE_BOUND_NAME&&current&&MZ_GUIDE_BOUND_NAME.toLocaleLowerCase('it')!==current.toLocaleLowerCase('it')){mzGuideStatus('Profilo/Guida non salvati: appartengono a '+MZ_GUIDE_BOUND_NAME+'. Usa «Nuovo PG / Cambia PG» oppure seleziona un altro profilo dall’elenco.','bad');return Promise.resolve(false);}var ref=mzGuideDoc(current);if(!ref)return Promise.resolve(false);if(MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}var payload=mzProfileSavePayload(current);mzGuideStatus('Profilo/Guida: salvataggio automatico su Firebase…','saving');var task=MZ_GUIDE_SAVE_CHAIN.catch(function(){}).then(function(){return ref.set(payload,{merge:true});}).then(function(){MZ_GUIDE_BOUND_NAME=current;MZ_GUIDE_CURRENT_DOC_ID=ref.id;MZ_GUIDE_READY=true;mzCreatureRenderLibrary();mzGuideStatus('Profilo, Guida e archivio Creature salvati automaticamente su Firebase ✓','ok');mzProfileRememberCachedName(current);return true;}).catch(function(err){console.error(err);mzGuideStatus('Profilo/Guida: errore di salvataggio Firebase — '+(err.message||err),'bad');return false;});MZ_GUIDE_SAVE_CHAIN=task;return task;}
 window.mzGuidePrepareForResearch=function(){MZ_GUIDE_DIRTY_BEFORE_READY=true;if(MZ_GUIDE_READY&&RM_FB.user){MZ_GUIDE_DIRTY_BEFORE_READY=false;return mzGuideSaveNow();}return Promise.resolve();};
@@ -8485,7 +8513,7 @@ var mz44OldApplyState=window.rmApplyState;window.rmApplyState=function(state){st
 
 
 /* v154 — archivio Creature: comandi UI, cambio specie sicuro e reset non distruttivo. */
-document.addEventListener('click',function(e){var op=e.target&&e.target.closest?e.target.closest('[data-creature-open]'):null;if(op){e.preventDefault();mzCreatureOpen(op.getAttribute('data-creature-open'));return;}var del=e.target&&e.target.closest?e.target.closest('[data-creature-delete]'):null;if(del){e.preventDefault();mzCreatureDelete(del.getAttribute('data-creature-delete'));return;}if(e.target&&e.target.closest&&e.target.closest('#mzCreatureNewBtn')){e.preventDefault();mzCreatureStartNew('new');if(typeof mostraModo==='function')mostraModo('Magizoologia');return;}if(e.target&&e.target.closest&&e.target.closest('#mzCreatureResearchBtn')){e.preventDefault();if(typeof mostraModo==='function')mostraModo('Ricerca');return;}},true);
+document.addEventListener('click',function(e){var op=e.target&&e.target.closest?e.target.closest('[data-creature-open]'):null;if(op){e.preventDefault();mzCreatureOpen(op.getAttribute('data-creature-open'));return;}var del=e.target&&e.target.closest?e.target.closest('[data-creature-delete]'):null;if(del){e.preventDefault();mzCreatureDelete(del.getAttribute('data-creature-delete'));return;}if(e.target&&e.target.closest&&e.target.closest('#mzCreatureNewBtn')){e.preventDefault();mzCreatureStartNew('new');if(typeof mostraModo==='function')mostraModo('Magizoologia');return;}if(e.target&&e.target.closest&&e.target.closest('#mzCreatureResearchBtn')){e.preventDefault();if(typeof rmEnterResearchFromProfile==='function')rmEnterResearchFromProfile();else if(typeof mostraModo==='function')mostraModo('Ricerca');return;}},true);
 document.addEventListener('focusin',function(e){if(e.target&&e.target.id==='specieCreaturaGuida'&&MZ_ACTIVE_CREATURE_ID&&!MZ_GUIDE_RESTORING)MZ_CREATURE_SPECIES_FOCUS_STATE=mzGuideCollectState();},true);
 document.addEventListener('change',function(e){if(!e.target)return;if(e.target.id==='pgNomeSessione'){setTimeout(mzCreatureRenderLibrary,0);return;}if(e.target.id==='specieCreaturaGuida'&&MZ_ACTIVE_CREATURE_ID&&!MZ_GUIDE_RESTORING&&!MZ_CREATURE_RESETTING){var idx=mzCreatureIndex(MZ_ACTIVE_CREATURE_ID),old=idx>=0?String(MZ_CREATURE_LIBRARY[idx].species||'').trim():'',now=String(e.target.value||'').trim();if(old&&now&&old.toLocaleLowerCase('it-IT')!==now.toLocaleLowerCase('it-IT')){if(MZ_CREATURE_SPECIES_FOCUS_STATE)mzCreatureSyncActive(MZ_CREATURE_SPECIES_FOCUS_STATE);MZ_ACTIVE_CREATURE_ID='';var s=document.getElementById('mzCreatureLibraryStatus');if(s)s.innerHTML='<b>Nuova specie rilevata:</b> la Creatura precedente resta nell’archivio; questa verrà registrata come nuova Creatura.';setTimeout(mzCreatureRenderLibrary,0);}}MZ_CREATURE_SPECIES_FOCUS_STATE=null;},true);
 var mz154BaseResetGuide=window.resetGuidaMagizoologia;if(typeof mz154BaseResetGuide==='function')window.resetGuidaMagizoologia=function(){if(!MZ_CREATURE_RESETTING&&!MZ_GUIDE_RESTORING){mzCreatureSyncActive(mzGuideCollectState());MZ_ACTIVE_CREATURE_ID='';}var r=mz154BaseResetGuide.apply(this,arguments);setTimeout(mzCreatureRenderLibrary,0);return r;};
@@ -9956,7 +9984,7 @@ if(typeof window.rmRecomputeBolcino==='function'){var v78Bol=window.rmRecomputeB
 function transferV78(n,index){index=index||1;var sp=((E('specieCreatura'+n)||{}).value||'').trim();if(!sp)return false;var cls=typeof window.rmClasseCorrente==='function'?rmClasseCorrente(n):'',b=biology(n,index);if(typeof window.resetGuidaMagizoologia==='function')resetGuidaMagizoologia();var spec=E('specieCreaturaGuida'),nome=E('nomeCreaturaGuida'),cl=E('classificazione'),fase=E('faseVitale'),sex=E('sessoCreaturaGuida'),vote=E('pgVoto');if(spec){spec.value=sp;spec.dataset.researchEncounter=String(n);spec.dataset.researchIndex=String(index);spec.dataset.researchClass=cls||'';}if(nome){nome.value=sp;nome.dataset.autoSpeciesName='1';}if(cl&&/^(X|XX|XXX|XXXX|XXXXX)$/.test(cls))cl.value=cls;if(fase&&b.phase)fase.value=b.phase;if(sex)sex.value=b.sex||'';var preg=E('femminaGravidanza');if(preg)preg.checked=!!b.gestation;var rv=E('rmVotoRicerca'+n),rvValue=rv&&rv.value?rv.value:'';[spec,nome,cl,fase,sex,preg].forEach(function(x){if(x)fire(x,'change');});if(vote&&rvValue){vote.value=rvValue;fire(vote,'change');}renderSpeciesRules();if(norm(sp)==='troll'){var ti=E('mzV78TrollIntelligente'),tr=E('mzV78_'+n+'_trollint');if(ti&&tr&&tr.value)ti.checked=Number(tr.value)===1;}var va=E('mzV78VampireAlignment'+n),vg=E('mzV78VampiroAllineamento');if(va&&vg&&va.value){vg.value=va.value;fire(vg,'change');}if(typeof window.ricalcolaMagizoologia==='function')ricalcolaMagizoologia();if(typeof window.mostraModo==='function')mostraModo('Magizoologia');if(typeof window.mostraPannello==='function')mostraPannello('Riconoscimento');var p=E('modoMagizoologia');if(p&&p.scrollIntoView)p.scrollIntoView({behavior:'smooth',block:'start'});return true;}
 window.mzTransferResearchCreature=transferV78;window.mzResearchBiology=biology;
 function decorateOutcomeImports(){var host=E('rm-outcome-content');if(!host)return;host.querySelectorAll('[data-rm-import-guide]').forEach(function(old){var n=Number(old.getAttribute('data-rm-import-guide'));if(!n)return;var wrap=old.closest('.outcome-import-row')||old.parentElement,count=n===1?1:Number((E('risultatoEsemplari'+n)||{}).value||1),h='<div class="mz-v78-imports">';for(var i=1;i<=count;i++)h+='<button type="button" class="bottone-azione bottone-secondario" data-v78-import="'+n+'" data-v78-index="'+i+'">'+(count===1?'Importa nella Guida':'Importa esemplare '+i)+'</button>';h+='</div>';wrap.innerHTML=h;});}
-document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-v78-import]'):null;if(b){e.preventDefault();transferV78(Number(b.dataset.v78Import),Number(b.dataset.v78Index));}},true);
+document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-v78-import]'):null;if(b){e.preventDefault();if(typeof window.mzTransferResearchCreature==='function')window.mzTransferResearchCreature(Number(b.dataset.v78Import),Number(b.dataset.v78Index));}},true);
 if(typeof window.rmRenderOutcome==='function'){var v78Outcome=window.rmRenderOutcome;window.rmRenderOutcome=function(){var out=v78Outcome.apply(this,arguments);decorateOutcomeImports();return out;};}
 
 /* ---------- Ricalcolo Ricerca finale: hook richiamato anche dai listener storici ---------- */
@@ -11958,7 +11986,7 @@ function decorateDoxyFirstOutcome(){
  for(var i=2;i<=1+dx;i++)h+='<button type="button" class="bottone-azione bottone-secondario" data-v89-doxy-import="'+i+'">Importa Doxy '+i+'</button>';
  d.innerHTML=h;wrap.appendChild(d);
 }
-document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-v89-doxy-import]'):null;if(b){e.preventDefault();importDoxyFirstExtra(Number(b.getAttribute('data-v89-doxy-import')));}},true);
+document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-v89-doxy-import]'):null;if(b){e.preventDefault();if(typeof window.mzImportDoxyResearchExtra==='function')window.mzImportDoxyResearchExtra(Number(b.getAttribute('data-v89-doxy-import')));}},true);
 
 /* Research → Guide: if Drago, transfer the race chosen by the zone table after
    the existing import routine has populated the Guide. */
@@ -13629,6 +13657,238 @@ document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e
 var prev=window.ricalcolaRicerca;if(typeof prev==='function')window.ricalcolaRicerca=function(){var r=prev.apply(this,arguments);setTimeout(renderAll,0);return r;};
 document.addEventListener('change',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoRicerca'))setTimeout(renderAll,0);},true);document.addEventListener('input',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoRicerca'))setTimeout(renderAll,0);},true);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){if(typeof window.mzCreatureRenderLibrary==='function')window.mzCreatureRenderLibrary();renderAll();},80);});else setTimeout(function(){if(typeof window.mzCreatureRenderLibrary==='function')window.mzCreatureRenderLibrary();renderAll();},80);
+})();
+</script>
+
+
+<script id="magizoologia-v155-import-identity-audit">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function norm(v){
+  v=String(v||'').trim();
+  try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}
+  return v.toLocaleLowerCase('it-IT').replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
+}
+function fire(el,type){if(!el)return;try{el.dispatchEvent(new Event(type||'change',{bubbles:true}));}catch(e){}}
+function researchId(){return String((typeof RM_CURRENT_ID!=='undefined'&&RM_CURRENT_ID)||'').trim();}
+function currentPg(){return String((E('pgNomeSessione')||{}).value||'').trim();}
+function provenanceFromFields(fields){
+  fields=fields||{};
+  return {
+    session:String(fields.mzResearchImportSessionId||'').trim(),
+    encounter:String(fields.mzResearchImportEncounter||'').trim(),
+    index:String(fields.mzResearchImportIndex||'1').trim()||'1'
+  };
+}
+function currentProvenance(){
+  return {
+    session:String((E('mzResearchImportSessionId')||{}).value||'').trim(),
+    encounter:String((E('mzResearchImportEncounter')||{}).value||'').trim(),
+    index:String((E('mzResearchImportIndex')||{}).value||'1').trim()||'1'
+  };
+}
+function setProvenance(n,index){
+  var sid=researchId(),s=E('mzResearchImportSessionId'),e=E('mzResearchImportEncounter'),i=E('mzResearchImportIndex');
+  if(s)s.value=sid;if(e)e.value=String(n);if(i)i.value=String(index||1);
+  var sp=E('specieCreaturaGuida');
+  if(sp){
+    sp.dataset.researchEncounter=String(n);
+    sp.dataset.researchIndex=String(index||1);
+    sp.dataset.researchSession=sid;
+  }
+}
+function restoreProvenanceDatasets(){
+  var p=currentProvenance(),sp=E('specieCreaturaGuida');
+  if(!sp)return;
+  if(p.encounter){
+    sp.dataset.researchEncounter=p.encounter;
+    sp.dataset.researchIndex=p.index;
+    sp.dataset.researchSession=p.session;
+  }else{
+    sp.dataset.researchEncounter='';
+    sp.dataset.researchIndex='';
+    sp.dataset.researchSession='';
+  }
+}
+function sameSource(entry,n,index,species,sid,pg){
+  if(!entry)return false;
+  var f=(entry.state&&entry.state.fields)||{},p=provenanceFromFields(f);
+  if(norm(entry.pgName)!==norm(pg))return false;
+  if(norm(entry.species)!==norm(species))return false;
+  if(p.encounter!==String(n)||p.index!==String(index||1))return false;
+  /* Le Creature create dalla v155 hanno un ID Ricerca persistente:
+     due role differenti non devono mai fondersi soltanto perché hanno
+     stessa specie / Incontro / Esemplare. */
+  if(p.session)return !!sid&&p.session===sid;
+  return false;
+}
+function legacyActiveMatches(n,index,species){
+  if(!MZ_ACTIVE_CREATURE_ID)return false;
+  var sp=E('specieCreaturaGuida'),p=currentProvenance();
+  if(!sp||norm(sp.value)!==norm(species))return false;
+  if(p.session||p.encounter)return false;
+  return String(sp.dataset.researchEncounter||'')===String(n) &&
+         String(sp.dataset.researchIndex||'1')===String(index||1);
+}
+function findImported(n,index,species){
+  var sid=researchId(),pg=currentPg();
+  for(var k=0;k<MZ_CREATURE_LIBRARY.length;k++){
+    var entry=MZ_CREATURE_LIBRARY[k];
+    if(sameSource(entry,n,index,species,sid,pg))return entry;
+  }
+  return null;
+}
+function prepareImport(n,index,species){
+  n=Number(n)||1;index=Number(index)||1;species=String(species||'').trim();
+  if(!species)return {reuse:false,entry:null};
+  /* Consolida subito eventuali modifiche alla Creatura aperta. */
+  try{if(MZ_ACTIVE_CREATURE_ID&&typeof mzCreatureSyncActive==='function')mzCreatureSyncActive(mzGuideCollectState());}catch(e){}
+  var found=findImported(n,index,species);
+  if(found){
+    if(MZ_ACTIVE_CREATURE_ID!==found.id&&typeof mzCreatureOpen==='function')mzCreatureOpen(found.id);
+    return {reuse:true,entry:found};
+  }
+  /* Retrocompatibilità prudente: una Creatura v154 senza ID Ricerca può essere
+     migrata soltanto se è proprio quella attualmente aperta e il dataset DOM
+     dimostra che proviene dallo stesso Incontro/Esemplare. Non cerchiamo altri
+     record legacy per specie, così due role storiche non vengono fuse. */
+  if(legacyActiveMatches(n,index,species))return {reuse:true,entry:null,legacy:true};
+
+  if(typeof mzCreatureStartNew==='function')mzCreatureStartNew('import');
+  else{
+    if(MZ_ACTIVE_CREATURE_ID&&typeof mzCreatureSyncActive==='function')mzCreatureSyncActive(mzGuideCollectState());
+    MZ_ACTIVE_CREATURE_ID='';
+    MZ_CREATURE_RESETTING=true;
+    try{if(typeof resetGuidaMagizoologia==='function')resetGuidaMagizoologia();}
+    finally{MZ_CREATURE_RESETTING=false;}
+  }
+  return {reuse:false,entry:null};
+}
+function withResetSuppressed(fn){
+  var old=window.resetGuidaMagizoologia;
+  window.resetGuidaMagizoologia=function(){};
+  try{return fn();}
+  finally{window.resetGuidaMagizoologia=old;}
+}
+function finalizeImport(n,index){
+  setProvenance(n,index);
+  restoreProvenanceDatasets();
+  /* Commit immediato: chiude anche la finestra del doppio click prima
+     dell'autosalvataggio asincrono. */
+  try{if(typeof mzCreatureSyncActive==='function')mzCreatureSyncActive(mzGuideCollectState());}catch(e){}
+  try{if(typeof mzCreatureRenderLibrary==='function')mzCreatureRenderLibrary();}catch(e){}
+  try{if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();}catch(e){}
+  var sp=String((E('specieCreaturaGuida')||{}).value||'').trim(),
+      vote=E('rmVotoRicerca'+n),
+      box=E('rmGuideBridge'+n);
+  if(box&&sp)box.setAttribute('data-v58-synced',sp+'|'+((E('pgTipo')||{}).value==='studente'&&vote&&vote.value?vote.value:'senza-voto'));
+}
+
+/* Tutti i normali import Ricerca → Guida passano da qui, sia quelli rapidi
+   sia i pulsanti dell'Esito (i vecchi handler sono stati reindirizzati a window). */
+var baseTransfer=window.mzTransferResearchCreature;
+if(typeof baseTransfer==='function'){
+  window.mzTransferResearchCreature=function(n,index){
+    n=Number(n)||1;index=Number(index)||1;
+    var species=String((E('specieCreatura'+n)||{}).value||'').trim();
+    if(!species)return false;
+    prepareImport(n,index,species);
+    var ok=withResetSuppressed(function(){return baseTransfer(n,index);});
+    if(ok!==false)finalizeImport(n,index);
+    return ok!==false;
+  };
+}
+
+/* Doxy aggiuntive del Primo Incontro: stesso sistema di identità e archivio. */
+var baseDoxy=window.mzImportDoxyResearchExtra;
+if(typeof baseDoxy==='function'){
+  window.mzImportDoxyResearchExtra=function(index){
+    index=Number(index)||1;
+    prepareImport(1,index,'Doxy');
+    withResetSuppressed(function(){baseDoxy(index);});
+    finalizeImport(1,index);
+    return true;
+  };
+}
+
+/* Se activeCreatureId manca in un vecchio payload ma la Guida contiene già
+   la provenienza v155, scegli la Creatura esatta invece della prima con
+   la stessa specie. */
+var baseLoad=window.mzCreatureLoadPayload;
+if(typeof baseLoad==='function'){
+  window.mzCreatureLoadPayload=function(data){
+    var out=baseLoad.apply(this,arguments);
+    var f=(data&&data.state&&data.state.fields)||{},p=provenanceFromFields(f),
+        species=String(f.specieCreaturaGuida||'').trim(),pg=String(f.pgNomeSessione||'').trim();
+    if(p.encounter&&species){
+      for(var k=0;k<MZ_CREATURE_LIBRARY.length;k++){
+        var entry=MZ_CREATURE_LIBRARY[k];
+        if(sameSource(entry,p.encounter,p.index,species,p.session,pg)){MZ_ACTIVE_CREATURE_ID=entry.id;break;}
+      }
+    }
+    return out;
+  };
+}
+
+/* Riporta i dataset tecnici dopo l'apertura di una Creatura salvata.
+   Servono solo alla UI/compatibilità storica; l'identità vera è nei hidden. */
+document.addEventListener('click',function(e){
+  var b=e.target&&e.target.closest?e.target.closest('[data-creature-open]'):null;
+  if(b)setTimeout(function(){restoreProvenanceDatasets();try{if(typeof mzSyncSpeciesClassification==='function')mzSyncSpeciesClassification('restore');}catch(err){}},0);
+},true);
+var picker=E('mzProfilePicker');
+if(picker)picker.addEventListener('change',function(){setTimeout(restoreProvenanceDatasets,80);});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(restoreProvenanceDatasets,100);});
+else setTimeout(restoreProvenanceDatasets,100);
+
+/* Cambio PG digitato: prima salva davvero il profilo precedente.
+   La v154 provava a salvarlo quando il campo Nome conteneva già il nuovo PG,
+   quindi il guard di sicurezza rifiutava correttamente il salvataggio. */
+var baseTyped=window.mzProfileHandleTypedName;
+if(typeof baseTyped==='function'){
+  window.mzProfileHandleTypedName=function(name){
+    name=String(name||'').trim();
+    var old=String(MZ_GUIDE_BOUND_NAME||'').trim(),field=E('pgNomeSessione');
+    if(old&&name&&norm(old)!==norm(name)&&MZ_GUIDE_READY&&field&&typeof mzGuideSaveNow==='function'){
+      var typed=field.value;
+      field.value=old;
+      return Promise.resolve(mzGuideSaveNow()).catch(function(){return false;}).then(function(){
+        field.value=typed;
+        return baseTyped(name);
+      });
+    }
+    return baseTyped(name);
+  };
+}
+
+/* Anche «Nuovo PG / Cambia PG» consolida l'ultimo stato prima di svuotare.
+   Non aggiunge letture: usa il normale salvataggio già previsto dal profilo. */
+var baseResetProfile=window.mzResetPersistentGuideForNewPg;
+if(typeof baseResetProfile==='function'){
+  window.mzResetPersistentGuideForNewPg=function(btn){
+    var nameField=E('pgNomeSessione');
+    if(MZ_GUIDE_READY&&MZ_GUIDE_BOUND_NAME&&typeof mzGuideSaveNow==='function'){
+      if(btn)btn.disabled=true;
+      if(nameField)nameField.disabled=true;
+      return Promise.resolve(mzGuideSaveNow()).catch(function(){return false;}).then(function(){
+        return baseResetProfile(btn);
+      }).finally(function(){
+        if(nameField){nameField.disabled=false;try{nameField.focus();}catch(e){}}
+        if(btn)btn.disabled=false;
+      });
+    }
+    var out=baseResetProfile(btn);
+    if(nameField){nameField.disabled=false;setTimeout(function(){try{nameField.focus();}catch(e){}},0);}
+    return out;
+  };
+}
+
+/* Audit Registro/Esito: in Magizoologia era già corretto.
+   rmEncounterComplete/__mzV78EncounterComplete dipendono dai dati reali
+   dell'Incontro e dai controlli specifici della Creatura, NON dalla casella
+   «catturato». La cattura continua quindi a influire soltanto sulla Valigia. */
+
 })();
 </script>
 
