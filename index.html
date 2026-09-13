@@ -1,3 +1,4 @@
+<!-- Magizoologia tool v172 — Cura riallineata al regolamento: lo Stato di Salute non richiede più il Narratore di per sé; Narratore soltanto se la Creatura diventa effettivamente ostile o per regole specifiche della specie. Import Ricerca→Guida reso sempre disponibile per ogni esemplare biologicamente completo, senza dipendere dalla scelta preventiva «Continuare subito nella Guida?». -->
 <!-- Magizoologia tool v171 — tabella ufficiale dei post inserita in un details contestuale nell’Allevamento; solo riferimento visivo, nessuna modifica ai calcoli o a Firebase. -->
 <!-- v165 generated from magizoologia_v164 -->
 <!-- Magizoologia tool v161 — mantiene la v160 e aggiunge un riepilogo live compatto degli esemplari negli Incontri II/III, con specie, classificazione, Sesso/Fase Vitale e Salute, più testo copiabile per il forum. -->
@@ -12353,11 +12354,16 @@ function genericHealthInputs(n){
  return arr;
 }
 function healthNeedsNarrator(n){
- return genericHealthInputs(n).some(function(x){var sv=Number(x.s.value||0),fv=Number((x.f||{}).value||0),gest=fv>=34&&fv<=35;return sv>0&&(gest?sv>=11:sv>=12);});
+ /* v172: lo Stato di Salute, da solo, non richiede più il Narratore.
+    La Cura è autonoma; il Narratore entra solo se la Creatura diventa davvero
+    ostile oppure quando una regola specifica della specie lo richiede. */
+ return false;
 }
 function renderHealthNarrator(n,h){
- h+='<div class="mz-v91-narrator" id="mzV91_'+n+'_healthNarratorMsg" style="display:none"><b>Stato della Creatura: serve il Narratore.</b> Se una Creatura è partoriente, ammalata, ferita o morente, contatta il Narratore perché descriva la situazione e indichi come procedere.</div>';
- h+=narratorAck('mzV91_'+n+'_healthNarratorOk','Ho contattato il Narratore e ricevuto le indicazioni per questo stato');
+ /* Manteniamo i due nodi tecnici nascosti per compatibilità con vecchi salvataggi,
+    ma non mostriamo né richiediamo più alcuna conferma generica del Narratore. */
+ h+='<div class="mz-v91-narrator" id="mzV91_'+n+'_healthNarratorMsg" style="display:none"></div>';
+ h+=narratorAck('mzV91_'+n+'_healthNarratorOk','');
  return h;
 }
 
@@ -13909,13 +13915,20 @@ function exemplar(n,i){
   return {ready:ok,phase:ft,health:st};
 }
 function importOne(n,i){
-  var sp=norm(species(n)),ok=false;
+  var sp=norm(species(n)),ok=false,choice=E('rmInteragisciSubito'+n);
+  /* Il click su Importa equivale già alla decisione di passare alla Guida. */
+  if(choice&&choice.value!=='si'){
+    choice.value='si';
+    try{if(typeof rmScheduleSave==='function')rmScheduleSave();}catch(err){}
+  }
   if(n===1&&i>1&&sp==='doxy'&&typeof window.mzImportDoxyResearchExtra==='function'){
     window.mzImportDoxyResearchExtra(i);ok=true;
   }else if(typeof window.mzTransferResearchCreature==='function'){
     ok=!!window.mzTransferResearchCreature(n,i);
   }
   if(ok){
+    var status=E('rmGuideBridgeStatus'+n);
+    if(status)status.textContent='Esemplare '+i+' importato nella Guida ✓ Puoi tornare alla Ricerca e importarne un altro quando vuoi.';
     setTimeout(function(){
       try{if(typeof window.mzCreatureArchiveSync==='function')window.mzCreatureArchiveSync();}catch(err){}
       try{if(typeof window.mzGuideScheduleSave==='function')window.mzGuideScheduleSave();}catch(err){}
@@ -13926,7 +13939,10 @@ function importOne(n,i){
 function render(n){
   var box=E('rmGuideBridge'+n);if(!box)return;
   var old=box.querySelector('.mz-v154-quick-import');if(old)old.remove();
-  var choice=E('rmInteragisciSubito'+n);if(!choice||choice.value!=='si')return;
+  var choice=E('rmInteragisciSubito'+n);
+  /* v172: l'importazione è un'azione esplicita e non deve dipendere da una
+     scelta preventiva nel menu «Continuare subito nella Guida?». Se i dati
+     dell'esemplare sono completi, il comando deve essere sempre disponibile. */
   var d=document.createElement('div');d.className='mz-v154-quick-import';
   var status=E('rmGuideBridgeStatus'+n);
   if(!baseReady(n)){
@@ -13944,8 +13960,8 @@ function render(n){
     }
   }
   var intro=c>1
-    ?'<div class="nota-regole"><b>Quale esemplare vuoi gestire nella Guida?</b> Puoi aprire subito qualsiasi esemplare già completo: <b>non devi finire prima gli altri '+(c-1)+'</b> né concludere l’Incontro.</div>'
-    :'<div class="nota-regole"><b>Gestione immediata:</b> appena Sesso/Fase Vitale e Stato di Salute sono compilati, puoi aprire questa Creatura nella Guida.</div>';
+    ?'<div class="nota-regole"><b>Quale esemplare vuoi portare nella Guida?</b> Puoi importare subito qualsiasi esemplare già completo: <b>non devi finire prima gli altri '+(c-1)+'</b>, concludere l’Incontro o selezionare prima «Sì» nel menu qui sopra.</div>'
+    :'<div class="nota-regole"><b>Importazione immediata:</b> appena Sesso/Fase Vitale e Stato di Salute sono compilati, puoi portare questa Creatura nella Guida senza concludere l’Incontro e senza altre conferme preventive.</div>';
   d.innerHTML=intro+'<div class="mz-v162-import-list" style="display:grid;gap:6px;margin-top:8px">'+rows.join('')+'</div>'+
     '<div class="nota-regole" style="margin-top:8px!important">L’importazione trasferisce solo l’esemplare scelto e apre la Guida. Puoi poi tornare alla Ricerca e importarne un altro — per esempio curare quello <b>Morente</b> e successivamente gestire l’<b>Uovo</b>.</div>';
   if(status){status.parentNode.insertBefore(d,status);status.textContent=readyCount?('Hai '+readyCount+' esemplare'+(readyCount===1?'':'i')+' già apribile'+(readyCount===1?'':'i')+' nella Guida.'):'Completa i dati dell’esemplare che vuoi gestire: gli altri possono restare incompleti.';}
@@ -14228,40 +14244,38 @@ function needsHealthFollowup(n){
     return sv>0&&(gest?sv>=11:sv>=12);
   });
 }
-/* Uno stato ammalato/ferito/morente richiede il Narratore se il PG decide di
-   intervenire, ma non rende incompleta la scoperta della Creatura. In
-   particolare non deve far sparire l'Incontro dall'Esito né impedire di
-   proseguire/chiudere una Ricerca con Creature neutrali. Tutti gli altri
-   controlli specifici dell'Incontro restano invariati. */
+/* v172: lo Stato di Salute non richiede più il Narratore in automatico.
+   Ammalata/ferita/morente resta un'informazione da trasferire alla Guida, dove
+   la Cura si svolge normalmente. Il Narratore va contattato soltanto se la
+   Creatura diventa davvero ostile o se esiste una regola specifica della specie. */
 var previousComplete=window.__mzV78EncounterComplete;
 if(typeof previousComplete==='function'){
   window.__mzV78EncounterComplete=function(n){
-    var ack=E('mzV91_'+n+'_healthNarratorOk'),need=needsHealthFollowup(n);
-    if(!need||!ack||ack.checked)return previousComplete(n);
-    ack.checked=true;
+    /* Compatibilità: eventuali vecchi gate generici di salute non devono più
+       impedire il completamento dell'Incontro. I gate specifici restano attivi. */
+    var ack=E('mzV91_'+n+'_healthNarratorOk');
+    if(!ack)return previousComplete(n);
+    var old=ack.checked;ack.checked=true;
     try{return previousComplete(n);}
-    finally{ack.checked=false;}
+    finally{ack.checked=old;}
   };
 }
 function refreshHealthMessage(n){
-  var need=needsHealthFollowup(n),msg=E('mzV91_'+n+'_healthNarratorMsg'),wrap=E('mzV91_'+n+'_healthNarratorOk_wrap'),ack=E('mzV91_'+n+'_healthNarratorOk');
-  if(msg&&need){
-    msg.innerHTML='<b>Stato della Creatura: il Narratore serve se decidi di intervenire.</b> Una Creatura partoriente, ammalata, ferita o morente richiede indicazioni del Narratore per essere gestita. <b>Questo non blocca la Ricerca:</b> se non vuoi interagire puoi proseguire o concludere; se vuoi curarla/gestirla puoi importare direttamente l’esemplare nella Guida.';
-  }
-  if(wrap&&need){
-    var lab=wrap.querySelector('label');
-    if(lab)lab.textContent='Il Narratore ha già gestito questo stato';
-  }
-  if(!need&&ack)ack.checked=false;
+  var msg=E('mzV91_'+n+'_healthNarratorMsg'),wrap=E('mzV91_'+n+'_healthNarratorOk_wrap'),ack=E('mzV91_'+n+'_healthNarratorOk');
+  if(msg){msg.style.display='none';msg.innerHTML='';}
+  if(wrap)wrap.style.display='none';
+  if(ack)ack.checked=false;
 }
 function markOutcome(){
   var host=E('rm-outcome-content');if(!host)return;
+  var oldNotes=host.querySelectorAll('.mz-v163-health-note');
+  oldNotes.forEach(function(x){x.remove();});
   var lis=host.querySelectorAll('.outcome-list>li');
   for(var n=1;n<=3;n++){
     if(!needsHealthFollowup(n))continue;
-    var li=lis[n-1];if(!li||li.querySelector('.mz-v163-health-note'))continue;
+    var li=lis[n-1];if(!li)continue;
     var note=document.createElement('div');note.className='nota-regole mz-v163-health-note';
-    note.innerHTML='<b>Stato da gestire:</b> almeno un esemplare richiede il Narratore se scegli di intervenire. Puoi comunque concludere la Ricerca oppure importare nella Guida soltanto l’esemplare che vuoi curare/gestire.';
+    note.innerHTML='<b>Stato di Salute da gestire:</b> puoi importare direttamente nella Guida l’esemplare ammalato, ferito, partoriente o morente e usare la normale <b>Cura</b>. <b>Non serve il Narratore per il solo Stato di Salute:</b> contattalo soltanto se la Creatura diventa effettivamente ostile oppure se una regola specifica della specie lo richiede.';
     li.appendChild(note);
   }
 }
