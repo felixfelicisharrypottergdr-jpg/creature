@@ -14864,3 +14864,48 @@ function init(){var wrap=document.querySelector('#modoPersonaggio .mz-profile-pi
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
+
+<!-- v168 — Cambio PG non bloccante: salva il profilo corrente in background e libera subito il nome -->
+<script id="magizoologia-v168-change-pg-nonblocking">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+window.mzResetPersistentGuideForNewPg=function(btn){
+  var field=E('pgNomeSessione');
+  /* Il payload del vecchio PG viene costruito sincronicamente dentro mzGuideSaveNow:
+     la scrittura può proseguire in background senza lasciare il campo disabilitato. */
+  if(typeof MZ_GUIDE_READY!=='undefined'&&MZ_GUIDE_READY&&typeof MZ_GUIDE_BOUND_NAME!=='undefined'&&MZ_GUIDE_BOUND_NAME&&typeof mzGuideSaveNow==='function'){
+    try{Promise.resolve(mzGuideSaveNow()).catch(function(err){console.error(err);});}catch(err){console.error(err);}
+  }
+  if(typeof RM_PROFILE_NAME_TIMER!=='undefined'&&RM_PROFILE_NAME_TIMER){clearTimeout(RM_PROFILE_NAME_TIMER);RM_PROFILE_NAME_TIMER=null;}
+  if(typeof MZ_GUIDE_SAVE_TIMER!=='undefined'&&MZ_GUIDE_SAVE_TIMER){clearTimeout(MZ_GUIDE_SAVE_TIMER);MZ_GUIDE_SAVE_TIMER=null;}
+  if(typeof MZ_GUIDE_NAME_SAVE_TIMER!=='undefined'&&MZ_GUIDE_NAME_SAVE_TIMER){clearTimeout(MZ_GUIDE_NAME_SAVE_TIMER);MZ_GUIDE_NAME_SAVE_TIMER=null;}
+  if(typeof RM_PROFILE_OPEN_PENDING!=='undefined')RM_PROFILE_OPEN_PENDING=false;
+  if(typeof MZ_GUIDE_BOUND_NAME!=='undefined')MZ_GUIDE_BOUND_NAME='';
+  if(typeof MZ_GUIDE_CURRENT_DOC_ID!=='undefined')MZ_GUIDE_CURRENT_DOC_ID='';
+  if(typeof MZ_GUIDE_DIRTY_BEFORE_READY!=='undefined')MZ_GUIDE_DIRTY_BEFORE_READY=false;
+  if(typeof MZ_CREATURE_LIBRARY!=='undefined')MZ_CREATURE_LIBRARY=[];
+  if(typeof MZ_ACTIVE_CREATURE_ID!=='undefined')MZ_ACTIVE_CREATURE_ID='';
+  MZ_GUIDE_RESTORING=true;
+  try{
+    function set(id,v){var e=E(id);if(!e)return;if(e.type==='checkbox'||e.type==='radio')e.checked=!!v;else e.value=v;}
+    set('pgNomeSessione','');set('pgTipo','studente');set('pgAdultoCDCM','si');set('empatia','10');set('sapienzaProfilo','0');
+    set('livAmico','0');set('livCustode','0');set('livAddestratore','0');set('livAllevatore','0');
+    set('pgMagizoologoMestiere',false);set('pgLicenzaCreatureSpeciali',false);
+    if(typeof resetGuidaMagizoologia==='function')resetGuidaMagizoologia();
+    if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();
+    if(typeof RM_PROFILE_SESSION_ID!=='undefined'){RM_PROFILE_SESSION_ID='';RM_PROFILE_SESSION_DATA=null;RM_PROFILE_SESSION_NAME='';RM_PROFILE_PENDING_CREATE=false;}
+    if(typeof mzProfileEnsurePickerSelection==='function')mzProfileEnsurePickerSelection('');
+    if(typeof mzCreatureRenderLibrary==='function')mzCreatureRenderLibrary();
+  }finally{MZ_GUIDE_RESTORING=false;}
+  if(field){field.disabled=false;field.removeAttribute('disabled');try{field.focus();}catch(e){}}
+  if(btn)btn.disabled=false;
+  var own=E('mzV167ChangePgBtn');if(own)own.disabled=false;
+  if(typeof mzGuideStatus==='function')mzGuideStatus('Pronto per un altro PG: scrivi il nome.','ok');
+  try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){}
+  return Promise.resolve(true);
+};
+function init(){var f=E('pgNomeSessione');if(f){f.disabled=false;f.removeAttribute('disabled');}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
