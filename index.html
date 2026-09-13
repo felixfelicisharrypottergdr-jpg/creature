@@ -1,4 +1,4 @@
-<!-- Magizoologia tool v160 — dadi multipli degli Incontri II/III accorpati: con più esemplari il tool genera un unico Nd40 per Sesso/Fase Vitale e un unico Nd15 per Salute, mantenendo risultati e interpretazione separati per ogni esemplare. -->
+<!-- Magizoologia tool v161 — mantiene la v160 e aggiunge un riepilogo live compatto degli esemplari negli Incontri II/III, con specie, classificazione, Sesso/Fase Vitale e Salute, più testo copiabile per il forum. -->
 <!-- Magizoologia tool v159 — audit finale contrasto: i riquadri chiari annidati nei pannelli tecnici mantengono testo scuro leggibile; i pannelli scuri mantengono testo chiaro. Nessuna modifica alla logica delle Ricerche concluse/cancellate. -->
 <!-- Magizoologia tool v158 — ripresa Ricerca sicura: aprire una Ricerca esistente non risincronizza Empatia/Sapienza dal Profilo, non cancella progressi dipendenti dalle formule e non aggiorna il timestamp finché il player non modifica davvero la Ricerca. -->
 
@@ -3007,6 +3007,18 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 .rm-compact-result{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important;margin:6px 0!important}
 .rm-compact-result>b{min-width:180px;color:#4b2415!important}
 @media(max-width:640px){.rm-compact-result>b{min-width:100%;}.rm-batch-dice .result-line{align-items:stretch!important}}
+/* v161 — riepilogo live degli esemplari */
+.rm-esemplari-recap{margin:14px 0 8px;padding:12px 13px;border:1px solid #74442d;border-left:5px solid #8b5738;border-radius:8px;background:#2a1810;color:#f7e7d9}
+.rm-esemplari-recap-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.rm-esemplari-recap-title{font-weight:800;color:#ffd4b0;font-size:1.03em}
+.rm-esemplari-recap-meta{font-size:.88em;color:#e9c9b4}
+.rm-esemplari-recap-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;margin-top:8px}
+.rm-esemplari-recap-item{padding:7px 9px;border:1px solid #5e3929;border-radius:6px;background:#20120d;color:#f5e5d9;line-height:1.35}
+.rm-esemplari-recap-item b{color:#ffd4b0}
+.rm-esemplari-recap-item .recap-wait{color:#caa991;font-style:italic}
+.rm-esemplari-recap-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.rm-esemplari-recap-copy-source{display:none!important}
+@media(max-width:700px){.rm-esemplari-recap-list{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -7475,6 +7487,56 @@ function rmBuildEsemplari(n,count){
   }
   setupNumericInputs();
 }
+function rmRenderEsemplariRecap(n,count){
+  var host=rmEl('esemplariLista'+n);if(!host)return;
+  var old=rmEl('rmEsemplariRecap'+n);if(old)old.remove();
+  if(!count||count<2)return;
+
+  var incontro=n===2?'Secondo':'Terzo',tab=n===2?rmClasseTab2:rmClasseTab3;
+  var vc=rmNumber('risultatoClasse'+n,1,18),classe=vc===null?'—':rmLookup(tab,vc);
+  var specie=((rmEl('specieCreatura'+n)||{}).value||'').trim()||'Creatura';
+  var righe=[],bb=[],complete=0;
+
+  for(var i=1;i<=count;i++){
+    var vf=rmNumber('risultatoFase'+n+'_'+i,1,40),vs=rmNumber('risultatoSalute'+n+'_'+i,1,15);
+    var fase=vf===null?'':rmLookup(rmSessoFaseTab,vf);
+    var salute='';
+    if(vs!==null){
+      var htab=rmHealthTableForPhase(fase||'');
+      salute=rmLookup(htab,vs);
+    }
+    if(fase&&salute)complete++;
+    righe.push({i:i,fase:fase,salute:salute});
+    bb.push(i+'. '+(fase||'in attesa')+' · '+(salute||'in attesa'));
+  }
+
+  var box=document.createElement('div');box.className='rm-esemplari-recap';box.id='rmEsemplariRecap'+n;
+  var head=document.createElement('div');head.className='rm-esemplari-recap-head';
+  var title=document.createElement('div');title.className='rm-esemplari-recap-title';title.textContent='Riepilogo '+count+' esemplari';head.appendChild(title);
+  var meta=document.createElement('div');meta.className='rm-esemplari-recap-meta';meta.textContent=complete+'/'+count+' completi · '+specie+' · Classificazione '+classe;head.appendChild(meta);box.appendChild(head);
+
+  var list=document.createElement('div');list.className='rm-esemplari-recap-list';
+  righe.forEach(function(r){
+    var item=document.createElement('div');item.className='rm-esemplari-recap-item';
+    var num=document.createElement('b');num.textContent='Esemplare '+r.i;item.appendChild(num);
+    item.appendChild(document.createElement('br'));
+    var f=document.createElement('span');f.textContent=r.fase||'Sesso/Fase in attesa';if(!r.fase)f.className='recap-wait';item.appendChild(f);
+    item.appendChild(document.createTextNode(' · '));
+    var h=document.createElement('span');h.textContent=r.salute||'Salute in attesa';if(!r.salute)h.className='recap-wait';item.appendChild(h);
+    list.appendChild(item);
+  });
+  box.appendChild(list);
+
+  var source=document.createElement('div');source.id='rmEsemplariRecapCopy'+n;source.className='rm-esemplari-recap-copy-source';
+  source.textContent='<b>Riepilogo esemplari — '+incontro+' Incontro</b>\n[quote]Specie: '+specie+'\nClassificazione: '+classe+'\n'+bb.join('\n')+'[/quote]';
+  box.appendChild(source);
+  var actions=document.createElement('div');actions.className='rm-esemplari-recap-actions';
+  var copy=document.createElement('button');copy.type='button';copy.className='copy-btn';copy.setAttribute('data-copy-source',source.id);copy.setAttribute('data-copy-control','1');copy.textContent='Copia riepilogo';actions.appendChild(copy);
+  var hint=document.createElement('span');hint.className='numeric-note';hint.textContent='Si aggiorna automaticamente mentre inserisci i risultati.';actions.appendChild(hint);box.appendChild(actions);
+
+  host.appendChild(box);
+}
+
 function rmUpdateEsemplari(n,count){
   var tab=n===2?rmClasseTab2:rmClasseTab3;
   var vc=rmNumber('risultatoClasse'+n,1,18),classe=vc===null?null:rmLookup(tab,vc);
@@ -7489,6 +7551,7 @@ function rmUpdateEsemplari(n,count){
     if(vs===null){rmImpostaTagValore(ts,idS,vs,'','out-neutral');}
     else{var st=rmLookup(healthTable,vs);rmImpostaTagValore(ts,idS,vs,st,st==='In salute'?'out-ok':'out-fail');}
   }
+  rmRenderEsemplariRecap(n,count);
 }
 
 function rmRecomputeCascataMultipla(n,trovato){
