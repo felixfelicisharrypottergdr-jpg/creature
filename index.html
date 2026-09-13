@@ -1,3 +1,4 @@
+<!-- v165 generated from magizoologia_v164 -->
 <!-- Magizoologia tool v161 — mantiene la v160 e aggiunge un riepilogo live compatto degli esemplari negli Incontri II/III, con specie, classificazione, Sesso/Fase Vitale e Salute, più testo copiabile per il forum. -->
 <!-- Magizoologia tool v159 — audit finale contrasto: i riquadri chiari annidati nei pannelli tecnici mantengono testo scuro leggibile; i pannelli scuri mantengono testo chiaro. Nessuna modifica alla logica delle Ricerche concluse/cancellate. -->
 <!-- Magizoologia tool v158 — ripresa Ricerca sicura: aprire una Ricerca esistente non risincronizza Empatia/Sapienza dal Profilo, non cancella progressi dipendenti dalle formule e non aggiorna il timestamp finché il player non modifica davvero la Ricerca. -->
@@ -3085,7 +3086,7 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </div>
 <div class="campo">
 <label>Sapienza Magizoologica (0-25)</label>
-<input id="sapienzaProfilo" max="25" min="0" step="1" type="number" value="0"/>
+<input data-key="sapienzaProfilo" id="sapienzaProfilo" max="25" min="0" step="1" type="number" value="0"/>
 <div class="numeric-note">PG Studenti: viene considerato al massimo il livello I.</div>
 <div class="mz-effective-line" id="mzSapienzaSpeciale"></div>
 </div>
@@ -13850,20 +13851,100 @@ else setTimeout(render,60);
 </script>
 
 
-<script id="magizoologia-v154-archive-quick-import">
+<script id="magizoologia-v162-archive-quick-import">
 (function(){
 'use strict';
 function E(id){return document.getElementById(id);}
 function norm(v){v=String(v||'');try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}return v.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();}
-function ready(n){try{return typeof window.rmEncounterComplete==='function'?!!window.rmEncounterComplete(n):(typeof window.__mzV78EncounterComplete==='function'?!!window.__mzV78EncounterComplete(n):false);}catch(e){return false;}}
-function count(n){if(n===1){if(norm((E('specieCreatura1')||{}).value)==='doxy'){var d=Number((E('mzV78_1_doxyOrda')||{}).value||0);return Number.isInteger(d)&&d>0?1+d:1;}return 1;}var mx=n===2?21:21,v=Number((E('risultatoEsemplari'+n)||{}).value||0);return Number.isInteger(v)&&v>=1&&v<=mx?v:1;}
-function optionText(n,i){if(n===1&&i>1&&norm((E('specieCreatura1')||{}).value)==='doxy'){var f=Number((E('v89DoxyFase_'+i)||{}).value||0),s=Number((E('v89DoxySalute_'+i)||{}).value||0);return 'Doxy '+i+(f&&s?' · dati completati':'');}var f=E(n===1?'risultatoFase1':'risultatoFase'+n+'_'+i),s=E(n===1?'risultatoSalute1':'risultatoSalute'+n+'_'+i),ft=f&&f.value?(' · 1d40 '+f.value):'',st=s&&s.value?(' · Salute '+s.value):'';return (n===1?'Esemplare 1':'Esemplare '+i)+ft+st;}
-function render(n){var box=E('rmGuideBridge'+n);if(!box)return;var old=box.querySelector('.mz-v154-quick-import');if(old)old.remove();var choice=E('rmInteragisciSubito'+n);if(!choice||choice.value!=='si')return;var d=document.createElement('div');d.className='mz-v154-quick-import';if(!ready(n)){d.innerHTML='<div class="nota-regole"><b>Prima dell’importazione:</b> completa tutti i dati obbligatori di questo Incontro e gli eventuali controlli specifici della Creatura. Non serve indicare prima se la catturerai: quella scelta può restare nella Ricerca.</div>';var st=E('rmGuideBridgeStatus'+n);if(st)st.parentNode.insertBefore(d,st);else box.appendChild(d);return;}var c=count(n),chooser='';if(c>1){var opts=[];for(var i=1;i<=c;i++)opts.push('<option value="'+i+'">'+String(optionText(n,i)).replace(/[&<>]/g,function(x){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[x];})+'</option>');chooser='<label>Quale esemplare vuoi portare nella Guida?<select data-mz-v154-import-index="'+n+'">'+opts.join('')+'</select></label>';}d.innerHTML=chooser+'<button type="button" class="bottone-azione" data-mz-v154-quick-import="'+n+'"><i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i> Importa questa Creatura nella Guida</button><div class="nota-regole">La Guida si apre dal <b>Riconoscimento</b>. In Magizoologia non c’è un dado di Riconoscimento: indica se il PG conosce teoricamente la Creatura, poi prosegui con Fiducia/Cura secondo il regolamento.</div>';var st2=E('rmGuideBridgeStatus'+n);if(st2){st2.parentNode.insertBefore(d,st2);if(box.getAttribute('data-v58-synced'))st2.textContent='Questa Creatura è già stata importata nella Guida ✓ Puoi reimportarla per aggiornare i dati.';else st2.textContent='Dati dell’Incontro completi: puoi importare subito questa Creatura nella Guida oppure continuare la Ricerca.';}else box.appendChild(d);}
+function esc(v){return String(v==null?'':v).replace(/[&<>\"]/g,function(x){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[x];});}
+function species(n){return String((E('specieCreatura'+n)||{}).value||'').trim();}
+function count(n){
+  if(n===1){
+    if(norm(species(1))==='doxy'){
+      var d=Number((E('mzV78_1_doxyOrda')||{}).value||0);
+      return Number.isInteger(d)&&d>0?1+d:1;
+    }
+    return 1;
+  }
+  var max=n===2?5:10,v=Number((E('risultatoEsemplari'+n)||{}).value||0);
+  return Number.isInteger(v)&&v>=1&&v<=max?v:0;
+}
+function baseReady(n){
+  if(!species(n))return false;
+  var cls='';try{cls=typeof window.rmClasseCorrente==='function'?window.rmClasseCorrente(n):(typeof rmClasseCorrente==='function'?rmClasseCorrente(n):'');}catch(e){}
+  if(!cls)return false;
+  if(n>1&&!count(n))return false;
+  return true;
+}
+function ids(n,i){
+  if(n===1&&i>1&&norm(species(1))==='doxy')return {f:'v89DoxyFase_'+i,s:'v89DoxySalute_'+i,tf:'v89DoxyFaseTag_'+i,ts:'v89DoxySaluteTag_'+i};
+  if(n===1)return {f:'risultatoFase1',s:'risultatoSalute1',tf:'tagFase1',ts:'tagSalute1'};
+  return {f:'risultatoFase'+n+'_'+i,s:'risultatoSalute'+n+'_'+i,tf:'tagFase'+n+'_'+i,ts:'tagSalute'+n+'_'+i};
+}
+function exemplar(n,i){
+  var x=ids(n,i),f=E(x.f),s=E(x.s),fv=Number((f||{}).value||0),sv=Number((s||{}).value||0);
+  var ok=Number.isInteger(fv)&&fv>=1&&fv<=40&&Number.isInteger(sv)&&sv>=1&&sv<=15;
+  var ft=String((E(x.tf)||{}).textContent||'').trim(),st=String((E(x.ts)||{}).textContent||'').trim();
+  if(!ft||/attesa|impossibile/i.test(ft))ft=fv?('1d40 '+fv):'Fase da completare';
+  if(!st||/attesa|impossibile/i.test(st))st=sv?('1d15 '+sv):'Salute da completare';
+  return {ready:ok,phase:ft,health:st};
+}
+function importOne(n,i){
+  var sp=norm(species(n)),ok=false;
+  if(n===1&&i>1&&sp==='doxy'&&typeof window.mzImportDoxyResearchExtra==='function'){
+    window.mzImportDoxyResearchExtra(i);ok=true;
+  }else if(typeof window.mzTransferResearchCreature==='function'){
+    ok=!!window.mzTransferResearchCreature(n,i);
+  }
+  if(ok){
+    setTimeout(function(){
+      try{if(typeof window.mzCreatureArchiveSync==='function')window.mzCreatureArchiveSync();}catch(err){}
+      try{if(typeof window.mzGuideScheduleSave==='function')window.mzGuideScheduleSave();}catch(err){}
+    },40);
+  }
+  return ok;
+}
+function render(n){
+  var box=E('rmGuideBridge'+n);if(!box)return;
+  var old=box.querySelector('.mz-v154-quick-import');if(old)old.remove();
+  var choice=E('rmInteragisciSubito'+n);if(!choice||choice.value!=='si')return;
+  var d=document.createElement('div');d.className='mz-v154-quick-import';
+  var status=E('rmGuideBridgeStatus'+n);
+  if(!baseReady(n)){
+    d.innerHTML='<div class="nota-regole"><b>Per passare alla Guida:</b> completa prima Classificazione e Creatura specifica di questo Incontro. Non è necessario concludere tutta la Ricerca.</div>';
+    if(status)status.parentNode.insertBefore(d,status);else box.appendChild(d);return;
+  }
+  var c=count(n)||1,rows=[],readyCount=0;
+  for(var i=1;i<=c;i++){
+    var ex=exemplar(n,i),label='Esemplare '+i+' — '+ex.phase+' · '+ex.health;
+    if(ex.ready){
+      readyCount++;
+      rows.push('<button type="button" class="bottone-azione bottone-secondario" data-mz-v162-import="'+n+'" data-mz-v162-index="'+i+'"><i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i> '+esc(label)+'</button>');
+    }else{
+      rows.push('<div class="nota-regole" style="margin:4px 0!important"><b>'+esc('Esemplare '+i)+':</b> completa Sesso/Fase Vitale e Stato di Salute per poterlo aprire nella Guida.</div>');
+    }
+  }
+  var intro=c>1
+    ?'<div class="nota-regole"><b>Quale esemplare vuoi gestire nella Guida?</b> Puoi aprire subito qualsiasi esemplare già completo: <b>non devi finire prima gli altri '+(c-1)+'</b> né concludere l’Incontro.</div>'
+    :'<div class="nota-regole"><b>Gestione immediata:</b> appena Sesso/Fase Vitale e Stato di Salute sono compilati, puoi aprire questa Creatura nella Guida.</div>';
+  d.innerHTML=intro+'<div class="mz-v162-import-list" style="display:grid;gap:6px;margin-top:8px">'+rows.join('')+'</div>'+
+    '<div class="nota-regole" style="margin-top:8px!important">L’importazione trasferisce solo l’esemplare scelto e apre la Guida. Puoi poi tornare alla Ricerca e importarne un altro — per esempio curare quello <b>Morente</b> e successivamente gestire l’<b>Uovo</b>.</div>';
+  if(status){status.parentNode.insertBefore(d,status);status.textContent=readyCount?('Hai '+readyCount+' esemplare'+(readyCount===1?'':'i')+' già apribile'+(readyCount===1?'':'i')+' nella Guida.'):'Completa i dati dell’esemplare che vuoi gestire: gli altri possono restare incompleti.';}
+  else box.appendChild(d);
+}
 function renderAll(){for(var n=1;n<=3;n++)render(n);}
-document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-mz-v154-quick-import]'):null;if(!b)return;e.preventDefault();var n=Number(b.getAttribute('data-mz-v154-quick-import')||0);if(!(n>=1&&n<=3)||!ready(n))return;var sel=(E('rmGuideBridge'+n)||document).querySelector('[data-mz-v154-import-index="'+n+'"]'),idx=sel?Number(sel.value||1):1,sp=norm((E('specieCreatura'+n)||{}).value),ok=false;if(n===1&&idx>1&&sp==='doxy'&&typeof window.mzImportDoxyResearchExtra==='function'){window.mzImportDoxyResearchExtra(idx);ok=true;}else if(typeof window.mzTransferResearchCreature==='function'){ok=!!window.mzTransferResearchCreature(n,idx);}if(ok){setTimeout(function(){try{if(typeof window.mzCreatureArchiveSync==='function')window.mzCreatureArchiveSync();if(typeof window.mzGuideScheduleSave==='function')window.mzGuideScheduleSave();}catch(err){}},40);}},true);
+document.addEventListener('click',function(e){
+  var b=e.target&&e.target.closest?e.target.closest('[data-mz-v162-import]'):null;if(!b)return;
+  e.preventDefault();
+  var n=Number(b.getAttribute('data-mz-v162-import')||0),i=Number(b.getAttribute('data-mz-v162-index')||1);
+  if(!(n>=1&&n<=3)||!baseReady(n)||!exemplar(n,i).ready)return;
+  importOne(n,i);
+},true);
 var prev=window.ricalcolaRicerca;if(typeof prev==='function')window.ricalcolaRicerca=function(){var r=prev.apply(this,arguments);setTimeout(renderAll,0);return r;};
-document.addEventListener('change',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoRicerca'))setTimeout(renderAll,0);},true);document.addEventListener('input',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoRicerca'))setTimeout(renderAll,0);},true);
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){if(typeof window.mzCreatureRenderLibrary==='function')window.mzCreatureRenderLibrary();renderAll();},80);});else setTimeout(function(){if(typeof window.mzCreatureRenderLibrary==='function')window.mzCreatureRenderLibrary();renderAll();},80);
+document.addEventListener('change',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoRicerca'))setTimeout(renderAll,0);},true);
+document.addEventListener('input',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoRicerca'))setTimeout(renderAll,0);},true);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){if(typeof window.mzCreatureRenderLibrary==='function')window.mzCreatureRenderLibrary();renderAll();},80);});
+else setTimeout(function(){if(typeof window.mzCreatureRenderLibrary==='function')window.mzCreatureRenderLibrary();renderAll();},80);
 })();
 </script>
 
@@ -14099,6 +14180,88 @@ if(typeof baseResetProfile==='function'){
 })();
 </script>
 
+
+<script id="magizoologia-v163-health-followup-nonblocking">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function count(n){
+  if(n===1)return 1;
+  var max=n===2?5:10,v=Number((E('risultatoEsemplari'+n)||{}).value||0);
+  return Number.isInteger(v)&&v>=1&&v<=max?v:0;
+}
+function healthRows(n){
+  var out=[],c=count(n);
+  if(n===1){
+    var s=E('risultatoSalute1'),f=E('risultatoFase1');
+    if(s&&!s.disabled&&String(s.value||'')!=='')out.push({s:s,f:f});
+    return out;
+  }
+  for(var i=1;i<=c;i++){
+    var s2=E('risultatoSalute'+n+'_'+i),f2=E('risultatoFase'+n+'_'+i);
+    if(s2&&!s2.disabled&&String(s2.value||'')!=='')out.push({s:s2,f:f2});
+  }
+  return out;
+}
+function needsHealthFollowup(n){
+  return healthRows(n).some(function(x){
+    var sv=Number(x.s.value||0),fv=Number((x.f||{}).value||0),gest=fv>=34&&fv<=35;
+    return sv>0&&(gest?sv>=11:sv>=12);
+  });
+}
+/* Uno stato ammalato/ferito/morente richiede il Narratore se il PG decide di
+   intervenire, ma non rende incompleta la scoperta della Creatura. In
+   particolare non deve far sparire l'Incontro dall'Esito né impedire di
+   proseguire/chiudere una Ricerca con Creature neutrali. Tutti gli altri
+   controlli specifici dell'Incontro restano invariati. */
+var previousComplete=window.__mzV78EncounterComplete;
+if(typeof previousComplete==='function'){
+  window.__mzV78EncounterComplete=function(n){
+    var ack=E('mzV91_'+n+'_healthNarratorOk'),need=needsHealthFollowup(n);
+    if(!need||!ack||ack.checked)return previousComplete(n);
+    ack.checked=true;
+    try{return previousComplete(n);}
+    finally{ack.checked=false;}
+  };
+}
+function refreshHealthMessage(n){
+  var need=needsHealthFollowup(n),msg=E('mzV91_'+n+'_healthNarratorMsg'),wrap=E('mzV91_'+n+'_healthNarratorOk_wrap'),ack=E('mzV91_'+n+'_healthNarratorOk');
+  if(msg&&need){
+    msg.innerHTML='<b>Stato della Creatura: il Narratore serve se decidi di intervenire.</b> Una Creatura partoriente, ammalata, ferita o morente richiede indicazioni del Narratore per essere gestita. <b>Questo non blocca la Ricerca:</b> se non vuoi interagire puoi proseguire o concludere; se vuoi curarla/gestirla puoi importare direttamente l’esemplare nella Guida.';
+  }
+  if(wrap&&need){
+    var lab=wrap.querySelector('label');
+    if(lab)lab.textContent='Il Narratore ha già gestito questo stato';
+  }
+  if(!need&&ack)ack.checked=false;
+}
+function markOutcome(){
+  var host=E('rm-outcome-content');if(!host)return;
+  var lis=host.querySelectorAll('.outcome-list>li');
+  for(var n=1;n<=3;n++){
+    if(!needsHealthFollowup(n))continue;
+    var li=lis[n-1];if(!li||li.querySelector('.mz-v163-health-note'))continue;
+    var note=document.createElement('div');note.className='nota-regole mz-v163-health-note';
+    note.innerHTML='<b>Stato da gestire:</b> almeno un esemplare richiede il Narratore se scegli di intervenire. Puoi comunque concludere la Ricerca oppure importare nella Guida soltanto l’esemplare che vuoi curare/gestire.';
+    li.appendChild(note);
+  }
+}
+function refresh(){
+  for(var n=1;n<=3;n++)refreshHealthMessage(n);
+  try{if(typeof window.rmGating==='function')window.rmGating();}catch(e){}
+  try{if(typeof window.rmRenderOutcome==='function'&&document.querySelector('[data-rm-page-panel="outcome"].active'))window.rmRenderOutcome();}catch(e){}
+  setTimeout(markOutcome,0);
+}
+var prevCalc=window.ricalcolaRicerca;
+if(typeof prevCalc==='function')window.ricalcolaRicerca=function(){var r=prevCalc.apply(this,arguments);setTimeout(refresh,0);return r;};
+var prevOutcome=window.rmRenderOutcome;
+if(typeof prevOutcome==='function')window.rmRenderOutcome=function(){var r=prevOutcome.apply(this,arguments);setTimeout(function(){for(var n=1;n<=3;n++)refreshHealthMessage(n);markOutcome();},0);return r;};
+document.addEventListener('change',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoRicerca'))setTimeout(refresh,0);},true);
+document.addEventListener('input',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoRicerca'))setTimeout(refresh,0);},true);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(refresh,120);});else setTimeout(refresh,120);
+})();
+</script>
+
 </body>
 </html>
 
@@ -14306,3 +14469,344 @@ if(typeof baseResetProfile==='function'){
 #modoMagizoologia .mz-transfer-meta .nota-regole,
 #modoMagizoologia .mz-transfer-meta .nota-regole b{color:#18384d!important}
 </style>
+
+
+<style id="magizoologia-v164-multi-profile-labels-style">
+.mz-v164-bulk-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid #d6b08a;border-radius:6px;background:#f8eadc;color:#3a2117}
+.mz-v164-bulk-row input{width:auto!important;min-width:0!important}
+.mz-v164-bulk-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 4px;padding:9px 10px;border:1px solid #6d432e;border-radius:7px;background:#2b1710;color:#f6e4d5}
+.mz-v164-bulk-controls label{color:#f6e4d5!important;font-weight:700}
+.mz-v164-research-label{margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mz-v164-research-label input{min-width:210px;max-width:360px}
+.mz-v164-rename-btn{border:1px solid #8b674f;background:#fff7ef;color:#4a291d;border-radius:5px;padding:6px 9px;cursor:pointer;font-weight:700}
+.mz-v154-creature-actions .mz-v164-rename-btn{padding:5px 8px}
+.mz-v164-import-meta{margin:10px 0;padding:9px 11px;border:1px solid #a97752;border-left:4px solid #8a4b32;border-radius:6px;background:#fff1e6;color:#452519}
+.mz-v164-import-meta.bad{border-color:#a75252;background:#fff0f0;color:#5f1f1f}
+@media(max-width:640px){.mz-v164-bulk-row{align-items:flex-start}.mz-v164-research-label input{min-width:100%;max-width:100%}}
+</style>
+<script id="magizoologia-v164-multi-profile-labels">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function esc(v){return String(v==null?'':v).replace(/[&<>\"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c];});}
+function norm(v){v=String(v||'').trim();try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}return v.toLocaleLowerCase('it-IT').replace(/\s+/g,' ');}
+function nowTs(){return new Date();}
+
+/* 1) Il profilo deve ricordare davvero anche Sapienza Magizoologica. */
+var sap=E('sapienzaProfilo');if(sap&&!sap.getAttribute('data-key'))sap.setAttribute('data-key','sapienzaProfilo');
+
+/* 2) Conserva etichette personalizzate delle Creature anche quando l'autosave ricrea l'entry. */
+if(typeof mzCreatureSanitizeLibrary==='function'){
+  var v164Sanitize=mzCreatureSanitizeLibrary;
+  mzCreatureSanitizeLibrary=function(v){
+    var labels={};(Array.isArray(v)?v:[]).forEach(function(x){if(x&&x.id&&x.label)labels[String(x.id)]=String(x.label);});
+    var out=v164Sanitize.apply(this,arguments)||[];out.forEach(function(x){if(x&&labels[x.id])x.label=labels[x.id];});return out;
+  };
+  window.mzCreatureSanitizeLibrary=mzCreatureSanitizeLibrary;
+}
+if(typeof mzCreatureSyncActive==='function'){
+  var v164Sync=mzCreatureSyncActive;
+  mzCreatureSyncActive=function(state){
+    var id=String(typeof MZ_ACTIVE_CREATURE_ID!=='undefined'?MZ_ACTIVE_CREATURE_ID:''),label='';
+    try{var bi=mzCreatureIndex(id);if(bi>=0)label=String((MZ_CREATURE_LIBRARY[bi]||{}).label||'');}catch(e){}
+    var out=v164Sync.apply(this,arguments);
+    if(id&&label){try{var ai=mzCreatureIndex(id);if(ai>=0)MZ_CREATURE_LIBRARY[ai].label=label;}catch(e){}}
+    return out;
+  };
+  window.mzCreatureSyncActive=mzCreatureSyncActive;
+}
+function decorateCreatureLibrary(){
+  var host=E('mzCreatureLibraryList');if(!host||typeof MZ_CREATURE_LIBRARY==='undefined')return;
+  host.querySelectorAll('.mz-v154-creature-item').forEach(function(card){
+    var id=card.getAttribute('data-creature-id')||'',idx=typeof mzCreatureIndex==='function'?mzCreatureIndex(id):-1;if(idx<0)return;
+    var p=MZ_CREATURE_LIBRARY[idx]||{},title=card.querySelector('.mz-v154-creature-title'),actions=card.querySelector('.mz-v154-creature-actions');
+    if(title&&p.label){title.innerHTML=esc(p.label)+(id===MZ_ACTIVE_CREATURE_ID?' <span>aperta</span>':'');var sub=card.querySelector('.mz-v154-creature-species');if(!sub){sub=document.createElement('div');sub.className='mz-v154-creature-species';title.parentNode.insertBefore(sub,title.nextSibling);}sub.textContent=(p.name||p.species||'Creatura');}
+    if(actions&&!actions.querySelector('[data-mz-v164-rename-creature]')){var b=document.createElement('button');b.type='button';b.className='mz-v164-rename-btn';b.setAttribute('data-mz-v164-rename-creature',id);b.textContent='Rinomina';actions.insertBefore(b,actions.lastElementChild||null);}
+  });
+}
+if(typeof mzCreatureRenderLibrary==='function'){
+  var v164RenderCreatures=mzCreatureRenderLibrary;
+  mzCreatureRenderLibrary=function(){var out=v164RenderCreatures.apply(this,arguments);decorateCreatureLibrary();return out;};window.mzCreatureRenderLibrary=mzCreatureRenderLibrary;
+}
+document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-mz-v164-rename-creature]'):null;if(!b)return;e.preventDefault();var id=b.getAttribute('data-mz-v164-rename-creature'),idx=typeof mzCreatureIndex==='function'?mzCreatureIndex(id):-1;if(idx<0)return;var p=MZ_CREATURE_LIBRARY[idx]||{},cur=String(p.label||p.name||p.species||'');var val=window.prompt('Nome con cui vuoi riconoscere questa Creatura nell’archivio:',cur);if(val===null)return;val=String(val).trim();p.label=val;p.updatedAt=Date.now();mzCreatureRenderLibrary();if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();},true);
+
+/* 3) Etichetta/Rinomina Ricerca senza nuove letture Firebase. */
+function researchLabel(d){return String((d&&d.researchLabel)||'').trim();}
+function saveResearchLabel(id,data,label,kind){
+  label=String(label||'').trim();if(!id||!data)return Promise.resolve(false);data.researchLabel=label;data.updatedAt=nowTs();
+  if(typeof RM_CURRENT_ID!=='undefined'&&RM_CURRENT_ID===id&&RM_CURRENT_DATA){RM_CURRENT_DATA.researchLabel=label;RM_CURRENT_DATA.updatedAt=data.updatedAt;}
+  if(typeof RM_SESSION_LIST_CACHE!=='undefined'&&Array.isArray(RM_SESSION_LIST_CACHE)){for(var i=0;i<RM_SESSION_LIST_CACHE.length;i++)if(RM_SESSION_LIST_CACHE[i]&&RM_SESSION_LIST_CACHE[i].id===id){RM_SESSION_LIST_CACHE[i].data.researchLabel=label;RM_SESSION_LIST_CACHE[i].data.updatedAt=data.updatedAt;break;}}
+  if(!RM_FB||!RM_FB.db)return Promise.resolve(false);
+  return RM_FB.db.collection(RM_COLLECTION).doc(id).set({researchLabel:label,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){if(typeof rmUpdateToolbar==='function'&&RM_CURRENT_ID===id)rmUpdateToolbar();if(typeof rmRenderSessionList==='function'&&Array.isArray(RM_SESSION_LIST_CACHE))rmRenderSessionList(RM_SESSION_LIST_CACHE);return true;}).catch(function(err){console.error(err);if(kind==='current'&&typeof rmStatus==='function')rmStatus('rm-save-status','Non riesco a rinominare la Ricerca: '+(err.message||err),'bad');return false;});
+}
+function decorateResearchList(rows){
+  var host=E('rm-session-list');if(!host)return;var cards=host.querySelectorAll('.session-item');cards.forEach(function(card,i){var r=rows&&rows[i];if(!r||!r.data)return;var d=r.data,title=card.querySelector('.session-title'),actions=card.querySelector('.session-item-buttons');if(title){var base=(d.pgName||d.initialPgName||'PG')+' — '+(d.tipoRicerca==='passiva'?'Ricerca Passiva':'Ricerca Attiva');title.textContent=researchLabel(d)?(researchLabel(d)+' · '+base):base;}if(actions&&!actions.querySelector('[data-mz-v164-rename-research]')){var can=!!(RM_FB&&RM_FB.user&&(d.ownerUid===RM_FB.user.uid||RM_FB.user.uid===RM_NARRATOR_UID));if(can){var b=document.createElement('button');b.type='button';b.className='session-btn ghost';b.setAttribute('data-mz-v164-rename-research',r.id);b.textContent='Rinomina';b.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();var val=window.prompt('Nome/etichetta della Ricerca (es. “Scriber nelle Valli”):',researchLabel(d));if(val===null)return;saveResearchLabel(r.id,d,val,'list');});actions.insertBefore(b,actions.lastElementChild||null);}}});
+}
+if(typeof rmRenderSessionList==='function'){
+  var v164RenderSessions=rmRenderSessionList;
+  rmRenderSessionList=function(rows){var out=v164RenderSessions.apply(this,arguments);decorateResearchList(rows);return out;};window.rmRenderSessionList=rmRenderSessionList;
+}
+function ensureCurrentResearchLabel(){
+  var meta=E('rm-current-session-meta');if(!meta||!RM_CURRENT_DATA)return;var row=E('mzV164ResearchLabelRow');if(!row){row=document.createElement('div');row.id='mzV164ResearchLabelRow';row.className='mz-v164-research-label';row.innerHTML='<input id="mzV164ResearchLabelInput" type="text" maxlength="80" placeholder="Etichetta facoltativa, es. Scriber — Uovo e Morente"><button type="button" class="mz-v164-rename-btn" id="mzV164ResearchLabelSave">Salva nome</button>';meta.parentNode.insertBefore(row,meta.nextSibling);E('mzV164ResearchLabelSave').addEventListener('click',function(){var v=String((E('mzV164ResearchLabelInput')||{}).value||'').trim();saveResearchLabel(RM_CURRENT_ID,RM_CURRENT_DATA,v,'current');});}
+  var inp=E('mzV164ResearchLabelInput');if(inp)inp.value=researchLabel(RM_CURRENT_DATA);
+}
+if(typeof rmUpdateToolbar==='function'){
+  var v164Toolbar=rmUpdateToolbar;
+  rmUpdateToolbar=function(){var out=v164Toolbar.apply(this,arguments);if(RM_CURRENT_DATA){var t=E('rm-current-session-title'),lab=researchLabel(RM_CURRENT_DATA);if(t&&lab)t.textContent=lab+' · '+t.textContent;ensureCurrentResearchLabel();}return out;};window.rmUpdateToolbar=rmUpdateToolbar;
+}
+document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-mz-v164-rename-research]'):null;if(!b)return;},true);
+
+/* 4) Conserva lo Stato di Salute proveniente dalla Ricerca dentro ogni scheda importata. */
+function importHealth(n,i){
+  var id=(n===1?'tagSalute1':'tagSalute'+n+'_'+i),txt=String((E(id)||{}).textContent||'').trim();if(!txt||/attesa|impossibile/i.test(txt)){var raw=E(n===1?'risultatoSalute1':'risultatoSalute'+n+'_'+i);txt=raw&&raw.value?('1d15 '+raw.value):'';}return txt;
+}
+function hiddenGuide(id){var x=E(id);if(x)return x;var g=E('modoMagizoologia');if(!g)return null;x=document.createElement('input');x.type='hidden';x.id=id;x.setAttribute('data-key',id);g.appendChild(x);return x;}
+function renderImportedMeta(){var g=E('modoMagizoologia');if(!g)return;var box=E('mzV164ImportedMeta'),health=String((E('mzResearchImportHealth')||{}).value||'').trim(),idx=String((E('mzResearchImportIndexLabel')||{}).value||'').trim();if(!box){box=document.createElement('div');box.id='mzV164ImportedMeta';box.className='mz-v164-import-meta';var first=g.querySelector('.scheda');if(first)first.insertBefore(box,first.firstChild);else g.insertBefore(box,g.firstChild);}if(!health){box.style.display='none';return;}box.style.display='block';box.className='mz-v164-import-meta'+(/morente|ammalata|ferita|partoriente/i.test(health)?' bad':'');box.innerHTML='<b>Dati importati dalla Ricerca'+(idx?' — '+esc(idx):'')+':</b> Stato di Salute: <b>'+esc(health)+'</b>. Questa informazione resta nella scheda di questo esemplare.';}
+var v164Transfer=window.mzTransferResearchCreature;
+if(typeof v164Transfer==='function')window.mzTransferResearchCreature=function(n,i){n=Number(n)||1;i=Number(i)||1;var h=importHealth(n,i),ok=v164Transfer(n,i);if(ok!==false){var he=hiddenGuide('mzResearchImportHealth'),ie=hiddenGuide('mzResearchImportIndexLabel');if(he)he.value=h;if(ie)ie.value='Incontro '+n+' · Esemplare '+i;try{if(typeof mzCreatureSyncActive==='function')mzCreatureSyncActive(mzGuideCollectState());}catch(e){}renderImportedMeta();if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();}return ok;};
+if(typeof mzCreatureOpen==='function'){var v164Open=mzCreatureOpen;mzCreatureOpen=function(id){var out=v164Open.apply(this,arguments);setTimeout(renderImportedMeta,0);return out;};window.mzCreatureOpen=mzCreatureOpen;}
+
+/* 5) Gestione di 1, 2, 3... N esemplari: selezione multipla e import separato di ciascuno. */
+var SELECTED={};
+function selKey(n,i){return String((typeof RM_CURRENT_ID!=='undefined'&&RM_CURRENT_ID)||'')+'|'+n+'|'+i;}
+function decorateBulk(n){
+  var box=E('rmGuideBridge'+n);if(!box)return;var list=box.querySelector('.mz-v162-import-list');if(!list)return;
+  var buttons=Array.prototype.slice.call(list.querySelectorAll('button[data-mz-v162-import]'));if(!buttons.length)return;
+  buttons.forEach(function(btn){if(btn.closest('.mz-v164-bulk-row'))return;var i=Number(btn.getAttribute('data-mz-v162-index')||1),row=document.createElement('div');row.className='mz-v164-bulk-row';var ck=document.createElement('input');ck.type='checkbox';ck.setAttribute('data-mz-v164-select',n+':'+i);ck.checked=!!SELECTED[selKey(n,i)];ck.addEventListener('change',function(){SELECTED[selKey(n,i)]=ck.checked;updateBulk(n);});btn.parentNode.insertBefore(row,btn);row.appendChild(ck);row.appendChild(btn);});
+  var controls=box.querySelector('.mz-v164-bulk-controls');if(!controls&&buttons.length>1){controls=document.createElement('div');controls.className='mz-v164-bulk-controls';controls.setAttribute('data-mz-v164-controls',n);controls.innerHTML='<label><input type="checkbox" data-mz-v164-select-all="'+n+'"> Seleziona tutti gli esemplari pronti</label><button type="button" class="bottone-azione" data-mz-v164-import-selected="'+n+'">Importa selezionati nella Guida</button><span data-mz-v164-selected-count="'+n+'">0 selezionati</span>';list.parentNode.insertBefore(controls,list.nextSibling);var all=controls.querySelector('[data-mz-v164-select-all]');if(all)all.addEventListener('change',function(){box.querySelectorAll('[data-mz-v164-select]').forEach(function(c){c.checked=all.checked;var p=String(c.getAttribute('data-mz-v164-select')||'').split(':'),ii=Number(p[1]||1);SELECTED[selKey(n,ii)]=all.checked;});updateBulk(n);});}
+  updateBulk(n);
+}
+function updateBulk(n){var box=E('rmGuideBridge'+n);if(!box)return;var checks=box.querySelectorAll('[data-mz-v164-select]'),num=0;checks.forEach(function(c){if(c.checked)num++;});var s=box.querySelector('[data-mz-v164-selected-count]');if(s)s.textContent=num+' selezionat'+(num===1?'o':'i');var b=box.querySelector('[data-mz-v164-import-selected]');if(b)b.disabled=num===0;}
+function importSelected(n){
+  var box=E('rmGuideBridge'+n);if(!box)return;var inds=[];box.querySelectorAll('[data-mz-v164-select]').forEach(function(c){if(c.checked){var p=String(c.getAttribute('data-mz-v164-select')||'').split(':'),i=Number(p[1]||1);if(i>0)inds.push(i);}});if(!inds.length)return;
+  var ids=[];inds.forEach(function(i){var ok=false;if(n===1&&i>1&&norm(String((E('specieCreatura1')||{}).value||''))==='doxy'&&typeof window.mzImportDoxyResearchExtra==='function'){window.mzImportDoxyResearchExtra(i);ok=true;}else if(typeof window.mzTransferResearchCreature==='function'){ok=window.mzTransferResearchCreature(n,i)!==false;}if(ok&&typeof MZ_ACTIVE_CREATURE_ID!=='undefined'&&MZ_ACTIVE_CREATURE_ID)ids.push(MZ_ACTIVE_CREATURE_ID);SELECTED[selKey(n,i)]=false;});
+  if(ids.length&&typeof mzCreatureOpen==='function')mzCreatureOpen(ids[0]);if(typeof mostraModo==='function')mostraModo('Magizoologia');if(typeof mostraPannello==='function')mostraPannello('Riconoscimento');if(typeof mzCreatureRenderLibrary==='function')mzCreatureRenderLibrary();if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();var st=E('mzCreatureLibraryStatus');if(st)st.innerHTML='<b>'+ids.length+' esemplare'+(ids.length===1?'':'i')+' importat'+(ids.length===1?'o':'i')+'.</b> Ognuno ha una scheda separata: gestisci Fiducia, Cura e conseguenze individualmente, poi usa «Riprendi» sull’esemplare successivo.';
+}
+document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e.target.closest('[data-mz-v164-import-selected]'):null;if(!b)return;e.preventDefault();importSelected(Number(b.getAttribute('data-mz-v164-import-selected')||0));},true);
+function decorateAll(){for(var n=1;n<=3;n++)decorateBulk(n);decorateCreatureLibrary();renderImportedMeta();}
+var v164ResearchCalc=window.ricalcolaRicerca;if(typeof v164ResearchCalc==='function')window.ricalcolaRicerca=function(){var out=v164ResearchCalc.apply(this,arguments);setTimeout(decorateAll,0);return out;};
+document.addEventListener('input',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoRicerca'))setTimeout(decorateAll,0);},true);
+document.addEventListener('change',function(e){if(e.target&&e.target.closest&&e.target.closest('#modoRicerca'))setTimeout(decorateAll,0);},true);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(decorateAll,150);});else setTimeout(decorateAll,150);
+})();
+</script>
+
+
+<!-- Magizoologia tool v165 — contatore manuale dei Cicli di Allevamento, salvato per singola Creatura e mostrato anche nel Riepilogo/trasferimento. -->
+<style id="mz-v165-cycle-counter-style">
+#mzV165CycleCounter{
+  margin:12px 0 16px;
+  padding:14px 16px;
+  border:1px solid rgba(212,228,167,.34);
+  border-radius:12px;
+  background:#203d1b;
+  color:#f5eadf;
+}
+#mzV165CycleCounter h3{margin:0 0 10px;color:#f4ddb9!important;}
+#mzV165CycleCounter label,
+#mzV165CycleCounter .numeric-note,
+#mzV165CycleCounter .mz-v165-cycle-help{color:#f0e2d1!important;}
+#mzV165CycleCounter .numeric-note{opacity:.9;}
+#mzV165CycleCounter input[type="number"]{
+  width:78px;
+  color:#fff!important;
+  background:#263d25!important;
+  border:1px solid #98bc62!important;
+}
+#mzV165CycleCounter input[type="number"]:disabled{opacity:1!important;color:#fff!important;}
+.mz-v165-cycle-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+#mzV165CycleMax{font-size:1.05em;font-weight:700;color:#eef7cf;min-width:36px;}
+#mzV165NextCycle{
+  border:1px solid #9abf66;
+  background:#315623;
+  color:#fff;
+  border-radius:8px;
+  padding:8px 12px;
+  font:inherit;
+  font-weight:700;
+  cursor:pointer;
+}
+#mzV165NextCycle:disabled{opacity:.55;cursor:default;}
+#mzV165CycleStatus{
+  margin-top:11px;
+  padding:10px 12px;
+  border-left:4px solid #b7d46d;
+  border-radius:6px;
+  background:#2d5123;
+  color:#fff!important;
+  font-weight:700;
+}
+#mzV165CycleStatus.is-last{border-left-color:#e3b86a;background:#5a4420;}
+#mzV165CycleStatus.is-repro{border-left-color:#d49ae8;background:#4a2f53;}
+@media (max-width:680px){.mz-v165-cycle-line{align-items:stretch}.mz-v165-cycle-line #mzV165NextCycle{width:100%;}}
+</style>
+<script id="mz-v165-cycle-counter">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+var MAX={infante:2,adolescente:3,adulta:5,anziana:2};
+var LABEL={uovo:'Uovo/Cucciolo',infante:'Infanzia',adolescente:'Adolescenza',adulta:'Adultità',anziana:'Vecchiaia'};
+function phase(){return String((E('faseVitale')||{}).value||'');}
+function type(){return String((E('tipoCicloAllevamento')||{}).value||'produzione');}
+function max(){return MAX[phase()]||1;}
+function current(){var n=Number((E('mzCicloAllevamentoCorrente')||{}).value||1);return Number.isInteger(n)&&n>=1?n:1;}
+function progressText(){
+  var p=phase(),t=type(),m=max(),c=Math.min(m,current());
+  if(t==='riproduzione')return 'Riproduzione / Accoppiamento — 1/1';
+  if(p==='uovo')return 'Schiusa / Crescita — 1/1';
+  return (LABEL[p]||'Fase attuale')+' — '+c+'/'+m+' Ciclo di Produzione';
+}
+function ensure(){
+  if(E('mzV165CycleCounter'))return;
+  var anchor=E('mzCicliFaseInfo')||E('pannelloAllevamento');if(!anchor)return;
+  var box=document.createElement('div');box.id='mzV165CycleCounter';
+  box.innerHTML='<h3>Stato attuale del ciclo</h3>'+
+    '<div class="mz-v165-cycle-help">Il contatore appartiene a questa singola Creatura e viene salvato insieme alla sua scheda.</div>'+
+    '<div class="riga" style="margin-top:10px"><div class="campo">'+
+      '<label for="mzCicloAllevamentoCorrente">Ciclo da svolgere</label>'+
+      '<div class="mz-v165-cycle-line"><input data-key="mzCicloAllevamentoCorrente" id="mzCicloAllevamentoCorrente" type="number" min="1" step="1" value="1"><span id="mzV165CycleMax">/ 1</span><button type="button" id="mzV165NextCycle">Passa al ciclo successivo</button></div>'+
+      '<div class="numeric-note" id="mzV165CycleNote"></div>'+
+    '</div></div><div id="mzV165CycleStatus"></div>';
+  if(anchor.id==='mzCicliFaseInfo')anchor.insertAdjacentElement('afterend',box);else anchor.appendChild(box);
+  var inp=E('mzCicloAllevamentoCorrente'),btn=E('mzV165NextCycle');
+  if(inp){
+    inp.addEventListener('input',render);
+    inp.addEventListener('change',function(){normalize();save();});
+  }
+  if(btn)btn.addEventListener('click',function(){
+    var p=phase(),t=type();if(t==='riproduzione'||p==='uovo')return;
+    var inp=E('mzCicloAllevamentoCorrente'),m=max(),c=current();
+    if(!inp)return;if(c<m){inp.value=String(c+1);render();save();}
+  });
+}
+function normalize(){
+  ensure();var inp=E('mzCicloAllevamentoCorrente');if(!inp)return;
+  var m=max(),n=Number(inp.value);if(!Number.isInteger(n)||n<1)n=1;if(n>m)n=m;inp.value=String(n);
+}
+function render(){
+  ensure();var inp=E('mzCicloAllevamentoCorrente'),mx=E('mzV165CycleMax'),note=E('mzV165CycleNote'),st=E('mzV165CycleStatus'),btn=E('mzV165NextCycle');if(!inp||!mx||!st)return;
+  var p=phase(),t=type(),m=max(),c=Math.min(m,current()),fixed=(t==='riproduzione'||p==='uovo');
+  inp.max=String(m);inp.disabled=fixed;mx.textContent='/ '+(fixed?1:m);
+  if(t==='riproduzione'){
+    if(note)note.innerHTML='La Riproduzione è disponibile solo in Adultità, una sola volta, e <b>non consuma</b> uno dei 5 Cicli di Produzione.';
+    st.className='is-repro';st.textContent='Riproduzione / Accoppiamento — 1/1';
+    if(btn){btn.disabled=true;btn.textContent='Riproduzione unica';}
+    return;
+  }
+  if(p==='uovo'){
+    if(note)note.textContent='La schiusa/crescita è un passaggio unico e non rientra nei 12 Cicli di Produzione dell’intera vita.';
+    st.className='';st.textContent='Schiusa / Crescita — 1/1';
+    if(btn){btn.disabled=true;btn.textContent='Passaggio unico';}
+    return;
+  }
+  if(note)note.textContent='Aggiorna questo numero quando passi al ciclo successivo. Il valore resta salvato insieme alla Creatura.';
+  st.className=(c===m?'is-last':'');st.textContent=(LABEL[p]||'Fase attuale')+' — '+c+'/'+m+' Ciclo di Produzione';
+  if(btn){btn.disabled=c>=m;btn.textContent=c>=m?'Limite della fase raggiunto':'Passa al ciclo successivo';}
+}
+function save(){try{if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();}catch(e){}}
+function resetForPhase(){ensure();var inp=E('mzCicloAllevamentoCorrente');if(inp){inp.value='1';render();save();}}
+function decorateSummary(){
+  var host=E('mzGuideCreatureSummary');if(host){var old=E('mzV165SummaryCard');if(old)old.remove();var d=document.createElement('div');d.id='mzV165SummaryCard';d.className='mz-guide-summary-card';d.innerHTML='<b>Ciclo attuale</b>'+String(progressText()).replace(/</g,'&lt;').replace(/>/g,'&gt;');host.appendChild(d);}
+  var mc=E('mzElfoTipoCiclo');if(mc){var base=type()==='riproduzione'?'Riproduzione / Accoppiamento':'Produzione di Ingredienti';mc.value=base+' — '+progressText();}
+  var tx=E('mzElfoTransferText');if(tx&&tx.textContent){var lines=tx.textContent.split('\n'),found=false;for(var i=0;i<lines.length;i++){if(/^Ciclo attuale:/i.test(lines[i])){lines[i]='Ciclo attuale: '+progressText();found=true;break;}}if(!found){var at=lines.findIndex(function(x){return /^Tipo ciclo:/i.test(x);});if(at>=0)lines.splice(at+1,0,'Ciclo attuale: '+progressText());else lines.push('Ciclo attuale: '+progressText());}tx.textContent=lines.join('\n');}
+}
+var fase=E('faseVitale');if(fase)fase.addEventListener('change',resetForPhase);
+var tipo=E('tipoCicloAllevamento');if(tipo)tipo.addEventListener('change',function(){render();save();});
+if(typeof window.mzGuideApplyState==='function'){var oldApply=window.mzGuideApplyState;window.mzGuideApplyState=function(){var r=oldApply.apply(this,arguments);setTimeout(render,0);return r;};}
+if(typeof window.mzCreatureOpen==='function'){var oldOpen=window.mzCreatureOpen;window.mzCreatureOpen=function(){var r=oldOpen.apply(this,arguments);setTimeout(render,0);return r;};}
+if(typeof window.ricalcolaMagizoologia==='function'){var oldCalc=window.ricalcolaMagizoologia;window.ricalcolaMagizoologia=function(){var r=oldCalc.apply(this,arguments);setTimeout(render,0);return r;};}
+if(typeof window.mzRenderGuideSummary==='function'){var oldSummary=window.mzRenderGuideSummary;window.mzRenderGuideSummary=function(){var r=oldSummary.apply(this,arguments);render();decorateSummary();return r;};}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){ensure();render();});else{ensure();render();}
+})();
+</script>
+
+<!-- Magizoologia tool v166 — audit di allineamento con Erbologia e con i fix importazioni: titolo Ricerca idempotente, dati importati mostrati nei veri campi della Guida (non in un riquadro duplicato), Stato di Salute importato modificabile e salvato nella singola Creatura. Nessuna nuova lettura Firebase. -->
+<style id="magizoologia-v166-import-alignment-style">
+/* La vecchia nota separata "Dati importati dalla Ricerca" non deve duplicare
+   informazioni che ora sono visibili/modificabili direttamente nella scheda. */
+#mzV164ImportedMeta{display:none!important;}
+#mzV166ImportedHealthField{display:none;}
+#mzV166ImportedHealthField.is-visible{display:block;}
+#mzV166ImportedHealthField .numeric-note{color:inherit!important;opacity:.86!important;}
+</style>
+<script id="magizoologia-v166-import-alignment">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function norm(v){v=String(v||'').trim();try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}return v.toLocaleLowerCase('it-IT').replace(/\s+/g,' ');}
+function currentResearchBase(){
+  if(typeof RM_CURRENT_DATA==='undefined'||!RM_CURRENT_DATA)return '';
+  var d=RM_CURRENT_DATA,name=String(d.pgName||d.initialPgName||'PG').trim(),type=d.tipoRicerca==='passiva'?'Ricerca Passiva':'Ricerca Attiva';
+  return name+' — '+type;
+}
+function currentResearchLabel(){return (typeof RM_CURRENT_DATA!=='undefined'&&RM_CURRENT_DATA)?String(RM_CURRENT_DATA.researchLabel||'').trim():'';}
+function normalizeResearchTitle(){
+  var t=E('rm-current-session-title');if(!t)return;
+  var base=currentResearchBase();if(!base)return;
+  var lab=currentResearchLabel();t.textContent=lab?(lab+' · '+base):base;
+}
+/* La v164 prefissava il titolo già renderizzato: a ogni aggiornamento poteva
+   riaggiungere l'etichetta. Dopo qualunque toolbar render, ricostruiamo il titolo
+   dalla sorgente dati, quindi l'operazione è idempotente. */
+if(typeof window.rmUpdateToolbar==='function'){
+  var v166Toolbar=window.rmUpdateToolbar;
+  window.rmUpdateToolbar=function(){var out=v166Toolbar.apply(this,arguments);normalizeResearchTitle();return out;};
+}
+
+function ensureImportedHealthField(){
+  var phase=E('faseVitale');if(!phase)return null;
+  var row=phase.closest?phase.closest('.riga'):null;if(!row)return null;
+  var field=E('mzV166ImportedHealthField');if(field)return field;
+  field=document.createElement('div');field.className='campo';field.id='mzV166ImportedHealthField';
+  field.innerHTML='<label for="mzV166ImportedHealth">Stato di Salute</label>'+
+    '<select id="mzV166ImportedHealth">'+
+      '<option value="">— Non importato —</option>'+
+      '<option value="In salute">In salute</option>'+
+      '<option value="Partoriente">Partoriente</option>'+
+      '<option value="Ammalata o ferita">Ammalata o ferita</option>'+
+      '<option value="Morente">Morente</option>'+
+    '</select>'+
+    '<div class="numeric-note" id="mzV166ImportedProvenance"></div>';
+  row.appendChild(field);
+  var sel=E('mzV166ImportedHealth');
+  if(sel)sel.addEventListener('change',function(){
+    var hidden=E('mzResearchImportHealth');if(hidden)hidden.value=sel.value;
+    try{if(typeof mzCreatureSyncActive==='function'&&typeof mzGuideCollectState==='function')mzCreatureSyncActive(mzGuideCollectState());}catch(e){}
+    try{if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();}catch(e){}
+    renderImportedHealth();
+  });
+  return field;
+}
+function ensureOption(sel,value){
+  if(!sel||!value)return;for(var i=0;i<sel.options.length;i++)if(sel.options[i].value===value)return;
+  var o=document.createElement('option');o.value=value;o.textContent=value;sel.appendChild(o);
+}
+function renderImportedHealth(){
+  var field=ensureImportedHealthField();if(!field)return;
+  var hidden=E('mzResearchImportHealth'),health=String((hidden||{}).value||'').trim(),enc=String((E('mzResearchImportEncounter')||{}).value||'').trim(),idx=String((E('mzResearchImportIndex')||{}).value||'').trim();
+  var imported=!!(health||enc);
+  field.classList.toggle('is-visible',imported);
+  if(!imported)return;
+  var sel=E('mzV166ImportedHealth');if(sel){ensureOption(sel,health);sel.value=health;}
+  var note=E('mzV166ImportedProvenance');if(note){var bits=[];if(enc)bits.push('Incontro '+enc);if(idx)bits.push('Esemplare '+idx);note.textContent=(bits.length?bits.join(' · ')+' · ':'')+'Dato arrivato dalla Ricerca. Puoi aggiornarlo qui se lo stato cambia durante la gestione.';}
+}
+/* I dati principali importati (specie, classificazione, fase, sesso e voto)
+   sono già scritti nei normali campi della Guida. Manteniamo lo stesso principio
+   anche per la Salute, senza un secondo riquadro riepilogativo. */
+if(typeof window.mzGuideApplyState==='function'){
+  var v166Apply=window.mzGuideApplyState;
+  window.mzGuideApplyState=function(){var out=v166Apply.apply(this,arguments);setTimeout(function(){renderImportedHealth();normalizeResearchTitle();},0);return out;};
+}
+if(typeof window.mzCreatureOpen==='function'){
+  var v166Open=window.mzCreatureOpen;
+  window.mzCreatureOpen=function(){var out=v166Open.apply(this,arguments);setTimeout(renderImportedHealth,0);return out;};
+}
+if(typeof window.ricalcolaMagizoologia==='function'){
+  var v166Calc=window.ricalcolaMagizoologia;
+  window.ricalcolaMagizoologia=function(){var out=v166Calc.apply(this,arguments);setTimeout(renderImportedHealth,0);return out;};
+}
+document.addEventListener('change',function(e){if(e.target&&e.target.id==='mzResearchImportHealth')setTimeout(renderImportedHealth,0);},true);
+function init(){normalizeResearchTitle();renderImportedHealth();}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(init,180);});else setTimeout(init,180);
+})();
+</script>
