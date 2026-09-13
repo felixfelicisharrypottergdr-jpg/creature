@@ -1,3 +1,4 @@
+<!-- Magizoologia tool v160 — dadi multipli degli Incontri II/III accorpati: con più esemplari il tool genera un unico Nd40 per Sesso/Fase Vitale e un unico Nd15 per Salute, mantenendo risultati e interpretazione separati per ogni esemplare. -->
 <!-- Magizoologia tool v159 — audit finale contrasto: i riquadri chiari annidati nei pannelli tecnici mantengono testo scuro leggibile; i pannelli scuri mantengono testo chiaro. Nessuna modifica alla logica delle Ricerche concluse/cancellate. -->
 <!-- Magizoologia tool v158 — ripresa Ricerca sicura: aprire una Ricerca esistente non risincronizza Empatia/Sapienza dal Profilo, non cancella progressi dipendenti dalle formule e non aggiorna il timestamp finché il player non modifica davvero la Ricerca. -->
 
@@ -2994,6 +2995,18 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 .rm-travel-details{margin-top:8px;border-top:1px solid #4d2c1c;padding-top:7px}
 .rm-travel-details summary{cursor:pointer;color:#efb27f}
 @media(max-width:640px){.rm-travel-grid{grid-template-columns:1fr}.rm-travel-inline{align-items:flex-start}.rm-travel-assistant{padding:11px}}
+</style>
+
+<style id="mz-v160-batch-style">
+.rm-batch-dice{margin:14px 0 16px!important;padding:13px!important;border:1px solid #70402b!important;border-left:5px solid #9b5d3b!important;border-radius:8px!important;background:#2b1710!important;color:#f8e8dc!important}
+.rm-batch-dice h3{margin:0 0 8px!important;color:#ffd7b8!important}
+.rm-batch-dice .nota-regole{color:#f2d8c7!important;background:transparent!important;border:0!important;padding:0 0 8px!important}
+.rm-batch-dice .dice-code{color:#ffe9d9!important}
+.rm-esemplare-compact{padding:10px 12px!important;margin:9px 0!important}
+.rm-esemplare-compact>h3{margin:0 0 8px!important}
+.rm-compact-result{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important;margin:6px 0!important}
+.rm-compact-result>b{min-width:180px;color:#4b2415!important}
+@media(max-width:640px){.rm-compact-result>b{min-width:100%;}.rm-batch-dice .result-line{align-items:stretch!important}}
 </style>
 </head>
 <body>
@@ -7394,24 +7407,67 @@ function rmBuildEsemplari(n,count){
   var precedenti={};
   host.querySelectorAll('input[data-key]').forEach(function(inp){precedenti[inp.id]=inp.value;});
   host.setAttribute('data-conteggio',String(count));host.innerHTML='';
-  for(var i=1;i<=count;i++){
-    var box=document.createElement('div');box.className='esemplare-riga';
+  if(!count){setupNumericInputs();return;}
 
-    var h1=document.createElement('h3');h1.textContent='Esemplare '+i+' — Sesso e Fase Vitale (1d40)';box.appendChild(h1);
-    var rl1=document.createElement('div');rl1.className='result-line';
-    var code1=document.createElement('div');code1.className='dice-code';code1.id='codiceFase'+n+'_'+i;
-    code1.textContent=rmForumDiceBlock('Quali sono Sesso e Fase Vitale dell’esemplare '+i+' del '+(n===2?'Secondo':'Terzo')+' Incontro?',rmSessoFaseAnswers,'[dice=1d40]Sesso e Fase Vitale esemplare '+i+' — '+(n===2?'Secondo':'Terzo')+' Incontro[/dice]');
-    rl1.appendChild(code1);
-    var b1=document.createElement('button');b1.type='button';b1.className='copy-btn';b1.setAttribute('data-copy-source',code1.id);b1.setAttribute('data-copy-control','1');b1.textContent='Copia';rl1.appendChild(b1);box.appendChild(rl1);
-    var rr1=document.createElement('div');rr1.className='result-line';rr1.appendChild(document.createTextNode('Risultato (1-40): '));
+  var incontro=(n===2?'Secondo':'Terzo');
+
+  /* v160: con più esemplari non serve copiare due dadi per ogni singola Creatura.
+     I risultati dei dadi multipli si leggono in ordine: primo risultato = esemplare 1,
+     secondo = esemplare 2, ecc. L'interpretazione resta individuale nel tool. */
+  if(count>1){
+    var batch=document.createElement('div');batch.className='rm-special rm-batch-dice';
+    var bh=document.createElement('h3');bh.textContent='Dadi unici per i '+count+' esemplari';batch.appendChild(bh);
+    var note=document.createElement('div');note.className='nota-regole';note.innerHTML='<b>Fai soltanto due lanci.</b> I risultati vanno letti nell’ordine: il primo appartiene all’Esemplare 1, il secondo all’Esemplare 2 e così via. Inseriscili poi nelle righe sotto.';batch.appendChild(note);
+
+    var phaseLine=document.createElement('div');phaseLine.className='result-line';
+    var phaseCode=document.createElement('div');phaseCode.className='dice-code';phaseCode.id='codiceFasiMultiple'+n;
+    phaseCode.textContent=rmForumDiceBlock(
+      'Quali sono Sesso e Fase Vitale dei '+count+' esemplari del '+incontro+' Incontro?',
+      'I '+count+' risultati corrispondono, nell’ordine, agli esemplari 1-'+count+'.\n\n'+rmSessoFaseAnswers,
+      '[dice='+count+'d40]Sesso e Fase Vitale — esemplari 1-'+count+' — '+incontro+' Incontro[/dice]'
+    );
+    phaseLine.appendChild(phaseCode);
+    var phaseBtn=document.createElement('button');phaseBtn.type='button';phaseBtn.className='copy-btn';phaseBtn.setAttribute('data-copy-source',phaseCode.id);phaseBtn.setAttribute('data-copy-control','1');phaseBtn.textContent='Copia';phaseLine.appendChild(phaseBtn);batch.appendChild(phaseLine);
+
+    var healthLine=document.createElement('div');healthLine.className='result-line';
+    var healthCode=document.createElement('div');healthCode.className='dice-code';healthCode.id='codiceSalutiMultiple'+n;
+    healthCode.textContent=rmForumDiceBlock(
+      'Qual è lo Stato di Salute dei '+count+' esemplari del '+incontro+' Incontro?',
+      'I '+count+' risultati corrispondono, nell’ordine, agli esemplari 1-'+count+'. Inseriscili nel tool: per ciascun esemplare verrà applicata automaticamente la tabella corretta in base alla Fase Vitale, compresa l’eventuale Gestazione.',
+      '[dice='+count+'d15]Stato di Salute — esemplari 1-'+count+' — '+incontro+' Incontro[/dice]'
+    );
+    healthLine.appendChild(healthCode);
+    var healthBtn=document.createElement('button');healthBtn.type='button';healthBtn.className='copy-btn';healthBtn.setAttribute('data-copy-source',healthCode.id);healthBtn.setAttribute('data-copy-control','1');healthBtn.textContent='Copia';healthLine.appendChild(healthBtn);batch.appendChild(healthLine);
+    host.appendChild(batch);
+  }
+
+  for(var i=1;i<=count;i++){
+    var box=document.createElement('div');box.className='esemplare-riga rm-esemplare-compact';
+    var title=document.createElement('h3');title.textContent='Esemplare '+i;box.appendChild(title);
+
+    /* Con un solo esemplare manteniamo i due codici completi tradizionali. */
+    if(count===1){
+      var rl1=document.createElement('div');rl1.className='result-line';
+      var code1=document.createElement('div');code1.className='dice-code';code1.id='codiceFase'+n+'_'+i;
+      code1.textContent=rmForumDiceBlock('Quali sono Sesso e Fase Vitale dell’esemplare '+i+' del '+incontro+' Incontro?',rmSessoFaseAnswers,'[dice=1d40]Sesso e Fase Vitale esemplare '+i+' — '+incontro+' Incontro[/dice]');
+      rl1.appendChild(code1);
+      var b1=document.createElement('button');b1.type='button';b1.className='copy-btn';b1.setAttribute('data-copy-source',code1.id);b1.setAttribute('data-copy-control','1');b1.textContent='Copia';rl1.appendChild(b1);box.appendChild(rl1);
+    }
+
+    var rr1=document.createElement('div');rr1.className='result-line rm-compact-result';
+    var lab1=document.createElement('b');lab1.textContent='Sesso e Fase Vitale (1d40):';rr1.appendChild(lab1);
     var in1=document.createElement('input');in1.type='number';in1.id='risultatoFase'+n+'_'+i;in1.setAttribute('data-key',in1.id);in1.min='1';in1.max='40';if(precedenti[in1.id]!==undefined)in1.value=precedenti[in1.id];rr1.appendChild(in1);
     var t1=document.createElement('span');t1.id='tagFase'+n+'_'+i;t1.className='out-tag out-neutral';t1.textContent='in attesa';rr1.appendChild(t1);box.appendChild(rr1);
 
-    var h2=document.createElement('h3');h2.id='titoloSalute'+n+'_'+i;h2.textContent='Esemplare '+i+' — Stato di Salute (1d15)';box.appendChild(h2);
-    var rl2=document.createElement('div');rl2.className='result-line';
-    var code2=document.createElement('div');code2.className='dice-code';code2.id='codiceSalute'+n+'_'+i;rl2.appendChild(code2);
-    var b2=document.createElement('button');b2.type='button';b2.className='copy-btn';b2.setAttribute('data-copy-source',code2.id);b2.setAttribute('data-copy-control','1');b2.textContent='Copia';rl2.appendChild(b2);box.appendChild(rl2);
-    var rr2=document.createElement('div');rr2.className='result-line';rr2.appendChild(document.createTextNode('Risultato (1-15): '));
+    var healthTitle=document.createElement('span');healthTitle.id='titoloSalute'+n+'_'+i;healthTitle.style.display='none';box.appendChild(healthTitle);
+    if(count===1){
+      var rl2=document.createElement('div');rl2.className='result-line';
+      var code2=document.createElement('div');code2.className='dice-code';code2.id='codiceSalute'+n+'_'+i;rl2.appendChild(code2);
+      var b2=document.createElement('button');b2.type='button';b2.className='copy-btn';b2.setAttribute('data-copy-source',code2.id);b2.setAttribute('data-copy-control','1');b2.textContent='Copia';rl2.appendChild(b2);box.appendChild(rl2);
+    }
+
+    var rr2=document.createElement('div');rr2.className='result-line rm-compact-result';
+    var lab2=document.createElement('b');lab2.textContent='Stato di Salute (1d15):';rr2.appendChild(lab2);
     var in2=document.createElement('input');in2.type='number';in2.id='risultatoSalute'+n+'_'+i;in2.setAttribute('data-key',in2.id);in2.min='1';in2.max='15';if(precedenti[in2.id]!==undefined)in2.value=precedenti[in2.id];rr2.appendChild(in2);
     var t2=document.createElement('span');t2.id='tagSalute'+n+'_'+i;t2.className='out-tag out-neutral';t2.textContent='in attesa';rr2.appendChild(t2);box.appendChild(rr2);
 
