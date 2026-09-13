@@ -13907,11 +13907,28 @@ function ids(n,i){
   return {f:'risultatoFase'+n+'_'+i,s:'risultatoSalute'+n+'_'+i,tf:'tagFase'+n+'_'+i,ts:'tagSalute'+n+'_'+i};
 }
 function exemplar(n,i){
-  var x=ids(n,i),f=E(x.f),s=E(x.s),fv=Number((f||{}).value||0),sv=Number((s||{}).value||0);
-  var ok=Number.isInteger(fv)&&fv>=1&&fv<=40&&Number.isInteger(sv)&&sv>=1&&sv<=15;
+  var x=ids(n,i),f=E(x.f),s=E(x.s),fv=Number((f||{}).value||0),sv=Number((s||{}).value||0),bio=null,
+      doxyExtra=(n===1&&i>1&&norm(species(1))==='doxy');
+  /* Le Doxy aggiuntive del Primo Incontro hanno dadi biologici propri:
+     mzResearchBiology(1,i) leggerebbe invece il dado della prima Doxy e non deve
+     quindi rendere pronto per errore un esemplare ancora incompleto. */
+  if(!doxyExtra){try{if(typeof window.mzResearchBiology==='function')bio=window.mzResearchBiology(n,i);}catch(e){}}
+  var phaseReady=Number.isInteger(fv)&&fv>=1&&fv<=40;
+  if(bio&&bio.phase){
+    if(bio.subtype==='essere')phaseReady=['adolescente','adulta','anziana'].indexOf(bio.phase)>=0;
+    else if(bio.subtype==='spirito'||bio.subtype==='nonessere')phaseReady=bio.phase==='adulta';
+    else phaseReady=true;
+  }
+  var healthNotApplicable=!!(bio&&(bio.subtype==='spirito'||bio.subtype==='nonessere'));
+  var healthReady=healthNotApplicable||(Number.isInteger(sv)&&sv>=1&&sv<=15);
+  var ok=phaseReady&&healthReady;
   var ft=String((E(x.tf)||{}).textContent||'').trim(),st=String((E(x.ts)||{}).textContent||'').trim();
-  if(!ft||/attesa|impossibile/i.test(ft))ft=fv?('1d40 '+fv):'Fase da completare';
-  if(!st||/attesa|impossibile/i.test(st))st=sv?('1d15 '+sv):'Salute da completare';
+  if(!ft||/attesa|impossibile/i.test(ft)){
+    if(bio&&bio.phase){var pl={uovo:'Uovo/Cucciolo',infante:'Infante',adolescente:'Adolescente',adulta:'Adulta',anziana:'Anziana'}[bio.phase]||bio.phase;ft=[bio.sex,pl].filter(Boolean).join(' ')+' — automatico';}
+    else ft=phaseReady?('1d40 '+fv):'Fase da completare';
+  }
+  if(healthNotApplicable)st='Stato di Salute non applicabile';
+  else if(!st||/attesa|impossibile/i.test(st))st=healthReady?('1d15 '+sv):'Salute da completare';
   return {ready:ok,phase:ft,health:st};
 }
 function importOne(n,i){
@@ -14591,7 +14608,14 @@ document.addEventListener('click',function(e){var b=e.target&&e.target.closest?e
 
 /* 4) Conserva lo Stato di Salute proveniente dalla Ricerca dentro ogni scheda importata. */
 function importHealth(n,i){
-  var id=(n===1?'tagSalute1':'tagSalute'+n+'_'+i),txt=String((E(id)||{}).textContent||'').trim();if(!txt||/attesa|impossibile/i.test(txt)){var raw=E(n===1?'risultatoSalute1':'risultatoSalute'+n+'_'+i);txt=raw&&raw.value?('1d15 '+raw.value):'';}return txt;
+  var isDoxyExtra=n===1&&i>1&&norm(String((E('specieCreatura1')||{}).value||''))==='doxy';
+  var id=isDoxyExtra?('v89DoxySaluteTag_'+i):(n===1?'tagSalute1':'tagSalute'+n+'_'+i),txt=String((E(id)||{}).textContent||'').trim();
+  if(!txt||/attesa|impossibile/i.test(txt)){
+    var raw=E(isDoxyExtra?('v89DoxySalute_'+i):(n===1?'risultatoSalute1':'risultatoSalute'+n+'_'+i));
+    txt=raw&&raw.value?('1d15 '+raw.value):'';
+  }
+  if(!txt){try{var b=typeof window.mzResearchBiology==='function'?window.mzResearchBiology(n,i):null;if(b&&(b.subtype==='spirito'||b.subtype==='nonessere'))txt='Stato di Salute non applicabile';}catch(e){}}
+  return txt;
 }
 function hiddenGuide(id){var x=E(id);if(x)return x;var g=E('modoMagizoologia');if(!g)return null;x=document.createElement('input');x.type='hidden';x.id=id;x.setAttribute('data-key',id);g.appendChild(x);return x;}
 function renderImportedMeta(){var g=E('modoMagizoologia');if(!g)return;var box=E('mzV164ImportedMeta'),health=String((E('mzResearchImportHealth')||{}).value||'').trim(),idx=String((E('mzResearchImportIndexLabel')||{}).value||'').trim();if(!box){box=document.createElement('div');box.id='mzV164ImportedMeta';box.className='mz-v164-import-meta';var first=g.querySelector('.scheda');if(first)first.insertBefore(box,first.firstChild);else g.insertBefore(box,g.firstChild);}if(!health){box.style.display='none';return;}box.style.display='block';box.className='mz-v164-import-meta'+(/morente|ammalata|ferita|partoriente/i.test(health)?' bad':'');box.innerHTML='<b>Dati importati dalla Ricerca'+(idx?' — '+esc(idx):'')+':</b> Stato di Salute: <b>'+esc(health)+'</b>. Questa informazione resta nella scheda di questo esemplare.';}
@@ -15070,5 +15094,226 @@ function ensureButton(){
 window.addEventListener('click',function(ev){var t=ev.target,b=t&&t.closest?t.closest('#mzV170SaveProfileBtn'):null;if(!b)return;ev.preventDefault();ev.stopPropagation();saveCurrent(true);},true);
 function init(){ensureButton();var n=String((E('pgNomeSessione')||{}).value||'').trim();if(n)cacheWrite(n);}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(init,260);});else setTimeout(init,260);
+})();
+</script>
+
+
+<!-- Magizoologia tool v177 — audit conclusivo import Ricerca→Guida: mantiene i fix v176 e riallinea anche lo stato del pulsante di import multiplo dopo la pulizia delle selezioni, evitando un comando apparentemente attivo con zero esemplari scelti. 13/09/2026 -->
+<style id="magizoologia-v177-import-audit-style">
+.mz-v174-importing{opacity:.72!important;cursor:wait!important;pointer-events:none!important}
+</style>
+<script id="magizoologia-v177-import-audit">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function norm(v){v=String(v||'').trim();try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}return v.toLocaleLowerCase('it-IT').replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();}
+function fire(el,type){if(!el)return;try{el.dispatchEvent(new Event(type||'change',{bubbles:true}));}catch(e){}}
+function researchSpecies(n){return String((E('specieCreatura'+n)||{}).value||'').trim();}
+function currentPg(){return String((E('pgNomeSessione')||{}).value||'').trim();}
+function researchPg(){
+  var n='';try{n=String((typeof RM_CURRENT_DATA!=='undefined'&&RM_CURRENT_DATA&&(RM_CURRENT_DATA.pgName||RM_CURRENT_DATA.initialPgName))||'').trim();}catch(e){}
+  if(!n)n=String((E('nomePgRicerca')||{}).value||'').trim();
+  return n;
+}
+function setImportStatus(n,html,bad){var s=E('rmGuideBridgeStatus'+n);if(!s)return;s.innerHTML=html||'';s.classList.toggle('bad',!!bad);}
+
+/* Tiene traccia del normale caricamento del singolo profilo. Non elenca PG e non
+   introduce query globali. */
+var profileOpenPromise=null;
+var baseProfileOpen=window.mzProfileOpenByName;
+if(typeof baseProfileOpen==='function'){
+  window.mzProfileOpenByName=function(){
+    var p;try{p=Promise.resolve(baseProfileOpen.apply(this,arguments));}catch(err){p=Promise.reject(err);}
+    profileOpenPromise=p;
+    p.then(function(){if(profileOpenPromise===p)profileOpenPromise=null;},function(){if(profileOpenPromise===p)profileOpenPromise=null;});
+    return p;
+  };
+}
+function profileBoundTo(name){
+  var bound='',ready=false,loading=false;
+  try{bound=String(typeof MZ_GUIDE_BOUND_NAME!=='undefined'?MZ_GUIDE_BOUND_NAME:'').trim();}catch(e){}
+  try{ready=(typeof MZ_GUIDE_READY!=='undefined'&&MZ_GUIDE_READY===true);}catch(e){}
+  try{loading=(typeof MZ_GUIDE_LOADING!=='undefined'&&MZ_GUIDE_LOADING===true);}catch(e){}
+  return !!name&&ready&&!loading&&norm(currentPg())===norm(name)&&norm(bound)===norm(name);
+}
+function waitForProfileStable(expectedPg){
+  expectedPg=String(expectedPg||currentPg()).trim();
+  var started=Date.now(),forcedOnce=false;
+  return new Promise(function(resolve){
+    function done(ok,msg){resolve({ok:!!ok,error:msg||''});}
+    function check(){
+      var pg=currentPg();
+      if(!expectedPg){done(false,'Manca il Nome del PG: torna a «Il tuo Personaggio» e inseriscilo prima di importare.');return;}
+      if(norm(pg)!==norm(expectedPg)){done(false,'Il PG è cambiato mentre preparavo l’importazione. Riapri la Ricerca dal profilo corretto e riprova.');return;}
+      var nameTimer=false;try{nameTimer=!!(typeof RM_PROFILE_NAME_TIMER!=='undefined'&&RM_PROFILE_NAME_TIMER);}catch(e){}
+      if(nameTimer&&Date.now()-started<16000){setTimeout(check,70);return;}
+      if(profileOpenPromise){
+        if(Date.now()-started>=16000){done(false,'Il caricamento del profilo di '+expectedPg+' sta impiegando troppo tempo. Nessuna Creatura è stata importata: controlla la connessione Firebase e riprova.');return;}
+        setTimeout(check,80);return;
+      }
+      var loading=false;try{loading=(typeof MZ_GUIDE_LOADING!=='undefined'&&MZ_GUIDE_LOADING===true);}catch(e){}
+      if(loading){
+        if(Date.now()-started>=16000){done(false,'Il caricamento del profilo di '+expectedPg+' sta impiegando troppo tempo. Nessuna Creatura è stata importata: controlla la connessione Firebase e riprova.');return;}
+        setTimeout(check,80);return;
+      }
+      if(profileBoundTo(expectedPg)){done(true);return;}
+      /* Se il normale timer del nome non ha ancora aperto il profilo, è ammessa
+         una sola apertura puntuale di quel PG per questo click. Non attendiamo
+         direttamente la Promise: la ricontrolliamo a intervalli così il timeout
+         resta efficace anche se Firebase rimane sospeso. */
+      var fbReady=false;try{fbReady=!!(typeof RM_FB!=='undefined'&&RM_FB&&RM_FB.user&&RM_FB.db);}catch(e){}
+      if(fbReady&&!forcedOnce&&typeof window.mzProfileOpenByName==='function'){
+        forcedOnce=true;
+        try{Promise.resolve(window.mzProfileOpenByName(expectedPg,{fromImport:true})).catch(function(){});}catch(e){}
+        setTimeout(check,80);return;
+      }
+      if(Date.now()-started<16000){setTimeout(check,100);return;}
+      done(false,'Il profilo di '+expectedPg+' non è ancora pronto. Attendi che la barra Firebase indichi il profilo caricato e riprova.');
+    }
+    check();
+  });
+}
+function choiceYes(n){var c=E('rmInteragisciSubito'+n);if(c&&c.value!=='si'){c.value='si';try{if(typeof rmScheduleSave==='function')rmScheduleSave();}catch(e){}}}
+function healthText(n,i){
+  var doxy=n===1&&i>1&&norm(researchSpecies(1))==='doxy',tag=E(doxy?('v89DoxySaluteTag_'+i):(n===1?'tagSalute1':'tagSalute'+n+'_'+i)),txt=String((tag||{}).textContent||'').trim();
+  if(!txt||/attesa|impossibile/i.test(txt)){var raw=E(doxy?('v89DoxySalute_'+i):(n===1?'risultatoSalute1':'risultatoSalute'+n+'_'+i));txt=raw&&raw.value?('1d15 '+raw.value):'';}
+  if(!txt){try{var b=typeof window.mzResearchBiology==='function'?window.mzResearchBiology(n,i):null;if(b&&(b.subtype==='spirito'||b.subtype==='nonessere'))txt='Stato di Salute non applicabile';}catch(e){}}
+  return txt;
+}
+function ensureHidden(id){var x=E(id);if(x)return x;var g=E('modoMagizoologia');if(!g)return null;x=document.createElement('input');x.type='hidden';x.id=id;x.setAttribute('data-key',id);g.appendChild(x);return x;}
+function preserveImportedHealth(n,i){var h=healthText(n,i),x=ensureHidden('mzResearchImportHealth');if(x){x.value=h;fire(x);}var old=ensureHidden('mzResearchImportIndexLabel');if(old)old.value='Incontro '+n+' · Esemplare '+i;}
+function applyResearchSpecifics(n){
+  if(norm(researchSpecies(n))==='drago'){
+    var tag=String((E('v89DragonTag'+n)||{}).textContent||'').trim();
+    if(tag&&!/attesa|impossibile|tabella/i.test(tag)){
+      var race=E('mzV82DragonRace');if(race&&race.value!==tag){race.value=tag;fire(race);try{if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();}catch(e){}}
+    }
+  }
+}
+function activeArchiveOk(){try{return !!(typeof MZ_ACTIVE_CREATURE_ID!=='undefined'&&MZ_ACTIVE_CREATURE_ID&&typeof mzCreatureIndex==='function'&&mzCreatureIndex(MZ_ACTIVE_CREATURE_ID)>=0);}catch(e){return false;}}
+function verifyImported(n,i,expectedPg){
+  var expected=norm(researchSpecies(n)),actual=norm(String((E('specieCreaturaGuida')||{}).value||''));if(!expected||expected!==actual)return false;
+  if(!profileBoundTo(expectedPg))return false;
+  var enc=String((E('mzResearchImportEncounter')||{}).value||''),idx=String((E('mzResearchImportIndex')||{}).value||'1'),
+      sid=String((E('mzResearchImportSessionId')||{}).value||''),currentSid='';
+  try{currentSid=String(typeof RM_CURRENT_ID!=='undefined'?RM_CURRENT_ID:'').trim();}catch(e){}
+  /* L'identità della provenienza deve essere già persistita: senza questi campi
+     un reimport successivo potrebbe creare un duplicato silenzioso. */
+  if(enc!==String(n)||idx!==String(i||1))return false;
+  if(currentSid&&sid!==currentSid)return false;
+  return activeArchiveOk();
+}
+function syncAndShow(n,i){
+  try{if(typeof mzCreatureSyncActive==='function'&&typeof mzGuideCollectState==='function')mzCreatureSyncActive(mzGuideCollectState());}catch(e){}
+  try{if(typeof mzCreatureRenderLibrary==='function')mzCreatureRenderLibrary();}catch(e){}
+  try{if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();}catch(e){}
+  try{if(typeof mostraModo==='function')mostraModo('Magizoologia');}catch(e){}
+  try{if(typeof mostraPannello==='function')mostraPannello('Riconoscimento');}catch(e){}
+  var g=E('modoMagizoologia');if(g&&g.scrollIntoView){try{g.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){}}
+  setImportStatus(n,'<b>Esemplare '+i+' importato nella Guida ✓</b> La scheda è aperta ed è presente nell’archivio del PG.',false);
+}
+function importBiologyReady(n,i){
+  n=Number(n)||1;i=Number(i)||1;
+  var doxyExtra=n===1&&i>1&&norm(researchSpecies(1))==='doxy';
+  if(doxyExtra){
+    var df=Number((E('v89DoxyFase_'+i)||{}).value||0),ds=Number((E('v89DoxySalute_'+i)||{}).value||0);
+    return Number.isInteger(df)&&df>=1&&df<=40&&Number.isInteger(ds)&&ds>=1&&ds<=15;
+  }
+  var bio=null;try{if(typeof window.mzResearchBiology==='function')bio=window.mzResearchBiology(n,i);}catch(e){}
+  if(!bio||!bio.phase)return false;
+  var phaseOk=true;
+  if(bio.subtype==='essere')phaseOk=['adolescente','adulta','anziana'].indexOf(bio.phase)>=0;
+  else if(bio.subtype==='spirito'||bio.subtype==='nonessere')phaseOk=bio.phase==='adulta';
+  if(!phaseOk)return false;
+  if(bio.subtype==='spirito'||bio.subtype==='nonessere')return true;
+  var sid=n===1?'risultatoSalute1':'risultatoSalute'+n+'_'+i,sv=Number((E(sid)||{}).value||0);
+  return Number.isInteger(sv)&&sv>=1&&sv<=15;
+}
+function doImport(n,i){
+  n=Number(n)||1;i=Number(i)||1;
+  if(!researchSpecies(n))return Promise.resolve({ok:false,error:'Creatura non indicata.'});
+  if(!importBiologyReady(n,i))return Promise.resolve({ok:false,error:'Completa prima Sesso/Fase Vitale e Stato di Salute dell’esemplare scelto. Per le specie con dati automatici il tool li considera già completi.'});
+  var expectedPg=currentPg(),owner=researchPg();
+  if(!expectedPg)return Promise.resolve({ok:false,error:'Manca il Nome del PG.'});
+  if(owner&&norm(owner)!==norm(expectedPg))return Promise.resolve({ok:false,error:'Questa Ricerca appartiene a '+owner+', mentre il profilo aperto è '+expectedPg+'. Apri la Ricerca dal PG corretto prima di importare.'});
+  choiceYes(n);
+  return waitForProfileStable(expectedPg).then(function(stable){
+    if(!stable.ok)return {ok:false,error:stable.error};
+    if(norm(currentPg())!==norm(expectedPg)||!profileBoundTo(expectedPg))return {ok:false,error:'Il profilo PG è cambiato prima del trasferimento. Riprova dal profilo corretto.'};
+    var ok=false;try{
+      var doxy=n===1&&i>1&&norm(researchSpecies(1))==='doxy';
+      if(doxy&&typeof window.mzImportDoxyResearchExtra==='function')ok=window.mzImportDoxyResearchExtra(i)!==false;
+      else if(typeof window.mzTransferResearchCreature==='function')ok=window.mzTransferResearchCreature(n,i)!==false;
+    }catch(err){console.error('Importazione Ricerca → Guida fallita',err);return {ok:false,error:(err&&err.message)||String(err)};}
+    if(!ok)return {ok:false,error:'Il trasferimento non ha restituito un esito valido.'};
+    preserveImportedHealth(n,i);applyResearchSpecifics(n);
+    return new Promise(function(resolve){setTimeout(function(){
+      /* Un ultimo sync dopo tutti i rerender specifici (Drago/Doxy ecc.). */
+      try{if(typeof mzCreatureSyncActive==='function'&&typeof mzGuideCollectState==='function')mzCreatureSyncActive(mzGuideCollectState());}catch(e){}
+      if(!verifyImported(n,i,expectedPg)){resolve({ok:false,error:'La Creatura non risulta stabilmente presente nella Guida/archivio con l’identità della Ricerca corretta. Nessun dato della Ricerca è stato cancellato: riprova dopo aver controllato lo stato Firebase.'});return;}
+      syncAndShow(n,i);resolve({ok:true,id:(typeof MZ_ACTIVE_CREATURE_ID!=='undefined'?MZ_ACTIVE_CREATURE_ID:'')});
+    },120);});
+  });
+}
+function bolcinoExisting(marker,expectedPg){
+  try{
+    if(typeof MZ_CREATURE_LIBRARY==='undefined'||!Array.isArray(MZ_CREATURE_LIBRARY))return null;
+    var sid=String(typeof RM_CURRENT_ID!=='undefined'?RM_CURRENT_ID:'').trim();
+    for(var k=0;k<MZ_CREATURE_LIBRARY.length;k++){
+      var e=MZ_CREATURE_LIBRARY[k],f=(e&&e.state&&e.state.fields)||{};
+      if(norm(e&&e.pgName)!==norm(expectedPg)||norm(e&&e.species)!==norm("Bolcino d'Oro"))continue;
+      if(String(f.mzResearchImportEncounter||'')===marker&&String(f.mzResearchImportSessionId||'')===sid)return e;
+    }
+  }catch(e){}
+  return null;
+}
+function doBolcinoImport(n){
+  n=Number(n)||1;var expectedPg=currentPg(),owner=researchPg(),marker='bolcino-'+n;
+  if(!expectedPg)return Promise.resolve({ok:false,error:'Manca il Nome del PG.'});
+  if(owner&&norm(owner)!==norm(expectedPg))return Promise.resolve({ok:false,error:'Questa Ricerca appartiene a '+owner+', mentre il profilo aperto è '+expectedPg+'.'});
+  return waitForProfileStable(expectedPg).then(function(stable){if(!stable.ok)return {ok:false,error:stable.error};
+    try{
+      var old=bolcinoExisting(marker,expectedPg);
+      if(old&&typeof mzCreatureOpen==='function')mzCreatureOpen(old.id);
+      else if(typeof mzCreatureStartNew==='function')mzCreatureStartNew('import');
+      else if(typeof resetGuidaMagizoologia==='function')resetGuidaMagizoologia();
+      var sp=E('specieCreaturaGuida'),nm=E('nomeCreaturaGuida'),cl=E('classificazione'),ph=E('faseVitale'),rec=E('creaturaRiconosciuta'),
+          hs=ensureHidden('mzResearchImportSessionId'),he=ensureHidden('mzResearchImportEncounter'),hi=ensureHidden('mzResearchImportIndex');
+      if(sp){sp.value="Bolcino d'Oro";sp.dataset.researchEncounter=marker;sp.dataset.researchIndex='1';}
+      if(nm){nm.value="Bolcino d'Oro";nm.dataset.autoSpeciesName='1';}if(cl)cl.value='XXXX';if(ph)ph.value='adulta';if(rec)rec.checked=true;
+      if(hs)hs.value=String(typeof RM_CURRENT_ID!=='undefined'?RM_CURRENT_ID:'');if(he)he.value=marker;if(hi)hi.value='1';
+      [sp,nm,cl,ph,rec].forEach(function(x){fire(x);});
+      try{if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();}catch(e){}
+      try{if(typeof mzCreatureSyncActive==='function'&&typeof mzGuideCollectState==='function')mzCreatureSyncActive(mzGuideCollectState());}catch(e){}
+      try{if(typeof mzCreatureRenderLibrary==='function')mzCreatureRenderLibrary();}catch(e){}
+      try{if(typeof mzGuideScheduleSave==='function')mzGuideScheduleSave();}catch(e){}
+      try{if(typeof mostraModo==='function')mostraModo('Magizoologia');if(typeof mostraPannello==='function')mostraPannello('Riconoscimento');}catch(e){}
+      var ok=norm(String((sp||{}).value||''))===norm("Bolcino d'Oro")&&activeArchiveOk()&&profileBoundTo(expectedPg)&&String((he||{}).value||'')===marker;
+      return {ok:ok,id:(typeof MZ_ACTIVE_CREATURE_ID!=='undefined'?MZ_ACTIVE_CREATURE_ID:'')};
+    }catch(err){return {ok:false,error:(err&&err.message)||String(err)};}
+  });
+}
+function buttonBusy(btn,on){if(!btn)return;if(on){if(btn.getAttribute('data-mz-v174-busy')==='1')return;btn.setAttribute('data-mz-v174-busy','1');btn.setAttribute('data-mz-v174-label',btn.innerHTML);btn.classList.add('mz-v174-importing');btn.disabled=true;btn.textContent='Importazione…';}else{var old=btn.getAttribute('data-mz-v174-label');if(old!==null)btn.innerHTML=old;btn.removeAttribute('data-mz-v174-label');btn.removeAttribute('data-mz-v174-busy');btn.classList.remove('mz-v174-importing');btn.disabled=false;}}
+var importBusy=false;
+function beginImport(n){if(importBusy){setImportStatus(n,'<b>Importazione già in corso:</b> attendi che termini prima di avviarne un’altra.',true);return false;}importBusy=true;return true;}
+function endImport(){importBusy=false;}
+function runSingle(btn,n,i){if(!beginImport(n))return;if(btn&&btn.getAttribute('data-mz-v174-busy')==='1'){endImport();return;}buttonBusy(btn,true);setImportStatus(n,'Importazione nella Guida… verifico prima il profilo PG.',false);doImport(n,i).then(function(r){if(!r.ok)setImportStatus(n,'<b>Importazione non completata:</b> '+String(r.error||'errore sconosciuto'),true);}).catch(function(err){console.error(err);setImportStatus(n,'<b>Importazione non completata:</b> '+String((err&&err.message)||err),true);}).finally(function(){buttonBusy(btn,false);endImport();});}
+function selectedIndexes(n){var box=E('rmGuideBridge'+n),out=[];if(!box)return out;box.querySelectorAll('[data-mz-v164-select]').forEach(function(c){if(!c.checked)return;var p=String(c.getAttribute('data-mz-v164-select')||'').split(':'),i=Number(p[1]||1);if(i>0)out.push(i);});return out;}
+function clearBulkSelection(n,i){
+  var c=document.querySelector('[data-mz-v164-select="'+n+':'+i+'"]');if(c){c.checked=false;fire(c,'change');}
+  var all=document.querySelector('[data-mz-v164-select-all="'+n+'"]');if(all)all.checked=false;
+}
+function runBulk(btn,n){var inds=selectedIndexes(n);if(!inds.length)return;if(!beginImport(n))return;buttonBusy(btn,true);setImportStatus(n,'Importazione di '+inds.length+' esemplari…',false);var ids=[],chain=Promise.resolve();inds.forEach(function(i){chain=chain.then(function(){return doImport(n,i).then(function(r){if(!r.ok)throw new Error('Esemplare '+i+': '+r.error);if(r.id)ids.push(r.id);clearBulkSelection(n,i);});});});chain.then(function(){if(ids.length&&typeof mzCreatureOpen==='function'){try{mzCreatureOpen(ids[0]);}catch(e){}}setImportStatus(n,'<b>'+inds.length+' esemplare'+(inds.length===1?'':'i')+' importat'+(inds.length===1?'o':'i')+' ✓</b> Ognuno resta in una scheda separata.',false);}).catch(function(err){console.error(err);setImportStatus(n,'<b>Importazione non completata:</b> '+String((err&&err.message)||err),true);}).finally(function(){buttonBusy(btn,false);if(btn)btn.disabled=selectedIndexes(n).length===0;endImport();});}
+function runBolcino(btn,n){if(!beginImport(n))return;buttonBusy(btn,true);setImportStatus(n,'Importazione del Bolcino nella Guida…',false);doBolcinoImport(n).then(function(r){if(!r.ok)setImportStatus(n,'<b>Importazione non completata:</b> '+String(r.error||'il Bolcino non è stato registrato nell’archivio'),true);else setImportStatus(n,'<b>Bolcino importato nella Guida ✓</b>',false);}).catch(function(err){setImportStatus(n,'<b>Importazione non completata:</b> '+String((err&&err.message)||err),true);}).finally(function(){buttonBusy(btn,false);endImport();});}
+
+/* Handler unico e autoritativo per TUTTI gli ingressi Ricerca→Guida. */
+window.addEventListener('click',function(ev){
+  var t=ev.target,b=t&&t.closest?t.closest('[data-mz-v162-import],[data-v78-import],[data-mz-v164-import-selected],[data-v89-doxy-import],[data-v81-bolcino-import]'):null;if(!b)return;
+  ev.preventDefault();ev.stopPropagation();if(typeof ev.stopImmediatePropagation==='function')ev.stopImmediatePropagation();
+  if(b.hasAttribute('data-mz-v164-import-selected')){runBulk(b,Number(b.getAttribute('data-mz-v164-import-selected')||0));return;}
+  if(b.hasAttribute('data-v81-bolcino-import')){runBolcino(b,Number(b.getAttribute('data-v81-bolcino-import')||1));return;}
+  if(b.hasAttribute('data-v89-doxy-import')){runSingle(b,1,Number(b.getAttribute('data-v89-doxy-import')||1));return;}
+  var n=Number(b.getAttribute('data-mz-v162-import')||b.getAttribute('data-v78-import')||0),i=Number(b.getAttribute('data-mz-v162-index')||b.getAttribute('data-v78-index')||1);runSingle(b,n,i);
+},true);
 })();
 </script>
