@@ -1,4 +1,5 @@
 
+<!-- Magizoologia tool v157 — conflitti Ricerca resi semantici: ignorati navigazione e ordine chiavi Firebase; avviso mostrato solo per modifiche reali dei dati. Nessuna nuova query/lettura Firestore. -->
 <!-- Magizoologia tool v156 — secondo audit preventivo dopo l'allineamento a Erbologia v151: identità persistente Ricerca/Creatura, reimportazione senza doppioni né reset dei progressi, apertura Ricerca dal vero flusso Firebase, protezione cambio PG, commit immediato archivio e cambio profilo senza finestra di perdita dati. Nessuna nuova query/lettura Firestore. -->
 <!-- Magizoologia tool v155 — audit preventivo allineato a Erbologia v151: identità persistente Ricerca/Creatura, reimportazione senza doppioni né reset dei progressi, apertura Ricerca dal vero flusso Firebase, protezione cambio PG e commit immediato dell'archivio. Nessuna nuova query/lettura Firestore. -->
 <!-- Magizoologia tool v154 — archivio multi-Creatura per singolo PG nello stesso documento Firebase, ripresa sicura delle Creature e importazione Ricerca→Guida disponibile direttamente dall'Incontro; preservate le ottimizzazioni Firestore v153. -->
@@ -9997,9 +9998,71 @@ if(typeof window.rmRenderSummary==='function'){var v78Summary=window.rmRenderSum
 function lockInput(id,yes){var e=E(id);if(!e)return;if(yes){e.disabled=true;e.dataset.v78Locked='1';e.title='Risultato consolidato da una fase successiva.';}else if(e.dataset.v78Locked==='1'){e.disabled=false;e.dataset.v78Locked='';e.title='';}}
 function applyPhaseLocks(){var cura=!!((E('risultatoCura')||{}).value||MZ_CURA_HISTORY&&MZ_CURA_HISTORY.length),dom=!!((E('risultatoDomesticazione')||{}).value||MZ_DOMESTICAZIONE_HISTORY&&MZ_DOMESTICAZIONE_HISTORY.length),all=!!((E('risultatoAllevamento')||{}).value);lockInput('risultatoScoperta',cura||dom||all);lockInput('risultatoCura',dom||all);lockInput('risultatoFiducia',dom||all);lockInput('risultatoDomesticazione',all);}
 
-/* ---------- Protezione conflitti salvataggio Ricerca ---------- */
+/* ---------- Protezione conflitti salvataggio Ricerca — v157 ---------- */
+/*
+   Il controllo anti-sovrascrittura deve intervenire soltanto su modifiche reali
+   della Ricerca. Stato di navigazione (pagina aperta / riepilogo visitato) e
+   diverso ordine delle chiavi restituito da Firebase non sono conflitti e non
+   devono mostrare alcun avviso al player.
+*/
+function mzV157ConflictState(state){
+  var transient={flowPage:1,summaryVisited:1,outcomeVisited:1};
+  function clean(v,top){
+    if(Array.isArray(v))return v.map(function(x){return clean(x,false);});
+    if(v&&typeof v==='object'){
+      var out={};
+      Object.keys(v).sort().forEach(function(k){
+        if(top&&transient[k])return;
+        if(v[k]===undefined)return;
+        out[k]=clean(v[k],false);
+      });
+      return out;
+    }
+    return v;
+  }
+  return JSON.stringify(clean(state||{},true));
+}
 if(typeof window.rmSaveNow==='function'){
-  var v78OldSave=window.rmSaveNow;window.rmSaveNow=function(){if(typeof RM_DELETING==='undefined'||RM_DELETING||!RM_CURRENT_ID||RM_READONLY||!rmSessionCanEdit(RM_CURRENT_DATA))return Promise.resolve(true);if(!RM_FB||!RM_FB.db||typeof RM_FB.db.runTransaction!=='function')return v78OldSave.apply(this,arguments);if(RM_SAVE_TIMER){clearTimeout(RM_SAVE_TIMER);RM_SAVE_TIMER=null;}var p=rmPayload(),sid=RM_CURRENT_ID,ref=RM_FB.db.collection(RM_COLLECTION).doc(sid);var task=RM_SAVE_CHAIN.catch(function(){}).then(function(){var expected=JSON.stringify((RM_CURRENT_DATA&&RM_CURRENT_DATA.state)||{});return RM_FB.db.runTransaction(function(tx){return tx.get(ref).then(function(doc){if(!doc.exists)throw new Error('La Ricerca non esiste più.');var remote=doc.data()||{},actual=JSON.stringify(remote.state||{});if(actual!==expected){var err=new Error('CONFLITTO_TAB');err.v78Conflict=true;throw err;}tx.set(ref,p,{merge:true});return true;});});}).then(function(){if(RM_CURRENT_ID===sid&&RM_CURRENT_DATA){Object.keys(p).forEach(function(k){if(k!=='updatedAt')RM_CURRENT_DATA[k]=p[k];});RM_CURRENT_DATA.updatedAt=new Date();}if(typeof rmStatus==='function')rmStatus('rm-save-status','Ricerca salvata automaticamente ✓','ok');if(typeof rmUpdateToolbar==='function')rmUpdateToolbar();return true;}).catch(function(err){if(err&&err.v78Conflict){if(typeof rmStatus==='function')rmStatus('rm-save-status','Conflitto: questa Ricerca è stata modificata in un’altra scheda. Ricarica prima di continuare, così non sovrascrivi i dati più recenti.','bad');}else if(typeof rmStatus==='function')rmStatus('rm-save-status','Errore di salvataggio: '+(err.message||err),'bad');throw err;});RM_SAVE_CHAIN=task;return task;};
+  var v78OldSave=window.rmSaveNow;
+  window.rmSaveNow=function(){
+    if(typeof RM_DELETING==='undefined'||RM_DELETING||!RM_CURRENT_ID||RM_READONLY||!rmSessionCanEdit(RM_CURRENT_DATA))return Promise.resolve(true);
+    if(!RM_FB||!RM_FB.db||typeof RM_FB.db.runTransaction!=='function')return v78OldSave.apply(this,arguments);
+    if(RM_SAVE_TIMER){clearTimeout(RM_SAVE_TIMER);RM_SAVE_TIMER=null;}
+    var p=rmPayload(),sid=RM_CURRENT_ID,ref=RM_FB.db.collection(RM_COLLECTION).doc(sid);
+    var task=RM_SAVE_CHAIN.catch(function(){}).then(function(){
+      var expected=mzV157ConflictState((RM_CURRENT_DATA&&RM_CURRENT_DATA.state)||{});
+      return RM_FB.db.runTransaction(function(tx){
+        return tx.get(ref).then(function(doc){
+          if(!doc.exists)throw new Error('La Ricerca non esiste più.');
+          var remote=doc.data()||{},actual=mzV157ConflictState(remote.state||{});
+          if(actual!==expected){
+            var err=new Error('CONFLITTO_TAB');
+            err.v78Conflict=true;
+            throw err;
+          }
+          tx.set(ref,p,{merge:true});
+          return true;
+        });
+      });
+    }).then(function(){
+      if(RM_CURRENT_ID===sid&&RM_CURRENT_DATA){
+        Object.keys(p).forEach(function(k){if(k!=='updatedAt')RM_CURRENT_DATA[k]=p[k];});
+        RM_CURRENT_DATA.updatedAt=new Date();
+      }
+      if(typeof rmStatus==='function')rmStatus('rm-save-status','Ricerca salvata automaticamente ✓','ok');
+      if(typeof rmUpdateToolbar==='function')rmUpdateToolbar();
+      return true;
+    }).catch(function(err){
+      if(err&&err.v78Conflict){
+        if(typeof rmStatus==='function')rmStatus('rm-save-status','Questa Ricerca contiene modifiche più recenti fatte in un’altra scheda. Ricarica per sincronizzarla prima di continuare.','bad');
+      }else if(typeof rmStatus==='function'){
+        rmStatus('rm-save-status','Errore di salvataggio: '+(err.message||err),'bad');
+      }
+      throw err;
+    });
+    RM_SAVE_CHAIN=task;
+    return task;
+  };
 }
 
 /* ---------- Ricalcolo Guida finale: hook richiamato anche dai listener storici ---------- */
