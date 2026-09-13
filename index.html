@@ -14810,3 +14810,57 @@ function init(){normalizeResearchTitle();renderImportedHealth();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(init,180);});else setTimeout(init,180);
 })();
 </script>
+
+<!-- v167 — profilo PG per nome: rimossa la lista globale che consumava letture Firebase -->
+<style id="magizoologia-v167-profile-by-name-style">
+#modoPersonaggio .mz-profile-picker-wrap{display:none!important}
+#modoPersonaggio .mz-v167-name-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+#modoPersonaggio .mz-v167-change-pg{border:1px solid #8d5b41;background:#fff7ed;color:#4a2b1d;border-radius:6px;padding:7px 10px;cursor:pointer;font-weight:800}
+#modoPersonaggio .mz-v167-profile-hint{font-size:.82em;line-height:1.4;color:#5a4033}
+</style>
+<script id="magizoologia-v167-profile-by-name">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function ensureNameControls(){
+  var name=E('pgNomeSessione');if(!name||E('mzV167ChangePgBtn'))return;
+  var field=name.closest?name.closest('.campo'):name.parentNode;if(!field)return;
+  var oldHint=field.querySelector('.profilo-session-hint');
+  if(oldHint)oldHint.textContent='Scrivi il nome esatto del PG. Il tool apre direttamente il suo profilo Magizoologia salvato; non viene caricata alcuna lista globale di PG.';
+  var box=document.createElement('div');box.className='mz-v167-name-actions';
+  box.innerHTML='<button type="button" class="mz-v167-change-pg" id="mzV167ChangePgBtn"><i class="fa-solid fa-user-pen" aria-hidden="true"></i> Cambia PG</button><span class="mz-v167-profile-hint">Il recupero avviene solo sul nome inserito.</span>';
+  field.appendChild(box);
+  E('mzV167ChangePgBtn').addEventListener('click',function(){var b=this;if(typeof window.mzResetPersistentGuideForNewPg==='function')window.mzResetPersistentGuideForNewPg(b);});
+}
+
+/* Niente query per elencare tutti i profili. Quando Firebase diventa pronto,
+   si apre soltanto il profilo del nome eventualmente già presente nel campo. */
+window.mzGuideFirebaseReady=function(user){
+  if(!user||!RM_FB.db||MZ_GUIDE_LOADING)return;
+  MZ_GUIDE_LOADING=false;MZ_GUIDE_READY=true;
+  var resetBtnReady=E('mzResetAllBtn');if(resetBtnReady)resetBtnReady.disabled=false;
+  if(typeof mzGuideStatus==='function')mzGuideStatus('Profilo/Guida: Firebase pronto ✓','ok');
+  var existing=String((E('pgNomeSessione')||{}).value||'').trim();
+  if(existing&&typeof mzProfileOpenByName==='function')mzProfileOpenByName(existing);
+};
+
+/* La vecchia cache dei nomi non serve più e non deve tentare di aggiornare la UI nascosta. */
+window.mzProfileRefreshList=function(){return Promise.resolve([]);};
+try{localStorage.removeItem('ff_mz_profile_names_v1');}catch(e){}
+
+/* Testi coerenti con il nuovo flusso senza tendina. */
+var oldReset=window.mzResetPersistentGuideForNewPg;
+if(typeof oldReset==='function'){
+  window.mzResetPersistentGuideForNewPg=function(btn){
+    var out=oldReset(btn);
+    Promise.resolve(out).finally(function(){
+      if(typeof mzGuideStatus==='function')mzGuideStatus('Pronto per un altro PG: scrivi il nome.','ok');
+      var f=E('pgNomeSessione');if(f){f.disabled=false;try{f.focus();}catch(e){}}
+    });
+    return out;
+  };
+}
+function init(){var wrap=document.querySelector('#modoPersonaggio .mz-profile-picker-wrap');if(wrap)wrap.style.display='none';ensureNameControls();}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
