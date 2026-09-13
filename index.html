@@ -1,3 +1,4 @@
+<!-- Magizoologia tool v171 — tabella ufficiale dei post inserita in un details contestuale nell’Allevamento; solo riferimento visivo, nessuna modifica ai calcoli o a Firebase. -->
 <!-- v165 generated from magizoologia_v164 -->
 <!-- Magizoologia tool v161 — mantiene la v160 e aggiunge un riepilogo live compatto degli esemplari negli Incontri II/III, con specie, classificazione, Sesso/Fase Vitale e Salute, più testo copiabile per il forum. -->
 <!-- Magizoologia tool v159 — audit finale contrasto: i riquadri chiari annidati nei pannelli tecnici mantengono testo scuro leggibile; i pannelli scuri mantengono testo chiaro. Nessuna modifica alla logica delle Ricerche concluse/cancellate. -->
@@ -3021,6 +3022,17 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 .rm-esemplari-recap-copy-source{display:none!important}
 @media(max-width:700px){.rm-esemplari-recap-list{grid-template-columns:1fr}}
 </style>
+
+<style id="magizoologia-v171-post-reference-style">
+#modoMagizoologia .mz-post-reference-table{margin:12px 0 14px;border:1px solid #9b623e;border-radius:8px;background:#241914;overflow:hidden}
+#modoMagizoologia .mz-post-reference-table>summary{cursor:pointer;list-style:none;padding:10px 12px;color:#fff0e4;font-weight:800;background:linear-gradient(180deg,#4c2f22,#392219);user-select:none}
+#modoMagizoologia .mz-post-reference-table>summary::-webkit-details-marker{display:none}
+#modoMagizoologia .mz-post-reference-table>summary:after{content:" +";float:right;color:#ffd2aa;font-weight:900}
+#modoMagizoologia .mz-post-reference-table[open]>summary:after{content:" −"}
+#modoMagizoologia .mz-post-reference-table-body{padding:12px;background:#f6f0ea;color:#2a211d}
+#modoMagizoologia .mz-post-reference-table-body img{display:block;width:100%;height:auto;max-width:980px;margin:0 auto;border-radius:4px}
+#modoMagizoologia .mz-post-reference-table-body .nota-regole{margin:10px 0 0!important;background:#fff6ed!important;color:#4b2f21!important;border-color:#c7926c!important}
+</style>
 </head>
 <body>
 <div class="contenitore">
@@ -3744,6 +3756,13 @@ table.fasce th,table.fasce td{padding:8px 9px!important;line-height:1.3}
 </div>
 <div class="nota-regole" id="noteAllevamento"></div>
 <div class="nota-regole" id="sintesiPostAllevamento"></div>
+<details class="mz-post-reference-table">
+<summary><i class="fa-solid fa-table" aria-hidden="true"></i> Visualizza la tabella ufficiale dei post</summary>
+<div class="mz-post-reference-table-body">
+<img src="https://i.postimg.cc/TPJLvyKM/image.png" loading="lazy" decoding="async" alt="Tabella ufficiale dei post di Magizoologia"/>
+<div class="nota-regole">Tabella di riferimento del regolamento. <b>Il calcolo dei post resta automatico</b>: non devi riportare manualmente i valori nel tool.</div>
+</div>
+</details>
 <div class="nota-regole" id="malusCuraAllevamento"></div>
 <div class="nota-regole" id="bonusPostAllevamento"></div>
 <div class="nota-regole" id="malusImposiumAllevamento"></div>
