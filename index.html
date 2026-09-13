@@ -14961,3 +14961,81 @@ function init(){var f=E('pgNomeSessione');if(f){f.disabled=false;f.readOnly=fals
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
+
+
+<!-- v170 — Salvataggio esplicito profilo PG + ripristino anti-race -->
+<style id="magizoologia-v170-profile-save-style">
+#modoPersonaggio .mz-v170-profile-save{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:16px 0 4px;padding-top:13px;border-top:1px solid rgba(90,64,51,.28)}
+#modoPersonaggio .mz-v170-save-btn{border:1px solid #8d5b41;background:#4a2b1d;color:#fff7ed;border-radius:6px;padding:9px 14px;cursor:pointer;font-weight:800}
+#modoPersonaggio .mz-v170-save-btn:hover{filter:brightness(1.08)}
+#modoPersonaggio .mz-v170-save-btn:disabled{opacity:.62;cursor:wait}
+#modoPersonaggio .mz-v170-save-status{font-size:.88em;line-height:1.4;color:#5a4033}
+</style>
+<script id="magizoologia-v170-profile-save">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function norm(v){v=String(v||'').trim();try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}return v.toLocaleLowerCase('it-IT').replace(/\s+/g,' ');}
+function cacheKey(name){var uid='anon';try{if(typeof RM_FB!=='undefined'&&RM_FB.user&&RM_FB.user.uid)uid=RM_FB.user.uid;}catch(e){}return 'ffgdr_mz_pg_v170_'+uid+'_'+encodeURIComponent(norm(name));}
+function profileFields(){var out={};document.querySelectorAll('#modoPersonaggio [data-key]').forEach(function(e){var k=e.getAttribute('data-key');if(!k||k==='pgNomeSessione')return;out[k]=(e.type==='checkbox'||e.type==='radio')?!!e.checked:e.value;});return out;}
+function cacheWrite(name){name=String(name||'').trim();if(!name)return;try{localStorage.setItem(cacheKey(name),JSON.stringify({pgName:name,updatedAt:Date.now(),fields:profileFields()}));}catch(e){}}
+function cacheRead(name){try{var raw=localStorage.getItem(cacheKey(name));if(!raw)return null;var p=JSON.parse(raw);return p&&p.fields?p:null;}catch(e){return null;}}
+function applyCached(name){
+  var p=cacheRead(name);if(!p||!p.fields)return false;
+  var prev=typeof MZ_GUIDE_RESTORING!=='undefined'?MZ_GUIDE_RESTORING:false;if(typeof MZ_GUIDE_RESTORING!=='undefined')MZ_GUIDE_RESTORING=true;
+  try{
+    Object.keys(p.fields).forEach(function(k){var e=document.querySelector('#modoPersonaggio [data-key="'+k.replace(/"/g,'\\"')+'"]');if(!e)return;var v=p.fields[k];if(e.type==='checkbox'||e.type==='radio')e.checked=!!v;else e.value=v;});
+    var n=E('pgNomeSessione');if(n)n.value=String(p.pgName||name);
+    if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();
+    if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();
+  }finally{if(typeof MZ_GUIDE_RESTORING!=='undefined')MZ_GUIDE_RESTORING=prev;}
+  return true;
+}
+function setStatus(txt,bad){var s=E('mzV170ProfileSaveStatus');if(s){s.textContent=txt||'';s.style.color=bad?'#8a2d2d':'#5a4033';}}
+var pendingByName={};
+var baseSave=window.mzGuideSaveNow;
+if(typeof baseSave==='function'){
+  window.mzGuideSaveNow=function(){
+    var name=String((E('pgNomeSessione')||{}).value||'').trim();if(name)cacheWrite(name);
+    var p;try{p=Promise.resolve(baseSave.apply(this,arguments));}catch(err){p=Promise.reject(err);}
+    if(name)pendingByName[norm(name)]=p.catch(function(){return false;});
+    return p;
+  };
+}
+var baseOpen=window.mzProfileOpenByName;
+if(typeof baseOpen==='function'){
+  window.mzProfileOpenByName=function(name){
+    name=String(name||'').trim();if(name)applyCached(name);
+    var args=arguments,wait=pendingByName[norm(name)]||Promise.resolve();
+    return Promise.resolve(wait).catch(function(){}).then(function(){return baseOpen.apply(window,args);});
+  };
+}
+function saveCurrent(showFeedback){
+  var name=String((E('pgNomeSessione')||{}).value||'').trim();
+  if(!name){setStatus('Inserisci prima il nome del PG.',true);return Promise.resolve(false);}
+  cacheWrite(name);
+  var btn=E('mzV170SaveProfileBtn');if(btn)btn.disabled=true;
+  if(showFeedback!==false)setStatus('Salvataggio di '+name+'…',false);
+  var p;try{p=(typeof window.mzGuideSaveNow==='function')?Promise.resolve(window.mzGuideSaveNow()):Promise.resolve(false);}catch(err){p=Promise.reject(err);}
+  pendingByName[norm(name)]=p.catch(function(){return false;});
+  return p.then(function(ok){if(showFeedback!==false)setStatus(ok===false?'Controlla lo stato Firebase sopra.':'Dati di '+name+' salvati ✓',ok===false);return ok!==false;}).catch(function(err){console.error(err);setStatus('Salvataggio non riuscito: '+(err&&err.message?err.message:err),true);return false;}).finally(function(){if(btn)btn.disabled=false;});
+}
+window.mzV170SaveProfileNow=saveCurrent;
+
+/* Prima di Cambia PG conserva localmente i dati generici. Il normale v169 continua a
+   salvare il profilo completo su Firebase in background senza bloccare l'interfaccia. */
+window.addEventListener('pointerdown',function(ev){var t=ev.target,b=t&&t.closest?t.closest('#mzV167ChangePgBtn'):null;if(!b)return;var name=String((E('pgNomeSessione')||{}).value||'').trim();if(name)cacheWrite(name);},true);
+
+function ensureButton(){
+  if(E('mzV170SaveProfileBtn'))return;
+  var name=E('pgNomeSessione');if(!name)return;var card=name.closest?name.closest('.scheda'):null;if(!card)return;
+  var wrap=document.createElement('div');wrap.className='mz-v170-profile-save';
+  wrap.innerHTML='<button type="button" class="mz-v170-save-btn" id="mzV170SaveProfileBtn"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Salva dati PG</button><span class="mz-v170-save-status" id="mzV170ProfileSaveStatus">L’autosalvataggio resta attivo; questo tasto crea un salvataggio esplicito prima di cambiare PG.</span>';
+  var anchor=E('mzResetAllBtn');var before=anchor&&anchor.closest?anchor.closest('.mz-reset-profile-wrap'):null;
+  if(before)card.insertBefore(wrap,before);else card.appendChild(wrap);
+}
+window.addEventListener('click',function(ev){var t=ev.target,b=t&&t.closest?t.closest('#mzV170SaveProfileBtn'):null;if(!b)return;ev.preventDefault();ev.stopPropagation();saveCurrent(true);},true);
+function init(){ensureButton();var n=String((E('pgNomeSessione')||{}).value||'').trim();if(n)cacheWrite(n);}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(init,260);});else setTimeout(init,260);
+})();
+</script>
