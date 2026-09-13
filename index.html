@@ -1,3 +1,4 @@
+<!-- Magizoologia tool v158 — ripresa Ricerca sicura: aprire una Ricerca esistente non risincronizza Empatia/Sapienza dal Profilo, non cancella progressi dipendenti dalle formule e non aggiorna il timestamp finché il player non modifica davvero la Ricerca. -->
 
 <!-- Magizoologia tool v157 — conflitti Ricerca resi semantici: ignorati navigazione e ordine chiavi Firebase; avviso mostrato solo per modifiche reali dei dati. Nessuna nuova query/lettura Firestore. -->
 <!-- Magizoologia tool v156 — secondo audit preventivo dopo l'allineamento a Erbologia v151: identità persistente Ricerca/Creatura, reimportazione senza doppioni né reset dei progressi, apertura Ricerca dal vero flusso Firebase, protezione cambio PG, commit immediato archivio e cambio profilo senza finestra di perdita dati. Nessuna nuova query/lettura Firestore. -->
@@ -7099,10 +7100,13 @@ function rmAggiornaEmpatiaCondivisa(){
 function rmSincronizzaEmpatiaDaProfilo(){
   var hidden=rmEl('empatiaRicerca'),v=rmProfiloEmpatia();
   if(!hidden)return;
+  /* v158 — se una Ricerca è già aperta, conserva l'Empatia fotografata nella
+     sessione. Il Profilo potrà cambiare senza alterare retroattivamente dadi
+     e risultati della Ricerca in corso. */
+  if(RM_CURRENT_ID&&RM_CURRENT_DATA){rmAggiornaEmpatiaCondivisa();return;}
   hidden.value=v===null?'':String(v);
   rmAggiornaEmpatiaCondivisa();
   ricalcolaRicerca();
-  if(RM_CURRENT_ID&&!RM_READONLY&&rmSessionCanEdit(RM_CURRENT_DATA)){rmUpdateToolbar();rmScheduleSave();}
 }
 function rmCaricaEmpatiaSessioneNelProfilo(){
   /* v50: la Ricerca mantiene la propria Empatia salvata senza sovrascrivere il profilo personale. */
@@ -7110,8 +7114,11 @@ function rmCaricaEmpatiaSessioneNelProfilo(){
 }
 function rmAggiornaSapienzaCondivisa(){var box=rmEl('rmSapienzaCondivisa'),v=rmNumber('sapienza',0,25);if(box)box.textContent=v===null?'—':String(v);}
 function rmSincronizzaSapienzaDaProfilo(){
-  var hidden=rmEl('sapienza'),v=rmProfiloSapienza();if(!hidden)return;hidden.value=String(v);rmAggiornaSapienzaCondivisa();ricalcolaRicerca();
-  if(RM_CURRENT_ID&&!RM_READONLY&&rmSessionCanEdit(RM_CURRENT_DATA)){rmUpdateToolbar();rmScheduleSave();}
+  var hidden=rmEl('sapienza'),v=rmProfiloSapienza();if(!hidden)return;
+  /* v158 — stessa protezione dell'Empatia: una Ricerca aperta mantiene la
+     Sapienza salvata con quella sessione. */
+  if(RM_CURRENT_ID&&RM_CURRENT_DATA){rmAggiornaSapienzaCondivisa();return;}
+  hidden.value=String(v);rmAggiornaSapienzaCondivisa();ricalcolaRicerca();
 }
 function rmCaricaSapienzaSessioneNelProfilo(){
   /* v50: la Ricerca mantiene la propria Sapienza salvata senza sovrascrivere il profilo personale. */
@@ -7773,9 +7780,26 @@ function rmOpenSession(id,data){
   RM_CURRENT_ID=id;RM_CURRENT_DATA=data;RM_READONLY=!rmSessionCanEdit(data);
   rmEl('creature-session-home').style.display='none';rmWorkspace().style.display='block';
   var state=data.state||{};if(state.nomePgRicerca===undefined)state.nomePgRicerca=data.pgName||data.initialPgName||'';
-  rmApplyState(state);rmSetReadonly(RM_READONLY);rmCaricaEmpatiaSessioneNelProfilo();rmCaricaSapienzaSessioneNelProfilo();
-  if(rmNormName(data.pgName||data.initialPgName)===rmNormName(rmProfileName())){rmRememberProfileSession(id,data,rmProfileName());rmSincronizzaEmpatiaDaProfilo();rmSincronizzaSapienzaDaProfilo();rmProfileStatus('Ricerca condivisa pronta ✓','ok');}else{rmAggiornaEmpatiaCondivisa();rmAggiornaSapienzaCondivisa();}
-  rmUpdateToolbar();rmStatus('rm-save-status','Ricerca condivisa caricata · autosalvataggio attivo','ok');rmResumeFlow();
+
+  /* v158 — una Ricerca già iniziata è una fotografia autonoma dei dati usati
+     quando è stata avviata. Durante il ripristino NON bisogna sostituire
+     Empatia/Sapienza con i valori correnti del Profilo: oltre ad aggiornare
+     inutilmente updatedAt, un cambio di formula può invalidare e svuotare
+     risultati già registrati. */
+  rmApplyState(state);
+  rmSetReadonly(RM_READONLY);
+  rmCaricaEmpatiaSessioneNelProfilo();
+  rmCaricaSapienzaSessioneNelProfilo();
+  rmAggiornaEmpatiaCondivisa();
+  rmAggiornaSapienzaCondivisa();
+
+  if(rmNormName(data.pgName||data.initialPgName)===rmNormName(rmProfileName())){
+    rmRememberProfileSession(id,data,rmProfileName());
+    rmProfileStatus('Ricerca condivisa pronta ✓','ok');
+  }
+  rmUpdateToolbar();
+  rmStatus('rm-save-status','Ricerca condivisa caricata · autosalvataggio attivo','ok');
+  rmResumeFlow();
 }
 function rmLoadSession(id){
   rmStatus('rm-session-home-msg','Caricamento Ricerca…','');
