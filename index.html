@@ -1,3 +1,5 @@
+
+<!-- Magizoologia tool v178 — Ricerche multiple per PG, profilo iniziale consolidato, nuova Ricerca vuota, etichetta corretta, malus persistenti/editabili e contrasto Configurazione. -->
 <!-- Magizoologia tool v172 — Cura riallineata al regolamento: lo Stato di Salute non richiede più il Narratore di per sé; Narratore soltanto se la Creatura diventa effettivamente ostile o per regole specifiche della specie. Import Ricerca→Guida reso sempre disponibile per ogni esemplare biologicamente completo, senza dipendere dalla scelta preventiva «Continuare subito nella Guida?». -->
 <!-- Magizoologia tool v171 — tabella ufficiale dei post inserita in un details contestuale nell’Allevamento; solo riferimento visivo, nessuna modifica ai calcoli o a Firebase. -->
 <!-- v165 generated from magizoologia_v164 -->
@@ -15317,3 +15319,220 @@ window.addEventListener('click',function(ev){
 },true);
 })();
 </script>
+
+
+<!-- Magizoologia tool v178 — Ricerche realmente multiple per lo stesso PG; nuova Ricerca esplicita e sempre vuota; profilo PG consolidato prima dell’avvio con fotografia dei parametri iniziali; etichetta Ricerca digitabile/autosalvata; malus di viaggio persistenti e note modificabili; contrasto Configurazione corretto. -->
+<style id="magizoologia-v178-research-ux-style">
+#creature-session-home .session-lead{line-height:1.5}
+#mzV178ResearchHint{margin:10px 0 14px;padding:10px 12px;border:1px solid #8d4c2b;border-left:4px solid #c96a34;border-radius:7px;background:#2a160f;color:#f3dfcf;line-height:1.45;font-size:.9em}
+#mzV178ResearchHint b{color:#ffc28c}
+#mzV178NewResearchBtn{background:#9a431f!important;color:#fff4ea!important;border-color:#d97932!important;font-weight:700}
+#mzV178NewResearchBtn:hover{background:#bf5a28!important}
+#mzV178ActiveMalus{margin:0 0 14px;padding:10px 12px;border:1px solid #8b4929;border-left:4px solid #b75831;border-radius:7px;background:#21120c;color:#f7e8dc;line-height:1.45;font-size:.88em}
+#mzV178ActiveMalus b{color:#ffc58f}
+#mzV178ActiveMalus .mz-v178-malus-empty{color:#cfb9a9}
+#mzV178ActiveMalus button{margin-left:8px;padding:5px 9px;border:1px solid #9a431f;border-radius:5px;background:#4a291b;color:#f7e8dc;cursor:pointer;font-family:inherit}
+#mzV178MalusBox{margin:16px 0 4px;padding:12px 14px;border:1px solid #7e3a1d;border-radius:8px;background:rgba(255,246,238,.28);color:#2a1209}
+#mzV178MalusBox h3{margin:0 0 7px;color:#421805!important}
+#mzV178MalusBox .mz-v178-auto-malus{margin:8px 0;padding:9px 10px;border-radius:6px;background:#3a1d12;color:#fff0df;line-height:1.45}
+#mzV178MalusBox .mz-v178-auto-malus b{color:#ffc58f}
+#mzV178MalusBox textarea{width:100%;min-height:86px;box-sizing:border-box;resize:vertical;background:#63351f;color:#fff2e6;border:1px solid #8b4d2c;border-radius:5px;padding:8px 9px;font-family:inherit;line-height:1.4}
+#mzV178MalusBox textarea::placeholder{color:#e5d5c9;opacity:.82}
+#mzV178LabelStatus{font-size:.76em;line-height:1.35;color:#c99a7a;margin-top:4px}
+/* Configurazione: sui pannelli arancio il testo deve essere realmente scuro. */
+#creature-workspace [data-rm-page-panel="config"]>.scheda{color:#2a1209!important}
+#creature-workspace [data-rm-page-panel="config"]>.scheda>p,
+#creature-workspace [data-rm-page-panel="config"]>.scheda>.nota-regole,
+#creature-workspace [data-rm-page-panel="config"]>.scheda>.riga .campo>label,
+#creature-workspace [data-rm-page-panel="config"]>.scheda>.check-riga label{color:#3f1a09!important}
+#creature-workspace [data-rm-page-panel="config"]>.scheda>h2,
+#creature-workspace [data-rm-page-panel="config"]>.scheda>h3{color:#3b1405!important}
+/* I box tecnici scuri restano chiari, evitando marrone su marrone. */
+#creature-workspace [data-rm-page-panel="config"] .rm-special,
+#creature-workspace [data-rm-page-panel="config"] .rm-specie-helper,
+#creature-workspace [data-rm-page-panel="config"] .mz-bonus-manager,
+#creature-workspace [data-rm-page-panel="config"] .rm-rules-details,
+#creature-workspace [data-rm-page-panel="config"] .rm-travel-risk{color:#f7e8dc!important}
+#creature-workspace [data-rm-page-panel="config"] .rm-special label,
+#creature-workspace [data-rm-page-panel="config"] .rm-specie-helper label,
+#creature-workspace [data-rm-page-panel="config"] .mz-bonus-manager label,
+#creature-workspace [data-rm-page-panel="config"] .rm-travel-risk label{color:#f0a060!important}
+@media(max-width:640px){#mzV178ActiveMalus button{display:block;margin:8px 0 0}}
+</style>
+<script id="magizoologia-v178-research-ux">
+(function(){
+'use strict';
+function E(id){return document.getElementById(id);}
+function norm(v){v=String(v||'').trim();try{v=v.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){}return v.toLocaleLowerCase('it-IT').replace(/\s+/g,' ');}
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function currentPg(){return String((E('pgNomeSessione')||{}).value||'').trim();}
+function profileFields(){var out={};document.querySelectorAll('#modoPersonaggio [data-key]').forEach(function(x){var k=x.getAttribute('data-key');if(!k)return;out[k]=(x.type==='checkbox'||x.type==='radio')?!!x.checked:x.value;});return out;}
+function applyProfileFields(s){if(!s)return;var prev=(typeof MZ_GUIDE_RESTORING!=='undefined'?MZ_GUIDE_RESTORING:false);if(typeof MZ_GUIDE_RESTORING!=='undefined')MZ_GUIDE_RESTORING=true;try{Object.keys(s).forEach(function(k){var x=document.querySelector('#modoPersonaggio [data-key="'+String(k).replace(/"/g,'\\"')+'"]');if(!x)return;if(x.type==='checkbox'||x.type==='radio')x.checked=!!s[k];else x.value=s[k];});if(typeof aggiornaCampiTipoPG==='function')aggiornaCampiTipoPG();if(typeof ricalcolaMagizoologia==='function')ricalcolaMagizoologia();}finally{if(typeof MZ_GUIDE_RESTORING!=='undefined')MZ_GUIDE_RESTORING=prev;}}
+function profileBound(name){try{return !!name&&typeof MZ_GUIDE_BOUND_NAME!=='undefined'&&norm(MZ_GUIDE_BOUND_NAME)===norm(name)&&typeof MZ_GUIDE_READY!=='undefined'&&MZ_GUIDE_READY;}catch(e){return false;}}
+function persistProfile(){
+  var name=currentPg();if(!name)return Promise.reject(new Error('Inserisci prima il nome del PG.'));
+  var snap=profileFields();
+  function save(){try{if(typeof window.mzGuideSaveNow==='function')return Promise.resolve(window.mzGuideSaveNow());}catch(e){return Promise.reject(e);}return Promise.resolve(true);}
+  if(profileBound(name))return save();
+  if(typeof window.mzProfileOpenByName==='function'){
+    return Promise.resolve(window.mzProfileOpenByName(name,{fromResearch:true})).catch(function(){return null;}).then(function(){applyProfileFields(snap);try{if(typeof MZ_GUIDE_BOUND_NAME!=='undefined')MZ_GUIDE_BOUND_NAME=name;}catch(e){}return save();});
+  }
+  return save();
+}
+function snapshotForResearch(){return profileFields();}
+
+/* Ogni Ricerca conserva anche la fotografia dei parametri con cui è partita. */
+var baseNewSessionData=window.rmNewSessionData;
+if(typeof baseNewSessionData==='function'){
+  window.rmNewSessionData=function(name){var d=baseNewSessionData.apply(this,arguments),snap=snapshotForResearch();d.initialProfile=snap;d.researchLabel=d.researchLabel||'';d.toolVersion='magizoologia-ricerca-v178';d.state=d.state||{};try{d.state.initialProfileJson=JSON.stringify(snap);}catch(e){}return d;};
+}
+
+/* La vecchia logica usava un solo ID stabile per PG e cancellava le altre sessioni.
+   Da qui in poi le Ricerche dello stesso PG sono documenti distinti. */
+window.rmCleanupLegacySessions=function(){return Promise.resolve(true);};
+window.rmFindSessionForProfile=function(name){if(!RM_FB||!RM_FB.db||!RM_FB.user)return Promise.resolve(null);return rmCollectSessionsForProfile(name).then(function(rows){rows=(rows||[]).slice().sort(function(a,b){return rmSessionTime(b.data)-rmSessionTime(a.data);});return rows.length?rows[0]:null;});};
+window.rmDedupSessionRows=function(rows){return (rows||[]).slice();};
+window.rmCreateProfileSessionRecord=function(name){
+  if(RM_CREATING)return RM_PROFILE_SESSION_PROMISE||Promise.reject(new Error('Creazione già in corso.'));
+  RM_CREATING=true;var data;try{data=window.rmNewSessionData(name);}catch(err){RM_CREATING=false;return Promise.reject(err);}
+  return RM_FB.db.collection(RM_COLLECTION).add(data).then(function(ref){var dd=Object.assign({},data,{createdAt:new Date(),updatedAt:new Date()});rmRememberProfileSession(ref.id,dd,name);RM_CREATING=false;if(typeof rmInvalidateSessionList==='function')rmInvalidateSessionList();return {id:ref.id,data:dd,created:true};}).catch(function(err){RM_CREATING=false;throw err;});
+};
+
+function clearResearchWorkspace(){
+  if(typeof RM_RESTORING!=='undefined')RM_RESTORING=true;
+  try{
+    document.querySelectorAll('#creature-workspace [data-key]').forEach(function(f){
+      if(f.type==='checkbox'||f.type==='radio'){f.checked=false;return;}
+      if(f.tagName==='SELECT'){
+        var chosen='';for(var i=0;i<f.options.length;i++)if(f.options[i].defaultSelected){chosen=f.options[i].value;break;}
+        if(chosen===''&&f.options.length)chosen=f.options[0].value;f.value=chosen;return;
+      }
+      f.value=f.defaultValue!==undefined?f.defaultValue:'';
+    });
+    var bonus=E('rmBonusRicercaRows');if(bonus)bonus.innerHTML='';
+    if(typeof RM_FLOW!=='undefined'){RM_FLOW.page='config';RM_FLOW.summaryVisited=false;RM_FLOW.outcomeVisited=false;}
+  }finally{if(typeof RM_RESTORING!=='undefined')RM_RESTORING=false;}
+  try{if(typeof ricalcolaRicerca==='function')ricalcolaRicerca();}catch(e){}
+}
+function openCreated(ref,data,name,btn){
+  var dd=Object.assign({},data,{createdAt:new Date(),updatedAt:new Date()});
+  RM_CREATING=false;if(btn)btn.disabled=false;rmRememberProfileSession(ref.id,dd,name);if(typeof rmInvalidateSessionList==='function')rmInvalidateSessionList();
+  try{history.replaceState(null,'',window.location.pathname+window.location.search+'#session='+encodeURIComponent(ref.id));}catch(e){}
+  rmOpenSession(ref.id,dd);
+}
+function createFreshResearch(btn){
+  if(RM_CREATING)return Promise.resolve(false);
+  var name=currentPg();if(!name){rmStatus('rm-session-home-msg','Compila prima il Nome del PG nella sezione «Il tuo Personaggio».','bad');return Promise.resolve(false);}
+  if(!RM_FB||!RM_FB.user||!RM_FB.db){rmStatus('rm-session-home-msg','Firebase non è ancora pronto.','bad');return Promise.resolve(false);}
+  if(btn)btn.disabled=true;
+  var saveOld=(RM_CURRENT_ID&&!RM_READONLY&&typeof rmSaveNow==='function')?Promise.resolve(rmSaveNow()).catch(function(){return false;}):Promise.resolve(true);
+  rmStatus('rm-session-home-msg','Salvo il profilo di '+name+' e preparo una nuova Ricerca…','');
+  return saveOld.then(function(){return persistProfile();}).then(function(){
+    clearResearchWorkspace();RM_CREATING=true;var data=window.rmNewSessionData(name);
+    return RM_FB.db.collection(RM_COLLECTION).add(data).then(function(ref){openCreated(ref,data,name,btn);return true;});
+  }).catch(function(err){console.error(err);RM_CREATING=false;if(btn)btn.disabled=false;rmStatus('rm-session-home-msg','Impossibile creare la nuova Ricerca: '+(err&&err.message?err.message:err),'bad');return false;});
+}
+window.rmCreateSession=function(){return createFreshResearch(E('rm-btn-new-session'));};
+
+/* Con più Ricerche per PG, concluderne una non deve eliminare le altre. */
+window.rmDeleteAllSessionsForProfile=function(){if(!RM_CURRENT_ID||!RM_FB||!RM_FB.db)return Promise.resolve(true);return RM_FB.db.collection(RM_COLLECTION).doc(RM_CURRENT_ID).delete().then(function(){return true;});};
+window.rmConcludeFromList=function(id,data,btn){
+  if(!id||!data||!RM_FB||!RM_FB.db||!RM_FB.user||!rmSessionCanEdit(data))return;
+  var name=data.pgName||data.initialPgName||'PG',lab=String(data.researchLabel||'').trim(),what=lab?('«'+lab+'» di '+name):('la Ricerca di '+name);
+  if(!window.confirm('Concludere ed eliminare definitivamente '+what+'? Le altre Ricerche dello stesso PG resteranno intatte.'))return;
+  if(btn)btn.disabled=true;rmStatus('rm-session-home-msg','Conclusione di '+what+'…','');
+  RM_FB.db.collection(RM_COLLECTION).doc(id).delete().then(function(){if(RM_PROFILE_SESSION_ID===id)rmRememberProfileSession('','','');if(Array.isArray(RM_SESSION_LIST_CACHE))RM_SESSION_LIST_CACHE=RM_SESSION_LIST_CACHE.filter(function(r){return r.id!==id;});rmStatus('rm-session-home-msg','Ricerca conclusa ed eliminata.','ok');rmInvalidateSessionList();return rmLoadSessions(true);}).catch(function(err){console.error(err);if(btn)btn.disabled=false;rmStatus('rm-session-home-msg','Non riesco a concludere la Ricerca: '+(err.message||err),'bad');});
+};
+
+function showResearchDashboard(){
+  var name=currentPg(),f=E('pgNomeSessione');
+  if(!name){if(typeof mostraModo==='function')mostraModo('Personaggio');rmProfileStatus('⚠ Inserisci prima il nome del PG per accedere alle Ricerche.','bad research-warning');if(f){f.classList.add('research-required');try{f.focus();f.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}}return;}
+  if(f)f.classList.remove('research-required');
+  var old=(RM_CURRENT_ID&&!RM_READONLY&&typeof rmSaveNow==='function')?Promise.resolve(rmSaveNow()).catch(function(){return false;}):Promise.resolve(true);
+  old.then(function(){return persistProfile().catch(function(){return false;});}).finally(function(){
+    RM_CURRENT_ID='';RM_CURRENT_DATA=null;RM_READONLY=false;rmRememberProfileSession('','','');
+    if(typeof mostraModo==='function')mostraModo('Ricerca');
+    var home=E('creature-session-home'),work=E('creature-workspace');if(home)home.style.display='block';if(work)work.style.display='none';
+    try{history.replaceState(null,'',window.location.pathname+window.location.search+'#ricerca');}catch(e){}
+    rmStatus('rm-session-home-msg','Scegli una Ricerca esistente oppure avviane una nuova per '+name+'.','ok');
+    if(typeof rmLoadSessions==='function')rmLoadSessions(true);
+  });
+}
+window.rmEnterResearchFromProfile=showResearchDashboard;
+
+function ensureResearchUx(){
+  var home=E('creature-session-home');if(home&&!E('mzV178ResearchHint')){var body=home.querySelector('.session-card-body'),lead=body&&body.querySelector('.session-lead');if(body){var hint=document.createElement('div');hint.id='mzV178ResearchHint';hint.innerHTML='<b>Più Ricerche con lo stesso PG:</b> ogni Ricerca è indipendente. «Nuova Ricerca» apre sempre una scheda vuota senza toccare quelle già in corso.';if(lead&&lead.nextSibling)body.insertBefore(hint,lead.nextSibling);else body.insertBefore(hint,body.firstChild);}}
+  var nb=E('rm-btn-new-session');if(nb)nb.textContent='+ Nuova Ricerca per questo PG';
+  var actions=document.querySelector('#creature-workspace .session-actions');if(actions&&!E('mzV178NewResearchBtn')){var b=document.createElement('button');b.type='button';b.id='mzV178NewResearchBtn';b.className='session-btn';b.setAttribute('data-session-control','1');b.textContent='+ Nuova Ricerca';actions.insertBefore(b,actions.firstChild);}
+}
+
+/* Etichetta: il vecchio listener del workspace ridisegnava il toolbar ad ogni tasto,
+   rimettendo il valore precedente. Fermiamo soltanto la propagazione di questo input
+   e lo salviamo direttamente con debounce. */
+var labelTimer=null;
+function paintCurrentTitle(){var t=E('rm-current-session-title');if(!t||!RM_CURRENT_DATA)return;var name=rmCurrentName(),base=name+' — '+(rmTipo()==='attiva'?'Ricerca Attiva':'Ricerca Passiva'),lab=String(RM_CURRENT_DATA.researchLabel||'').trim();t.textContent=lab?(lab+' · '+base):base;}
+function saveCurrentLabel(){
+  var inp=E('mzV164ResearchLabelInput');if(!inp||!RM_CURRENT_ID||!RM_CURRENT_DATA||!RM_FB||!RM_FB.db)return Promise.resolve(false);
+  var v=String(inp.value||'').trim();RM_CURRENT_DATA.researchLabel=v;paintCurrentTitle();
+  if(Array.isArray(RM_SESSION_LIST_CACHE))for(var i=0;i<RM_SESSION_LIST_CACHE.length;i++)if(RM_SESSION_LIST_CACHE[i].id===RM_CURRENT_ID){RM_SESSION_LIST_CACHE[i].data.researchLabel=v;break;}
+  var s=E('mzV178LabelStatus');if(s)s.textContent='Salvataggio etichetta…';
+  return RM_FB.db.collection(RM_COLLECTION).doc(RM_CURRENT_ID).set({researchLabel:v,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){if(s)s.textContent='Etichetta salvata ✓';return true;}).catch(function(err){console.error(err);if(s)s.textContent='Etichetta non salvata: '+(err.message||err);return false;});
+}
+function ensureLabelStatus(){var row=E('mzV164ResearchLabelRow');if(row&&!E('mzV178LabelStatus')){var s=document.createElement('div');s.id='mzV178LabelStatus';s.textContent='Puoi scrivere direttamente: il nome si salva anche senza premere il pulsante.';row.appendChild(s);}}
+window.addEventListener('input',function(ev){var x=ev.target;if(!x||x.id!=='mzV164ResearchLabelInput')return;ev.stopPropagation();if(RM_CURRENT_DATA)RM_CURRENT_DATA.researchLabel=String(x.value||'').trim();paintCurrentTitle();if(labelTimer)clearTimeout(labelTimer);labelTimer=setTimeout(function(){labelTimer=null;saveCurrentLabel();},650);},true);
+window.addEventListener('change',function(ev){if(ev.target&&ev.target.id==='mzV164ResearchLabelInput'){ev.stopPropagation();if(labelTimer){clearTimeout(labelTimer);labelTimer=null;}saveCurrentLabel();}},true);
+window.addEventListener('keydown',function(ev){if(ev.target&&ev.target.id==='mzV164ResearchLabelInput'&&ev.key==='Enter'){ev.preventDefault();if(labelTimer){clearTimeout(labelTimer);labelTimer=null;}saveCurrentLabel();try{ev.target.blur();}catch(e){}}},true);
+
+/* Malus persistenti: quelli realmente attivati dal viaggio vengono ricavati dai
+   risultati già salvati; le note aggiuntive sono libere e fanno parte dello stato
+   della singola Ricerca. */
+function num(id){var x=E(id);return x&&x.value!==''?Number(x.value):0;}
+function val(id){return String((E(id)||{}).value||'');}
+function autoMalus(){
+  var out=[],situation=val('rmTravelSituation'),t=val('rmTravelTransport');
+  if(situation==='uk'){
+    if(t==='passaporta'){
+      var info=String((E('rmTravelPortkeyInfo')||{}).textContent||'').replace(/\s+/g,' ').trim();var m=info.match(/(?:Malessere|malessere)[^:]*:\s*([^.]*)/);out.push(m&&m[1]?('Passaporta: '+m[1].trim()):'Passaporta: malessere di viaggio previsto dalla fascia selezionata');
+    }
+    if(t==='scopa')out.push('Scopa: applica la Fatica prevista dalla Scopa a fine viaggio');
+    if(t==='creatura')out.push('Creatura: -1 Fatica ogni 5 post consecutivi di viaggio');
+    if(t==='smaterializzazione'&&E('rmTravelAppQualified')&&E('rmTravelAppQualified').checked)out.push('Smaterializzazione: -'+(2.5+Math.max(0,num('rmTravelAppPassengers')))+' Fatica');
+  }
+  if(num('rmTravelMalariaResult')===1)out.push('Febbre Malarica: -40 Salute (si manifesta al ritorno)');
+  var lev=num('rmTravelLevioResult');if(lev&&lev<=2)out.push('Leviostosi: -25 Salute');
+  if(num('rmTravelFlooBurnResult')===1)out.push('Ustione da Metropolvere: -10 Salute');
+  var app=num('rmTravelAppResult'),split=num('rmTravelAppSplitResult'),thr=num('rmTravelAppRes')+num('rmTravelAppResil');if(app&&split&&split<=thr&&E('rmTravelAppFailWrap')&&E('rmTravelAppFailWrap').style.display!=='none')out.push('Smaterializzazione fallita senza Spaccamento: -3 Salute');
+  return out.filter(function(v,i,a){return v&&a.indexOf(v)===i;});
+}
+function manualMalus(){return String((E('rmPersistentMalusNotes')||{}).value||'').trim();}
+function renderMalus(){
+  var auto=autoMalus(),manual=manualMalus(),autoBox=E('mzV178AutoMalus');
+  if(autoBox)autoBox.innerHTML=auto.length?('<b>Dal Trasporto:</b><br>'+auto.map(esc).join('<br>')):'<b>Dal Trasporto:</b> nessun malus attivo rilevato dai risultati inseriti.';
+  var box=E('mzV178ActiveMalus');if(!box)return;var bits=[];if(auto.length)bits.push('<b>Malus attivi:</b> '+auto.map(esc).join(' · '));if(manual)bits.push('<b>Note/malus manuali:</b> '+esc(manual).replace(/\n/g,' · '));
+  box.innerHTML=(bits.length?bits.join('<br>'):'<span class="mz-v178-malus-empty">Nessun malus attivo registrato per questa Ricerca.</span>')+'<button type="button" id="mzV178EditMalusBtn">Modifica malus</button>';
+}
+function ensureMalusUi(){
+  var nav=E('rm-flow-nav');if(nav&&!E('mzV178ActiveMalus')){var b=document.createElement('div');b.id='mzV178ActiveMalus';nav.parentNode.insertBefore(b,nav);}
+  var panel=document.querySelector('#creature-workspace [data-rm-page-panel="config"] .scheda');if(panel&&!E('mzV178MalusBox')){var d=document.createElement('div');d.id='mzV178MalusBox';d.innerHTML='<h3>Malus da ricordare per tutta la Ricerca</h3><div class="nota-regole">I malus effettivamente scattati durante il Trasporto vengono ricordati automaticamente. Qui puoi aggiungere, correggere o annotare qualunque altro malus valido per questa specifica Ricerca.</div><div class="mz-v178-auto-malus" id="mzV178AutoMalus"></div><label for="rmPersistentMalusNotes"><b>Malus / note aggiuntive modificabili</b></label><textarea id="rmPersistentMalusNotes" data-key="rmPersistentMalusNotes" placeholder="Es. -2 Destrezza per 3 post; ferita già subita; penalità concordata col Narratore…"></textarea>';panel.appendChild(d);}
+  renderMalus();
+}
+window.addEventListener('click',function(ev){var t=ev.target,b=t&&t.closest?t.closest('#mzV178EditMalusBtn'):null;if(!b)return;ev.preventDefault();if(typeof rmGoto==='function')rmGoto('config');setTimeout(function(){var x=E('rmPersistentMalusNotes');if(x){try{x.scrollIntoView({behavior:'smooth',block:'center'});x.focus();}catch(e){}}},80);},true);
+window.addEventListener('input',function(ev){var id=ev.target&&ev.target.id||'';if(id==='rmPersistentMalusNotes'||/^rmTravel/.test(id))setTimeout(renderMalus,0);},true);
+window.addEventListener('change',function(ev){var id=ev.target&&ev.target.id||'';if(id==='rmPersistentMalusNotes'||/^rmTravel/.test(id)||id==='zonaRicerca')setTimeout(renderMalus,0);},true);
+
+/* Intercetta i comandi che prima aprivano automaticamente l’unica Ricerca del PG. */
+window.addEventListener('click',function(ev){
+  var t=ev.target,b=t&&t.closest?t.closest('#rm-btn-new-session,#mzV178NewResearchBtn,#modoRicercaBtn'):null;if(!b)return;
+  if(b.id==='modoRicercaBtn'){ev.preventDefault();ev.stopPropagation();showResearchDashboard();return;}
+  ev.preventDefault();ev.stopPropagation();createFreshResearch(b);
+},true);
+
+var oldOpen=window.rmOpenSession;if(typeof oldOpen==='function')window.rmOpenSession=function(){var out=oldOpen.apply(this,arguments);setTimeout(function(){ensureResearchUx();ensureLabelStatus();ensureMalusUi();renderMalus();},0);return out;};
+var oldToolbar=window.rmUpdateToolbar;if(typeof oldToolbar==='function')window.rmUpdateToolbar=function(){var out=oldToolbar.apply(this,arguments);ensureLabelStatus();paintCurrentTitle();return out;};
+var oldCalc=window.ricalcolaRicerca;if(typeof oldCalc==='function')window.ricalcolaRicerca=function(){var out=oldCalc.apply(this,arguments);setTimeout(renderMalus,0);return out;};
+
+function init(){ensureResearchUx();ensureMalusUi();ensureLabelStatus();var lead=document.querySelector('#creature-session-home .session-lead');if(lead)lead.textContent='Apri una Ricerca già in corso oppure creane una nuova per il PG compilato in «Il tuo Personaggio». Lo stesso PG può avere più Ricerche contemporaneamente: ognuna viene salvata separatamente.';}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
